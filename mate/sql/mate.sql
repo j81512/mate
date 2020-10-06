@@ -451,7 +451,28 @@ CREATE TABLE DELETE_EMP (
 	delete_date	date	DEFAULT sysdate	NOT NULL
 );
 
-
+--======================================
+-- 시퀀스
+--======================================
+create sequence seq_product_no;
+create sequence seq_product_image_no;
+create sequence seq_product_main_image_no;
+create sequence seq_stock_no;
+create sequence seq_request_no;
+create sequence seq_io_no;
+create sequence seq_receive_no;
+create sequence seq_board_no;
+create sequence seq_board_reply_no;
+create sequence seq_board_image_no;
+create sequence seq_board_info_no;
+create sequence seq_cs_no;
+create sequence seq_cs_image_no;
+create sequence seq_cs_reply_no;
+create sequence seq_purchase_no;
+create sequence seq_purchase_log_no;
+create sequence seq_return_no;
+create sequence seq_return_image_no;
+create sequence seq_review_no;
 
 
 
