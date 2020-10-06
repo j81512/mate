@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 </head>
 <body>
+
 <header>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="#">
@@ -64,7 +65,14 @@
 			${ logMemger.name }님, 반갑습니다.		
 		</c:otherwise>
 	</c:choose>
+	<c:if test="${naverName != null}">	
+				<h3>${naverName} 님 환영합니다! </h3>
+				<br />
+				<h3><a href="logout">로그아웃</a></h3>
+	</c:if>
+
     </ul>
   </div>
 </nav>
 </header>
+

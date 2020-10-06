@@ -17,7 +17,7 @@ import com.github.scribejava.core.oauth.OAuth20Service;
 public class NaverLoginBO {
 	private final static String CLIENT_ID = "xRwmBKO5xFu5Z3LqMpMT";
 	private final static String CLIENT_SECRET = "M9HjLCzzwT";
-	private final static String REDIRECT_URI = "http://127.0.0.1:9090/mate/callback";
+	private final static String REDIRECT_URI = "http://localhost:9090/mate/callback.do";
 	private final static String SESSION_STATE = "oauth_state";
 	
 	 /* 프로필 조회 API URL => 이건 아직 모르겠음*/
@@ -57,20 +57,7 @@ public class NaverLoginBO {
     	return null;
     }
     
-    // Access Token을 이용하여 네이버 사용자 프로필 API를 호출
-    public String getUserProfile(OAuth2AccessToken oauthToken) throws IOException {
-    	
-    	OAuth20Service oauthService = new ServiceBuilder()
-    								  .apiKey(CLIENT_ID)
-    								  .apiSecret(CLIENT_SECRET)
-    								  .callback(REDIRECT_URI)
-    								  .build(NaverLoginApi.instance());
-    	OAuthRequest request = new OAuthRequest(Verb.GET, PROFILE_API_URL, oauthService);
-    	oauthService.signRequest(oauthToken, request);
-    	Response response = request.send();
-    	
-    	return response.getBody();
-    }
+  
     
 	private void setSession(HttpSession session, String state) {
 		session.setAttribute(SESSION_STATE, state);
@@ -85,4 +72,18 @@ public class NaverLoginBO {
 		
 		return UUID.randomUUID().toString();
 	}
+	  // Access Token을 이용하여 네이버 사용자 프로필 API를 호출
+    public String getUserProfile(OAuth2AccessToken oauthToken) throws IOException {
+    	
+    	OAuth20Service oauthService = new ServiceBuilder()
+    								  .apiKey(CLIENT_ID)
+    								  .apiSecret(CLIENT_SECRET)
+    								  .callback(REDIRECT_URI)
+    								  .build(NaverLoginApi.instance());
+    	OAuthRequest request = new OAuthRequest(Verb.GET, PROFILE_API_URL, oauthService);
+    	oauthService.signRequest(oauthToken, request);
+    	Response response = request.send();
+    	
+    	return response.getBody();
+    }
 }

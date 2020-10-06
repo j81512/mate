@@ -5,12 +5,11 @@
 <head>
 <meta charset="UTF-8">
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
-<title>로그인</title>
-</head>
-<body>
+<jsp:include page="/WEB-INF/views/common/header.jsp"/>
+
 	<div class="container">
     <div class="row">
         <div class="col-md-3 col-md-offset-4">
@@ -40,17 +39,13 @@
                 <div class="or-box">
                     <span class="or">OR</span>
                     <div class="row">
-                    <div class="col-md-12 row-block">
-<<<<<<< HEAD
+                    <div class="col-md-12 row-block" id="naver_id_login">
                         <a href="${pageContext.request.contextPath}/member/login.do">
-=======
-                        <a href="${pageContext.request.contextPath}/login.do">
->>>>>>> branch 'master' of https://github.com/j81512/mate.git
 						<img src="${pageContext.request.contextPath}/resources/images/naverlogin.png"/></a>
                     </div>
                     </div>
                 </div>
-                <div class="or-box row-block">
+                <div class="or-box row-block" >
                     <div class="row">
                         <div class="col-md-12 row-block">
                             <a href="#" class="btn btn-primary btn-block">회원가입</a>
