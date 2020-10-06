@@ -2,12 +2,12 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>    
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Mate</title>
+<title>Insert title here</title>
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
@@ -17,35 +17,54 @@
 
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-
 </head>
 <body>
-<div id="container">
-	<header>
-		<div id="header-container">
-			<h2>MATE</h2>
-		</div>
-		<!-- https://getbootstrap.com/docs/4.0/components/navbar/ -->
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-	
-			<button class="navbar-toggler" 
-					type="button" 
-					data-toggle="collapse" 
-					data-target="#navbarNav" 
-					aria-controls="navbarNav" 
-					aria-expanded="false" 
-					aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-		  	</button>
-			<div class="collapse navbar-collapse" id="navbarNav">
-				<ul class="navbar-nav mr-auto">
-			    	<li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}">Home</a></li>
-			    </ul>
-			 
-			 </div>
-			 	   <button class="btn btn-outline-success my-2 my-sm-0" 
-			    type="button" 
-			    onclick="location.href='${ pageContext.request.contextPath}/member/memberLogin.do';">로그인</button>
-                &nbsp;
-		</nav>
-	</header>
+<header>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">
+  	<img alt="Brand" src="${ pageContext.request.contextPath }/resources/img/home.jpg" width="45px">
+  	Mate
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" 
+           id="products" role="button" 
+           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          	판매 상품 보기
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">전체 상품 보기</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">카테고리 1</a>
+          <a class="dropdown-item" href="#">카테고리 2</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">회사 소개</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">고객 센터</a>
+      </li>
+
+	<c:choose>
+		<c:when test="${ empty loginMember }">
+			<li class="nav-item">
+	        	<a class="nav-link" href="#"  href="#">로그인</a>
+	      	</li>
+		    <li class="nav-item">
+	        	<a class="nav-link" href="#" tabindex="1" aria-disabled="true" href="#">회원 가입</a>
+		    </li>
+		</c:when>
+		
+		<c:otherwise>
+			${ logMemger.name }님, 반갑습니다.		
+		</c:otherwise>
+	</c:choose>
+    </ul>
+  </div>
+</nav>
+</header>
