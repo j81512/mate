@@ -22,7 +22,6 @@ import com.kh.mate.member.model.vo.Member;
 
 
 @Controller
-@RequestMapping("/member")
 @SessionAttributes({"loginMember"})
 public class MemberController {
 
