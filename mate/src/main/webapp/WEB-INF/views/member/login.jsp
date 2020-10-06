@@ -8,9 +8,8 @@
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
-<title>로그인</title>
-</head>
-<body>
+<jsp:include page="/WEB-INF/views/common/header.jsp"/>
+
 	<div class="container">
     <div class="row">
         <div class="col-md-3 col-md-offset-4">

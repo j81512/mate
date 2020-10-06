@@ -47,5 +47,12 @@
 			    type="button" 
 			    onclick="location.href='${ pageContext.request.contextPath}/member/memberLogin.do';">로그인</button>
                 &nbsp;
+        		<c:if test="${naverName != null}">	
+					<h3>${naverName} 님 환영합니다! </h3>
+					<br />
+					<h3><a href="logout">로그아웃</a></h3>
+				</c:if>
+
+
 		</nav>
 	</header>
