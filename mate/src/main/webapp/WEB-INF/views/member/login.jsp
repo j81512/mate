@@ -41,7 +41,11 @@
                     <span class="or">OR</span>
                     <div class="row">
                     <div class="col-md-12 row-block">
+<<<<<<< HEAD
+                        <a href="${pageContext.request.contextPath}/member/login.do">
+=======
                         <a href="${pageContext.request.contextPath}/login.do">
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
 						<img src="${pageContext.request.contextPath}/resources/images/naverlogin.png"/></a>
                     </div>
                     </div>
