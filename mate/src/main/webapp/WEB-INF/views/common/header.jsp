@@ -66,8 +66,9 @@
 		</c:otherwise>
 
 	</c:choose>
-	<c:if test="${ }"></c:if>
-
+		<c:if test="${naverName != null}">	
+					${naverName}님, 반갑습니다
+		</c:if>
     </ul>
   </div>
 </nav>

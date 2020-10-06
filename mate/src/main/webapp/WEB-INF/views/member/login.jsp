@@ -41,7 +41,7 @@
                     <div class="row">
                     <div class="col-md-12 row-block" id="naver_id_login">
                         <a href="${pageContext.request.contextPath}/member/login.do">
-						<img src="${pageContext.request.contextPath}/resources/images/naverlogin.png"/></a>
+						<img width="250" src="${pageContext.request.contextPath}/resources/images/naverlogin.png"/></a>
                     </div>
                     </div>
                 </div>
