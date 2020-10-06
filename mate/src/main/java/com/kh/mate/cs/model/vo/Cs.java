@@ -20,7 +20,7 @@ public class Cs implements Serializable {
 	private String title;
 	private String content;
 	private String memberId;
-	private Date regdate;
+	private Date regDate;
 	private String secret[];
 	private String notice[];
 }

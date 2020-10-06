@@ -1,5 +1,7 @@
 package com.kh.mate.cs.model.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,5 +18,11 @@ public class CsServiceImpl implements CsService {
 	public int insertCs(Cs cs) {
 		
 		return csDAO.insertCs(cs);
+	}
+
+	@Override
+	public List<Cs> selectCsList() {
+		
+		return csDAO.selectCsList();
 	}
 }
