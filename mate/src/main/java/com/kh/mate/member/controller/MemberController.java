@@ -1,4 +1,4 @@
-package com.kh.mate.member;
+package com.kh.mate.member.controller;
 
 import java.io.IOException;
 
@@ -10,13 +10,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.kh.mate.naver.NaverLoginBO;
 
 import lombok.extern.slf4j.Slf4j;
+
+
+
 @Slf4j
-@RequestMapping("/member")
 @Controller
 public class MemberController {
 
@@ -28,26 +32,29 @@ public class MemberController {
 		this.naverLoginBO = naverLoginBO;
 	}
 	//일반 회원 login
-	@RequestMapping(value = "/memberLogin.do"
+	@RequestMapping(value = "/member/memberLogin.do"
 			,method = RequestMethod.GET)
 		public String memberLogin() {
 		return "member/login";
 	}
 	//naver login 
-	@RequestMapping(value = "/login.do", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "/member/login.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public String Login(Model model, HttpSession session) {
+
 		log.debug("login 호출 확인");
 		String naverAuthUrl = naverLoginBO.getAuthorizationUrl(session);
 		log.debug("naverAuthUrl = {}", naverAuthUrl);
-		model.addAttribute("uri", naverAuthUrl);
+		model.addAttribute("url", naverAuthUrl);
 		//view
 		return "member/naverLogin";
 	}
 	
 	//naverLogin 성공시
-	@RequestMapping(value = "/callback", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "/callback.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public String callback(Model model, @RequestParam String code, @RequestParam String state, HttpSession session) throws IOException {
 		log.debug("callback 호출 확인");
+	
+		
 		OAuth2AccessToken oauthToken;
 		oauthToken = naverLoginBO.getAcessToken(session, code, state);
 		log.debug("oauthToken = {}", oauthToken);
@@ -56,7 +63,7 @@ public class MemberController {
 		apiResult = naverLoginBO.getUserProfile(oauthToken);
 		model.addAttribute("result", apiResult);
 		
-		return "member/naverSeccess";
+		return "member/naverSuccess";
 	}
 	
 }

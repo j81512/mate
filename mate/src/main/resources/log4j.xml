@@ -54,7 +54,7 @@
 	</logger>
 	<!-- Application Loggers -->
 	<!-- 패키지 또는 클래스명을 통해서 로그를 수집하는 주체  -->
-	<logger name="com.kh.spring" additivity="true">
+	<logger name="com.kh.mate" additivity="true">
 		<level value="trace" />
 	</logger>
 	
