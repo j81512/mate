@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 </head>
 <body>
+
 <header>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="#">
@@ -50,21 +51,26 @@
         <a class="nav-link" href="#">고객 센터</a>
       </li>
 
+	<!-- 호근 수정 1. ${pageContext.request.contextPath}/member/login.do -->
+	<!-- 호근 수정2. 회원가입 날림  -->
+	<!-- 호근수정3. not empty로 바꿈 -->
 	<c:choose>
 		<c:when test="${ empty loginMember }">
 			<li class="nav-item">
-	        	<a class="nav-link" href="#"  href="#">로그인</a>
+	        	<a class="nav-link" href="${ pageContext.request.contextPath}/member/memberLogin.do">로그인</a>
 	      	</li>
-		    <li class="nav-item">
-	        	<a class="nav-link" href="#" tabindex="1" aria-disabled="true" href="#">회원 가입</a>
-		    </li>
 		</c:when>
+		<c:otherwise >
+			${ loginMember.name }님, 반갑습니다.	
 		
-		<c:otherwise>
-			${ logMemger.name }님, 반갑습니다.		
 		</c:otherwise>
+
 	</c:choose>
+		<c:if test="${naverName != null}">	
+					${naverName}님, 반갑습니다
+		</c:if>
     </ul>
   </div>
 </nav>
 </header>
+
