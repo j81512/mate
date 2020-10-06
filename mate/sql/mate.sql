@@ -98,7 +98,6 @@ CREATE TABLE PRODUCT (
 	reg_date	date	DEFAULT sysdate	NOT NULL,
 	category	varchar2(128)		NOT NULL,
 	brand	varchar2(128)		NOT NULL,
-	title	varchar2(128)		NOT NULL,
 	content	varchar2(4000)		NOT NULL,
 	price	number		NOT NULL,
 	enabled	number	DEFAULT 0	NOT NULL,
@@ -476,4 +475,7 @@ create sequence seq_review_no;
 
 
 
+--======================================
+-- 트리거
+--======================================
 
