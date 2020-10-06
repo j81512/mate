@@ -51,25 +51,24 @@
         <a class="nav-link" href="#">고객 센터</a>
       </li>
 
+	<!-- 호근 수정 1. ${pageContext.request.contextPath}/member/login.do -->
+	<!-- 호근 수정2. 회원가입 날림  -->
+	<!-- 호근수정3. not empty로 바꿈 -->
 	<c:choose>
 		<c:when test="${ empty loginMember }">
 			<li class="nav-item">
-	        	<a class="nav-link" href="#"  href="#">로그인</a>
+	        	<a class="nav-link" href="#"  href="${pageContext.request.contextPath}/member/login.do">로그인</a>
 	      	</li>
-		    <li class="nav-item">
-	        	<a class="nav-link" href="#" tabindex="1" aria-disabled="true" href="#">회원 가입</a>
-		    </li>
 		</c:when>
-		
-		<c:otherwise>
+		<c:when test="${ not empty loginMember }">
 			${ logMemger.name }님, 반갑습니다.		
-		</c:otherwise>
-	</c:choose>
-	<c:if test="${naverName != null}">	
-				<h3>${naverName} 님 환영합니다! </h3>
+		</c:when>
+		<c:when test="${naverName != null}">	
+				<h3>${naverName} 님 반갑습니다! </h3>
 				<br />
-				<h3><a href="logout">로그아웃</a></h3>
-	</c:if>
+			
+		</c:when>
+	</c:choose>
 
     </ul>
   </div>
