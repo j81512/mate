@@ -55,16 +55,18 @@
 	<!-- 호근 수정2. 회원가입 날림  -->
 	<!-- 호근수정3. not empty로 바꿈 -->
 	<c:choose>
-		<c:when test="${ empty loginMember || empty naverName }">
+		<c:when test="${ empty loginMember }">
 			<li class="nav-item">
-	        	<a class="nav-link" href="${ pageContext.request.contextPath}/member/memberLogin.do;">로그인</a>
+	        	<a class="nav-link" href="${ pageContext.request.contextPath}/member/memberLogin.do">로그인</a>
 	      	</li>
 		</c:when>
 		<c:otherwise >
-			${ logingMember.name == null ? naverName : logingMember.name }님, 반갑습니다.		
+			${ loginMember.name }님, 반갑습니다.	
+		
 		</c:otherwise>
 
 	</c:choose>
+	<c:if test="${ }"></c:if>
 
     </ul>
   </div>
