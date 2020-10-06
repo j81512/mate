@@ -22,7 +22,6 @@ public class Product {
 	private Date regDate;
 	private String category;
 	private String brand;
-	private String title;
 	private String content;
 	private int price;
 	private int enabled;
