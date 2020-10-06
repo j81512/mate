@@ -57,7 +57,7 @@
 	<c:choose>
 		<c:when test="${ empty loginMember }">
 			<li class="nav-item">
-	        	<a class="nav-link" href="#"  href="${pageContext.request.contextPath}/member/login.do">로그인</a>
+	        	<a class="nav-link" href="#"  href="${ pageContext.request.contextPath}/member/memberLogin.do">로그인</a>
 	      	</li>
 		</c:when>
 		<c:when test="${ not empty loginMember }">
