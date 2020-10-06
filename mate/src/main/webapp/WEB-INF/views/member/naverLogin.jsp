@@ -27,7 +27,7 @@
 <body>
 
 
-<div style="background-color:#15a181; width: 100%; height: 50px;text-align: center; color: white; "><h3>SIST Login</h3></div>
+<div style="background-color:#15a181; width: 100%; height: 50px;text-align: center; color: white; "><h3>정보동의</h3></div>
 <div id="naver_id_login" style="text-align:center"><a href="${url}">
 <img width="223" src="https://developers.naver.com/doc/review_201802/CK_bEFnWMeEBjXpQ5o8N_20180202_7aot50.png"/></a></div>
 <br>
