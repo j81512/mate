@@ -13,11 +13,7 @@
 			#{ name },
 			#{ gender },
 			#{ birthday },
-			#{ email },
 			#{ phone },
-			#{ address },
-			#{ hobby },
-			default,
 			default
 		)
 		
