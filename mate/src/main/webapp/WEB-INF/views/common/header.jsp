@@ -38,7 +38,8 @@
           	판매 상품 보기
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">전체 상품 보기</a>
+        <!-- 종완 수정 - 주소추가 -->
+          <a class="dropdown-item" href="${ pageContext.request.contextPath }/product/productList.do">전체 상품 보기</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="#">카테고리 1</a>
           <a class="dropdown-item" href="#">카테고리 2</a>
