@@ -16,5 +16,9 @@ public class ProductController {
 	@Autowired
 	private ProductService productService;
 	
+	@RequestMapping("/productEnroll.do")
+	public String productEnroll() {
+		return"/product/productEnroll";
+	}
 	
 }
