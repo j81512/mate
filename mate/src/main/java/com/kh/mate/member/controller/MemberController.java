@@ -1,6 +1,10 @@
 package com.kh.mate.member.controller;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -38,28 +42,27 @@ public class MemberController {
 	private void setNaverLoginBO(NaverLoginBO naverLoginBO) {
 		this.naverLoginBO = naverLoginBO;
 	}
+	/**
+	 * 
+	 * 로그인 연동시 한방에 처리할 수 있게 함
+	 */
 	//일반 회원 login
 
 	@RequestMapping(value = "/member/memberLogin.do"
-			,method = RequestMethod.GET)
-		public String memberLogin() {
-		return "member/login";
-	}
-	//naver login 
-	@RequestMapping(value = "/member/login.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public String Login(Model model, HttpSession session) {
-
+			,method = {RequestMethod.GET, RequestMethod.POST})
+		public String memberLogin(Model model, HttpSession session) {
+		// 호근 초기 로그인 화면 수정함 
 		log.debug("login 호출 확인");
 		String naverAuthUrl = naverLoginBO.getAuthorizationUrl(session);
 		log.debug("naverAuthUrl = {}", naverAuthUrl);
 		model.addAttribute("url", naverAuthUrl);
-		//view
-		return "member/naverLogin";
+		return "member/login";
 	}
-	
+	//naver login 이부분 필요없어서 날림
+
 	//naverLogin 성공시
 	@RequestMapping(value = "/callback.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public String callback(Model model, @RequestParam String code, @RequestParam String state, HttpSession session) throws IOException, ParseException {
+	public String callback(Model model, @RequestParam String code, @RequestParam String state, HttpSession session) throws IOException, ParseException, java.text.ParseException {
 		log.debug("callback 호출 확인");
 	
 		
@@ -77,8 +80,24 @@ public class MemberController {
 		JSONObject responseOBJ = (JSONObject)jsonObj.get("response");
 		//response의 nickname값 파싱
 		String nickname = (String)responseOBJ.get("name");
-
-		log.debug("nickname= {}", nickname);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = sdf.parse((String)responseOBJ.get("birthday"));
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+		
+		//자동 회원가입 되게 하기.
+		Map<String, Object> map = new HashMap<>();
+		map.put("id", (String)responseOBJ.get("id"));
+		map.put("name", (String)responseOBJ.get("name"));
+		map.put("gender", (String)responseOBJ.get("gender"));
+		map.put("email", (String)responseOBJ.get("email"));
+		//날짜 형변환이 안됨
+		//		map.put("birthday", sdf1.format(date));
+		
+		log.debug("map = {}", map);
+	
+//		log.debug("nickname= {}", nickname);
+		// 값확인용
+//		log.debug("responseOBJ= {}", responseOBJ);
 		//로그인 사용자 정보 읽어 오는것
 		apiResult = naverLoginBO.getUserProfile(oauthToken);
 		log.debug("apiResult = {}", apiResult);
