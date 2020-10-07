@@ -32,24 +32,22 @@ public class MemberController {
 	private void setNaverLoginBO(NaverLoginBO naverLoginBO) {
 		this.naverLoginBO = naverLoginBO;
 	}
+	/**
+	 * 
+	 * 로그인 연동시 한방에 처리할 수 있게 함
+	 */
 	//일반 회원 login
 	@RequestMapping(value = "/member/memberLogin.do"
-			,method = RequestMethod.GET)
-		public String memberLogin() {
-		return "member/login";
-	}
-	//naver login 
-	@RequestMapping(value = "/member/login.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public String Login(Model model, HttpSession session) {
-
+			,method = {RequestMethod.GET, RequestMethod.POST})
+		public String memberLogin(Model model, HttpSession session) {
 		log.debug("login 호출 확인");
 		String naverAuthUrl = naverLoginBO.getAuthorizationUrl(session);
 		log.debug("naverAuthUrl = {}", naverAuthUrl);
 		model.addAttribute("url", naverAuthUrl);
-		//view
-		return "member/naverLogin";
+		return "member/login";
 	}
-	
+	//naver login 이부분 필요없어서 날림
+
 	//naverLogin 성공시
 	@RequestMapping(value = "/callback.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public String callback(Model model, @RequestParam String code, @RequestParam String state, HttpSession session) throws IOException, ParseException {

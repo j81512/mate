@@ -39,9 +39,11 @@
                 <div class="or-box">
                     <span class="or">OR</span>
                     <div class="row">
+                    <!-- 호근 수정 로그인버튼만 누르면 바로 연동되게 할 수 있게 수정  -->
                     <div class="col-md-12 row-block" id="naver_id_login">
-                        <a href="${pageContext.request.contextPath}/member/login.do">
-						<img width="250" src="${pageContext.request.contextPath}/resources/images/naverlogin.png"/></a>
+						<div id="naver_id_login" style="text-align:center"><a href="${url}">
+						<img width="223" src="${pageContext.request.contextPath}/resources/images/naverlogin.png"/></a>
+						</div>
                     </div>
                     </div>
                 </div>
