@@ -72,10 +72,7 @@ public class MemberController {
 		JSONObject responseOBJ = (JSONObject)jsonObj.get("response");
 		//response의 nickname값 파싱
 		String nickname = (String)responseOBJ.get("name");
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = sdf.parse((String)responseOBJ.get("birthday"));
-		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
-		
+
 		//자동 회원가입 되게 하기.
 		Map<String, Object> map = new HashMap<>();
 		map.put("id", (String)responseOBJ.get("id"));
@@ -99,5 +96,6 @@ public class MemberController {
 		return "member/login";
 
 	}
+	
 	
 }

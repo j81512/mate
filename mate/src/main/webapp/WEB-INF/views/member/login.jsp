@@ -50,7 +50,8 @@
                 <div class="or-box row-block" >
                     <div class="row">
                         <div class="col-md-12 row-block">
-                            <a href="#" class="btn btn-primary btn-block">회원가입</a>
+                            <a href="${ pageContext.request.contextPath }/member/memberEnroll.do';" 
+                               class="btn btn-primary btn-block">회원가입</a>
                         </div>
                     </div>
                 </div>

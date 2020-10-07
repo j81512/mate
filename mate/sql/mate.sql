@@ -481,4 +481,25 @@ create sequence seq_review_no;
 --======================================
 -- 트리거
 --======================================
+CREATE OR REPLACE TRIGGER TRG_QUIT_USER
+    BEFORE
+    DELETE ON ALL_USER
+    FOR EACH ROW
+BEGIN
 
+  INSERT INTO QUIT_USER VALUES(:old.USER_ID, :old.COMM_GRADE, :old.PASSWORD,
+                                                        :old.USER_NAME, :old.GENDER, :old.BIRTHDAY,
+                                                        :old.EMAIL, :old.ADDRESS, :old.PHONE, :old.ENROLL_DATE , default, :old.POINT_SUM);
+END;
+/
+CREATE OR REPLACE TRIGGER TRG_QUIT_USER
+    BEFORE
+    DELETE ON ALL_USER
+    FOR EACH ROW
+BEGIN
+
+  INSERT INTO QUIT_USER VALUES(:old.USER_ID, :old.COMM_GRADE, :old.PASSWORD,
+                                                        :old.USER_NAME, :old.GENDER, :old.BIRTHDAY,
+                                                        :old.EMAIL, :old.ADDRESS, :old.PHONE, :old.ENROLL_DATE , default, :old.POINT_SUM);
+END;
+/
