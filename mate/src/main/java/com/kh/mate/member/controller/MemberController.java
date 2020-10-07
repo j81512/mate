@@ -50,8 +50,7 @@ public class MemberController {
 		model.addAttribute("url", naverAuthUrl);
 		return "member/login";
 	}
-	//naver login 이부분 필요없어서 날림
-
+	
 	//naverLogin 성공시
 	@RequestMapping(value = "/callback.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public String callback(Model model, @RequestParam String code, @RequestParam String state, HttpSession session) throws IOException, ParseException, java.text.ParseException {
@@ -96,5 +95,9 @@ public class MemberController {
 		return "member/login";
 
 	}
+
+	/**
+	 * 호근 카카오 로그인 및 회원가입
+	 */
 	
 }
