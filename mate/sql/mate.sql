@@ -94,9 +94,9 @@ CREATE TABLE EMP (
 
 --DROP TABLE PRODUCT;
 CREATE TABLE PRODUCT (
-	product_no	number		NOT NULL,
+	product_no	number	NOT NULL	,
 	product_name	varchar2(256)		NOT NULL,
-	reg_date	date	DEFAULT sysdate	NOT NULL,
+	reg_date	date	DEFAULT sysdate	 NOT NULL,
 	category	varchar2(128)		NOT NULL,
 	brand	varchar2(128)		NOT NULL,
 	content	varchar2(4000)		NOT NULL,
@@ -105,6 +105,8 @@ CREATE TABLE PRODUCT (
     
     constraint pk_product primary key (product_no)
 );
+select * from product;
+
 
 
 --DROP TABLE PRODUCT_IMAGES;
