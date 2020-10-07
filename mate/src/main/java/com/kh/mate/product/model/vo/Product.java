@@ -1,6 +1,7 @@
 package com.kh.mate.product.model.vo;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,5 +26,8 @@ public class Product {
 	private String content;
 	private int price;
 	private int enabled;
+	
+	private List<ProductImages> productImages;
+	private List<ProductMainImages> productMainImages;
 	
 }
