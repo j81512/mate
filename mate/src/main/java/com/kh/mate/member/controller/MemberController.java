@@ -26,11 +26,6 @@ import com.kh.mate.naver.NaverLoginBO;
 
 import lombok.extern.slf4j.Slf4j;
 
-
-import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.kh.mate.naver.NaverLoginBO;
-
-
 @Slf4j
 @Controller
 public class MemberController {
