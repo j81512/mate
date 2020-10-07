@@ -21,7 +21,7 @@ public class ProductController {
 	@Autowired
 	private ProductService productService;
 	
-	//CH
+	//JW
 	
 	@RequestMapping(value = "/productEnroll.do",
 					method = RequestMethod.GET)
@@ -42,7 +42,7 @@ public class ProductController {
 	
 	
 	
-	//JW
+	//CH
 	@RequestMapping(value = "/productList.do",
 					method = RequestMethod.GET)
 	public String productList(Model model) {
