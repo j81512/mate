@@ -28,5 +28,6 @@ public class Product {
 	private int enabled;
 	
 	private List<ProductImages> productImages;
+	private List<ProductMainImages> productMainImages;
 	
 }
