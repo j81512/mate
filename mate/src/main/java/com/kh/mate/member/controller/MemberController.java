@@ -76,19 +76,21 @@ public class MemberController {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = sdf.parse((String)responseOBJ.get("birthday"));
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+		
 		//자동 회원가입 되게 하기.
 		Map<String, Object> map = new HashMap<>();
 		map.put("id", (String)responseOBJ.get("id"));
 		map.put("name", (String)responseOBJ.get("name"));
 		map.put("gender", (String)responseOBJ.get("gender"));
 		map.put("email", (String)responseOBJ.get("email"));
-		map.put("birthday", sdf1.format(date));
+		//날짜 형변환이 안됨
+		//		map.put("birthday", sdf1.format(date));
 		
 		log.debug("map = {}", map);
 	
-		log.debug("nickname= {}", nickname);
+//		log.debug("nickname= {}", nickname);
 		// 값확인용
-		log.debug("responseOBJ= {}", responseOBJ);
+//		log.debug("responseOBJ= {}", responseOBJ);
 		//로그인 사용자 정보 읽어 오는것
 		apiResult = naverLoginBO.getUserProfile(oauthToken);
 		log.debug("apiResult = {}", apiResult);
