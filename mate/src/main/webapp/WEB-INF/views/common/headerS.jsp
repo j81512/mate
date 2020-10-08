@@ -17,6 +17,23 @@
 
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
+<!-- 김찬희 카테고리 작업 스크립트 -->
+<script>
+
+function category(ct){
+
+	console.log(ct);
+	var $searchCategory = $('[name=searchCategory]');
+	var $category = $('[name=category]');
+	$category.val(ct);
+	console.log($category.val())
+	$searchCategory.submit();
+	
+}
+
+</script>
+<!-- 김찬희 카테고리작업 스크립트끝 -->
 </head>
 <body>
 
@@ -41,8 +58,11 @@
         <!-- 종완 수정 - 주소추가 -->
           <a class="dropdown-item" href="${ pageContext.request.contextPath }/product/productList.do">전체 상품 보기</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">카테고리 1</a>
-          <a class="dropdown-item" href="#">카테고리 2</a>
+           <!-- 김찬희 헤더 카테고리검색 추가함 -->
+          <a class="dropdown-item" onclick="category('PM')">프라모델</a>
+          <a class="dropdown-item" onclick="category('FG')">피규어</a>
+          <a class="dropdown-item" onclick="category('RC')">RC카</a>
+         <a class="dropdown-item" onclick="category('DR')">드론</a>
         </div>
       </li>
       <li class="nav-item">
@@ -73,5 +93,11 @@
     </ul>
   </div>
 </nav>
+<!-- 김찬희 작업 -->
+<form action="${ pageContext.request.contextPath }/product/productCategory.do"
+		name="searchCategory">
+	<input type="hidden" name="category" value=""/>
+</form>
+<!-- 김찬희 작업끝 -->
 </header>
 
