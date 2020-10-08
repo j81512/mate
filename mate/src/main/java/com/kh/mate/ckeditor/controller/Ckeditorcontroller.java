@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.google.gson.JsonObject;
+import com.kh.mate.common.Utils;
 
 @Controller
 @RequestMapping("/cke")
@@ -34,29 +35,28 @@ public class Ckeditorcontroller {
 		MultipartFile file = multiFile.getFile("upload");
 		
 		if(file != null) {
-			
 			if(file.getSize() > 0 ) {
 				if(file.getContentType().toLowerCase().startsWith("image/")) {
 					try {
-						String fileName = file.getName();
+						String fileName = file.getOriginalFilename();
 						byte[] bytes = file.getBytes();
 						String uploadPath = request.getServletContext().getRealPath("/resources/upload/images");
 						File uploadFile = new File(uploadPath);
 						if(!uploadFile.exists()) {
 							uploadFile.mkdirs();
 						}
-						fileName = UUID.randomUUID().toString();
+						String renamedFilename = Utils.getRenamedFileName(fileName);
 						//uploadPath = uploadPath + "/" + fileName;
-						out = new FileOutputStream(new File(uploadPath, fileName));
+						out = new FileOutputStream(new File(uploadPath, renamedFilename));
 						out.write(bytes);
 						
 						printWriter = response.getWriter();
 						response.setContentType("text/html");
-						String fileUrl = request.getContextPath() + "/img/" + fileName;
+						String fileUrl = request.getContextPath() + "/resources/upload/images/" + renamedFilename;
 						
 						//json 데이터로 등록
 						json.addProperty("uploaded", 1);
-						json.addProperty("fileName", fileName);
+						json.addProperty("fileName", renamedFilename);
 						json.addProperty("url", fileUrl);
 						
 						printWriter.println(json);
