@@ -1,6 +1,8 @@
 package com.kh.mate.product.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,6 +52,24 @@ public class ProductController {
 		List<Product> list = productService.selectProductListAll();
 		log.debug("list = {}", list);
 		model.addAttribute("list", list);
+		return "product/productList";
+	}
+	
+	@RequestMapping("/searchProduct.do")
+	public String searchProduct(String type, String search, Model model ) {
+		
+		log.debug("type = {}",type);
+		log.debug("search = {}",search);
+		
+		Map<String,Object> map = new HashMap<String, Object>();
+		
+		map.put("type", type);
+		map.put("search", search);
+		
+		List<Product> list = productService.searchProductList(map);
+		
+		model.addAttribute("list",list);
+		
 		return "product/productList";
 	}
 	

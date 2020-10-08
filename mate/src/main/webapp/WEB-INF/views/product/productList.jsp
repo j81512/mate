@@ -13,8 +13,14 @@ table, tr, th, td {
 <div class="product-container">
 	<!-- ajax처리 -->
 	<div class="product-search">
-		<form class="form-inline">
-		    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+		<form class="form-inline"
+				action="${pageContext.request.contextPath}/product/searchProduct.do">
+		    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
+			<select class="type" name="type" id="type">
+			  <option selected>검색유형</option>
+			  <option value="emp_id">제조사</option>
+			  <option value="product_name">키워드</option>
+			</select>
 		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
 		</form>
 	</div>
@@ -39,10 +45,13 @@ table, tr, th, td {
 									상품 가격 : ${ product.price } 
 									</div>
 									<div class="product-rank">
-									별점
+									별점 : /10
+									</div>
+									<div class="product-date">
+									등록일 : <fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/>									
 									</div>
 									<div class="product-brand">
-									제조사
+									제조사 ${ product.empId }
 									</div>
 								</dd>
 							</c:forEach>
