@@ -4,7 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>    
-<jsp:include page="/WEB-INF/views/common/header.jsp"></jsp:include>
+<jsp:include page="/WEB-INF/views/common/headerS.jsp"></jsp:include>
 <style>
 table, tr, th, td {
 	border: 1px solid black;
@@ -13,8 +13,14 @@ table, tr, th, td {
 <div class="product-container">
 	<!-- ajax처리 -->
 	<div class="product-search">
-		<form class="form-inline">
-		    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+		<form class="form-inline"
+				action="${pageContext.request.contextPath}/product/searchProduct.do">
+		    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
+			<select class="type" name="type" id="type">
+			  <option selected>검색유형</option>
+			  <option value="emp_id">제조사</option>
+			  <option value="product_name">키워드</option>
+			</select>
 		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
 		</form>
 	</div>
@@ -25,25 +31,30 @@ table, tr, th, td {
 				<!-- 상품이 있을 경우 -->
 				<c:if test="${ not empty list }">
 						<dl>
-							<dt>
-								<img src="${ pageContext.request.contextPath }/resources/images/default.jpg" 
-									 alt="default" 
-									 width="250px" />
-							</dt>
-							<dd>
-								<div class="product-name">
-								상품명
-								</div>
-								<div class="product-price">
-								상품 가격
-								</div>
-								<div class="product-rank">
-								별점
-								</div>
-								<div class="product-brand">
-								브랜드명
-								</div>
-							</dd>
+							<c:forEach items="${ list }" var="product">
+								<dt>
+									<img src="${ pageContext.request.contextPath }/resources/images/default.jpg" 
+										 alt="default" 
+										 width="250px" />
+								</dt>
+								<dd>
+									<div class="product-name">
+									상품명 : ${ product.productName }
+									</div>
+									<div class="product-price">
+									상품 가격 : ${ product.price } 
+									</div>
+									<div class="product-rank">
+									별점 : /10
+									</div>
+									<div class="product-date">
+									등록일 : <fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/>									
+									</div>
+									<div class="product-brand">
+									제조사 ${ product.empId }
+									</div>
+								</dd>
+							</c:forEach>
 						</dl>
 				</c:if>
 				<!-- 상품이 없을 경우 -->
@@ -58,4 +69,4 @@ table, tr, th, td {
 </div>
 	
 
-<jsp:include page="/WEB-INF/views/common/footer.jsp"></jsp:include>
+<jsp:include page="/WEB-INF/views/common/footerS.jsp"></jsp:include>

@@ -18,5 +18,30 @@
  		from
  			PRODUCT_MAIN_IMAGES
  	</select>
+ 	
+ 	<insert id="productEnroll">
+ 		insert into product
+ 		values
+ 		(
+ 		seq_product_no.nextval,
+ 		 #{productName},
+ 		 default,
+ 		 #{category},
+ 		 #{brand},
+ 		 #{content},
+ 		 #{price},
+ 		 default
+ 		)
+ 	</insert>
+ 	<select id="searchProductList" resultType="product">
+ 		select * from product
+ 		where 
+ 		<if test="type.equals('emp_id')">
+ 			emp_id = #{search}
+ 		</if>
+ 		<if test="type.equals('product_name')">
+ 			product_name = #{search}
+ 		</if>
+ 	</select>
  
 </mapper>
