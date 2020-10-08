@@ -21,6 +21,7 @@ table, tr, th, td {
 			  <option value="emp_id">제조사</option>
 			  <option value="product_name">키워드</option>
 			</select>
+			<input type="hidden" name="category" value="${ category }" />
 		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
 		</form>
 	</div>

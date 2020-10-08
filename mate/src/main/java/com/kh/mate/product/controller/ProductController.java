@@ -56,15 +56,17 @@ public class ProductController {
 	}
 	
 	@RequestMapping("/searchProduct.do")
-	public String searchProduct(String type, String search, Model model ) {
+	public String searchProduct(String type, String search, String category,Model model ) {
 		
 		log.debug("type = {}",type);
 		log.debug("search = {}",search);
+		log.debug("category = {}",category);
 		
 		Map<String,Object> map = new HashMap<String, Object>();
 		
 		map.put("type", type);
 		map.put("search", search);
+		map.put("category", category);
 		
 		List<Product> list = productService.searchProductList(map);
 		
@@ -80,6 +82,7 @@ public class ProductController {
 		List<Product> list = productService.productCategory(category);
 		
 		model.addAttribute("list",list);
+		model.addAttribute("category", category);
 		
 		return "product/productList";
 	}
