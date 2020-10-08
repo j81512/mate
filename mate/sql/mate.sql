@@ -45,6 +45,37 @@
 --DROP TABLE BOARD_INFO;
 --DROP TABLE STOCK;
 --DROP TABLE PURCHASE_LOG;
+--
+--drop sequence seq_product_no;
+--drop sequence seq_product_image_no;
+--drop sequence seq_product_main_image_no;
+--drop sequence seq_stock_no;
+--drop sequence seq_request_no;
+--drop sequence seq_io_no;
+--drop sequence seq_receive_no;
+--drop sequence seq_board_no;
+--drop sequence seq_board_reply_no;
+--drop sequence seq_board_image_no;
+--drop sequence seq_board_info_no;
+--drop sequence seq_cs_no;
+--drop sequence seq_cs_image_no;
+--drop sequence seq_cs_reply_no;
+--drop sequence seq_purchase_no;
+--drop sequence seq_purchase_log_no;
+--drop sequence seq_return_no;
+--drop sequence seq_return_image_no;
+--drop sequence seq_review_no;
+--
+--drop trigger trg_quit_member;
+--drop trigger trg_delete_cs;
+--drop trigger trg_delete_board;
+--drop trigger trg_delete_emp;
+--drop trigger trg_delete_product;
+--drop trigger trg_purchase_log;
+--drop trigger trg_return;
+--drop trigger trg_receive;
+--drop trigger trg_io_log;
+--drop trigger trg_request_log;
 
 --=====================================
 -- 테이블
@@ -107,9 +138,6 @@ CREATE TABLE PRODUCT (
                                          references emp (emp_id)
                                          on delete cascade
 );
-select * from product;
-
-
 
 --DROP TABLE PRODUCT_IMAGES;
 CREATE TABLE PRODUCT_IMAGES (
@@ -440,8 +468,6 @@ CREATE TABLE DELETE_PRODUCT (
 	product_name	varchar2(256)		NOT NULL,
 	reg_date	date	NOT NULL,
 	category	varchar2(128)		NOT NULL,
-	brand	varchar2(128)		NOT NULL,
-	title	varchar2(128)		NOT NULL,
 	content	varchar2(4000)		NOT NULL,
 	price	number		NOT NULL,
     emp_id varchar2(15) NOT NULL,
@@ -647,7 +673,7 @@ begin
         from 
             product
         where
-            product_no = v_porduct_no;
+            product_no = v_product_no;
             
             
         insert into
