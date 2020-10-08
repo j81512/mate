@@ -45,8 +45,24 @@ public class ProductServiceImpl implements ProductService {
 	}
 	
 	
+	@Override
+	public List<Product> productCategory(String category) {
+		
+		List<Product> list = productDAO.productCategory(category);
+		if(list != null) {
+			for(Product p : list) {
+				List<ProductImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
+				p.setProductImages(imgs);
+			}
+		}
+		
+		return list;
+	}
+	
+	
 	
 	//jw
+
 
 	@Override
 	public int productEnroll(Product product) {

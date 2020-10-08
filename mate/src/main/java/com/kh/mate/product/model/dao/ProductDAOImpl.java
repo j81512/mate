@@ -33,6 +33,13 @@ public class ProductDAOImpl implements ProductDAO {
 	public List<Product> searchProductList(Map<String, Object> map) {
 		return session.selectList("product.searchProductList",map);
 	}
+	
+	
+
+	@Override
+	public List<Product> productCategory(String category) {
+		return session.selectList("product.productCategory",category);
+	}
 
 	//jw
 	@Override

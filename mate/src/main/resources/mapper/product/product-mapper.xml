@@ -43,5 +43,10 @@
  			product_name = #{search}
  		</if>
  	</select>
+ 	
+ 	<select id="productCategory" resultType="product">
+ 		select * from product
+ 			where category = #{category}
+ 	</select>
  
 </mapper>

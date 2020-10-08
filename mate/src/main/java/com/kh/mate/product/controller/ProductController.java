@@ -73,4 +73,15 @@ public class ProductController {
 		return "product/productList";
 	}
 	
+	@RequestMapping("/productCategory.do")
+	public String productCategory(String category, Model model) {
+		log.debug("category = {}",category);
+		
+		List<Product> list = productService.productCategory(category);
+		
+		model.addAttribute("list",list);
+		
+		return "product/productList";
+	}
+	
 }
