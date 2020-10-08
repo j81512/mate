@@ -9,7 +9,9 @@
 <script src="${ pageContext.request.contextPath }/resources/ckeditor/ckeditor.js"></script>
 <script>
 $(function(){
-	CKEDITOR.replace('ckeditor');
+	CKEDITOR.replace('ckeditor',{
+				filebrowserUploadUrl : "${ pageContext.request.contextPath }/cke/fileUpload.do"
+		});
 });
 </script>
 </head>
