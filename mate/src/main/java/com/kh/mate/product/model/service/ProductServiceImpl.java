@@ -14,7 +14,7 @@ public class ProductServiceImpl implements ProductService {
 	
 	@Autowired
 	private ProductDAO productDAO;
-
+	//jw
 	@Override
 	public List<Product> selectProductListAll() {
 		List<Product> list = productDAO.selectProductListAll();
@@ -27,6 +27,18 @@ public class ProductServiceImpl implements ProductService {
 		}
 		return list;
 	}
+	
+	//ch
+
+	@Override
+	public int productEnroll(Product product) {
+		
+		int result = productDAO.productEnroll(product);
+		
+		return 0;
+	}
+	
+	
 
 	
 	

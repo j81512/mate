@@ -25,25 +25,27 @@ table, tr, th, td {
 				<!-- 상품이 있을 경우 -->
 				<c:if test="${ not empty list }">
 						<dl>
-							<dt>
-								<img src="${ pageContext.request.contextPath }/resources/images/default.jpg" 
-									 alt="default" 
-									 width="250px" />
-							</dt>
-							<dd>
-								<div class="product-name">
-								상품명
-								</div>
-								<div class="product-price">
-								상품 가격
-								</div>
-								<div class="product-rank">
-								별점
-								</div>
-								<div class="product-brand">
-								브랜드명
-								</div>
-							</dd>
+							<c:forEach items="${ list }" var="product">
+								<dt>
+									<img src="${ pageContext.request.contextPath }/resources/images/default.jpg" 
+										 alt="default" 
+										 width="250px" />
+								</dt>
+								<dd>
+									<div class="product-name">
+									상품명 : ${ product.productName }
+									</div>
+									<div class="product-price">
+									상품 가격 : ${ product.price } 
+									</div>
+									<div class="product-rank">
+									별점
+									</div>
+									<div class="product-brand">
+									제조사
+									</div>
+								</dd>
+							</c:forEach>
 						</dl>
 				</c:if>
 				<!-- 상품이 없을 경우 -->
