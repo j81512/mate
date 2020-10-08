@@ -7,8 +7,13 @@ import com.kh.mate.product.model.vo.ProductImages;
 
 public interface ProductDAO {
 
+	//jw
 	List<Product> selectProductListAll();
 
 	List<ProductImages> selectProductMainImages(int productNo);
+
+	
+	//ch
+	int productEnroll(Product product);
 
 }
