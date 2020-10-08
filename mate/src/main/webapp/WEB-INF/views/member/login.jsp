@@ -42,7 +42,14 @@
                     <!-- 호근 수정 로그인버튼만 누르면 바로 연동되게 할 수 있게 수정  -->
                     <div class="col-md-12 row-block" id="naver_id_login">
 						<div id="naver_id_login" style="text-align:center"><a href="${url}">
-						<img width="223" src="${pageContext.request.contextPath}/resources/images/naverlogin.png"/></a>
+						<img width="50" src="${pageContext.request.contextPath}/resources/images/naverLogo.jpg"/></a>
+						</div>
+                    </div>
+                    <!-- 카카오 로그인 버튼 추가  -->
+                    <div class="col-md-12 row-block" id="naver_id_login">
+						<div id="naver_id_login" style="text-align:center">
+						<a href="${ kakaoUrl }">
+						<img width="50" src="${pageContext.request.contextPath}/resources/images/kakaolinkbtnsmall.png"/></a>
 						</div>
                     </div>
                     </div>
