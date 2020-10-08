@@ -43,4 +43,20 @@
 		<property name="dataSource" ref="dataSource"/>	  
 	</bean>
 	<tx:annotation-driven transaction-manager="transactionManager"/>
+		
+		<!--호근 구글 관련 빈 추가  -->
+		<bean id="googleConnectionFactory"
+		  class="org.springframework.social.google.connect.GoogleConnectionFactory">
+		  <constructor-arg
+		    value="93017944849-jhc664qbvopmvdef3slp07qeq1fmu1ig.apps.googleusercontent.com" />
+		  <constructor-arg value="pkf-KlurOq00uHKs5FcWXQVz" />
+		</bean>
+		<!-- 승인된 자바스크립트 원본과 승인된 리디렉션 URI -->
+		<bean id="googleOAuth2Parameters"
+		  class="org.springframework.social.oauth2.OAuth2Parameters">
+		  <property name="scope"
+		    value="https://www.googleapis.com/auth/plus.login" />
+		  <property name="redirectUri"
+		    value="http://localhost:9090/mate/googlecallback.do" />
+		</bean>
 </beans>

@@ -47,9 +47,16 @@
                     </div>
                     <!-- 카카오 로그인 버튼 추가  -->
                     <div class="col-md-12 row-block" id="naver_id_login">
-						<div id="naver_id_login" style="text-align:center">
+						<div id="kakao_id_login" style="text-align:center">
 						<a href="${ kakaoUrl }">
 						<img width="50" src="${pageContext.request.contextPath}/resources/images/kakaolinkbtnsmall.png"/></a>
+						</div>
+                    </div>
+                    <!-- 구글 로그인 버튼 추가 -->
+                    <div class="col-md-12 row-block" id="naver_id_login">
+						<div id="google_id_login" style="text-align:center">
+						<a href="${ googleUrl }">
+						<img width="50" src="${pageContext.request.contextPath}/resources/images/googleL.png"/></a>
 						</div>
                     </div>
                     </div>
