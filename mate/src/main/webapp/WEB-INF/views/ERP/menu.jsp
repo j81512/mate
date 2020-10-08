@@ -6,20 +6,19 @@
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+<head>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
-  </head>
+<!-- bootstrap js: jquery load 이후에 작성할것.-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+<!-- bootstrap css -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
+</head>
   <body>
-    <script 
-    	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
-    </script>   
-    <script 
-    	src="js/bootstrap.min.js">
-    </script>
+ 
     
     <div>
     	<li>
@@ -32,7 +31,7 @@
     	<li>
 	    	<button type="button" 
 	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/erp/menuERP.do';">
+	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/erpMain.do';">
 			  <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>ERP
 			</button>
     	</li>
