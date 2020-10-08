@@ -37,10 +37,10 @@
  		select * from product
  		<where>
  		<if test="type.equals('emp_id')">
- 			emp_id like '%' || #{search} || '%'
+ 			emp_id = #{search}
  		</if>
  		<if test="type.equals('product_name')">
- 			product_name like '%' || #{search} || '%'
+ 			product_name = #{search}
  		</if>
  		
  		<if test="category != null and !category.isEmpty">
