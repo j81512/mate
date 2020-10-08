@@ -61,7 +61,7 @@ public class MemberController {
 		String naverAuthUrl = naverLoginBO.getAuthorizationUrl(session);
 //		log.debug("naverAuthUrl = {}", naverAuthUrl);
 		mav.setViewName("member/login");
-//		mav.addObject("url", naverAuthUrl);
+		mav.addObject("url", naverAuthUrl);
 		//카카오 값 받아오기
 		String kakaoUrl = KakaoRESTAPI.getAuthorizationUrl(session);
 		mav.addObject("kakaoUrl", kakaoUrl);

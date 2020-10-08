@@ -85,7 +85,7 @@ CREATE TABLE MEMBER (
 	member_id 	varchar2(100)		NOT NULL,
 	member_pwd	varchar2(300)		NOT NULL,
 	member_name	varchar2(128)		NOT NULL,
-    gender	char(1)		NOT NULL,
+   	 gender	char(1)		NOT NULL,
 	phone	char(11)		NOT NULL,
 	enroll_date	date	DEFAULT sysdate	NOT NULL,
     
