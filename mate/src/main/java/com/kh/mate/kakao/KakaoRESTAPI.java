@@ -77,13 +77,16 @@ public class KakaoRESTAPI {
 		return returnNode;
 	}
 	
+	//여기가 지금 값을 못받는데,
 	public static JsonNode getKakaoUserInfo(JsonNode accessToken) {
 		final String RequestUrl = "https://kapi.kakao.com/v2/user/me";
 		final HttpClient client = HttpClientBuilder.create().build();
 		final HttpPost post = new HttpPost(RequestUrl);
-		
+		//요놈때문에 정보를 못읽어오네
+		log.debug("accessToken={}", accessToken);
 		// add header
-		post.addHeader("Authorization", "Bearer" + accessToken);
+		//Bearer 스트링 띄어쓰기 안해서 정보 안읽어져오는거 였음 ...
+		post.addHeader("Authorization", "Bearer " + accessToken);
 		JsonNode returnNode = null;
 		
 		try {
@@ -91,6 +94,7 @@ public class KakaoRESTAPI {
 			//JSON 형태 반환값 처리
 			ObjectMapper mapper = new ObjectMapper();
 			returnNode = mapper.readTree(response.getEntity().getContent());
+			log.debug("returnNode = {}", returnNode);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
