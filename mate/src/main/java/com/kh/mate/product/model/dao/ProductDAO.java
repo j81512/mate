@@ -15,8 +15,11 @@ public interface ProductDAO {
 
 	List<Product> searchProductList(Map<String, Object> map);
 	
+	List<Product> productCategory(String category);
+	
 	//jw
 	int productEnroll(Product product);
+
 
 
 }

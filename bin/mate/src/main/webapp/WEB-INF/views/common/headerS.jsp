@@ -27,6 +27,7 @@ function category(ct){
 	var $searchCategory = $('[name=searchCategory]');
 	var $category = $('[name=category]');
 	$category.val(ct);
+	console.log($category.val())
 	$searchCategory.submit();
 	
 }
@@ -57,7 +58,7 @@ function category(ct){
         <!-- 종완 수정 - 주소추가 -->
           <a class="dropdown-item" href="${ pageContext.request.contextPath }/product/productList.do">전체 상품 보기</a>
           <div class="dropdown-divider"></div>
-          <!-- 헤더 카테고리검색 추가함 -->
+           <!-- 김찬희 헤더 카테고리검색 추가함 -->
           <a class="dropdown-item" onclick="category('PM')">프라모델</a>
           <a class="dropdown-item" onclick="category('FG')">피규어</a>
           <a class="dropdown-item" onclick="category('RC')">RC카</a>
@@ -70,8 +71,7 @@ function category(ct){
       <li class="nav-item">
         <a class="nav-link" href="#">고객 센터</a>
       </li>
-      
-		
+
 	<!-- 호근 수정 1. ${pageContext.request.contextPath}/member/login.do -->
 	<!-- 호근 수정2. 회원가입 날림  -->
 	<!-- 호근수정3. not empty로 바꿈 -->
@@ -87,7 +87,9 @@ function category(ct){
 		</c:otherwise>
 
 	</c:choose>
-
+		<c:if test="${naverName != null}">	
+					${naverName}님, 반갑습니다
+		</c:if>
     </ul>
   </div>
 </nav>
