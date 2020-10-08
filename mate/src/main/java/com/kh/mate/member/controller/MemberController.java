@@ -127,7 +127,7 @@ public class MemberController {
 		//자동회원가입
 		Map<String, Object> map = new HashMap<>();
 		map.put("kemail",kakaoAccount.path("email").asText());
-		map.put("kname",kakaoAccount.path("name").asText());
+		map.put("kname",kakaoAccount.path("nickname").asText());
 		map.put("kid", kakaoAccount.path("id").asText());
 		map.put("kgender",kakaoAccount.path("gender").asText());
 		
