@@ -93,9 +93,9 @@ CREATE TABLE EMP (
 
 --DROP TABLE PRODUCT;
 CREATE TABLE PRODUCT (
-	product_no	number		NOT NULL,
+	product_no	number	NOT NULL	,
 	product_name	varchar2(256)		NOT NULL,
-	reg_date	date	DEFAULT sysdate	NOT NULL,
+	reg_date	date	DEFAULT sysdate	 NOT NULL,
 	category	varchar2(128)		NOT NULL,
 	content	varchar2(4000)		NOT NULL,
 	price	number		NOT NULL,
@@ -107,6 +107,8 @@ CREATE TABLE PRODUCT (
                                          references emp (emp_id)
                                          on delete cascade
 );
+select * from product;
+
 
 
 --DROP TABLE PRODUCT_IMAGES;

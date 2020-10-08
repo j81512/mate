@@ -15,6 +15,7 @@ public class ProductDAOImpl implements ProductDAO {
 	@Autowired
 	private SqlSessionTemplate session;
 
+	//jw
 	@Override
 	public List<Product> selectProductListAll() {
 		return session.selectList("product.selectProductListAll");
@@ -24,7 +25,14 @@ public class ProductDAOImpl implements ProductDAO {
 	public List<ProductImages> selectProductMainImages(int productNo) {
 		return session.selectList("product.selectProductMainImages", productNo);
 	}
+
 	
+	//ch
+	@Override
+	public int productEnroll(Product product) {
+		// TODO Auto-generated method stub
+		return session.insert("product.productEnroll",product);
+	}
 	
 	
 	

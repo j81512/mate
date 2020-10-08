@@ -21,11 +21,28 @@ public class ProductController {
 	@Autowired
 	private ProductService productService;
 	
-	//CH
-	
-	
-	
 	//JW
+	
+	@RequestMapping(value = "/productEnroll.do",
+					method = RequestMethod.GET)
+	public String productinsert() {
+		
+		return "/product/productEnroll";
+	}
+	
+	@RequestMapping(value = "/productEnroll.do",
+					method = RequestMethod.POST)
+	public String productEnroll(Product product) {
+		
+		log.debug("product = {}", product);
+		int result = productService.productEnroll(product);
+		
+		return "redirect:/";
+	}
+	
+	
+	
+	//CH
 	@RequestMapping(value = "/productList.do",
 					method = RequestMethod.GET)
 	public String productList(Model model) {
