@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.kh.mate.product.model.dao.ProductDAO;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
+import com.kh.mate.product.model.vo.ProductMainImages;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -69,7 +70,15 @@ public class ProductServiceImpl implements ProductService {
 		
 		int result = productDAO.productEnroll(product);
 		
-		return 0;
+		//MainImages가 추가되어있다면 실행될 메소드
+		if(product.getProductMainImages() != null) {
+			for(ProductMainImages mainImg : product.getProductMainImages()) {
+				
+				mainImg.setProductNo(product.getProductNo());
+				result = productDAO.mainImagesEnroll(mainImg);
+			}
+		}
+		return result;
 	}
 	
 	
