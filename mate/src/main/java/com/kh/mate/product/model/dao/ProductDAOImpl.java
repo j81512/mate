@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
+import com.kh.mate.product.model.vo.ProductMainImages;
 
 @Repository
 public class ProductDAOImpl implements ProductDAO {
@@ -44,9 +45,15 @@ public class ProductDAOImpl implements ProductDAO {
 	//jw
 	@Override
 	public int productEnroll(Product product) {
-		// TODO Auto-generated method stub
-		return session.insert("product.productEnroll",product);
+		return session.insert("product.productEnroll", product);
 	}
+
+	@Override
+	public int mainImagesEnroll(ProductMainImages mainImg) {
+		return session.insert("product.mainImegesEnroll", mainImg);
+	}
+	
+	
 	
 	
 	

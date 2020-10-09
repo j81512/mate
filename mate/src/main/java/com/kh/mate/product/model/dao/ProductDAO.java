@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
+import com.kh.mate.product.model.vo.ProductMainImages;
 
 public interface ProductDAO {
 
@@ -19,6 +20,8 @@ public interface ProductDAO {
 	
 	//jw
 	int productEnroll(Product product);
+
+	int mainImagesEnroll(ProductMainImages mainImg);
 
 
 

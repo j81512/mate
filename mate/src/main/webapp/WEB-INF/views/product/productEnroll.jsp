@@ -53,13 +53,14 @@ div#form-container label.custom-file-label{text-align:left;}
 </head>
 <body>
 <div id="form-container" class="mx-auto">
-<form action="${ pageContext.request.contextPath }/product/productEnroll.do">
-  
+<form action = "${ pageContext.request.contextPath }/product/productEnroll.do"
+	  method = "POST"
+	  enctype = "multipart/form-data">
   			<!-- 상품명 -->
   <div class="form-group row">
     <label for="productName" class="col-sm-2 col-form-label">상품명</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="productName" required>
+      <input type="text" class="form-control" id="productName" name="productName" required>
     </div>
   </div>
  			 <!-- 카테고리 -->
@@ -68,13 +69,13 @@ div#form-container label.custom-file-label{text-align:left;}
       <legend class="col-form-label col-sm-2 pt-0">카테고리</legend>
       <div class="col-sm-10">
         <div class="form-check">
-          <input class="form-check-input-col-xs-3" type="radio" name="categories" id="category1" value="category1" checked>
+          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category1" value="figure" checked>
           <label class="form-check-label" for="category1">피규어</label>
-          <input class="form-check-input-col-xs-3" type="radio" name="categories" id="category2" value="category2">
+          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category2" value="plamodel">
           <label class="form-check-label" for="category2">프라모델</label>
-          <input class="form-check-input-col-xs-3" type="radio" name="categories" id="category3" value="category3" >
+          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category3" value="rccar" >
           <label class="form-check-label" for="category3">RC카</label>
-          <input class="form-check-input-col-xs-3" type="radio" name="categories" id="category4" value="category4" >
+          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category4" value="drone" >
           <label class="form-check-label" for="category4">드론</label>
         </div>
       </div>
@@ -116,8 +117,11 @@ div#form-container label.custom-file-label{text-align:left;}
   <div class="form-group">
 	<label for="price">가격</label>
 	<input type="range" name="price" id="price" class="custom-range" min="0" max="30000000" step="10000"/>
-	<input type="text" name="" id="priceValue" value="" /> 원
+	<input type="text" name="" id="priceValue" value="" required/> 원
   </div>
+  
+  <!-- 등록자  -->
+  <input type="hidden" name="empId" value="testId"/>
   
   <div class="form-group row">
     <div class="col-sm-10">
