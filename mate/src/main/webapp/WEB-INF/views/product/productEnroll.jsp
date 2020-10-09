@@ -11,8 +11,11 @@ $(function(){
 
 $(function(){
 	//파일 선택 | 취소 파일라벨명을 변경한다.
-	$("[name=product_main_image1]").on("change", function(){
+	$("[name=upFile]").on("change", function(){
 			var file = $(this).prop('files')[0];
+			//console.log("this = " + $(this).val()); //선택된 파일이 this로 넘어옴
+			//console.log(file);
+			//console.log($(this).prop('files')); // 0:File, length:1 배열로 파일의 정보 넘어옴
 			var $label = $(this).next(".custom-file-label");
 
 			if(file == undefined){
@@ -22,6 +25,17 @@ $(function(){
 			}
 				
 		});
+
+	//가격 range이용시
+	$("#price").on("change", function(){
+
+		var $price = $(this).val();
+		console.log($price);
+		var $container = $("#priceValue");
+
+		$container.val($price);
+
+	});
 
 	
 });
@@ -39,53 +53,72 @@ div#form-container label.custom-file-label{text-align:left;}
 </head>
 <body>
 <div id="form-container" class="mx-auto">
-<form>
+<form action="${ pageContext.request.contextPath }/product/productEnroll.do">
+  
+  			<!-- 상품명 -->
   <div class="form-group row">
     <label for="productName" class="col-sm-2 col-form-label">상품명</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="productName">
+      <input type="text" class="form-control" id="productName" required>
     </div>
   </div>
+ 			 <!-- 카테고리 -->
   <fieldset class="form-group">
     <div class="row">
       <legend class="col-form-label col-sm-2 pt-0">카테고리</legend>
       <div class="col-sm-10">
         <div class="form-check">
-          <input class="form-check-input" type="radio" name="categories" id="category1" value="category1" checked>
+          <input class="form-check-input-col-xs-3" type="radio" name="categories" id="category1" value="category1" checked>
           <label class="form-check-label" for="category1">피규어</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="categories" id="category2" value="category2">
+          <input class="form-check-input-col-xs-3" type="radio" name="categories" id="category2" value="category2">
           <label class="form-check-label" for="category2">프라모델</label>
-        </div>
-        <div class="form-check disabled">
-          <input class="form-check-input" type="radio" name="categories" id="category3" value="category3" >
+          <input class="form-check-input-col-xs-3" type="radio" name="categories" id="category3" value="category3" >
           <label class="form-check-label" for="category3">RC카</label>
-        </div>
-        <div class="form-check disabled">
-          <input class="form-check-input" type="radio" name="categories" id="category4" value="category4" >
+          <input class="form-check-input-col-xs-3" type="radio" name="categories" id="category4" value="category4" >
           <label class="form-check-label" for="category4">드론</label>
         </div>
       </div>
     </div>
   </fieldset>
-  
-  <div class="custom-file">
-    <label for="custom-file-label">파일을 선택하세요</label>
-    <input type="file" class="custom-file-input" id="product_main_image1" name="product_main_image1">
+ 			 <!-- 섬네일 이미지 -->
+  <div class="input-group mb-3" style="padding:0px;">
+   <div class="input-group-prepend" style="padding:0px;">
+     <span class="input-group-text">섬네일 사진 1</span>
+   </div>
+   <div class="custom-file">
+     <input type="file" class="custom-file-input" name="upFile" id="upFile1" >
+     <label class="custom-file-label" for="upFile1">파일을 선택하세요</label>
+   </div>
   </div>
-  <div class="form-group">
-    <label for="product_main_image1">섬네일 사진 2</label>
-    <input type="file" class="form-control-file" id="product_main_image2">
+  <div class="input-group mb-3" style="padding:0px;">
+   <div class="input-group-prepend" style="padding:0px;">
+     <span class="input-group-text">섬네일 사진 2</span>
+   </div>
+   <div class="custom-file">
+     <input type="file" class="custom-file-input" name="upFile" id="upFile1" >
+     <label class="custom-file-label" for="upFile1">파일을 선택하세요</label>
+   </div>
   </div>
-  <div class="form-group">
-    <label for="product_main_image1">섬네일 사진 3</label>
-    <input type="file" class="form-control-file" id="product_main_image3">
+  <div class="input-group mb-3" style="padding:0px;">
+   <div class="input-group-prepend" style="padding:0px;">
+     <span class="input-group-text">섬네일 사진 3</span>
+   </div>
+   <div class="custom-file">
+     <input type="file" class="custom-file-input" name="upFile" id="upFile1" >
+     <label class="custom-file-label" for="upFile1">파일을 선택하세요</label>
+   </div>
   </div>
-  
+  			<!-- 내용 -->
   <div class="form-group">
    <textarea name="content"></textarea>
   </div>
+  			<!-- 가격 -->
+  <div class="form-group">
+	<label for="price">가격</label>
+	<input type="range" name="price" id="price" class="custom-range" min="0" max="30000000" step="10000"/>
+	<input type="text" name="" id="priceValue" value="" /> 원
+  </div>
+  
   <div class="form-group row">
     <div class="col-sm-10">
       <button type="submit" class="btn btn-primary">등록</button>
