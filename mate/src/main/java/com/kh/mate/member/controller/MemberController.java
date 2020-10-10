@@ -12,7 +12,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.google.api.Google;
+import org.springframework.social.google.api.impl.GoogleTemplate;
+import org.springframework.social.google.api.plus.Person;
+import org.springframework.social.google.api.plus.PlusOperations;
 import org.springframework.social.google.connect.GoogleConnectionFactory;
+import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.social.oauth2.GrantType;
 import org.springframework.social.oauth2.OAuth2Operations;
 import org.springframework.social.oauth2.OAuth2Parameters;
@@ -36,132 +42,157 @@ public class MemberController {
 
 	private NaverLoginBO naverLoginBO;
 	private String apiResult = null;
-	
 
 	@Autowired
 	private void setNaverLoginBO(NaverLoginBO naverLoginBO) {
 		this.naverLoginBO = naverLoginBO;
 	}
+
 //	구글 관련 추가
 	@Autowired
 	private GoogleConnectionFactory googleConnectionFactory;
-	
+
 	@Autowired
 	private OAuth2Parameters googleOAuth2Parameters;
-	/**
+
+	public void setGoogleConnectionFactory(GoogleConnectionFactory googleConnectionFactory) {
+		this.googleConnectionFactory = googleConnectionFactory;
+	}
+
+	public void setGoogleOAuth2Parameters(OAuth2Parameters googleOAuth2Parameters) {
+		this.googleOAuth2Parameters = googleOAuth2Parameters;
+	}
+
+	/*
 	 * 
-	 * 로그인 연동시 한방에 처리할 수 있게 함
+	  *로그인 연동시 한방에 처리할 수 있게 함
 	 */
-	//일반 회원 login
-	@RequestMapping(value = "/member/memberLogin.do"
-			,method = {RequestMethod.GET, RequestMethod.POST})
-		public ModelAndView memberLogin(ModelAndView mav, HttpSession session) {
-		// 호근 초기 로그인 화면 수정함 
+	// 일반 회원 login
+	@RequestMapping(value = "/member/memberLogin.do", method = { RequestMethod.GET, RequestMethod.POST })
+	public ModelAndView memberLogin(ModelAndView mav, HttpSession session) {
+		// 호근 초기 로그인 화면 수정함
 //		log.debug("login 호출 확인");
 		String naverAuthUrl = naverLoginBO.getAuthorizationUrl(session);
 //		log.debug("naverAuthUrl = {}", naverAuthUrl);
 		mav.setViewName("member/login");
 		mav.addObject("url", naverAuthUrl);
-		//카카오 값 받아오기
+		// 카카오 값 받아오기
 		String kakaoUrl = KakaoRESTAPI.getAuthorizationUrl(session);
 		mav.addObject("kakaoUrl", kakaoUrl);
 //		log.debug("kakaoUrl = {}", kakaoUrl);
-		
+
 		// 구글 관련 코드
 		OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
 		String googleurl = oauthOperations.buildAuthenticateUrl(GrantType.AUTHORIZATION_CODE, googleOAuth2Parameters);
-		log.debug("oauthOperations = {}",oauthOperations);
+		log.debug("oauthOperations = {}", oauthOperations);
 		log.debug("googleurl = {}", googleurl);
 		mav.addObject("googleUrl", googleurl);
-		
+
 		return mav;
 	}
-	
-	//naverLogin 성공시
-	@RequestMapping(value = "/callback.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public String callback(Model model, @RequestParam String code, @RequestParam String state, HttpSession session) throws IOException, ParseException, java.text.ParseException {
+
+	// naverLogin 성공시
+	@RequestMapping(value = "/callback.do", method = { RequestMethod.GET, RequestMethod.POST })
+	public String callback(Model model, @RequestParam String code, @RequestParam String state, HttpSession session)
+			throws IOException, ParseException, java.text.ParseException {
 		log.debug("callback 호출 확인");
-	
-		
+
 		OAuth2AccessToken oauthToken;
 		oauthToken = naverLoginBO.getAcessToken(session, code, state);
 		log.debug("oauthToken = {}", oauthToken);
-		
+
 		apiResult = naverLoginBO.getUserProfile(oauthToken);
-		
+
 		// 네이버에서 불러온값 형변환 해야함
 		JSONParser parser = new JSONParser();
 		Object obj = parser.parse(apiResult);
 		JSONObject jsonObj = (JSONObject) obj;
-		
-		JSONObject responseOBJ = (JSONObject)jsonObj.get("response");
-		//response의 nickname값 파싱
+
+		JSONObject responseOBJ = (JSONObject) jsonObj.get("response");
+		// response의 nickname값 파싱
 //		String nickname = (String)responseOBJ.get("name");
 
-		//자동 회원가입 되게 하기.
+		// 자동 회원가입 되게 하기.
 		Map<String, Object> map = new HashMap<>();
-		map.put("id", (String)responseOBJ.get("id"));
-		map.put("name", (String)responseOBJ.get("name"));
-		map.put("gender", (String)responseOBJ.get("gender"));
-		map.put("email", (String)responseOBJ.get("email"));
-		//날짜 형변환이 안됨
-		//		map.put("birthday", sdf1.format(date));
-		
+		map.put("id", (String) responseOBJ.get("id"));
+		map.put("name", (String) responseOBJ.get("name"));
+		map.put("gender", (String) responseOBJ.get("gender"));
+		map.put("email", (String) responseOBJ.get("email"));
+		// 날짜 형변환이 안됨
+		// map.put("birthday", sdf1.format(date));
+
 		log.debug("map = {}", map);
-	
+
 //		log.debug("nickname= {}", nickname);
 		// 값확인용
 //		log.debug("responseOBJ= {}", responseOBJ);
-		//로그인 사용자 정보 읽어 오는것
+		// 로그인 사용자 정보 읽어 오는것
 //		log.debug("apiResult = {}", apiResult);
-	
+
 		model.addAttribute("NaverMember", map);
-	
+
 		return "member/memberEnroll";
 
 	}
 
-	/**
-	 * 호근 카카오 로그인 및 회원가입
+	/*
+	 *호근 카카오 로그인 및 회원가입
 	 */
-	@RequestMapping(value = "/kakaocallback.do", produces = "application/json"
-				 	, method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView KakaoInfo(ModelAndView mav,@RequestParam("code") String code,HttpServletRequest request
-									,HttpServletResponse response, HttpSession session) {
-		
+	@RequestMapping(value = "/kakaocallback.do", produces = "application/json", method = { RequestMethod.GET,
+			RequestMethod.POST })
+	public ModelAndView KakaoInfo(ModelAndView mav, @RequestParam("code") String code, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) {
+
 		JsonNode node = KakaoRESTAPI.getAccessToken(code);
 		log.debug("node = {}", node);
 		// accessToken이 사용자의 로그인한 모든 정보가 들어있음
 		JsonNode accessToken = node.get("access_token");
 		// 사용자 정보
 		JsonNode userInfo = KakaoRESTAPI.getKakaoUserInfo(accessToken);
-		//확인 하기
+		// 확인 하기
 		log.debug("userInfo = {}", userInfo);
 		// 유저 정보 카카오에 가져오기 Get properties
 		JsonNode properties = userInfo.path("properties");
 		JsonNode kakaoAccount = userInfo.path("kakao_account");
-		//자동회원가입
+		// 자동회원가입
 		Map<String, Object> map = new HashMap<>();
-		map.put("kemail",kakaoAccount.path("email").asText());
-		map.put("kname",kakaoAccount.path("nickname").asText());
+		map.put("kemail", kakaoAccount.path("email").asText());
+		map.put("kname", kakaoAccount.path("nickname").asText());
 		map.put("kid", kakaoAccount.path("id").asText());
-		map.put("kgender",kakaoAccount.path("gender").asText());
-		
-		//값 확인
+		map.put("kgender", kakaoAccount.path("gender").asText());
+
+		// 값 확인
 		log.debug("properties = {}", properties);
 		log.debug("kakao_account = {}", kakaoAccount);
 		log.debug("map = {}", map);
-		
+
 		mav.setViewName("member/memberEnroll");
-		
+
 		return mav;
 	}
+
+	//해결해본다
 	// 구글 로그인 정보값
-	@RequestMapping(value = "/googlecallback.do", method = { RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "/googlecallback.do", method = { RequestMethod.GET, RequestMethod.POST })
 	public String googleCallback(Model model, @RequestParam String code) {
+
+		OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
+		AccessGrant accessGrant = oauthOperations.exchangeForAccess(code, googleOAuth2Parameters.getRedirectUri(),
+				null);
+		log.debug("oauthOperations= ", oauthOperations);
+		String accessToken = accessGrant.getAccessToken();
+		Long expireTime = accessGrant.getExpireTime();
 		
-		log.debug("code = {}", code);
+		  if(expireTime != null && expireTime < System.currentTimeMillis()) {
+			  accessToken = accessGrant.getRefreshToken();
+			  log.debug(" refresh accessToken = {}", accessToken); 
+		  }
+		  
+		  log.debug("accessGrant= ", accessGrant);
+		log.debug("accessToken= ", accessToken);
+		  
+		 
 		return "member/memberEnroll";
 	}
-	
+
 }
