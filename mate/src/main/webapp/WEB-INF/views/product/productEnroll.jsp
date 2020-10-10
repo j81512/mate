@@ -127,6 +127,9 @@ div#form-container label.custom-file-label{text-align:left;}
     <div class="col-sm-10">
       <button type="submit" class="btn btn-primary">등록</button>
     </div>
+    <div class="col-sm-10">
+      <button type="button" class="btn btn-danger">취소</button>
+    </div>
   </div>
 </form>
 </div>
