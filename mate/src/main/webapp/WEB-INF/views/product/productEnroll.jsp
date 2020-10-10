@@ -132,3 +132,5 @@ div#form-container label.custom-file-label{text-align:left;}
 </div>
 </body>
 </html>
+
+<jsp:include page="/WEB-INF/views/common/footerS.jsp"/>

@@ -23,6 +23,8 @@ public interface ProductDAO {
 
 	int mainImagesEnroll(ProductMainImages mainImg);
 
+	Product selectProductOne(String productNo);
+
 
 
 }
