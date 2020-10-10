@@ -27,6 +27,7 @@
 	
 	<!-- 호근 : NaverLoginBO bean 추가-->
 	<beans:bean id="naverLoginBO" class="com.kh.mate.naver.NaverLoginBO"/>
+
 <!-- 	
 	<interceptors>
 		<interceptor>
