@@ -37,7 +37,8 @@ $(function(){
 
 	});
 
-	
+
+
 });
 
 </script>
@@ -55,7 +56,8 @@ div#form-container label.custom-file-label{text-align:left;}
 <div id="form-container" class="mx-auto">
 <form action = "${ pageContext.request.contextPath }/product/productEnroll.do"
 	  method = "POST"
-	  enctype = "multipart/form-data">
+	  enctype = "multipart/form-data"
+	  id="productEnrollFrm">
   			<!-- 상품명 -->
   <div class="form-group row">
     <label for="productName" class="col-sm-2 col-form-label">상품명</label>
@@ -123,17 +125,29 @@ div#form-container label.custom-file-label{text-align:left;}
   <!-- 등록자  -->
   <input type="hidden" name="empId" value="testId"/>
   
-  <div class="form-group row">
+  <div class="form-group col">
     <div class="col-sm-10">
       <button type="submit" class="btn btn-primary">등록</button>
     </div>
     <div class="col-sm-10">
-      <button type="button" class="btn btn-danger">취소</button>
+      <button type="button" class="btn btn-danger" onclick="return goBackWithDel();">취소</button>
     </div>
   </div>
 </form>
 </div>
 </body>
+<script>
+function goBackWithDel(){
+	var $enrollFrm = $("#productEnrollFrm");
+
+	$enrollFrm.attr("action", "${ pageContext.request.contextPath }/product/fileDelMethod.do");
+	$enrollFrm.attr("method", "get");
+	$enrollFrm.submit();
+	history.go(-1);
+
+	
+}
+</script>
 </html>
 
 <jsp:include page="/WEB-INF/views/common/footerS.jsp"/>

@@ -112,6 +112,19 @@ public class ProductController {
 		return "redirect:/";
 	}
 	
+	//뒤로가기 클릭 시 파일 삭제
+	@RequestMapping(value = "/fileDelMethod.do",
+					method = RequestMethod.GET)
+	public String fileDelete(HttpServletRequest request) {
+		//파일 삭제
+		String tempDir = request.getServletContext().getRealPath("/resources/upload/temp");
+		File folder1 = new File(tempDir);
+		Utils.fileDelete(folder1.toString());
+		
+		return "redirect:/";
+		
+	}
+	
 	@RequestMapping("/productDetail.do")
 	public String productDetail(@RequestParam("productNo") String productNo,
 								Model model) {
