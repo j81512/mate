@@ -5,7 +5,7 @@
 <script>
 $(function(){
 	CKEDITOR.replace('content',{
-				filebrowserUploadUrl : "${ pageContext.request.contextPath }/cke/fileUpload.do"
+				filebrowserUploadUrl : "${ pageContext.request.contextPath }/product/imageFileUpload.do"
 		});
 });
 

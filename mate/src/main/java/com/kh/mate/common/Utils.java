@@ -29,28 +29,27 @@ public class Utils {
 	}
 
 	//파일 복사
-	public static void fileCopy(File temp, File img) {
-		File[] target_file = temp.listFiles();
-		for(File file : target_file) {
-			File t = new File(temp.getAbsolutePath() + File.separator + file.getName());
-			if(file.isDirectory()) {
-				t.mkdir();
-				fileCopy(file, t);
-			}
-			else {
-				FileInputStream fis = null;
+	public static void fileCopy(File sourceF, File targetF) {
+		File[] target_file = sourceF.listFiles();
+		for (File file : target_file) {
+			File temp = new File(targetF.getAbsolutePath() + File.separator + file.getName());
+			if(file.isDirectory()){
+				temp.mkdir();
+				fileCopy(file, temp);
+			} else {
+			        FileInputStream fis = null;
 				FileOutputStream fos = null;
 				try {
+					fis = new FileInputStream(file);
+					fos = new FileOutputStream(temp) ;
 					byte[] b = new byte[4096];
 					int cnt = 0;
-					while((cnt = fis.read(b)) != -1) {
+					while((cnt=fis.read(b)) != -1){
 						fos.write(b, 0, cnt);
-					
 					}
-					
-				} catch(Exception e) {
+				} catch (Exception e) {
 					e.printStackTrace();
-				} finally {
+				} finally{
 					try {
 						fis.close();
 						fos.close();
@@ -59,9 +58,8 @@ public class Utils {
 					}
 				}
 			}
-			
-		}
-	}
+		   }
+	    }
 	
 	//파일 삭제
 	public static void fileDelete(String path) {

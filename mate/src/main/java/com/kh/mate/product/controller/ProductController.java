@@ -1,5 +1,7 @@
 package com.kh.mate.product.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -55,12 +57,12 @@ public class ProductController {
 					method = RequestMethod.POST)
 	public String productEnroll(Product product,
 								@RequestParam("upFile") MultipartFile[] upFiles,
-								HttpServletRequest requset) throws IllegalStateException, IOException {
+								HttpServletRequest request) throws IllegalStateException, IOException {
 		
 		
 		//등록 시 업로드한 MainImages를 List로 가져오기
 		List<ProductMainImages> mainImgList = new ArrayList<>();
-		String saveDirectory = requset.getServletContext().getRealPath("/resources/upload/mainimages");
+		String saveDirectory = request.getServletContext().getRealPath("/resources/upload/mainimages");
 		
 			for(MultipartFile upFile : upFiles) {
 				
@@ -93,6 +95,19 @@ public class ProductController {
 		
 		log.debug("product = {}", product);
 		int result = productService.productEnroll(product);
+		
+		String tempDir = request.getServletContext().getRealPath("/resources/upload/temp");
+		String imgDir = request.getServletContext().getRealPath("/resources/upload/images");
+		
+		if(result > 0) {
+			File folder1 = new File(tempDir);
+			File folder2 = new File(imgDir);
+			Utils.fileCopy(folder1, folder2);
+			Utils.fileDelete(folder1.toString());
+		}else {
+			File folder1 = new File(tempDir);
+			Utils.fileDelete(folder1.toString());
+		}
 		
 		return "redirect:/";
 	}
@@ -128,7 +143,7 @@ public class ProductController {
 						String fileName = file.getOriginalFilename();
 						productImage.setOriginalFilename(fileName);
 						byte[] bytes = file.getBytes();
-						String uploadPath = request.getServletContext().getRealPath("/resources/upload/images");
+						String uploadPath = request.getServletContext().getRealPath("/resources/upload/temp");
 						File uploadFile = new File(uploadPath);
 						if(!uploadFile.exists()) {
 							uploadFile.mkdirs();
@@ -141,7 +156,7 @@ public class ProductController {
 						
 						printWriter = response.getWriter();
 						response.setContentType("text/html");
-						String fileUrl = request.getContextPath() + "/resources/upload/images/" + renamedFilename;
+						String fileUrl = request.getContextPath() + "/resources/upload/temp/" + renamedFilename;
 						
 						//json 데이터로 등록
 						json.addProperty("uploaded", 1);
