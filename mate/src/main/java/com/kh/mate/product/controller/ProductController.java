@@ -1,13 +1,17 @@
 package com.kh.mate.product.controller;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,8 +19,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.google.gson.JsonObject;
 import com.kh.mate.common.Utils;
 import com.kh.mate.product.model.service.ProductService;
 import com.kh.mate.product.model.vo.Product;
@@ -99,6 +106,59 @@ public class ProductController {
 		model.addAttribute("product", product);
 		
 		return "product/productDetail";
+	}
+	
+	@RequestMapping(value = "/imageFileUpload.do", method = RequestMethod.POST)
+	@ResponseBody
+	public String fileUpload(HttpServletRequest request, HttpServletResponse response,
+							 MultipartHttpServletRequest multiFile) throws Exception {
+		
+		JsonObject json = new JsonObject();
+		PrintWriter printWriter = null;
+		OutputStream out = null;
+		MultipartFile file = multiFile.getFile("upload");
+		
+		if(file != null) {
+			if(file.getSize() > 0 ) {
+				if(file.getContentType().toLowerCase().startsWith("image/")) {
+					try {
+						String fileName = file.getOriginalFilename();
+						byte[] bytes = file.getBytes();
+						String uploadPath = request.getServletContext().getRealPath("/resources/upload/images");
+						File uploadFile = new File(uploadPath);
+						if(!uploadFile.exists()) {
+							uploadFile.mkdirs();
+						}
+						String renamedFilename = Utils.getRenamedFileName(fileName);
+						//uploadPath = uploadPath + "/" + fileName;
+						out = new FileOutputStream(new File(uploadPath, renamedFilename));
+						out.write(bytes);
+						
+						printWriter = response.getWriter();
+						response.setContentType("text/html");
+						String fileUrl = request.getContextPath() + "/resources/upload/images/" + renamedFilename;
+						
+						//json 데이터로 등록
+						json.addProperty("uploaded", 1);
+						json.addProperty("fileName", renamedFilename);
+						json.addProperty("url", fileUrl);
+						
+						printWriter.println(json);
+						
+						
+					} catch(IOException e) {
+						e.printStackTrace();
+					} finally {
+						if(out != null)
+							out.close();
+						if(printWriter != null)
+							printWriter.close();
+					}
+				}
+			}
+		}
+		
+		return null;
 	}
 	
 	
