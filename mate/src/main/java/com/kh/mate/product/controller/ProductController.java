@@ -27,6 +27,7 @@ import com.google.gson.JsonObject;
 import com.kh.mate.common.Utils;
 import com.kh.mate.product.model.service.ProductService;
 import com.kh.mate.product.model.vo.Product;
+import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
 
 import lombok.extern.slf4j.Slf4j;
@@ -117,12 +118,15 @@ public class ProductController {
 		PrintWriter printWriter = null;
 		OutputStream out = null;
 		MultipartFile file = multiFile.getFile("upload");
+		ProductImages productImage = null;
 		
 		if(file != null) {
 			if(file.getSize() > 0 ) {
 				if(file.getContentType().toLowerCase().startsWith("image/")) {
 					try {
+						productImage = new ProductImages();
 						String fileName = file.getOriginalFilename();
+						productImage.setOriginalFilename(fileName);
 						byte[] bytes = file.getBytes();
 						String uploadPath = request.getServletContext().getRealPath("/resources/upload/images");
 						File uploadFile = new File(uploadPath);
@@ -130,6 +134,7 @@ public class ProductController {
 							uploadFile.mkdirs();
 						}
 						String renamedFilename = Utils.getRenamedFileName(fileName);
+						productImage.setRenamedFilename(renamedFilename);
 						//uploadPath = uploadPath + "/" + fileName;
 						out = new FileOutputStream(new File(uploadPath, renamedFilename));
 						out.write(bytes);
@@ -144,6 +149,9 @@ public class ProductController {
 						json.addProperty("url", fileUrl);
 						
 						printWriter.println(json);
+						
+						//DB에 저장 -> 저장결과에 따라서 분기처리
+						productService.productImageEnroll(productImage);
 						
 						
 					} catch(IOException e) {
