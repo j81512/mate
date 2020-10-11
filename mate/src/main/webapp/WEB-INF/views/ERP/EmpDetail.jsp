@@ -23,22 +23,15 @@
     	<li>
 	    	<button type="button" 
 	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/EmpManage.do';">
-			  <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>지점/업체 관리
+	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/StockLog.do';">
+			  <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>재고
 			</button>
     	</li>
     	<li>
 	    	<button type="button" 
 	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/ProductInfo.do';">
-			  <span class="glyphicon glyphicon-gift" aria-hidden="true"></span>상품 관리
-			</button>
-    	</li>
-    	<li>
-	    	<button type="button" 
-	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/ProductReceive.do';">
-			  <span class="glyphicon glyphicon-save" aria-hidden="true"></span>입고 관리
+	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/OrderLog.do';">
+			  <span class="glyphicon glyphicon-gift" aria-hidden="true"></span>발주
 			</button>
     	</li>
     </div>
@@ -46,22 +39,15 @@
     	<li>
 	    	<button type="button" 
 	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/EmpDetail.do';">
-			  <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>현황 조회
-			</button>
-    	</li>
-    	<li>
-	    	<button type="button" 
-	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/EmpList.do';">
-			  <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>게시판
+	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/PriceLog.do';">
+			  <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>매출
 			</button>
     	</li>	
     	<li>
 	    	<button type="button" 
 	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/ErpLogout.do';">
-			  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>로그아웃
+	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/ReceiveLog.do';">
+			  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>입출고
 			</button>
     	</li>	
     </div>
