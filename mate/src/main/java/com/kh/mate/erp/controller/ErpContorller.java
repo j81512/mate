@@ -85,27 +85,16 @@ public class ErpContorller {
 		return "redirect:/";
 	}
 	
-	@RequestMapping("/checkIdDuplicate.do")
+	@RequestMapping("/ERP/checkIdDuplicate.do")
 	@ResponseBody
 	public Map<String, Object> checkIdDuplicate(@RequestParam("empId") String empId){
 		Map<String, Object> map = new HashMap<>();
-
+		
 		boolean isAvailable = erpService.selectOneEmp(empId) == null;
 		
 		map.put("empId", empId);
 		map.put("isAvailable", isAvailable);
 		
 		return map;
-	}
-	
-	public String checkIdDuplicate(@RequestParam("empId") String empId,
-			   						Model model) {
-
-		boolean isAvailable = erpService.selectOneEmp(empId) == null;
-		
-		model.addAttribute("empId", empId);
-		model.addAttribute("isAvailable", isAvailable);
-
-		return "jsonView";
 	}
 }

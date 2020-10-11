@@ -57,15 +57,24 @@
 				</td>
 			</tr>
 		</table>
-		<input type="submit" value="가입" >
+		<input type="submit" value="생성" >
 		<input type="reset" value="취소">
 	</form>
 </div>
 <script>
+$("#empId_").keyup(function(){
+	var $this = $(this);
+
+	if($this.val().length < 4){
+		$(".guide").hide();
+		$("#idValid").val(0);
+		return;
+	}
+	
 	$.ajax({
 		url : "${ pageContext.request.contextPath }/ERP/checkIdDuplicate.do",
 		data : {
-			memberId : $this.val()
+			empId : $this.val()
 		},
 		method : "GET",
 		dataType : "json",
