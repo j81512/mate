@@ -45,6 +45,8 @@
 	<tx:annotation-driven transaction-manager="transactionManager"/>
 		
 		<!--호근 구글 관련 빈 추가  -->
+		
+		<!--호근 구글 관련 빈 추가  -->
 		<bean id="googleConnectionFactory"
 		  class="org.springframework.social.google.connect.GoogleConnectionFactory">
 		  <constructor-arg
@@ -55,8 +57,12 @@
 		<bean id="googleOAuth2Parameters"
 		  class="org.springframework.social.oauth2.OAuth2Parameters">
 		  <property name="scope"
-		    value="https://www.googleapis.com/auth/plus.login" />
+		    value="https://www.googleapis.com/auth/plus.me" />
 		  <property name="redirectUri"
 		    value="http://localhost:9090/mate/googlecallback.do" />
+		</bean>
+		<bean id="memberController" class="com.kh.mate.member.controller.MemberController">
+			<property name="googleConnectionFactory" ref="googleConnectionFactory"/>
+			<property name="googleOAuth2Parameters" ref="googleOAuth2Parameters"/>
 		</bean>
 </beans>
