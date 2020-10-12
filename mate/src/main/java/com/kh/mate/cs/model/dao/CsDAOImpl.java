@@ -1,6 +1,7 @@
 package com.kh.mate.cs.model.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +26,9 @@ public class CsDAOImpl implements CsDAO {
 		
 		return sqlSession.selectList("cs.selectCsList");
 	}
-
+	@Override
+	public int deleteCs(Map<String, String> param) {
+		
+		return sqlSession.delete("Cs.deleteCs", param);
+	}
 }

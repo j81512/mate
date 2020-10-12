@@ -48,9 +48,9 @@
         <a class="nav-link" href="#">회사 소개</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">고객 센터</a>
+        <a class="nav-link" href="${pageContext.request.contextPath}/cs/cs.do">고객 센터</a>
       </li>
-
+	
 	<!-- 호근 수정 1. ${pageContext.request.contextPath}/member/login.do -->
 	<!-- 호근 수정2. 회원가입 날림  -->
 	<!-- 호근수정3. not empty로 바꿈 -->
