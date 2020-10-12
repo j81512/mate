@@ -23,58 +23,5 @@ import com.kh.mate.common.Utils;
 @Controller
 @RequestMapping("/cke")
 public class Ckeditorcontroller {
-	
-	@RequestMapping(value = "/fileUpload.do", method = RequestMethod.POST)
-	@ResponseBody
-	public String fileUpload(HttpServletRequest request, HttpServletResponse response,
-							 MultipartHttpServletRequest multiFile) throws Exception {
-		
-		JsonObject json = new JsonObject();
-		PrintWriter printWriter = null;
-		OutputStream out = null;
-		MultipartFile file = multiFile.getFile("upload");
-		
-		if(file != null) {
-			if(file.getSize() > 0 ) {
-				if(file.getContentType().toLowerCase().startsWith("image/")) {
-					try {
-						String fileName = file.getOriginalFilename();
-						byte[] bytes = file.getBytes();
-						String uploadPath = request.getServletContext().getRealPath("/resources/upload/images");
-						File uploadFile = new File(uploadPath);
-						if(!uploadFile.exists()) {
-							uploadFile.mkdirs();
-						}
-						String renamedFilename = Utils.getRenamedFileName(fileName);
-						//uploadPath = uploadPath + "/" + fileName;
-						out = new FileOutputStream(new File(uploadPath, renamedFilename));
-						out.write(bytes);
-						
-						printWriter = response.getWriter();
-						response.setContentType("text/html");
-						String fileUrl = request.getContextPath() + "/resources/upload/images/" + renamedFilename;
-						
-						//json 데이터로 등록
-						json.addProperty("uploaded", 1);
-						json.addProperty("fileName", renamedFilename);
-						json.addProperty("url", fileUrl);
-						
-						printWriter.println(json);
-						
-						
-					} catch(IOException e) {
-						e.printStackTrace();
-					} finally {
-						if(out != null)
-							out.close();
-						if(printWriter != null)
-							printWriter.close();
-					}
-				}
-			}
-		}
-		
-		return null;
-	}
 
 }

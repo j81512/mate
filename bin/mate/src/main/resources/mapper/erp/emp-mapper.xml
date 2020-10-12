@@ -6,6 +6,7 @@
 
 	<insert id="insertEmp">
 		insert into
+<<<<<<< HEAD
 			EMP
 		values(
 			#{ empId },
@@ -15,6 +16,18 @@
 			#{ empPhone },
 			default,		
 			#{ empStatus }
+=======
+			emp
+		values(
+			#{ empId },
+			#{ empPassword },
+			#{ empName },
+			#{ empAddress },
+			#{ empPhone },
+			default,
+			default
+			
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
 		)
 	</insert>
 	

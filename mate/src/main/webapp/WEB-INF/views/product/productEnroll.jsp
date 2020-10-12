@@ -5,7 +5,7 @@
 <script>
 $(function(){
 	CKEDITOR.replace('content',{
-				filebrowserUploadUrl : "${ pageContext.request.contextPath }/cke/fileUpload.do"
+				filebrowserUploadUrl : "${ pageContext.request.contextPath }/product/imageFileUpload.do"
 		});
 });
 
@@ -27,7 +27,7 @@ $(function(){
 		});
 
 	//가격 range이용시
-	$("#price").on("change", function(){
+	$("#priceRange").on("change", function(){
 
 		var $price = $(this).val();
 		console.log($price);
@@ -37,7 +37,8 @@ $(function(){
 
 	});
 
-	
+
+
 });
 
 </script>
@@ -55,7 +56,8 @@ div#form-container label.custom-file-label{text-align:left;}
 <div id="form-container" class="mx-auto">
 <form action = "${ pageContext.request.contextPath }/product/productEnroll.do"
 	  method = "POST"
-	  enctype = "multipart/form-data">
+	  enctype = "multipart/form-data"
+	  id="productEnrollFrm">
   			<!-- 상품명 -->
   <div class="form-group row">
     <label for="productName" class="col-sm-2 col-form-label">상품명</label>
@@ -116,19 +118,36 @@ div#form-container label.custom-file-label{text-align:left;}
   			<!-- 가격 -->
   <div class="form-group">
 	<label for="price">가격</label>
-	<input type="range" name="price" id="price" class="custom-range" min="0" max="30000000" step="10000"/>
-	<input type="text" name="" id="priceValue" value="" required/> 원
+	<input type="range" id="priceRange" class="custom-range" min="0" max="30000000" step="1000"/>
+	<input type="text" name="price" id="priceValue" value="" required/> 원
   </div>
   
   <!-- 등록자  -->
   <input type="hidden" name="empId" value="testId"/>
   
-  <div class="form-group row">
+  <div class="form-group col">
     <div class="col-sm-10">
       <button type="submit" class="btn btn-primary">등록</button>
+    </div>
+    <div class="col-sm-10">
+      <button type="button" class="btn btn-danger" onclick="return goBackWithDel();">취소</button>
     </div>
   </div>
 </form>
 </div>
 </body>
+<script>
+function goBackWithDel(){
+	var $enrollFrm = $("#productEnrollFrm");
+
+	$enrollFrm.attr("action", "${ pageContext.request.contextPath }/product/fileDelMethod.do");
+	$enrollFrm.attr("method", "get");
+	$enrollFrm.submit();
+	history.go(-1);
+
+	
+}
+</script>
 </html>
+
+<jsp:include page="/WEB-INF/views/common/footerS.jsp"/>

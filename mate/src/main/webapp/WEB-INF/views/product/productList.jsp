@@ -9,6 +9,11 @@
 table, tr, th, td {
 	border: 1px solid black;
 }
+
+dl, li, ul{
+	margin 0;
+	list-style: none;
+}
 </style>
 <div class="product-container">
 	<!-- ajax처리 -->
@@ -16,13 +21,18 @@ table, tr, th, td {
 		<form class="form-inline"
 				action="${pageContext.request.contextPath}/product/searchProduct.do">
 		    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
-			<select class="type" name="type" id="type">
-			  <option selected>검색유형</option>
-			  <option value="emp_id">제조사</option>
-			  <option value="product_name">키워드</option>
-			</select>
-			<input type="hidden" name="category" value="${ category }" />
+			<br />
+			<p>카테고리 선택</p>
+				<label for="PM">프라모델</label>
+				<input type="checkbox" name="category" id="PM" value="PM"/>
+				<label for="FG">피규어</label>
+				<input type="checkbox" name="category" id="FG" value="FG"/>
+				<label for="RC">RC카</label>
+				<input type="checkbox" name="category" id="RC" value="RC"/>
+				<label for="DR">드론</label>
+				<input type="checkbox" name="category" id="DR" value="DR"/>
 		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
+			<%-- <input type="hidden" name="category" value="${ category }" /> --%>
 		</form>
 	</div>
 	
@@ -33,28 +43,30 @@ table, tr, th, td {
 				<c:if test="${ not empty list }">
 						<dl>
 							<c:forEach items="${ list }" var="product">
-								<dt>
-									<img src="${ pageContext.request.contextPath }/resources/images/default.jpg" 
-										 alt="default" 
-										 width="250px" />
-								</dt>
-								<dd>
-									<div class="product-name">
-									상품명 : ${ product.productName }
-									</div>
-									<div class="product-price">
-									상품 가격 : ${ product.price } 
-									</div>
-									<div class="product-rank">
-									별점 : /10
-									</div>
-									<div class="product-date">
-									등록일 : <fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/>									
-									</div>
-									<div class="product-brand">
-									제조사 ${ product.empId }
-									</div>
-								</dd>
+								<a href="${ pageContext.request.contextPath }/product/productDetail.do?productNo=${ product.productNo }"  >
+									<dt>
+										<img src="${ pageContext.request.contextPath }/resources/images/default.jpg" 
+											 alt="default" 
+											 width="250px" />
+									</dt>
+									<dd>
+										<div class="product-name">
+										상품명 : ${ product.productName }
+										</div>
+										<div class="product-price">
+										상품 가격 : ${ product.price } 
+										</div>
+										<div class="product-rank">
+										별점 : /10
+										</div>
+										<div class="product-date">
+										등록일 : <fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/>									
+										</div>
+										<div class="product-brand">
+										제조사 ${ product.empId }
+										</div>
+									</dd>
+							</a>
 							</c:forEach>
 						</dl>
 				</c:if>

@@ -4,12 +4,17 @@
 <html>
 <head>
 <meta charset="UTF-8">
+
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 <link
 	href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
 	rel="stylesheet" id="bootstrap-css">
 <link rel="stylesheet"
 	href="${ pageContext.request.contextPath }/resources/css/loginForm.css" />
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<jsp:include page="/WEB-INF/views/common/headerS.jsp" />
 <script>
 	$(function() {
 
@@ -31,11 +36,36 @@
 	});
 
 	$(function() {
-
+	
+		$("#phone-send").click(function(){
+			var $phone = $("#phone").val();
+		    var popUrl ="${ pageContext.request.contextPath }/member/pCheck.do";
+		    var popOption = "width=650px, height=550px, resizable=no, location=no, top=300px, left=300px;"
+			console.log($phone);
+			$.ajax({
+				url:"${ pageContext.request.contextPath}/member/phoneSend.do",
+				data:{
+					receiver: $phone
+				},
+				dataType:"json",
+				method: "post",
+				success: function(data){
+						console.log(data);
+						var $num = data;		
+						window.open(popUrl + "/" +  $num ,"휴대폰 인증 ",popOption); 		
+				},
+				error: function(xhr, status, err){
+						console.log(xhr);
+						console.log(status);
+						console.log(err);
+					
+				}
+			}); 
+			
+		});
 	});
 </script>
 
-<jsp:include page="/WEB-INF/views/common/headerS.jsp" />
 
 <div class="container">
 	<div class="row">
@@ -108,7 +138,7 @@
 					<div class="or-box row-block">
 						<div class="row">
 							<div class="col-md-12 row-block" id="register-form-link">
-								<button class="btn btn-lg btn-block purple-bg" type="submit">
+								<button class="btn btn-lg btn-block purple-bg">
 									회원가입</button>
 							</div>
 						</div>
@@ -146,6 +176,9 @@
 					<div class="form-group">
 						<input type="tel" class="form-control" 
 						placeholder="(-없이)01012345678" name="phone" id="phone" maxlength="11" required>
+						<div class="form-check form-check-inline">
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg"id="phone-send">문자인증</button>
+						</div>
 					</div>
 					<div class="form-group">
 						<div class="row">
@@ -168,4 +201,6 @@
 		</div>
 	</div>
 </div>
+
+
 <jsp:include page="/WEB-INF/views/common/footerS.jsp" />

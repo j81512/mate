@@ -3,6 +3,7 @@ package com.kh.mate.member.controller;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,11 +13,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.connect.Connection;
-import org.springframework.social.google.api.Google;
-import org.springframework.social.google.api.impl.GoogleTemplate;
-import org.springframework.social.google.api.plus.Person;
-import org.springframework.social.google.api.plus.PlusOperations;
 import org.springframework.social.google.connect.GoogleConnectionFactory;
 import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.social.oauth2.GrantType;
@@ -24,25 +20,40 @@ import org.springframework.social.oauth2.OAuth2Operations;
 import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.kh.mate.kakao.KakaoRESTAPI;
+import com.kh.mate.member.model.service.MemberService;
+import com.kh.mate.member.model.vo.Member;
 import com.kh.mate.naver.NaverLoginBO;
 
 import lombok.extern.slf4j.Slf4j;
+import net.nurigo.java_sdk.api.Message;
+import net.nurigo.java_sdk.exceptions.CoolsmsException;
 
 @Slf4j
 @Controller
+@SessionAttributes({"loginMember"})
 public class MemberController {
 
 	private NaverLoginBO naverLoginBO;
 	private String apiResult = null;
-
+	
+	@Autowired
+	private MemberService memberService;
+	
 	@Autowired
 	private void setNaverLoginBO(NaverLoginBO naverLoginBO) {
 		this.naverLoginBO = naverLoginBO;
@@ -74,7 +85,6 @@ public class MemberController {
 //		log.debug("login 호출 확인");
 		String naverAuthUrl = naverLoginBO.getAuthorizationUrl(session);
 //		log.debug("naverAuthUrl = {}", naverAuthUrl);
-		mav.setViewName("member/login");
 		mav.addObject("url", naverAuthUrl);
 		// 카카오 값 받아오기
 		String kakaoUrl = KakaoRESTAPI.getAuthorizationUrl(session);
@@ -87,7 +97,10 @@ public class MemberController {
 		log.debug("oauthOperations = {}", oauthOperations);
 		log.debug("googleurl = {}", googleurl);
 		mav.addObject("googleUrl", googleurl);
-
+		
+		
+		
+		mav.setViewName("member/login");
 		return mav;
 	}
 
@@ -118,8 +131,8 @@ public class MemberController {
 		map.put("name", (String) responseOBJ.get("name"));
 		map.put("gender", (String) responseOBJ.get("gender"));
 		map.put("email", (String) responseOBJ.get("email"));
-		// 날짜 형변환이 안됨
-		// map.put("birthday", sdf1.format(date));
+		
+	
 
 		log.debug("map = {}", map);
 
@@ -131,7 +144,7 @@ public class MemberController {
 
 		model.addAttribute("NaverMember", map);
 
-		return "member/memberEnroll";
+		return "member/login";
 
 	}
 
@@ -166,7 +179,7 @@ public class MemberController {
 		log.debug("kakao_account = {}", kakaoAccount);
 		log.debug("map = {}", map);
 
-		mav.setViewName("member/memberEnroll");
+		mav.setViewName("member/login");
 
 		return mav;
 	}
@@ -192,7 +205,96 @@ public class MemberController {
 		log.debug("accessToken= ", accessToken);
 		  
 		 
-		return "member/memberEnroll";
+		return "member/login";
 	}
-
+	
+	@ResponseBody
+	@PostMapping("/member/phoneSend.do")
+	public String PhoneSend(@RequestParam("receiver") String phone) {
+		log.debug("phone = {}", phone);
+		String apiKey = "NCSZXRWYBWEC2I0X";
+		String apiSecret = "RHGHGCDLP8OWCBRQYCFEJPWORMDXAMO3";
+		Message coolsms = new Message(apiKey,apiSecret);
+		
+		HashMap<String, String> map = new HashMap<>();
+		Random rnd = new Random();
+		String checkNum = "";
+		
+		for(int i = 0 ; i < 6 ; i++) {
+			
+			String ran = Integer.toString(rnd.nextInt(10));
+				checkNum += ran;
+		
+		}
+		
+		map.put("type", "SMS");
+		map.put("to", phone);
+//		map.put("from", "01026596065");
+		map.put("text", "본인확인"
+						+"인증번호(" + checkNum+ ")입력시 정상처리 됩니다.");	
+		
+		log.debug("map = {}", map);
+		try {
+			JSONObject obj = (JSONObject) coolsms.send(map);
+		} catch (CoolsmsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return checkNum;
+	}
+	
+	@ResponseBody
+	@GetMapping("/member/pCheck.do/{num}")
+	public ModelAndView pCheck(ModelAndView mav, @PathVariable("num")String num) {
+		
+		log.debug("num = {}", num);
+		
+		mav.addObject("num", num);
+		mav.setViewName("member/phoneCheckNum");
+		return mav;
+	}
+	
+	@PostMapping("/member/loginCheck.do")
+	public String memberLogin(@RequestParam("userId") String userId
+			  ,@RequestParam("password") String password
+			  ,RedirectAttributes redirectAttr
+			  ,Model model
+			  ,HttpSession session) {
+		log.debug("userId = {}", userId);
+		log.debug("password ={}", password);
+		Member loginMember = memberService.selectOneMember(userId);
+		
+		log.debug("loginMember = {}", loginMember);
+		String location = "/";
+		
+		if(	loginMember != null ) {
+			model.addAttribute("loginMember", loginMember);
+			String next = (String)session.getAttribute("next");
+			if( next != null) 
+				location = next;
+		
+		}
+		else {
+			redirectAttr.addFlashAttribute("msg", "아이디 또는 비밀번호가 틀립니다.");
+			log.debug("location = " + location);
+		}
+		return "redirect:" + location;
+	}
+	
+	@PostMapping("/member/memberEnroll.do")
+	public ModelAndView enroll(ModelAndView mav,Member member) {
+		
+		return mav;
+	}
+	
+	
+	@RequestMapping("/member/logout.do")
+	public String memberLogout(SessionStatus sessionStatus) {
+		if(!sessionStatus.isComplete()) {
+			sessionStatus.setComplete();
+			
+		}
+		return "redirect:/";
+	}
 }
