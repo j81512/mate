@@ -39,7 +39,7 @@ function category(ct){
 
 <header>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">
+  <a class="navbar-brand" href="${ pageContext.request.contextPath }">
   	<img alt="Brand" src="${ pageContext.request.contextPath }/resources/img/home.jpg" width="45px">
   	Mate
   </a>
