@@ -1,12 +1,12 @@
 package com.kh.mate.erp.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -96,5 +96,17 @@ public class ErpContorller {
 		map.put("isAvailable", isAvailable);
 		
 		return map;
+	}
+	
+	@RequestMapping("/ERP/empList.do")
+	public ModelAndView empList(ModelAndView mav) {
+		
+		List<EMP> list = erpService.empList();
+		
+		log.debug("list = {} ", list);
+		
+		mav.addObject("list", list);
+		mav.setViewName("ERP/empList");
+		return mav;
 	}
 }
