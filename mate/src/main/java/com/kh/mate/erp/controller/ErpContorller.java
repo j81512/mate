@@ -1,6 +1,7 @@
 package com.kh.mate.erp.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -8,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.mate.erp.model.service.ErpService;
 import com.kh.mate.erp.model.vo.EMP;
+import com.kh.mate.product.model.vo.Product;
 
 
 @Controller
@@ -96,5 +97,25 @@ public class ErpContorller {
 		map.put("isAvailable", isAvailable);
 		
 		return map;
+	}
+	
+	//김찬희 ERP 상품검색
+	@RequestMapping("/ERP/searchInfo.do")
+	public String searchInfo(String category, String select) {
+		
+		log.debug(category);
+		log.debug(select);
+		Map<String,Object> map = new HashMap<String, Object>();
+		
+		map.put("category", category);
+		map.put("select", select);
+		
+		
+		List<Product> list = erpService.searchInfo(map);
+		
+		log.debug("list = {}",list);
+		
+		
+		return "/ERP/ProductInfo";
 	}
 }

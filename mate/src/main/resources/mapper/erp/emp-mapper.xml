@@ -28,7 +28,19 @@
 			emp_id = #{ empId }
 	</select>
 	
+	
+	
 	<resultMap type="emp" id="empMap">
 	
 	</resultMap>
+	
+	<select id="searchInfo" resultMap="productMap">
+		select
+			*
+		from
+			product
+	</select>
+	
+	<resultMap type="Product" id="productMap"></resultMap>
+	
 </mapper>

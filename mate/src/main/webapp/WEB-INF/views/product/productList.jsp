@@ -10,9 +10,10 @@ table, tr, th, td {
 	border: 1px solid black;
 }
 
-dl, li, ul{
+li{
 	margin 0;
 	list-style: none;
+	display: inline-block;
 }
 </style>
 <div class="product-container">
@@ -24,13 +25,13 @@ dl, li, ul{
 			<br />
 			<p>카테고리 선택</p>
 				<label for="PM">프라모델</label>
-				<input type="checkbox" name="category" id="PM" value="PM"/>
+				<input type="checkbox" name="category" id="pm" value="pm"/>
 				<label for="FG">피규어</label>
-				<input type="checkbox" name="category" id="FG" value="FG"/>
+				<input type="checkbox" name="category" id="fg" value="fg"/>
 				<label for="RC">RC카</label>
-				<input type="checkbox" name="category" id="RC" value="RC"/>
+				<input type="checkbox" name="category" id="rc" value="rc"/>
 				<label for="DR">드론</label>
-				<input type="checkbox" name="category" id="DR" value="DR"/>
+				<input type="checkbox" name="category" id="dr" value="dr"/>
 		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
 			<%-- <input type="hidden" name="category" value="${ category }" /> --%>
 		</form>
@@ -41,8 +42,8 @@ dl, li, ul{
 			<li>
 				<!-- 상품이 있을 경우 -->
 				<c:if test="${ not empty list }">
+						<c:forEach items="${ list }" var="product">
 						<dl>
-							<c:forEach items="${ list }" var="product">
 								<a href="${ pageContext.request.contextPath }/product/productDetail.do?productNo=${ product.productNo }"  >
 									<dt>
 										<img src="${ pageContext.request.contextPath }/resources/images/default.jpg" 
@@ -67,8 +68,10 @@ dl, li, ul{
 										</div>
 									</dd>
 							</a>
-							</c:forEach>
+							
 						</dl>
+							
+							</c:forEach>
 				</c:if>
 				<!-- 상품이 없을 경우 -->
 				<c:if test="${ empty list }">
