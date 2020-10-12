@@ -117,7 +117,8 @@ public class ErpContorller {
 		
 		
 		return "/ERP/ProductInfo";
-
+	}
+	
 	@RequestMapping("/ERP/empList.do")
 	public ModelAndView empList(ModelAndView mav) {
 		
