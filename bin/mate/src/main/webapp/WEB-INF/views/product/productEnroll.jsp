@@ -27,7 +27,7 @@ $(function(){
 		});
 
 	//가격 range이용시
-	$("#price").on("change", function(){
+	$("#priceRange").on("change", function(){
 
 		var $price = $(this).val();
 		console.log($price);
@@ -116,8 +116,8 @@ div#form-container label.custom-file-label{text-align:left;}
   			<!-- 가격 -->
   <div class="form-group">
 	<label for="price">가격</label>
-	<input type="range" name="price" id="price" class="custom-range" min="0" max="30000000" step="10000"/>
-	<input type="text" name="" id="priceValue" value="" required/> 원
+	<input type="range" id="priceRange" class="custom-range" min="0" max="30000000" step="1000"/>
+	<input type="text" name="price" id="priceValue" value="" required/> 원
   </div>
   
   <!-- 등록자  -->
@@ -132,3 +132,5 @@ div#form-container label.custom-file-label{text-align:left;}
 </div>
 </body>
 </html>
+
+<jsp:include page="/WEB-INF/views/common/footerS.jsp"/>

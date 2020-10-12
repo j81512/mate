@@ -86,14 +86,13 @@ function category(ct){
 	      	</li>
 		</c:when>
 		<c:otherwise >
-			${ loginMember.name }님, 반갑습니다.	
-		
+			${ loginMember.memberName }님, 반갑습니다.	
+			<button class="btn btn-outline-success my-2 my-sm-0" 
+               type="button"
+               onclick="location.href='${ pageContext.request.contextPath}/member/logout.do';">로그아웃</button>
 		</c:otherwise>
 
 	</c:choose>
-		<c:if test="${naverName != null}">	
-					${naverName}님, 반갑습니다
-		</c:if>
     </ul>
   </div>
 </nav>
