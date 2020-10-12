@@ -9,6 +9,11 @@
 table, tr, th, td {
 	border: 1px solid black;
 }
+
+dl, li, ul{
+	margin 0;
+	list-style: none;
+}
 </style>
 <div class="product-container">
 	<!-- ajax처리 -->
