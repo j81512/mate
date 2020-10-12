@@ -66,10 +66,14 @@ function category(ct){
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">회사 소개</a>
+        <a class="nav-link" href="${ pageContext.request.contextPath }/company/location.do">판매점 위치</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">고객 센터</a>
+      </li>
+      <!-- 도균 수정 임시확인용 주소+링크 추가 -->
+      <li class="nav-item">
+        <a class="nav-link" href="${ pageContext.request.contextPath }/ERP/menu.do">ERP확인용</a>
       </li>
 
 	<!-- 호근 수정 1. ${pageContext.request.contextPath}/member/login.do -->
