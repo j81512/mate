@@ -25,6 +25,8 @@ public interface ProductDAO {
 
 	Product selectProductOne(String productNo);
 
+	int productImageEnroll(ProductImages productImage);
+
 
 
 }
