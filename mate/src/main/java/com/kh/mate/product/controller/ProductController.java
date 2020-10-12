@@ -197,7 +197,24 @@ public class ProductController {
 		return null;
 	}
 	
+	//jsp연결
+	@RequestMapping(value = "/productUpdate.do",
+					method = RequestMethod.GET)
+	public String productUpdate(@RequestParam("productNo") String productNo,
+							  Model model) {
+		
+		Product product = productService.selectProductOne(productNo);
+		model.addAttribute("product", product);
+		
+		return "product/productUpdate";
+	}
 	
+	//수정
+	@RequestMapping(value = "/productUpdate.do",
+					method = RequestMethod.POST)
+	public String productUpdate() {
+		return null;
+	}
 	
 	//CH
 	@RequestMapping(value = "/productList.do",

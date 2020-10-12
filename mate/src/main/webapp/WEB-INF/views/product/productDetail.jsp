@@ -5,10 +5,30 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>   
 <jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
 <script src="${ pageContext.request.contextPath }/resources/ckeditor/ckeditor.js"></script>
+<script>
+$(function(){
+
+$("#updateBtn").on("click", function(){
+
+	var $frm = $("#productDetailFrm");
+
+	$frm.attr("action", "${ pageContext.request.contextPath }/product/productUpdate.do");
+	$frm.attr("method", "GET");
+	$frm.submit();
+
+	
+});
+
+	
+});
+
+</script>
+
 <div class="product-container">
 <form id="productDetailFrm">
-	<div class="product-content">
+<input type="hidden" name="productNo" value="${ product.productNo }" />
 	<!-- 내용이 입력될 자리 -->
+	<div class="product-content">
 	${ product.content }
 	</div>
 	
@@ -42,8 +62,8 @@
 			<c:otherwise>
 				<!-- erp사용 회원일 경우 수정하기 | 삭제하기 버튼 추가 -->
 				<div class="btn-group">
-					<button type="button" class="btn btn-primary">수정하기</button>
-					<button type="button" class="btn btn-primary">삭제하기</button>
+					<button type="button" class="btn btn-primary" id="updateBtn">수정하기</button>
+					<button type="button" class="btn btn-primary" id="delBtn">삭제하기</button>
 				</div>
 			</c:otherwise>
 		</c:choose>
@@ -53,4 +73,6 @@
 	</div>
 </form>
 </div>
+
+
 <jsp:include page="/WEB-INF/views/common/footerS.jsp"/>
