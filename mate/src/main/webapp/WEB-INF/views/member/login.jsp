@@ -207,7 +207,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary">인증하기</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal"> 닫기</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
