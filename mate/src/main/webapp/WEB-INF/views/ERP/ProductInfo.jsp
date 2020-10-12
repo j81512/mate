@@ -82,8 +82,8 @@ div{
 			  <div class="child">
 			  	<select name="select">
 				    <option value="">검색 분류</option>
-				    <option value="">상품명</option>
-				    <option value="">상품번호</option>
+				    <option value="product_name">상품명</option>
+				    <option value="product_no">상품번호</option>
 				</select>
 			  </div>
 			  <div class="child">
