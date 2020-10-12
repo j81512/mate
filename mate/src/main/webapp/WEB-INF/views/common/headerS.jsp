@@ -66,7 +66,7 @@ function category(ct){
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">회사 소개</a>
+        <a class="nav-link" href="${ pageContext.request.contextPath }/company/location.do">판매점 위치</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">고객 센터</a>
