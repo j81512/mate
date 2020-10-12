@@ -1,5 +1,6 @@
 package com.kh.mate.member.model.vo;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 import lombok.AllArgsConstructor;
@@ -16,10 +17,9 @@ import lombok.ToString;
 public class Member {
 
 	private String memberId;
-	private String password;
-	private String name;
+	private String memberPWD;
+	private String memberName;
 	private String gender;
-	private Date birthday;
 	private String phone;
 	private Date enrollDate;
 	
