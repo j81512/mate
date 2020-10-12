@@ -266,7 +266,10 @@
 		    <artifactId>javaSDK</artifactId>
 		    <version>2.2</version>
 		</dependency>
+<<<<<<< HEAD
+=======
 		
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
 	</dependencies>
 	<build>
 		<plugins>

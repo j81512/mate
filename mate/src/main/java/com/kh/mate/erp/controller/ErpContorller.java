@@ -29,8 +29,8 @@ public class ErpContorller {
 	@Autowired
 	private ErpService erpService;
 	
-	@Autowired
-	private BCryptPasswordEncoder bcryptPasswordEncoder;
+//	@Autowired
+//	private BCryptPasswordEncoder bcryptPasswordEncoder;
 	
 	@RequestMapping("/ERP/menu.do")
 	public ModelAndView Menu(ModelAndView mav) {
@@ -73,9 +73,9 @@ public class ErpContorller {
 	public String EmpEnroll(RedirectAttributes redirectAttr,
 							EMP emp) {
 		
-		String rawPassword = emp.getEmpPassword();
-		String encodedPassword = bcryptPasswordEncoder.encode(rawPassword);
-		emp.setEmpPassword(encodedPassword);
+//		String rawPassword = emp.getEmpPassword();
+//		String encodedPassword = bcryptPasswordEncoder.encode(rawPassword);
+//		emp.setEmpPassword(encodedPassword);
 		
 		log.debug("emp = " + emp);
 		

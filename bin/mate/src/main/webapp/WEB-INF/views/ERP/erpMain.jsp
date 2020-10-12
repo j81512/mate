@@ -23,7 +23,7 @@
     	<li>
 	    	<button type="button" 
 	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/menu/EmpManage.do';">
+	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/EmpManage.do';">
 			  <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>지점/업체 관리
 			</button>
     	</li>
@@ -37,7 +37,7 @@
     	<li>
 	    	<button type="button" 
 	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/menu/ProductReceive.do';">
+	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/ProductReceive.do';">
 			  <span class="glyphicon glyphicon-save" aria-hidden="true"></span>입고 관리
 			</button>
     	</li>
@@ -46,21 +46,21 @@
     	<li>
 	    	<button type="button" 
 	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/menu/EmpDetail.do';">
+	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/EmpDetail.do';">
 			  <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>현황 조회
 			</button>
     	</li>
     	<li>
 	    	<button type="button" 
 	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/menu/EmpList.do';">
+	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/EmpList.do';">
 			  <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>게시판
 			</button>
     	</li>	
     	<li>
 	    	<button type="button" 
 	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/menu/ErpLogout.do';">
+	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/ErpLogout.do';">
 			  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>로그아웃
 			</button>
     	</li>	
