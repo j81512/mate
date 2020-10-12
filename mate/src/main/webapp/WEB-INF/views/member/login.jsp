@@ -39,6 +39,8 @@
 	
 		$("#phone-send").click(function(){
 			var $phone = $("#phone").val();
+		    var popUrl ="${ pageContext.request.contextPath }/member/pCheck.do";
+		    var popOption = "width=650px, height=550px, resizable=no, location=no, top=300px, left=300px;"
 			console.log($phone);
 			$.ajax({
 				url:"${ pageContext.request.contextPath}/member/phoneSend.do",
@@ -48,9 +50,9 @@
 				dataType:"json",
 				method: "post",
 				success: function(data){
-						console.log(data);		
-						$('div.modal').modal();
-				
+						console.log(data);
+						var $num = data;		
+						window.open(popUrl + "/" +  $num ,"휴대폰 인증 ",popOption); 		
 				},
 				error: function(xhr, status, err){
 						console.log(xhr);
@@ -199,27 +201,6 @@
 		</div>
 	</div>
 </div>
-<!-- 휴대폰 인증관련 modal -->
-<div class="modal fade" id="layerpop">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<!-- header -->
-				<div class="modal-header">
-					<!-- 닫기(x) 버튼 -->
-					<button type="button" class="close" data-dismiss="modal">×</button>
-					<!-- header title -->
-					
-				</div>
-				<!-- body -->
-				<div class="modal-body">
-					<input type="text" name="numCheck" id="numCheck_" />
-				</div>
-				<!-- Footer -->
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
-				</div>
-			</div>
-		</div>
-	</div>
+
 
 <jsp:include page="/WEB-INF/views/common/footerS.jsp" />

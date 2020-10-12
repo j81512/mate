@@ -33,28 +33,30 @@ table, tr, th, td {
 				<c:if test="${ not empty list }">
 						<dl>
 							<c:forEach items="${ list }" var="product">
-								<dt>
-									<img src="${ pageContext.request.contextPath }/resources/images/default.jpg" 
-										 alt="default" 
-										 width="250px" />
-								</dt>
-								<dd>
-									<div class="product-name">
-									상품명 : ${ product.productName }
-									</div>
-									<div class="product-price">
-									상품 가격 : ${ product.price } 
-									</div>
-									<div class="product-rank">
-									별점 : /10
-									</div>
-									<div class="product-date">
-									등록일 : <fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/>									
-									</div>
-									<div class="product-brand">
-									제조사 ${ product.empId }
-									</div>
-								</dd>
+								<a href="${ pageContext.request.contextPath }/product/productDetail.do?productNo=${ product.productNo }"  >
+									<dt>
+										<img src="${ pageContext.request.contextPath }/resources/images/default.jpg" 
+											 alt="default" 
+											 width="250px" />
+									</dt>
+									<dd>
+										<div class="product-name">
+										상품명 : ${ product.productName }
+										</div>
+										<div class="product-price">
+										상품 가격 : ${ product.price } 
+										</div>
+										<div class="product-rank">
+										별점 : /10
+										</div>
+										<div class="product-date">
+										등록일 : <fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/>									
+										</div>
+										<div class="product-brand">
+										제조사 ${ product.empId }
+										</div>
+									</dd>
+							</a>
 							</c:forEach>
 						</dl>
 				</c:if>
