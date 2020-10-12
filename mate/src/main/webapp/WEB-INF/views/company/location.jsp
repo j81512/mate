@@ -7,16 +7,16 @@
 <jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
 
 	<div id="company-div">	
-		<ul>
+	
 			<c:forEach items="${ mapList }" var="company">
 				<div class="companyList-div">
-					<li>${ company.empName }</li>
+					${ company.empName }
 					<input type="hidden" name="companyName" value="${ company.empName }" />
 					<input type="hidden" name="companyPhone" value="${ company.phone }" />
 					<input type="hidden" name="companyAddress" value="${ company.address }" />
 				</div>
 			</c:forEach>
-		</ul>
+		
 	</div>
 	<div id="map" style="width:500px;height:400px;"></div>
 

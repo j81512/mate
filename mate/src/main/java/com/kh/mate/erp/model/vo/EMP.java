@@ -18,7 +18,7 @@ import lombok.ToString;
 public class EMP implements Serializable{
 
 	private String empId;
-	private String empPassword;
+	private String empPwd;
 	private String empName;
 	private String empAddress;
 	private String empPhone;

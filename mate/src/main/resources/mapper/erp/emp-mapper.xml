@@ -6,16 +6,15 @@
 
 	<insert id="insertEmp">
 		insert into
-			emp
+			EMP
 		values(
 			#{ empId },
-			#{ empPassword },
+			#{ empPwd },
 			#{ empName },
 			#{ empAddress },
 			#{ empPhone },
-			default,
-			default
-			
+			default,		
+			#{ empStatus }
 		)
 	</insert>
 	
@@ -28,7 +27,35 @@
 			emp_id = #{ empId }
 	</select>
 	
+	
+	
 	<resultMap type="emp" id="empMap">
 	
 	</resultMap>
+	
+
+	<select id="searchInfo" resultMap="productMap">
+		select
+			*
+		from
+			product
+	</select>
+	
+	<resultMap type="Product" id="productMap"></resultMap>
+	
+
+	<select id="empList">
+		select
+			emp_id as empId
+			emp_name as empName
+			address as empAddress
+			phone as empPhone
+			enroll_date as empEnrollDate
+			status as empStatus
+		from
+			tbl_emp
+		order by
+			enroll_date
+	</select>
+
 </mapper>
