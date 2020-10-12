@@ -21,13 +21,18 @@ dl, li, ul{
 		<form class="form-inline"
 				action="${pageContext.request.contextPath}/product/searchProduct.do">
 		    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
-			<select class="type" name="type" id="type">
-			  <option selected>검색유형</option>
-			  <option value="emp_id">제조사</option>
-			  <option value="product_name">키워드</option>
-			</select>
-			<input type="hidden" name="category" value="${ category }" />
+			<br />
+			<p>카테고리 선택</p>
+				<label for="PM">프라모델</label>
+				<input type="checkbox" name="category" id="PM" value="PM"/>
+				<label for="FG">피규어</label>
+				<input type="checkbox" name="category" id="FG" value="FG"/>
+				<label for="RC">RC카</label>
+				<input type="checkbox" name="category" id="RC" value="RC"/>
+				<label for="DR">드론</label>
+				<input type="checkbox" name="category" id="DR" value="DR"/>
 		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
+			<%-- <input type="hidden" name="category" value="${ category }" /> --%>
 		</form>
 	</div>
 	

@@ -115,15 +115,19 @@ public class ProductController {
 	}
 	
 	@RequestMapping("/searchProduct.do")
-	public String searchProduct(String type, String search, String category,Model model ) {
-		
-		log.debug("type = {}",type);
-		log.debug("search = {}",search);
-		log.debug("category = {}",category);
+	public String searchProduct(String search, String category,Model model ) {
 		
 		Map<String,Object> map = new HashMap<String, Object>();
 		
-		map.put("type", type);
+		log.debug("search = {}",search);
+		
+		String[] cateArr = category.split(",");
+		map.put("category", cateArr);
+		
+		log.debug("category = {}",category);
+		log.debug("category = {}",category);
+		
+		
 		map.put("search", search);
 		map.put("category", category);
 		

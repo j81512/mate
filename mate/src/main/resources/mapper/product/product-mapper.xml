@@ -67,15 +67,16 @@
  	<select id="searchProductList" resultType="product">
  		select * from product
  		<where>
- 		<if test="type.equals('emp_id')">
- 			emp_id like '%' || #{search} || '%'
- 		</if>
- 		<if test="type.equals('product_name')">
- 			product_name like '%' || #{search} || '%'
- 		</if>
  		
- 		<if test="category != null and !category.isEmpty">
- 			and category = #{category}
+ 		product_name like '%' || #{search} || '%'
+ 		<if test="cateArr != null and !cateArr.isEmpty">
+ 			and category in  <foreach collection="cateArr"
+			    		 item="category"
+			    		 open="("
+			    		 close=")"
+			    		 separator=",">
+			    	#{ category }
+			    	</foreach>
  		</if>
  		
  		</where>
