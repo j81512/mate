@@ -17,6 +17,8 @@ public interface ProductService {
 
 	List<Product> searchProductList(Map<String, Object> map);
 
+	Product selectProductOne(String productNo);
+
 
 
 

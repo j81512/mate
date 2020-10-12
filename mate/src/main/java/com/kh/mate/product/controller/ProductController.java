@@ -89,6 +89,18 @@ public class ProductController {
 		return "redirect:/";
 	}
 	
+	@RequestMapping("/productDetail.do")
+	public String productDetail(@RequestParam("productNo") String productNo,
+								Model model) {
+		log.debug("productNo = {}", productNo);
+		//DB에 저장되어있는 데이터를 가져와서 넘겨주기.
+		Product product = productService.selectProductOne(productNo);
+		log.debug("product = {}", product);
+		model.addAttribute("product", product);
+		
+		return "product/productDetail";
+	}
+	
 	
 	
 	//CH
