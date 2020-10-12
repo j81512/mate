@@ -16,7 +16,7 @@
 --=====================================
 -- Drop 관련
 --=====================================
-DROP TABLE MEMBER;
+--DROP TABLE MEMBER;
 --DROP TABLE  EMP;
 --DROP TABLE PRODUCT;
 --DROP TABLE Address;
@@ -93,9 +93,7 @@ CREATE TABLE MEMBER (
     constraint chk_member_gender check (gender in ('M','F'))
 );
 
-select * from member;
-insert into member values('honggd', '1234', '홍길동', 'M', '01011112222', sysdate);
-commit;
+
 --DROP TABLE Address;
 CREATE TABLE Address (
 	address_name	varchar2(128)		NOT NULL,
