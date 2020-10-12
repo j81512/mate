@@ -6,16 +6,15 @@
 
 	<insert id="insertEmp">
 		insert into
-			emp
+			EMP
 		values(
 			#{ empId },
-			#{ empPassword },
+			#{ empPwd },
 			#{ empName },
 			#{ empAddress },
 			#{ empPhone },
-			default,
-			default
-			
+			default,		
+			#{ empStatus }
 		)
 	</insert>
 	
