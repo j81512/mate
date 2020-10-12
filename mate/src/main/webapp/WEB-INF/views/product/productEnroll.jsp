@@ -71,13 +71,13 @@ div#form-container label.custom-file-label{text-align:left;}
       <legend class="col-form-label col-sm-2 pt-0">카테고리</legend>
       <div class="col-sm-10">
         <div class="form-check">
-          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category1" value="figure" checked>
+          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category1" value="fg" checked>
           <label class="form-check-label" for="category1">피규어</label>
-          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category2" value="plamodel">
+          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category2" value="pl">
           <label class="form-check-label" for="category2">프라모델</label>
-          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category3" value="rccar" >
+          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category3" value="rc" >
           <label class="form-check-label" for="category3">RC카</label>
-          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category4" value="drone" >
+          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category4" value="dr" >
           <label class="form-check-label" for="category4">드론</label>
         </div>
       </div>
