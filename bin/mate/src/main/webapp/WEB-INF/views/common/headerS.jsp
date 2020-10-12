@@ -71,6 +71,10 @@ function category(ct){
       <li class="nav-item">
         <a class="nav-link" href="#">고객 센터</a>
       </li>
+      <!-- 도균 수정 임시확인용 주소+링크 추가 -->
+      <li class="nav-item">
+        <a class="nav-link" href="${ pageContext.request.contextPath }/ERP/menu.do">ERP확인용</a>
+      </li>
 
 	<!-- 호근 수정 1. ${pageContext.request.contextPath}/member/login.do -->
 	<!-- 호근 수정2. 회원가입 날림  -->

@@ -63,8 +63,6 @@ public class ProductServiceImpl implements ProductService {
 	
 	
 	//jw
-
-
 	@Override
 	public int productEnroll(Product product) {
 		
@@ -79,6 +77,11 @@ public class ProductServiceImpl implements ProductService {
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public Product selectProductOne(String productNo) {
+		return productDAO.selectProductOne(productNo);
 	}
 	
 	
