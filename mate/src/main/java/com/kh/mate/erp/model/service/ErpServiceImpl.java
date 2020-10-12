@@ -1,5 +1,7 @@
 package com.kh.mate.erp.model.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,11 @@ public class ErpServiceImpl implements ErpService {
 	@Override
 	public EMP selectOneEmp(String empId) {
 		return erpDAO.selectOneEmp(empId);
+	}
+
+	@Override
+	public List<EMP> empList() {
+		return erpDAO.empList();
 	}
 	
 	

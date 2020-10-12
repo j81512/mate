@@ -21,7 +21,6 @@
 							   required>
 						<span class="guide ok">이 아이디는 사용가능합니다.</span>
 						<span class="guide error">이 아이디는 사용할 수 없습니다.</span>
-						<!-- 0:사용불가, 1:사용가능 -->
 						<input type="hidden" id="idValid" value="0" />
 					</div>
 				</td>
@@ -29,7 +28,7 @@
 			<tr>
 				<th>패스워드</th>
 				<td>
-					<input type="password" class="form-control" name="password" id="password_" required>
+					<input type="password" class="form-control" name="empPwd" id="password_" required>
 				</td>
 			</tr>
 			<tr>
@@ -39,21 +38,28 @@
 				</td>
 			</tr>  
 			<tr>
+				<th>지점/업체 선택</th>
+				<td>	
+					<input type="radio" name="empStatus" id="empStatus" value="1" checked>지점
+					<input type="radio" name="empStatus" id="empStatus" value="2" >업체				
+				</td>
+			</tr>  	
+			<tr>
 				<th>지점/업체명</th>
 				<td>	
-					<input type="text" class="form-control" name="name" id="name" required>
+					<input type="text" class="form-control" name="empName" id="empName" required>
 				</td>
 			</tr>
 			<tr>
 				<th>전화번호</th>
 				<td>	
-					<input type="tel" class="form-control" placeholder="(-없이)01012345678" name="phone" id="phone" maxlength="11" required>
+					<input type="tel" class="form-control" placeholder="(-없이)01012345678" name="empPhone" id="empPhone" maxlength="11" required>
 				</td>
 			</tr>
 			<tr>
 				<th>주소</th>
 				<td>	
-					<input type="text" class="form-control" placeholder="" name="address" id="address">
+					<input type="text" class="form-control" placeholder="" name="empAddress" id="empAddress">
 				</td>
 			</tr>
 		</table>
@@ -129,8 +135,7 @@ $("#empEnrollFrm").submit(function(){
 		$empId.select();
 		return false;
 	}
-	
-	
+
 	return true;
 });
 </script>
