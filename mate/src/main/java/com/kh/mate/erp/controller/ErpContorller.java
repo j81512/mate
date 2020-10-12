@@ -7,7 +7,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -99,6 +98,7 @@ public class ErpContorller {
 		return map;
 	}
 	
+
 	//김찬희 ERP 상품검색
 	@RequestMapping("/ERP/searchInfo.do")
 	public String searchInfo(String category, String select) {
@@ -117,5 +117,17 @@ public class ErpContorller {
 		
 		
 		return "/ERP/ProductInfo";
+
+	@RequestMapping("/ERP/empList.do")
+	public ModelAndView empList(ModelAndView mav) {
+		
+		List<EMP> list = erpService.empList();
+		
+		log.debug("list = {} ", list);
+		
+		mav.addObject("list", list);
+		mav.setViewName("ERP/empList");
+		return mav;
+
 	}
 }

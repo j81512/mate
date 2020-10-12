@@ -16,7 +16,7 @@
 --=====================================
 -- Drop 관련
 --=====================================
-DROP TABLE MEMBER;
+--DROP TABLE MEMBER;
 --DROP TABLE  EMP;
 --DROP TABLE PRODUCT;
 --DROP TABLE Address;

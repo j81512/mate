@@ -1,7 +1,9 @@
 package com.kh.mate.erp.model.dao;
 
 import java.util.List;
+
 import java.util.Map;
+
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +35,10 @@ public class ErpDAOImpl implements ErpDAO {
 	}
 	
 	
+  @Override
+	public List<EMP> empList() {
+		return sqlSession.selectList("emp.empList");
+	}
+
 	
 }
