@@ -220,11 +220,9 @@ public class MemberController {
 		Random rnd = new Random();
 		String checkNum = "";
 		
-		for(int i = 0 ; i < 6 ; i++) {
-			
+		for(int i = 0 ; i < 6 ; i++) {			
 			String ran = Integer.toString(rnd.nextInt(10));
-				checkNum += ran;
-		
+			checkNum += ran;
 		}
 		
 		map.put("type", "SMS");
@@ -297,4 +295,14 @@ public class MemberController {
 		}
 		return "redirect:/";
 	}
+	
+	@ResponseBody
+	@GetMapping("/member/myPage.do")
+	public ModelAndView memberId(ModelAndView mav) {
+		
+		
+		mav.setViewName("member/myPage");
+		return mav;
+	}
+	
 }
