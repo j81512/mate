@@ -211,16 +211,13 @@ public class MemberController {
 		for(int i = 0 ; i < 6 ; i++) {
 			
 			String ran = Integer.toString(rnd.nextInt(10));
-			
-			if(!checkNum.contains(ran)) {
 				checkNum += ran;
-			}
-			
+		
 		}
 		
 		map.put("type", "SMS");
 		map.put("to", phone);
-		map.put("from", "01026596065");
+//		map.put("from", "01026596065");
 		map.put("text", "본인확인"
 						+"인증번호(" + checkNum+ ")입력시 정상처리 됩니다.");	
 		
