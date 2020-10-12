@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="emp">
+
+	<insert id="insertEmp">
+		insert into
+			EMP
+		values(
+			#{ empId },
+			#{ empPwd },
+			#{ empName },
+			#{ empAddress },
+			#{ empPhone },
+			default,		
+			#{ empStatus }
+		)
+	</insert>
+	
+	<select id="selectOneEmp" resultMap="empMap">
+		select
+			*
+		from
+			emp
+		where
+			emp_id = #{ empId }
+	</select>
+	
+	<resultMap type="emp" id="empMap">
+	
+	</resultMap>
+</mapper>

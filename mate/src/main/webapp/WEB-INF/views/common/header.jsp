@@ -17,6 +17,22 @@
 
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
+<!-- 김찬희 카테고리 작업 스크립트 -->
+<script>
+
+function category(ct){
+
+	console.log(ct);
+	var $searchCategory = $('[name=searchCategory]');
+	var $category = $('[name=category]');
+	$category.val(ct);
+	$searchCategory.submit();
+	
+}
+
+</script>
+<!-- 김찬희 카테고리작업 스크립트끝 -->
 </head>
 <body>
 
@@ -38,10 +54,14 @@
           	판매 상품 보기
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">전체 상품 보기</a>
+        <!-- 종완 수정 - 주소추가 -->
+          <a class="dropdown-item" href="${ pageContext.request.contextPath }/product/productList.do">전체 상품 보기</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">카테고리 1</a>
-          <a class="dropdown-item" href="#">카테고리 2</a>
+          <!-- 헤더 카테고리검색 추가함 -->
+          <a class="dropdown-item" onclick="category('PM')">프라모델</a>
+          <a class="dropdown-item" onclick="category('FG')">피규어</a>
+          <a class="dropdown-item" onclick="category('RC')">RC카</a>
+         <a class="dropdown-item" onclick="category('DR')">드론</a>
         </div>
       </li>
       <li class="nav-item">
@@ -50,7 +70,7 @@
       <li class="nav-item">
         <a class="nav-link" href="${pageContext.request.contextPath}/cs/cs.do">고객 센터</a>
       </li>
-	
+
 	<!-- 호근 수정 1. ${pageContext.request.contextPath}/member/login.do -->
 	<!-- 호근 수정2. 회원가입 날림  -->
 	<!-- 호근수정3. not empty로 바꿈 -->
@@ -61,15 +81,24 @@
 	      	</li>
 		</c:when>
 		<c:otherwise >
-			${ loginMember.name }님, 반갑습니다.	
-		
+			${ loginMember.memberName }님, 반갑습니다.	
+			<button class="btn btn-outline-success my-2 my-sm-0" 
+               type="button"
+               onclick="location.href='${ pageContext.request.contextPath}/member/logout.do';">로그아웃</button>
+			   
 		</c:otherwise>
 
 	</c:choose>
-		<c:if test="${naverName != null}">	
-					${naverName}님, 반갑습니다
-		</c:if>
+
     </ul>
   </div>
 </nav>
+
+<!-- 김찬희 작업 -->
+<form action="${ pageContext.request.contextPath }/product/productCategory.do"
+		name="searchCategory">
+	<input type="hidden" name="category" value=""/>
+</form>
+<!-- 김찬희 작업끝 -->
 </header>
+

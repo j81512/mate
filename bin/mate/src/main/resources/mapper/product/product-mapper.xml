@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="product">
+ 
+ 	<select id="selectProductListAll" resultType="product">
+ 		select
+ 			*
+ 		from
+ 			product
+ 	
+ 	</select>
+ 	
+ 	<select id="selectProductMainImages" resultType="productImages">
+ 		select
+ 			*
+ 		from
+ 			PRODUCT_MAIN_IMAGES
+ 	</select>
+ 	
+ 	<select id="selectProductOne" resultType="product">
+ 		select
+ 			*
+ 		from
+ 			product
+ 		where
+ 			product_no = #{ productNo }
+ 	</select>
+ 	
+ 	<insert id="productEnroll">
+ 		insert into 
+ 			product
+ 		values
+ 		(
+ 		seq_product_no.nextval,
+ 		 #{productName},
+ 		 default,
+ 		 #{category},
+ 		 #{content},
+ 		 #{price},
+ 		 #{empId},
+ 		 default
+ 		)
+ 		<selectKey order="AFTER" resultType="_int" keyProperty="productNo">
+			select
+				seq_product_no.currval 			
+ 			from
+ 				dual
+ 		</selectKey>
+ 	</insert>
+ 	
+ 	
+ 	<insert id="mainImegesEnroll">
+ 		insert into
+ 			PRODUCT_MAIN_IMAGES
+ 		values(
+ 			seq_product_main_image_no.nextval,
+ 			#{ originalFilename },
+ 			#{ renamedFilename },
+ 			#{ productNo }
+ 		
+ 		)
+ 	</insert>
+ 	
+ 	
+ 	<select id="searchProductList" resultType="product">
+ 		select * from product
+ 		<where>
+ 		<if test="type.equals('emp_id')">
+ 			emp_id like '%' || #{search} || '%'
+ 		</if>
+ 		<if test="type.equals('product_name')">
+ 			product_name like '%' || #{search} || '%'
+ 		</if>
+ 		
+ 		<if test="category != null and !category.isEmpty">
+ 			and category = #{category}
+ 		</if>
+ 		
+ 		</where>
+ 	</select>
+ 	
+ 	<select id="productCategory" resultType="product">
+ 		select * from product
+ 			where category = #{category}
+ 	</select>
+ 
+</mapper>

@@ -9,15 +9,10 @@
 			member
 		values (
 			#{ memberId },
-			#{ password },
-			#{ name },
+			#{ memberPWD },
+			#{ memberName },
 			#{ gender },
-			#{ birthday },
-			#{ email },
 			#{ phone },
-			#{ address },
-			#{ hobby },
-			default,
 			default
 		)
 		
@@ -29,7 +24,7 @@
 		from
 			member
 		where
-			member_id = #{ memberID }
+			member_id = #{ memberId }
 	</select>
 	
 	<resultMap type="member" id="memberMap">
