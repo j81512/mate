@@ -2,11 +2,15 @@ package com.kh.mate.erp.model.dao;
 
 import java.util.List;
 
+import java.util.Map;
+
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.kh.mate.erp.model.vo.EMP;
+import com.kh.mate.product.model.vo.Product;
 
 @Repository
 public class ErpDAOImpl implements ErpDAO {
@@ -26,8 +30,15 @@ public class ErpDAOImpl implements ErpDAO {
 	}
 
 	@Override
+	public List<Product> searchInfo(Map<String, Object> map) {
+		return sqlSession.selectList("emp.searchInfo",map);
+	}
+	
+	
+  @Override
 	public List<EMP> empList() {
 		return sqlSession.selectList("emp.empList");
 	}
+
 	
 }
