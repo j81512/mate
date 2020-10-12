@@ -3,20 +3,18 @@ package com.kh.mate.member.controller;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
+import net.nurigo.java_sdk.api.Message;
+import net.nurigo.java_sdk.exceptions.CoolsmsException;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.connect.Connection;
-import org.springframework.social.google.api.Google;
-import org.springframework.social.google.api.impl.GoogleTemplate;
-import org.springframework.social.google.api.plus.Person;
-import org.springframework.social.google.api.plus.PlusOperations;
 import org.springframework.social.google.connect.GoogleConnectionFactory;
 import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.social.oauth2.GrantType;
@@ -24,9 +22,11 @@ import org.springframework.social.oauth2.OAuth2Operations;
 import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -35,6 +35,7 @@ import com.kh.mate.kakao.KakaoRESTAPI;
 import com.kh.mate.naver.NaverLoginBO;
 
 import lombok.extern.slf4j.Slf4j;
+import net.nurigo.java_sdk.Coolsms;
 
 @Slf4j
 @Controller
@@ -194,5 +195,43 @@ public class MemberController {
 		 
 		return "member/memberEnroll";
 	}
-
+	
+	@ResponseBody
+	@PostMapping("/member/phoneSend.do")
+	public String PhoneSend(@RequestParam("receiver") String phone) {
+		log.debug("phone = {}", phone);
+		String apiKey = "NCSZXRWYBWEC2I0X";
+		String apiSecret = "RHGHGCDLP8OWCBRQYCFEJPWORMDXAMO3";
+		Message coolsms = new Message(apiKey,apiSecret);
+		
+		HashMap<String, String> map = new HashMap<>();
+		Random rnd = new Random();
+		String checkNum = "";
+		
+		for(int i = 0 ; i < 6 ; i++) {
+			
+			String ran = Integer.toString(rnd.nextInt(10));
+			
+			if(!checkNum.contains(ran)) {
+				checkNum += ran;
+			}
+			
+		}
+		
+		map.put("type", "SMS");
+		map.put("to", phone);
+		map.put("from", "01026596065");
+		map.put("text", "본인확인"
+						+"인증번호(" + checkNum+ ")입력시 정상처리 됩니다.");	
+		
+		log.debug("map = {}", map);
+		try {
+			JSONObject obj = (JSONObject) coolsms.send(map);
+		} catch (CoolsmsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return checkNum;
+	}
 }

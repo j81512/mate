@@ -10,6 +10,7 @@
 <link rel="stylesheet"
 	href="${ pageContext.request.contextPath }/resources/css/loginForm.css" />
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<jsp:include page="/WEB-INF/views/common/headerS.jsp" />
 <script>
 	$(function() {
 
@@ -31,11 +32,33 @@
 	});
 
 	$(function() {
+	
+		$("#phone-send").click(function(){
+			var $phone = $("#phone").val();
+			console.log($phone);
+			$.ajax({
+				url:"${ pageContext.request.contextPath}/member/phoneSend.do",
+				data:{
+					receiver: $phone
+				},
+				dataType:"json",
+				method: "post",
+				success: function(data){
+						console.log(data);		
 
+				},
+				error: function(xhr, status, err){
+						console.log(xhr);
+						console.log(status);
+						console.log(err);
+					
+				}
+			}); 
+			
+		});
 	});
 </script>
 
-<jsp:include page="/WEB-INF/views/common/headerS.jsp" />
 
 <div class="container">
 	<div class="row">
@@ -108,7 +131,7 @@
 					<div class="or-box row-block">
 						<div class="row">
 							<div class="col-md-12 row-block" id="register-form-link">
-								<button class="btn btn-lg btn-block purple-bg" type="submit">
+								<button class="btn btn-lg btn-block purple-bg">
 									회원가입</button>
 							</div>
 						</div>
@@ -146,6 +169,9 @@
 					<div class="form-group">
 						<input type="tel" class="form-control" 
 						placeholder="(-없이)01012345678" name="phone" id="phone" maxlength="11" required>
+						<div class="form-check form-check-inline">
+						<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"id="phone-send">문자인증</button>
+						</div>
 					</div>
 					<div class="form-group">
 						<div class="row">
@@ -168,4 +194,22 @@
 		</div>
 	</div>
 </div>
+<!-- 휴대폰 인증관련 modal -->
+<div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">휴대폰 인증</h4>
+      </div>
+      <div class="modal-body">
+       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">인증하기</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <jsp:include page="/WEB-INF/views/common/footerS.jsp" />
