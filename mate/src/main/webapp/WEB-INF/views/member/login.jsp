@@ -94,7 +94,7 @@
 						name="member" id="businessMember_" value="B"> 기업회원
 					</label> <br />
 					<div class="form-group">
-						<input type="text" class="form-control" name="userId" id="userId_"
+						<input type="text" class="form-control" name="memberId" id="memberId_"
 							placeholder="아이디" required autofocus />
 					</div>
 					<div class="form-group">

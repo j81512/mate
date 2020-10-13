@@ -10,5 +10,28 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <jsp:include page="/WEB-INF/views/common/headerS.jsp" />
-
+	
+	<div>
+		<button type="button" class="btn btn-success">구매내역</button>
+		<button type="button" class="btn btn-success">내정보수정</button>
+		
+	</div>
+	
+	<table class="table table-bordered">
+  		<!-- On rows -->
+		<tr class="active">
+			<th class="active"> 아이디</th>
+			<th class="active"> 이름</th>
+			<th class="active"> 성별</th>
+			<th class="active"> 전화 번호</th>
+		</tr>
+		
+		<!-- On cells (`td` or `th`) -->
+		<tr>
+		  <td class="active"></td>
+		  <td class="active"></td>
+		  <td class="active"></td>
+		  <td class="active"></td>
+		</tr>	
+	</table>
 <jsp:include page="/WEB-INF/views/common/footerS.jsp" />
