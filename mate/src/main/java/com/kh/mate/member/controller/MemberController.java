@@ -13,8 +13,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.social.google.connect.GoogleConnectionFactory;
 import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.social.oauth2.GrantType;
@@ -22,16 +20,14 @@ import org.springframework.social.oauth2.OAuth2Operations;
 import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
@@ -278,7 +274,7 @@ public class MemberController {
 	}
 	
 	@PostMapping("/member/loginCheck.do")
-	public String memberLogin(@RequestParam("userId") String userId
+	public String memberLogin(@RequestParam("memberId") String userId
 			  ,@RequestParam("password") String password
 			  ,RedirectAttributes redirectAttr
 			  ,Model model
@@ -290,7 +286,8 @@ public class MemberController {
 		log.debug("loginMember = {}", loginMember);
 		String location = "/";
 		
-		if(	loginMember != null ) {
+		if(	loginMember != null && (loginMember.getMemberPWD().equals(password))
+				&& (loginMember.getMemberId().equals(userId))) {
 			model.addAttribute("loginMember", loginMember);
 			String next = (String)session.getAttribute("next");
 			if( next != null) 
@@ -315,9 +312,11 @@ public class MemberController {
 	
 	@ResponseBody
 	@GetMapping("/member/myPage.do")
-	public ModelAndView memberId(ModelAndView mav) {
+	public ModelAndView myPage(@ModelAttribute("loginMember") Member loginMember,ModelAndView mav) {
 		
+		log.debug("loginMember = {}", loginMember);
 		
+		mav.addObject("loginMember = {}", loginMember);
 		mav.setViewName("member/myPage");
 		return mav;
 	}
@@ -341,5 +340,5 @@ public class MemberController {
 		
 	}
 	
-
+	
 }
