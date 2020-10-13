@@ -4,7 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%-- <fmt:requestEncoding value="utf-8"/> --%>
-<jsp:include page="/WEB-INF/views/common/header.jsp">
+<jsp:include page="/WEB-INF/views/common/headerS.jsp">
 	<jsp:param value="글등록 결과" name="title"/>
 </jsp:include>
 <style>
