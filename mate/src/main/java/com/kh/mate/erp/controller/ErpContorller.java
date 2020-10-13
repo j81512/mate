@@ -147,7 +147,7 @@ public class ErpContorller {
 	
 	//김찬희 erp발주
 	@RequestMapping("/ERP/orderERP.do")
-	public String orderProduct(String eId, String pNo) {
+	public String orderProduct(String eId, String pNo, Model model) {
 		
 		log.debug("productNo = {}", pNo);
 		log.debug("empId = {}", eId);
@@ -160,9 +160,11 @@ public class ErpContorller {
 		
 		Product product = erpService.orderProduct(map);
 		
+		model.addAttribute("product",product);
+		
 		log.debug("product = {}",product);
 		
-		return "/ERP/ProductInfo";
+		return "/ERP/productOrder";
 	}
 	
 	@RequestMapping("/ERP/empList.do")
