@@ -55,6 +55,7 @@ public class ErpContorller {
 	@RequestMapping("/ERP/EmpManage.do")
 	public ModelAndView empManage(ModelAndView mav) {
 		
+		
 		mav.setViewName("/ERP/EmpManage");
 		return mav;
 	}
