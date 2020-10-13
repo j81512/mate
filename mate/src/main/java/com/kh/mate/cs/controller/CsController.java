@@ -37,21 +37,36 @@ public class CsController {
 			log.error("문의 목록 조회 오류", e);
 			throw e;
 		}
+		log.debug("list = {}", list);
 		return "cs/cs";
 	}
 
-	@RequestMapping(value = "/insertCs.do", method = RequestMethod.POST)
-	public String insertCs(Cs cs, RedirectAttributes redirectAttr) {
-		System.out.println("cs = " + cs);
-		
-		try {
-			int result = csService.insertCs(cs);
-			redirectAttr.addFlashAttribute("msg","문의글이 성공적으로 등록되었습니다");
-		} catch(Exception e) {
-			redirectAttr.addFlashAttribute("msg","문의글 등록에 실패했습니다");
-		}
-			return "redirect:/cs/cs.do";
+	@RequestMapping(value = "/insertCs.do", method = RequestMethod.GET)
+	public String insertCs() {
+			return "cs/insertCs";
 	}
+	
+	@RequestMapping(value = "/insertCs.do", method = RequestMethod.POST)
+	public String insertsCs(RedirectAttributes redirectAttr,
+							@RequestParam(value = "secret", defaultValue = "0") String secret_,
+							@RequestParam("title") String title,
+							@RequestParam("content") String content,
+							@RequestParam("memberId") String memberId,
+							@RequestParam(value = "notice", defaultValue = "0") String notice_){
+		
+		Cs cs = new Cs();
+		cs.setContent(content);
+		cs.setTitle(title);
+		cs.setMemberId(memberId);
+		cs.setSecret(secret_.equals("1") ? 1 : 0);
+		cs.setNotice(notice_.equals("1") ? 1 : 0);
+		
+		int result = csService.insertCs(cs);
+		String msg = (result > 0 ) ? "문의글이 등록되었습니다" : "문의글 등록에 실패했습니다";
+		redirectAttr.addFlashAttribute("msg", msg);
+		return "redirect:/cs/cs.do";
+	}
+	
 	@RequestMapping(value = "/deleteCs.do",
 			method = RequestMethod.POST)
 	public String deleteCs(@RequestParam String csno, 

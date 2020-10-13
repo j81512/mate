@@ -8,29 +8,30 @@
 		select
 			*
 		from 
-			cs
+			CS
 		order by
-			no desc
+			cs_no DESC
 	</select>
 	
 	<insert id="insertCs">
 		insert into
-			cs
+			CS
 		values (
 			seq_cs_no.nextval,
 			#{ title },
 			#{ content },
-			#{ regDate },
 			#{ memberId },
-			default		
+			default,
+			#{ secret },
+			#{ notice }		
 		)
 	</insert>
 
 	<delete id="deleteCs">
         delete from 
-        	cs 
+        	CS 
      	where 
-     		cs_no = #{csno} 
+     		cs_no = #{ csno } 
      	 
     </delete>
 

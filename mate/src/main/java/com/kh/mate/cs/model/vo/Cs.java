@@ -21,6 +21,6 @@ public class Cs implements Serializable {
 	private String content;
 	private String memberId;
 	private Date regDate;
-	private String secret[];
-	private String notice[];
+	private int secret;
+	private int notice;
 }
