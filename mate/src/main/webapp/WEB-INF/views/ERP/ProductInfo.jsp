@@ -68,13 +68,13 @@ div{
 				</select>
 			  </div>
 			  <div class="child">
-			    <input type="text" class="form-control" placeholder="재고 수량">
+			    <input type="number" class="form-control" name="upper" placeholder="재고 수량">
 			  </div>
 			  <div class="child">
 				<p>이상</p>			
 			  </div>
 			  <div class="child">
-			    <input type="text" class="form-control" placeholder="재고 수량">
+			    <input type="number" class="form-control" name="lower" placeholder="재고 수량">
 			  </div>
 			  <div class="child">
 				<p>이하</p>			
@@ -87,7 +87,7 @@ div{
 				</select>
 			  </div>
 			  <div class="child">
-			    <input type="text" class="form-control2" placeholder="상품명/상품번호 조회">
+			    <input type="text" class="form-control2" name="search" placeholder="상품명/상품번호 조회">
 			  </div>
 			  <button type="submit" class="btn btn-default">검색</button>
 		</form>
@@ -110,15 +110,23 @@ div{
 		
 		
 		<div class="productInfo">
-			<tr>
-				<td>${ product.no }</td>
-				<td>${ product.productName }</td>
-				<td>${ product.category }</td>
-				<td>${ product.empId }</td>
-				<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>
-				<td>${ stock.stock }</td>
-				<td><button type="submit">발주</button></td>
-			</tr>
+			<c:if test="${ not empty list }">
+				<c:forEach items="${ list }" var="product">
+					<tr>
+						<td>${ product.productNo }</td>
+						<td>${ product.productName }</td>
+						<td>${ product.category }</td>
+						<td>${ product.empId }</td>
+						<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>
+						<td>${ product.stock }</td>
+						<td><button type="submit">발주</button></td>
+					</tr>
+				
+				</c:forEach>
+			</c:if>
+			<c:if test="${ empty list }">
+				<span>검색결과 없음</span>
+			</c:if>
 		</div>
 	</section>
 

@@ -19,7 +19,7 @@ public class Product {
 	private int productNo;
 	private String empId;
 	private String productName;
-//	private int stock;
+	private int stock;
 	private Date regDate;
 	private String category;
 //	private String brand;
