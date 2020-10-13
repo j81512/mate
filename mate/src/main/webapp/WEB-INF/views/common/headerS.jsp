@@ -2,13 +2,12 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>    
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
@@ -18,9 +17,7 @@
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 <!-- 김찬희 카테고리 작업 스크립트 -->
 <script>
-
 function category(ct){
-
 	console.log(ct);
 	var $searchCategory = $('[name=searchCategory]');
 	var $category = $('[name=category]');
@@ -29,14 +26,11 @@ function category(ct){
 	$searchCategory.submit();
 	
 }
-
 </script>
 <!-- 김찬희 카테고리작업 스크립트끝 -->
 </head>
 <body>
-
 <header>
-
 <div class="container-fluid">
     <!-- Second navbar for categories -->
     <nav class="navbar navbar-default">
@@ -48,7 +42,6 @@ function category(ct){
           </button>
           <a class="navbar-brand" href="${ pageContext.request.contextPath }">Mate</a>
         </div>
-    
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
@@ -61,15 +54,13 @@ function category(ct){
                <li class="nav-item">
 			        <a class="nav-link" href="${ pageContext.request.contextPath }/ERP/menu.do">ERP확인용</a>
 			   </li>
-            
             <li><a href="${ pageContext.request.contextPath }/member/myPage.do">MyPage</a></li>
             <li><a href="#">C/S</a></li>
             <li><a href="#">Location</a></li>
-            
             <!-- 1. 추가 : 판매 상품 보기 -> toy -->
             <li class="nav-item dropdown">
-		        <a class="nav-link dropdown-toggle" href="#" 
-		           id="products" role="button" 
+		        <a class="nav-link dropdown-toggle" href="#"
+		           id="products" role="button"
 		           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		          	Toy
 		        </a>
@@ -93,7 +84,7 @@ function category(ct){
 			</c:when>
 			<c:otherwise >
 				${ loginMember.memberName }님, 반갑습니다.	
-				<button class="btn btn-outline-success my-2 my-sm-0" 
+				<button class="btn btn-outline-success my-2 my-sm-0"
 	               type="button"
 	               onclick="location.href='${ pageContext.request.contextPath}/member/logout.do';">로그아웃</button>
 			</c:otherwise>
@@ -103,13 +94,15 @@ function category(ct){
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container -->
     </nav><!-- /.navbar -->
-
 </div><!-- /.container-fluid -->
  <!-- 김찬희 작업 -->
 <form action="${ pageContext.request.contextPath }/product/productCategory.do"
 		name="searchCategory">
 	<input type="hidden" name="category" value=""/>
-</form>  
+</form>
 <!-- 김찬희 작업끝 -->
 </header>
+<<<<<<< HEAD
 <section id="content">
+=======
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
