@@ -15,7 +15,7 @@
 			#{ empPhone },
 			default,		
 			#{ empStatus }
-		)
+		)5
 	</insert>
 	
 	<select id="selectOneEmp" resultMap="empMap">

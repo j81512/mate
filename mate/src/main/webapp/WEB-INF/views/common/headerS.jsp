@@ -105,5 +105,5 @@ function category(ct){
 
 </header>
 
-<section id="content">
+<section id="content-sec">
 
