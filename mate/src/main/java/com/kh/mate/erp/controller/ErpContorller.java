@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -101,20 +102,39 @@ public class ErpContorller {
 
 	//김찬희 ERP 상품검색
 	@RequestMapping("/ERP/searchInfo.do")
-	public String searchInfo(String category, String select) {
+	public String searchInfo(String category, String search, String select,String upper, String lower, Model model) {
 		
 		log.debug(category);
-		log.debug(select);
+		log.debug(search);
+		log.debug("upper = {}", upper);
+		log.debug("lower = {}", lower);
+		
+		
+		
 		Map<String,Object> map = new HashMap<String, Object>();
+		
+		if(!upper.isEmpty() && upper != null) {
+			int uNum = Integer.parseInt(upper);
+			map.put("uNum", uNum);
+			
+		}
+		if(!lower.isEmpty() && lower != null) {
+			int lNum = Integer.parseInt(lower);
+			map.put("lNum", lNum);
+			
+		}
+		
 		
 		map.put("category", category);
 		map.put("select", select);
+		map.put("search", search);
 		
 		
 		List<Product> list = erpService.searchInfo(map);
 		
 		log.debug("list = {}",list);
 		
+		model.addAttribute("list",list);
 		
 		return "/ERP/ProductInfo";
 	}
