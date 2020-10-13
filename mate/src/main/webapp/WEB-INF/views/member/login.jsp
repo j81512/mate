@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>    
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,6 +36,16 @@
 			e.preventDefault();
 		});
 
+		if(${ not empty snsMember }){
+			
+			console.log("${ NaverMember }");
+			$("#register-form").delay(100).fadeIn(100);
+			$("#login-form").fadeOut(100);
+			$('#login-form-link').removeClass('active');
+			$("#register-form").addClass('active');
+			
+		}
+		
 	});
 
 	$(function() {
@@ -81,7 +94,7 @@
 						name="member" id="businessMember_" value="B"> 기업회원
 					</label> <br />
 					<div class="form-group">
-						<input type="text" class="form-control" name="userId" id="userId_"
+						<input type="text" class="form-control" name="memberId" id="memberId_"
 							placeholder="아이디" required autofocus />
 					</div>
 					<div class="form-group">
@@ -147,30 +160,30 @@
 				</form>
 				<!-- 회원가입 폼 추가 -->
 				<form id="register-form"
-					action="${pageContext.request.contextPath}/member/memberEnroll.do "
+					action="${pageContext.request.contextPath}/member/memberEnroll.do"
 					method="post" role="form" style="display: none;">
 					<h3 class="heading-desc">회원가입</h3>
 					<div class="form-group">
-						<input type="text" name="id" id="id" tabindex="1"
-							class="form-control" placeholder="아이디를 입력해 주세요" value="">
+						<input type="text" name="memberId" id="memberId_" tabindex="1"
+							class="form-control" placeholder="아이디를 입력해 주세요" value="${ snsMember.memberId != null ? snsMember.memberId : ''}"  ${ not empty snsMember ? "readOnly" : "" }>
 					</div>
 					<div class="form-group">
-						<input type="password" name="password" id="password" tabindex="2"
-							class="form-control" placeholder="비밀번호를 입력해주세요">
+						<input type="password" name="memberPWD" id="memberPWD_" tabindex="2"
+							class="form-control" placeholder="비밀번호를 입력해주세요" value="${ snsMember.memberPWD != null ? snsMember.memberPWD : ''}"  ${ not empty snsMember ? "readOnly" : "" }>
 					</div>
 					<div class="form-group">
-						<input type="password" name="passwordCk"
-							id="password_ck" tabindex="2" class="form-control"
-							placeholder="비밀번호를 확인해주세요">
+						<input type="password" name="memberPWDCK"
+							id="memberPWDCK_" tabindex="2" class="form-control"
+							placeholder="비밀번호를 확인해주세요" value="${ snsMember.memberPWD != null ? snsMember.memberPWD : ''}"  ${ not empty snsMember ? "readOnly" : "" }>
 					</div>
 					<div class="form-group">
-						<input type="text" name="name" id="name" tabindex="1"
-							class="form-control" placeholder="이름을 입력해주세요" value="">
+						<input type="text" name="memberName" id="memberName_" tabindex="1"
+							class="form-control" placeholder="이름을 입력해주세요" value="${ snsMember.memberName != null ? snsMember.memberName : ''}" ${ not empty snsMember ? "readOnly" : "" }>
 					</div>
 					<div class="form-check form-check-inline">
-						<input type="radio" class="form-check-input" name="gender" id="gender0" value="M" checked>
+						<input type="radio" class="form-check-input" name="gender" id="gender0" value="M" ${ snsMember.gender eq  "M" ? "checked readonly" :"" }>
 						<label  class="form-check-label" for="gender0">남</label>&nbsp;
-						<input type="radio" class="form-check-input" name="gender" id="gender1" value="F">
+						<input type="radio" class="form-check-input" name="gender" id="gender1" value="F" ${ snsMember.gender eq  "F" ? "checked readonly" :"" } >
 						<label  class="form-check-label" for="gender1">여</label>
 					</div>
 					<div class="form-group">
