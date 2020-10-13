@@ -27,8 +27,8 @@ public class CsDAOImpl implements CsDAO {
 		return sqlSession.selectList("cs.selectCsList");
 	}
 	@Override
-	public int deleteCs(Map<String, String> param) {
+	public int deleteCs(int csNo) {
 		
-		return sqlSession.delete("Cs.deleteCs", param);
+		return sqlSession.delete("cs.deleteCs", csNo);
 	}
 }

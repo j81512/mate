@@ -31,8 +31,7 @@
         delete from 
         	CS 
      	where 
-     		cs_no = #{ csno } 
-     	 
+     		cs_no = #{ csNo } 
     </delete>
 
 </mapper>

@@ -69,15 +69,12 @@ public class CsController {
 	
 	@RequestMapping(value = "/deleteCs.do",
 			method = RequestMethod.POST)
-	public String deleteCs(@RequestParam String csno, 
+	public String deleteCs(@RequestParam("csNo") String csNo_, 
 						 RedirectAttributes redirectAttr){
-	log.debug("문의글 삭제");
-	Map<String, String> param = new HashMap<>();
-	param.put("csno", csno);
-
-	
+	log.debug("문의글 삭제 번호 = {}", csNo_);
+	int csNo = Integer.parseInt(csNo_);
 	try {
-		int result = csService.deleteCs(param);
+		int result = csService.deleteCs(csNo);
 		String msg = (result > 0) ? "문의글 등록에 성공했습니다" : "문의글 삭제에 실패했습니다";
 		redirectAttr.addFlashAttribute("msg", msg);
 	} catch(Exception e) {

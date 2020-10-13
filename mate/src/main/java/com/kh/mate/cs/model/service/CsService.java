@@ -11,6 +11,6 @@ public interface CsService {
 
 	List<Cs> selectCsList();
 
-	int deleteCs(Map<String, String> param);
+	int deleteCs(int csNo);
 
 }

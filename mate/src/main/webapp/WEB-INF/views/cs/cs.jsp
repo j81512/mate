@@ -24,12 +24,6 @@ div#cs-container{width:60%; margin:0 auto;text-align:center;}
     	  method="get"> 
         <button class="btn btn-outline-success" type="submit" >내글만보기</button>
     </form>
-    <form id="csDeleteFrm" 
-    	  action="${pageContext.request.contextPath}/cs/deleteCs.do" 
-    	  class="form-inline" 
-    	  method="post"> 
-        <button class="btn btn-outline-danger" type="submit" >게시글삭제</button>
-    </form>
 <table class="table">
 <tr>
 	<th scope="col">번호</th>
@@ -40,16 +34,16 @@ div#cs-container{width:60%; margin:0 auto;text-align:center;}
 
  <c:forEach items="${ list }" var="cs">
 <tr>
-	<td>${ cs.csno }</td>
+	<td>${ cs.csNo }</td>
 	<td>${ cs.title }</td>
-	<td>${ cs.membeId }</td>
+	<td>${ cs.memberId }</td>
 	<td><fmt:formatDate value="${ cs.regDate }" pattern="yy/MM/dd HH:mm:ss"/></td>
 	<td>
 	   <button 
 	      	type="button" 
 	      	class="btn btn-outline-danger"
 	      	class="form-inline" 
-	      	onclick="deleteCs(${ cs.no });">삭제</button>    	
+	      	onclick="deleteCs('${ cs.csNo }');">삭제</button>    	
 	</td>
 </tr>
 
@@ -58,15 +52,15 @@ div#cs-container{width:60%; margin:0 auto;text-align:center;}
 <form id="csDeleteFrm" 
 	  action="${ pageContext.request.contextPath }/cs/deleteCs.do" 
 	  method="POST">
-	<input type="hidden" name="no" />
+	<input type="hidden" name="csNo" />
 </form>
 </div>
 <script>
-function deleteCs(no){
+function deleteCs(csNo){
 	if(confirm("정말 삭제하시겠습니까?") == false)
 		return;
 	var $frm = $("#csDeleteFrm");
-	$frm.find("[name=no]").val(no);
+	$frm.find("[name=csNo]").val(csNo);
 	$frm.submit();
 }
 </script>

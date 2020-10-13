@@ -20,7 +20,7 @@
 		</p>
 		<p>
 		<label for="loginMember">작성자</label>
-		<input type="text" name="memberId" id="loginMember" value="${ loginMember.getMemberId }" readonly>
+		<input type="text" name="memberId" id="loginMember" value="${ loginMember.memberId }" readonly>
 		</p>
 		<p>
 		<label for="secret">비밀글 설정</label>

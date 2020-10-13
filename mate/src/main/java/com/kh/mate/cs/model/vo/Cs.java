@@ -16,7 +16,7 @@ import lombok.ToString;
 @ToString
 public class Cs implements Serializable {
 
-	private int csno;
+	private int csNo;
 	private String title;
 	private String content;
 	private String memberId;

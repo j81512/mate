@@ -27,8 +27,8 @@ public class CsServiceImpl implements CsService {
 		return csDAO.selectCsList();
 	}
 	@Override
-	public int deleteCs(Map<String, String> param) {
+	public int deleteCs(int csNo) {
 		
-		return csDAO.deleteCs(param);
+		return csDAO.deleteCs(csNo);
 	}
 }

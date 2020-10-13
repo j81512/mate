@@ -56,7 +56,7 @@ function category(ct){
 			   </li>
 
             <li><a href="${ pageContext.request.contextPath }/member/myPage.do">MyPage</a></li>
-            <li><a href="${pageContext.request.contextPath}/cs/cs.do">C/S">C/S</a></li>
+            <li><a href="${pageContext.request.contextPath}/cs/cs.do">C/S</a></li>
             <li><a href="${ pageContext.request.contextPath }/company/location.do">Location</a></li>
             <!-- 1. 추가 : 판매 상품 보기 -> toy -->
             <li class="nav-item dropdown">
