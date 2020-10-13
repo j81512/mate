@@ -26,8 +26,6 @@ function category(ct){
 	$searchCategory.submit();
 	
 }
-function clickBtn(){
-};
 </script>
 <!-- 김찬희 카테고리작업 스크립트끝 -->
 </head>
@@ -56,9 +54,9 @@ function clickBtn(){
                <li class="nav-item">
 			        <a class="nav-link" href="${ pageContext.request.contextPath }/ERP/menu.do">ERP확인용</a>
 			   </li>
-            <li><a href="#">MyPage</a></li>
+            <li><a href="${ pageContext.request.contextPath }/member/myPage.do">MyPage</a></li>
             <li><a href="#">C/S</a></li>
-            <li><a href="#">Location</a></li>
+            <li><a href="${ pageContext.request.contextPath }/company/location.do">Location</a></li>
             <!-- 1. 추가 : 판매 상품 보기 -> toy -->
             <li class="nav-item dropdown">
 		        <a class="nav-link dropdown-toggle" href="#"
@@ -104,3 +102,6 @@ function clickBtn(){
 </form>
 <!-- 김찬희 작업끝 -->
 </header>
+
+<section id="content">
+

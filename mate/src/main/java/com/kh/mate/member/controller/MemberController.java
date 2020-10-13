@@ -13,6 +13,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.social.google.connect.GoogleConnectionFactory;
 import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.social.oauth2.GrantType;
@@ -20,13 +22,16 @@ import org.springframework.social.oauth2.OAuth2Operations;
 import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
@@ -127,24 +132,30 @@ public class MemberController {
 
 		// 자동 회원가입 되게 하기.
 		Map<String, Object> map = new HashMap<>();
-		map.put("id", (String) responseOBJ.get("id"));
-		map.put("name", (String) responseOBJ.get("name"));
+		map.put("memberPWD", (String) responseOBJ.get("id"));
+		map.put("memberName", (String) responseOBJ.get("name"));
 		map.put("gender", (String) responseOBJ.get("gender"));
-		map.put("email", (String) responseOBJ.get("email"));
+		map.put("memberId", (String) responseOBJ.get("email"));
 		
+		Member member = memberService.selectOneMember((String)responseOBJ.get("email"));
+		
+		log.debug("테스트 = {}", (String)responseOBJ.get("gender"));
+		log.debug("member = {}", member);
+		if( member == null || member.getMemberId() == null) {
+			
+			log.debug("naverMap = {}", map);
+			model.addAttribute("snsMember", map);
+			return "member/login";
+		}else {
+			
+			log.debug("map = {}", map);
+			session.setAttribute("loginMember", member);
+//			model.addAttribute("loginMember", member);
+			return "redirect:/";
+			
+		}
 	
 
-		log.debug("map = {}", map);
-
-//		log.debug("nickname= {}", nickname);
-		// 값확인용
-//		log.debug("responseOBJ= {}", responseOBJ);
-		// 로그인 사용자 정보 읽어 오는것
-//		log.debug("apiResult = {}", apiResult);
-
-		model.addAttribute("NaverMember", map);
-
-		return "member/login";
 
 	}
 
@@ -153,7 +164,7 @@ public class MemberController {
 	 */
 	@RequestMapping(value = "/kakaocallback.do", produces = "application/json", method = { RequestMethod.GET,
 			RequestMethod.POST })
-	public ModelAndView KakaoInfo(ModelAndView mav, @RequestParam("code") String code, HttpServletRequest request,
+	public String KakaoInfo(Model model, @RequestParam("code") String code, HttpServletRequest request,
 			HttpServletResponse response, HttpSession session) {
 
 		JsonNode node = KakaoRESTAPI.getAccessToken(code);
@@ -167,21 +178,34 @@ public class MemberController {
 		// 유저 정보 카카오에 가져오기 Get properties
 		JsonNode properties = userInfo.path("properties");
 		JsonNode kakaoAccount = userInfo.path("kakao_account");
-		// 자동회원가입
-		Map<String, Object> map = new HashMap<>();
-		map.put("kemail", kakaoAccount.path("email").asText());
-		map.put("kname", kakaoAccount.path("nickname").asText());
-		map.put("kid", kakaoAccount.path("id").asText());
-		map.put("kgender", kakaoAccount.path("gender").asText());
 
-		// 값 확인
-		log.debug("properties = {}", properties);
+		// 자동회원가입
+		Member member = memberService.selectOneMember(kakaoAccount.path("email").asText());
+		Map<String, Object> map = new HashMap<>();
+		map.put("memberId", kakaoAccount.path("email").asText());
+		map.put("memberPWD", userInfo.path("id").asText());
+		map.put("memberName", properties.path("nickname").asText());
+		map.put("gender", (String)kakaoAccount.path("gender").asText() != "male"  ? "M" : "F");
+			
+//		log.debug("member = {}", member);
+//		// 값 확인
+//		log.debug("properties = {}", properties);
 		log.debug("kakao_account = {}", kakaoAccount);
 		log.debug("map = {}", map);
-
-		mav.setViewName("member/login");
-
-		return mav;
+		log.debug("테스트 = {}", (String)kakaoAccount.path("gender").toString());
+		
+		if( member == null || member.getMemberId() == null) {
+			
+			log.debug("kakaoMap = {}", map);
+			model.addAttribute("snsMember", map);
+			return "member/login";
+		}else {
+			
+			log.debug("map = {}", map);
+			session.setAttribute("loginMember", member);
+			return "redirect:/";
+			
+		}	
 	}
 
 	//해결해본다
@@ -220,11 +244,9 @@ public class MemberController {
 		Random rnd = new Random();
 		String checkNum = "";
 		
-		for(int i = 0 ; i < 6 ; i++) {
-			
+		for(int i = 0 ; i < 6 ; i++) {			
 			String ran = Integer.toString(rnd.nextInt(10));
-				checkNum += ran;
-		
+			checkNum += ran;
 		}
 		
 		map.put("type", "SMS");
@@ -282,13 +304,6 @@ public class MemberController {
 		return "redirect:" + location;
 	}
 	
-	@PostMapping("/member/memberEnroll.do")
-	public ModelAndView enroll(ModelAndView mav,Member member) {
-		
-		return mav;
-	}
-	
-	
 	@RequestMapping("/member/logout.do")
 	public String memberLogout(SessionStatus sessionStatus) {
 		if(!sessionStatus.isComplete()) {
@@ -297,4 +312,34 @@ public class MemberController {
 		}
 		return "redirect:/";
 	}
+	
+	@ResponseBody
+	@GetMapping("/member/myPage.do")
+	public ModelAndView memberId(ModelAndView mav) {
+		
+		
+		mav.setViewName("member/myPage");
+		return mav;
+	}
+	
+	@PostMapping("/member/memberEnroll.do")
+	public String memberEnroll(Member member, RedirectAttributes redirectAttr) {
+		log.debug("member = {}", member);
+		Map<String, Object> map = new HashMap<>();
+		try {
+			
+			int result = memberService.insertMember(member);
+			map.put("msg", "회원 가입 축하드립니다~!");
+			redirectAttr.addFlashAttribute("msg", map);
+			return "member/login";
+		}catch(Exception e) {
+			log.error("error = {}", e);
+			map.put("msg", "회원 가입에 실패하셨습니다.");
+			redirectAttr.addFlashAttribute("msg", map);
+			return "/member/login";
+		}
+		
+	}
+	
+
 }
