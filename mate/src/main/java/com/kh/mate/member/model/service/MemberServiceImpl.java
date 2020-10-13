@@ -1,5 +1,7 @@
 package com.kh.mate.member.model.service;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,4 +23,17 @@ public class MemberServiceImpl implements MemberService {
 	public Member selectOneMember(String memberId) {
 		return memberDAO.selectOneMember(memberId);
 	}
+
+	@Override
+	public int updateMember(Map<String, Object> map) {
+		return memberDAO.updateMember(map);
+	}
+
+	@Override
+	public int deleteMember(Map<String, Object> map) {
+		return memberDAO.deleteMember(map);
+	}
+
+	
+	
 }
