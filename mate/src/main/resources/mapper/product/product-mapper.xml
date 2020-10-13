@@ -68,15 +68,9 @@
  			product_images
  		values(
  			seq_product_image_no.nextval,
- 			#{ originalFilename },
- 			#{ renamedFilename }
+ 			#{ renamedFilename },
+ 			#{ productNo }
  		)
- 		<selectKey order="AFTER" resultType="_int" keyProperty="productImageNo">
-			select
-				seq_product_image_no.currval 			
- 			from
- 				dual
- 		</selectKey>
  	</insert>
  	
  	

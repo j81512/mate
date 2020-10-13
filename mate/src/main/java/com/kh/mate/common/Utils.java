@@ -6,7 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Utils {
 
@@ -37,7 +39,7 @@ public class Utils {
 				temp.mkdir();
 				fileCopy(file, temp);
 			} else {
-			        FileInputStream fis = null;
+			    FileInputStream fis = null;
 				FileOutputStream fos = null;
 				try {
 					fis = new FileInputStream(file);
@@ -60,6 +62,19 @@ public class Utils {
 			}
 		   }
 	    }
+	
+	//폴더 내 파일명 가져오기
+	public static List<String> getOriginFileNameOnTemp(File sourceF) {
+		File[] targetF = sourceF.listFiles();
+		List<String> fileNameList = new ArrayList<>();
+		for(File f : targetF) {
+			String fileName = f.getName();
+			fileNameList.add(fileName);
+		}
+		
+		return fileNameList;
+	}
+	
 	
 	//파일 삭제
 	public static void fileDelete(String path) {

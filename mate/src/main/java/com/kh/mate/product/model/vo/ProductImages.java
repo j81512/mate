@@ -19,6 +19,6 @@ public class ProductImages {
 	private String originalFilename;
 	private String renamedFilename;
 	private int productNo;
-	private String empId2;
+	//private String empId2;
 
 }

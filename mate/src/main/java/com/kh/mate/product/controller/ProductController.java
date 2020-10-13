@@ -1,7 +1,5 @@
 package com.kh.mate.product.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -93,19 +91,24 @@ public class ProductController {
 		log.debug("mainImgList = {}", mainImgList);	
 		product.setProductMainImages(mainImgList);
 		
+		//Product객체에 ImagesName Setting
+		String tempDir = request.getServletContext().getRealPath("/resources/upload/temp");
+		String imgDir = request.getServletContext().getRealPath("/resources/upload/images");
+		File folder1 = new File(tempDir);
+		File folder2 = new File(imgDir);
+		
+		List<String> productImages = Utils.getOriginFileNameOnTemp(folder1);
+		log.debug("productImages = {}",productImages);
+		product.setProductImagesName(productImages);
+		
 		log.debug("product = {}", product);
 		int result = productService.productEnroll(product);
 		
-		String tempDir = request.getServletContext().getRealPath("/resources/upload/temp");
-		String imgDir = request.getServletContext().getRealPath("/resources/upload/images");
-		
+		//product입력 시, file입력 처리 -> DB에 image등록과 동시에 fileDir옮기기  
 		if(result > 0) {
-			File folder1 = new File(tempDir);
-			File folder2 = new File(imgDir);
 			Utils.fileCopy(folder1, folder2);
 			Utils.fileDelete(folder1.toString());
 		}else {
-			File folder1 = new File(tempDir);
 			Utils.fileDelete(folder1.toString());
 		}
 		
@@ -141,45 +144,38 @@ public class ProductController {
 	@ResponseBody
 	public String fileUpload(HttpServletRequest request, HttpServletResponse response,
 							 MultipartHttpServletRequest multiFile) throws Exception {
-		
+		request.setCharacterEncoding("utf-8");
 		JsonObject json = new JsonObject();
 		PrintWriter printWriter = null;
 		OutputStream out = null;
 		MultipartFile file = multiFile.getFile("upload");
-		ProductImages productImage = null;
 		
 		if(file != null) {
 			if(file.getSize() > 0 ) {
 				if(file.getContentType().toLowerCase().startsWith("image/")) {
 					try {
-						productImage = new ProductImages();
-						String fileName = file.getOriginalFilename();
-						productImage.setOriginalFilename(fileName);
+						String fileName = Utils.getRenamedFileName(file.getOriginalFilename());
 						byte[] bytes = file.getBytes();
 						String uploadPath = request.getServletContext().getRealPath("/resources/upload/temp");
 						File uploadFile = new File(uploadPath);
 						if(!uploadFile.exists()) {
 							uploadFile.mkdirs();
 						}
-						String renamedFilename = Utils.getRenamedFileName(fileName);
-						productImage.setRenamedFilename(renamedFilename);
+						//String renamedFilename = Utils.getRenamedFileName(fileName);
 						//uploadPath = uploadPath + "/" + fileName;
-						out = new FileOutputStream(new File(uploadPath, renamedFilename));
+						out = new FileOutputStream(new File(uploadPath, fileName));
 						out.write(bytes);
 						
 						printWriter = response.getWriter();
 						response.setContentType("text/html");
-						String fileUrl = request.getContextPath() + "/resources/upload/temp/" + renamedFilename;
+						String fileUrl = request.getContextPath() + "/resources/upload/temp/" + fileName;
 						
 						//json 데이터로 등록
 						json.addProperty("uploaded", 1);
-						json.addProperty("fileName", renamedFilename);
+						json.addProperty("fileName", fileName);
 						json.addProperty("url", fileUrl);
 						
 						printWriter.println(json);
-						
-						//DB에 저장 -> 저장결과에 따라서 분기처리
-						productService.productImageEnroll(productImage);
 						
 						
 					} catch(IOException e) {

@@ -65,33 +65,7 @@ $(function(){
     </div>
   </fieldset>
  			 <!-- 섬네일 이미지 -->
-  <div class="input-group mb-3" style="padding:0px;">
-   <div class="input-group-prepend" style="padding:0px;">
-     <span class="input-group-text">섬네일 사진 1</span>
-   </div>
-   <div class="custom-file">
-     <input type="file" class="custom-file-input" name="upFile" id="upFile1" >
-     <label class="custom-file-label" for="upFile1">파일을 선택하세요</label>
-   </div>
-  </div>
-  <div class="input-group mb-3" style="padding:0px;">
-   <div class="input-group-prepend" style="padding:0px;">
-     <span class="input-group-text">섬네일 사진 2</span>
-   </div>
-   <div class="custom-file">
-     <input type="file" class="custom-file-input" name="upFile" id="upFile1" >
-     <label class="custom-file-label" for="upFile1">파일을 선택하세요</label>
-   </div>
-  </div>
-  <div class="input-group mb-3" style="padding:0px;">
-   <div class="input-group-prepend" style="padding:0px;">
-     <span class="input-group-text">섬네일 사진 3</span>
-   </div>
-   <div class="custom-file">
-     <input type="file" class="custom-file-input" name="upFile" id="upFile1" >
-     <label class="custom-file-label" for="upFile1">파일을 선택하세요</label>
-   </div>
-  </div>
+  
   			<!-- 내용 -->
   <div class="form-group">
    <textarea name="content">${ product.content }</textarea>
