@@ -18,5 +18,7 @@ public interface ErpDAO {
 
 	List<EMP> empList();
 
+	Product orderProduct(Map<String, Object> map);
+
 
 }
