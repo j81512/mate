@@ -31,7 +31,7 @@ public class ErpDAOImpl implements ErpDAO {
 
 	@Override
 	public List<Product> searchInfo(Map<String, Object> map) {
-		return sqlSession.selectList("emp.searchInfo",map);
+		return sqlSession.selectList("erp.searchInfo",map);
 	}
 	
 	
@@ -39,6 +39,14 @@ public class ErpDAOImpl implements ErpDAO {
 	public List<EMP> empList() {
 		return sqlSession.selectList("emp.empList");
 	}
+
+	@Override
+	public Product orderProduct(Map<String, Object> map) {
+		return sqlSession.selectOne("erp.orderProduct",map);
+	}
+  
+  
+  
 
 	
 }

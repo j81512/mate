@@ -41,6 +41,21 @@ div{
 }
 
 </style>
+<!-- 김찬희 발주 스크립트 -->
+<script>
+function orderProduct(empId,pNo){
+	console.log(empId);
+	console.log(pNo);
+	var $eId = $('[name = eId]');
+	var $pNo = $('[name = pNo]');
+	var $order = $('[name = order]');
+	$eId.val(empId);
+	$pNo.val(pNo);
+
+	$order.submit();
+	
+}
+</script>
   <body>
     
 	<section id="info-container" class="container">
@@ -119,7 +134,7 @@ div{
 						<td>${ product.empId }</td>
 						<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>
 						<td>${ product.stock }</td>
-						<td><button type="submit">발주</button></td>
+						<td><button type="button" onclick="orderProduct('${ product.empId }',${ product.productNo })">발주</button></td>
 					</tr>
 				
 				</c:forEach>
@@ -128,6 +143,10 @@ div{
 				<span>검색결과 없음</span>
 			</c:if>
 		</div>
+		<form action="${pageContext.request.contextPath}/ERP/orderERP.do" name="order">
+			<input type="hidden" name="eId" value=""/>
+			<input type="hidden" name="pNo" value=""/>
+		</form>
 	</section>
 
 	</body>

@@ -110,7 +110,7 @@ public class ErpContorller {
 		log.debug("upper = {}", upper);
 		log.debug("lower = {}", lower);
 		
-		
+		log.debug("select = {}", select);
 		
 		Map<String,Object> map = new HashMap<String, Object>();
 		
@@ -123,6 +123,11 @@ public class ErpContorller {
 			int lNum = Integer.parseInt(lower);
 			map.put("lNum", lNum);
 			
+		}
+		if(select.equals("product_no")) {
+			int sNum = Integer.parseInt(search);
+			log.debug("sNum = {}",sNum);
+			map.put("sNum", sNum);
 		}
 		
 		
@@ -138,6 +143,28 @@ public class ErpContorller {
 		model.addAttribute("list",list);
 		
 		return "/ERP/ProductInfo";
+	}
+	
+	//김찬희 erp발주
+	@RequestMapping("/ERP/orderERP.do")
+	public String orderProduct(String eId, String pNo, Model model) {
+		
+		log.debug("productNo = {}", pNo);
+		log.debug("empId = {}", eId);
+		
+		int productNo = Integer.parseInt(pNo);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("eId", eId);
+		map.put("productNo", productNo);
+		
+		Product product = erpService.orderProduct(map);
+		
+		model.addAttribute("product",product);
+		
+		log.debug("product = {}",product);
+		
+		return "/ERP/productOrder";
 	}
 	
 	@RequestMapping("/ERP/empList.do")

@@ -18,6 +18,8 @@ public interface ErpService {
 
 	List<EMP> empList();
 
+	Product orderProduct(Map<String, Object> map);
+
 
 
 }

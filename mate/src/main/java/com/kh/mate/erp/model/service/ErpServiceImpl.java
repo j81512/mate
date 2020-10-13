@@ -37,6 +37,13 @@ public class ErpServiceImpl implements ErpService {
 	public List<EMP> empList() {
 		return erpDAO.empList();
 	}
+
+	@Override
+	public Product orderProduct(Map<String, Object> map) {
+		return erpDAO.orderProduct(map);
+	}
+	
+	
 	
 	
 }

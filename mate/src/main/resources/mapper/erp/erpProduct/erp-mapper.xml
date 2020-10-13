@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="erp">
+
+
+	<resultMap type="Product" id="productMap"></resultMap>
+	
+	<select id="searchInfo" resultMap="productMap">
+		select p.product_no,
+			p.product_name,
+			p.category,
+			s.emp_id,
+			p.reg_date,
+			s.stock 
+		from product p left join stock s
+		on (p.product_no = s.product_no)
+		<where>
+			<if test="category != null and category != ''">
+				p.category = #{category}
+			</if>
+			<if test="select != null and select.equals('product_name')">
+				<if test="search != null and !search.isempty">
+					and p.product_name like '%' || #{search} || '%'
+				</if>
+			</if>
+			<if test="select != null and select.equals('product_no')">
+				<if test="search != null and !search.isempty">
+					and p.product_no = #{sNum}
+				</if>
+			</if>
+			<if test="lNum != null">
+				and s.stock <![CDATA[ <= ]]> #{lNum}
+			</if>
+			<if test="uNum!= null">
+				and s.stock <![CDATA[ >= ]]> #{uNum}
+			</if>
+			
+			
+		</where>
+	</select>
+	
+	<select id="orderProduct" resultMap="productMap">
+		select p.product_no,
+			p.product_name,
+			p.category,
+			s.emp_id,
+			p.reg_date,
+			s.stock 
+		from product p left join stock s
+		on (p.product_no = s.product_no)
+		where p.product_no = #{productNo} and
+			s.emp_id = #{eId}
+	</select>
+	
+
+</mapper>
