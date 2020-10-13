@@ -433,7 +433,7 @@ CREATE TABLE REVIEW (
 
 --DROP TABLE QUIT_MEMBER;
 CREATE TABLE QUIT_MEMBER (
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	member_pwd	varchar2(300)		NOT NULL,
 	member_name	varchar2(128)		NOT NULL,
 	gender	char(1)		NOT NULL,

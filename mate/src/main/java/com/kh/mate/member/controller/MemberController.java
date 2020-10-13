@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -330,15 +331,70 @@ public class MemberController {
 			int result = memberService.insertMember(member);
 			map.put("msg", "회원 가입 축하드립니다~!");
 			redirectAttr.addFlashAttribute("msg", map);
-			return "member/login";
+
 		}catch(Exception e) {
 			log.error("error = {}", e);
 			map.put("msg", "회원 가입에 실패하셨습니다.");
 			redirectAttr.addFlashAttribute("msg", map);
-			return "/member/login";
 		}
+		return "redirect:/member/memberLogin.do";
 		
 	}
 	
+	@PostMapping("/member/memberUpdate.do")
+	public String memberUpdate(@RequestBody Member member,RedirectAttributes redirectAttr) {
+		
+			log.debug("member = {}", member);
+			try {
+				
+				Map<String, Object> map = new HashMap<>();
+				map.put("memberId", member.getMemberId());
+				map.put("memberPWD", member.getMemberPWD());
+				map.put("memberName", member.getMemberName());
+				map.put("gender", member.getGender());
+				map.put("phone", member.getPhone());
+		
+				int result = memberService.updateMember(map);
+				log.debug("result = {}", result);
+				log.debug("map = {}", map);
+				String msg = "정보 변경에 성공하였습니다.";
+				redirectAttr.addFlashAttribute("msg", msg);
+			
+				
+			}catch(Exception e) {
+				log.error("error = {}", e);
+				String msg = "정보 변경에 실패하였습니다.";
+				redirectAttr.addFlashAttribute("msg", msg);
+			}
+			
+			return "redirect:/member/myPage.do";
+		
+	}
+	
+	@PostMapping("/member/memberDelete.do")
+	public String memberDelete(@RequestBody Member member,RedirectAttributes redirectAttr) {
+		
+		log.debug("member = {}", member);
+		try {
+			
+			Map<String, Object> map = new HashMap<>();
+			map.put("memberId", member.getMemberId());
+			map.put("memberPWD", member.getMemberPWD());
+			
+			int result = memberService.deleteMember(map);
+			log.debug("result = {}", result);
+			log.debug("map = {}", map);
+			String msg = "아이디가 삭제 되었습니다";
+			redirectAttr.addFlashAttribute("msg", msg);
+		
+		}catch(Exception e) {
+			String msg = "아이디가 삭제 되지 않았습니다.";
+			redirectAttr.addFlashAttribute("msg", msg);
+			log.error("error = {}", e);
+		}
+		
+		return "redirect:/member/logout.do";
+		
+	}
 	
 }
