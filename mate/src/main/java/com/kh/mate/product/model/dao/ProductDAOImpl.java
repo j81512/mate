@@ -62,6 +62,11 @@ public class ProductDAOImpl implements ProductDAO {
 	public int productImageEnroll(ProductImages productImage) {
 		return session.insert("product.productImageEnroll", productImage);
 	}
+
+	@Override
+	public List<ProductMainImages> selectProductMainImages(String productNo) {
+		return session.selectList("product.selectProductMainImages", productNo);
+	}
 	
 	
 	

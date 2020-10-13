@@ -57,6 +57,11 @@ public class ProductController {
 								@RequestParam("upFile") MultipartFile[] upFiles,
 								HttpServletRequest request) throws IllegalStateException, IOException {
 		
+		String content = product.getContent();
+		log.debug("content = {}", content);
+		String repCont = content.replaceAll("temp", "images");
+		log.debug("repCont = {}", repCont);
+		product.setContent(repCont);
 		
 		//등록 시 업로드한 MainImages를 List로 가져오기
 		List<ProductMainImages> mainImgList = new ArrayList<>();
@@ -177,7 +182,6 @@ public class ProductController {
 						
 						printWriter.println(json);
 						
-						
 					} catch(IOException e) {
 						e.printStackTrace();
 					} finally {
@@ -200,7 +204,10 @@ public class ProductController {
 							  Model model) {
 		
 		Product product = productService.selectProductOne(productNo);
+		
+		List<ProductMainImages> list = productService.selectProductMainImages(productNo);
 		model.addAttribute("product", product);
+		model.addAttribute("list", list);
 		
 		return "product/productUpdate";
 	}

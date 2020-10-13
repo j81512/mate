@@ -12,18 +12,27 @@
  	
  	</select>
  	
- 	<select id="selectProductMainImages" resultType="productImages">
- 		select
- 			*
- 		from
- 			PRODUCT_MAIN_IMAGES
- 	</select>
- 	
  	<select id="selectProductOne" resultType="product">
  		select
+ 			P.*,
+            ( 
+            select 
+            	count(*)
+            from 
+                product_main_images PMI
+            where 
+                P.product_no = PMI.product_no ) image_count
+ 		from
+ 			product P
+ 		where
+ 			product_no = #{ productNo }
+ 	</select>
+ 	
+ 	<select id="selectProductMainImages" resultType="productMainImages">
+ 		select
  			*
  		from
- 			product
+ 			product_main_images
  		where
  			product_no = #{ productNo }
  	</select>

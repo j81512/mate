@@ -26,9 +26,28 @@ div#form-container{
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 <script>
 $(function(){
+
+	//ckEditor적용
 	CKEDITOR.replace('content',{
 				filebrowserUploadUrl : "${ pageContext.request.contextPath }/product/imageFileUpload.do"
 		});
+
+	//파일 선택 | 취소 파일라벨명을 변경한다.
+	$("[name=upFile]").on("change", function(){
+			var file = $(this).prop('files')[0];
+			//console.log("this = " + $(this).val()); //선택된 파일이 this로 넘어옴
+			//console.log(file);
+			//console.log($(this).prop('files')); // 0:File, length:1 배열로 파일의 정보 넘어옴
+			var $label = $(this).next(".custom-file-label");
+
+			if(file == undefined){
+				$label.html("파일을 선택하세요");		
+			}else{
+				$label.html(file.name);
+			}
+				
+		});
+	
 });
 
 </script>
@@ -38,7 +57,7 @@ $(function(){
 <form action = "${ pageContext.request.contextPath }/product/productUpdate.do"
 	  method = "POST"
 	  enctype = "multipart/form-data"
-	  id="productEUpdateFrm">
+	  id="productUpdateFrm">
   			<!-- 상품명 -->
   <div class="form-group row">
     <label for="productName" class="col-sm-2 col-form-label">상품명</label>
@@ -64,8 +83,20 @@ $(function(){
       </div>
     </div>
   </fieldset>
- 			 <!-- 섬네일 이미지 -->
-  
+ 			<!-- 섬네일 이미지 -->
+ <c:if test="${ not empty list }">
+	<c:forEach items="${ list }" var="mainImage" varStatus="vs">
+	  <div class="input-group mb-3" style="padding:0px;">
+	   <div class="input-group-prepend" style="padding:0px;">
+	     <span class="input-group-text">섬네일 사진 ${ vs.count }</span>
+	   </div>
+	   <div class="custom-file">
+	     <input type="file" class="custom-file-input" name="upFile" id="upFile${ vs.count }" >
+	     <label class="custom-file-label" for="upFile${ vs.count }">${ mainImage.originalFilename }</label>
+	   </div>
+	  </div>
+	</c:forEach>
+ </c:if>
   			<!-- 내용 -->
   <div class="form-group">
    <textarea name="content">${ product.content }</textarea>
@@ -83,12 +114,22 @@ $(function(){
   <div class="form-group col">
     <div class="col-sm-10">
       <button type="submit" class="btn btn-primary">등록</button>
-    </div>
-    <div class="col-sm-10">
       <button type="button" class="btn btn-danger" onclick="return goBackWithDel();">취소</button>
     </div>
   </div>
 </form>
 </div>
+<script>
+function goBackWithDel(){
+	var $updateFrm = $("#productUpdateFrm");
+
+	$updateFrm.attr("action", "${ pageContext.request.contextPath }/product/fileDelMethod.do");
+	$updateFrm.attr("method", "get");
+	$updateFrm.submit();
+	history.go(-1);
+
+	
+}
+</script>
 </body>
 </html>

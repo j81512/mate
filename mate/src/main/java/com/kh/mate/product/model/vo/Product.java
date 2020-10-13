@@ -26,8 +26,10 @@ public class Product {
 	private String content;
 	private int price;
 	private int enabled;
-	private List<String> productImagesName;
 	
+	
+	private int imageCount;
+	private List<String> productImagesName;
 	private List<ProductImages> productImages;
 	private List<ProductMainImages> productMainImages;
 	

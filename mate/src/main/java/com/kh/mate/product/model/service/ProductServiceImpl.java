@@ -101,12 +101,18 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Product selectProductOne(String productNo) {
+		Product product = productDAO.selectProductOne(productNo);
 		return productDAO.selectProductOne(productNo);
 	}
 
 	@Override
 	public int productImageEnroll(ProductImages productImage) {
 		return productDAO.productImageEnroll(productImage);
+	}
+
+	@Override
+	public List<ProductMainImages> selectProductMainImages(String productNo) {
+		return productDAO.selectProductMainImages(productNo);
 	}
 	
 	

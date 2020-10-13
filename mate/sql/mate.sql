@@ -11,7 +11,7 @@
 -- 유저 삭제 (system 계정)
 --=====================================
 --select sid,serial#,username,status from v$session where schemaname = 'MATE'; --여기서 나온 숫자를
---alter system kill session '116,2255'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
+--alter system kill session '161,1093'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
 --DROP USER mate CASCADE;
 --=====================================
 -- Drop 관련
@@ -93,9 +93,6 @@ CREATE TABLE MEMBER (
     constraint chk_member_gender check (gender in ('M','F'))
 );
 
-select * from member;
-insert into member values('honggd', '1234', '홍길동', 'M', '01011112222', sysdate);
-commit;
 --DROP TABLE Address;
 CREATE TABLE Address (
 	address_name	varchar2(128)		NOT NULL,
@@ -141,11 +138,9 @@ CREATE TABLE PRODUCT (
                                          references emp (emp_id)
                                          on delete cascade
 );
-
 --DROP TABLE PRODUCT_IMAGES;
 CREATE TABLE PRODUCT_IMAGES (
 	product_image_no number		NOT NULL,
-	original_filename	varchar2(256)		NOT NULL,
 	renamed_filename	varchar2(256)		NOT NULL,
 	product_no	number		NOT NULL,
     
