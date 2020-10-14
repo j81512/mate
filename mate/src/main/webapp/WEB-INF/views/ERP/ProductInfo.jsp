@@ -129,7 +129,7 @@ function orderProduct(empId,pNo){
 				<c:forEach items="${ list }" var="product">
 					<tr>
 						<td>${ product.productNo }</td>
-						<td><a href="${ pageContext.request.contextPath }/ERP/productDetail?productNo=${product.productNo}">${ product.productName }</a></td>
+						<td><a href="${ pageContext.request.contextPath }/ERP/productUpdate.do?productNo=${product.productNo}">${ product.productName }</a></td>
 						<td>${ product.category }</td>
 						<td>${ product.empId }</td>
 						<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>

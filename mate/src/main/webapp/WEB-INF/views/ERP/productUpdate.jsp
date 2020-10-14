@@ -113,8 +113,9 @@ $(function(){
   
   <div class="form-group col">
     <div class="col-sm-10">
-      <button type="submit" class="btn btn-primary">등록</button>
-      <button type="button" class="btn btn-danger" onclick="return goBackWithDel();">취소</button>
+      <button type="submit" class="btn btn-primary">수정 하기</button>
+      <button type="submit" class="btn btn-primary">삭제 하기</button>
+      <button type="button" class="btn btn-danger" onclick="return goBackWithDel();">뒤로 가기</button>
     </div>
   </div>
 </form>
@@ -123,7 +124,7 @@ $(function(){
 function goBackWithDel(){
 	var $updateFrm = $("#productUpdateFrm");
 
-	$updateFrm.attr("action", "${ pageContext.request.contextPath }/product/fileDelMethod.do");
+	$updateFrm.attr("action", "${ pageContext.request.contextPath }/ERP/fileDelMethod.do");
 	$updateFrm.attr("method", "get");
 	$updateFrm.submit();
 	history.go(-1);

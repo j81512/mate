@@ -352,7 +352,7 @@ public class ErpContorller {
 		model.addAttribute("product", product);
 		model.addAttribute("list", list);
 		
-		return "product/productUpdate";
+		return "ERP/productUpdate";
 	}
 	
 	//수정
