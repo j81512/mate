@@ -11,11 +11,13 @@
 			#{ empId },
 			#{ empPwd },
 			#{ empName },
-			#{ empAddress },
+			#{ empAddr1 },
+			#{ empAddr2 },
+			#{ empAddr3 },
 			#{ empPhone },
 			default,		
 			#{ empStatus }
-		)5
+		)
 	</insert>
 	
 	<select id="selectOneEmp" resultMap="empMap">
@@ -33,19 +35,21 @@
 	
 	</resultMap>
 	
-	<resultMap type="Product" id="productMap"></resultMap>
+	<resultMap type="Product" id="productMap">
+	
+	</resultMap>
 	
 
-	<select id="empList">
+	<select id="empList" resultType="EMP">
 		select
-			emp_id as empId
-			emp_name as empName
-			address as empAddress
-			phone as empPhone
-			enroll_date as empEnrollDate
-			status as empStatus
+			emp_id AS empId,
+			emp_name AS empName,
+			address AS empAddress,
+			phone AS empPhone,
+			enroll_date AS empEnrollDate,
+			status AS empStatus
 		from
-			tbl_emp
+			emp
 		order by
 			enroll_date
 	</select>

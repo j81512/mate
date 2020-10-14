@@ -37,8 +37,8 @@ public class ErpServiceImpl implements ErpService {
 	}
 	
 	@Override
-	public List<EMP> empList() {
-		return erpDAO.empList();
+	public List<EMP> empList(EMP emp) {
+		return erpDAO.empList(emp);
 	}
 
 	@Override

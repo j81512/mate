@@ -18,7 +18,7 @@ public interface ErpDAO {
 
 	List<Product> searchInfo(Map<String, Object> map);
 
-	List<EMP> empList();
+	List<EMP> empList(EMP emp);
 
 	Product orderProduct(Map<String, Object> map);
 

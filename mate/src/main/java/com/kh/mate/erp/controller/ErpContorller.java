@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,8 +44,8 @@ public class ErpContorller {
 	@Autowired
 	private ErpService erpService;
 	
-//	@Autowired
-//	private BCryptPasswordEncoder bcryptPasswordEncoder;
+	@Autowired
+	private BCryptPasswordEncoder bcryptPasswordEncoder;
 	
 	@RequestMapping("/ERP/menu.do")
 	public ModelAndView Menu(ModelAndView mav) {
@@ -69,10 +70,20 @@ public class ErpContorller {
 	
 	@RequestMapping("/ERP/EmpManage.do")
 	public ModelAndView empManage(ModelAndView mav) {
-		
-		
-		mav.setViewName("/ERP/EmpManage");
+		mav.setViewName("ERP/EmpManage");
 		return mav;
+	}
+	
+	@RequestMapping("/ERP/empList.do")
+	public String empList(Model model, EMP emp) {
+		
+		List<EMP> list = erpService.empList(emp);
+		
+		log.debug("list = {} ", list);
+		
+		model.addAttribute("list", list);
+		return "ERP/empList";
+		
 	}
 	
 	@RequestMapping(value="/ERP/EmpEnroll.do",
@@ -88,9 +99,9 @@ public class ErpContorller {
 	public String EmpEnroll(RedirectAttributes redirectAttr,
 							EMP emp) {
 		
-//		String rawPassword = emp.getEmpPassword();
-//		String encodedPassword = bcryptPasswordEncoder.encode(rawPassword);
-//		emp.setEmpPassword(encodedPassword);
+		String rawPassword = emp.getEmpPwd();
+		String encodedPassword = bcryptPasswordEncoder.encode(rawPassword);
+		emp.setEmpPwd(encodedPassword);
 		
 		log.debug("emp = " + emp);
 		
@@ -181,18 +192,6 @@ public class ErpContorller {
 		return "/ERP/productOrder";
 	}
 	
-	@RequestMapping("/ERP/empList.do")
-	public ModelAndView empList(ModelAndView mav) {
-		
-		List<EMP> list = erpService.empList();
-		
-		log.debug("list = {} ", list);
-		
-		mav.addObject("list", list);
-		mav.setViewName("ERP/empList");
-		return mav;
-
-	}
 	
 	//김종완 상품등록
 
