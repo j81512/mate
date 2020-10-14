@@ -26,7 +26,6 @@
 				<th scope="col">연락처</th>
 				<th scope="col">등록일</th>
 				<th scope="col">상태</th>
-				<th scope="col">관리</th>
 				<th>
 					<button type="button" 
 							onclick="location.href='${ pageContext.request.contextPath }/ERP/EmpEnroll.do';">지점/제조사 생성
@@ -40,15 +39,7 @@
 				<td>${ emp.empAddress }</td>
 				<td>${ emp.empPhone }</td>
 				<td><fmt:formatDate value="${ emp.empEnrollDate }" pattern="yy/MM/dd"/></td>
-				<td>${ emp.empStatus }</td>
-				<td>
-					<button type="button"
-							onclick="updateEmp(${ empId });">수정
-					</button>
-					<button type="button"
-							onclick="deleteEmp(${ empId });">삭제
-					</button>
-				</td>
+				<td>${ emp.empStatus }</td>		
 			</tr>
 			</c:forEach>	
 		</table>

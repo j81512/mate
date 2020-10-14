@@ -111,17 +111,29 @@ CREATE TABLE Address (
 );
 
 --DROP TABLE EMP;
+--DROP TABLE EMP CASCADE CONSTRAINTS;
+
 CREATE TABLE EMP (
 	emp_id	varchar2(15)		NOT NULL,
 	emp_pwd	varchar2(300)		NOT NULL,
 	emp_name	varchar2(256)		NOT NULL,
-	address	varchar2(512)		NOT NULL,
+	addr1	varchar2(512)		NOT NULL,
+	addr2	varchar2(512)		NOT NULL,
+	addr3	varchar2(512)		NOT NULL,
 	phone   char(11)		NOT NULL,
 	enroll_date	date	DEFAULT sysdate	NOT NULL,
 	status	number		NOT NULL,
     
     constraint pk_emp primary key (emp_id)
 );
+
+select
+	*
+from
+    emp
+order by
+    enroll_date;
+
 
 --DROP TABLE PRODUCT;
 CREATE TABLE PRODUCT (

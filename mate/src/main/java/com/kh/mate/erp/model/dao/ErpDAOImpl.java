@@ -38,7 +38,7 @@ public class ErpDAOImpl implements ErpDAO {
 	
 	
   @Override
-	public List<EMP> empList() {
+	public List<EMP> empList(EMP emp) {
 		return sqlSession.selectList("emp.empList");
 	}
 

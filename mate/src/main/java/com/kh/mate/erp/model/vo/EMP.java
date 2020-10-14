@@ -20,7 +20,9 @@ public class EMP implements Serializable{
 	private String empId;
 	private String empPwd;
 	private String empName;
-	private String empAddress;
+	private String empAddr1;
+	private String empAddr2;
+	private String empAddr3;
 	private String empPhone;
 	private Date empEnrollDate;
 	private int empStatus;
