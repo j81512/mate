@@ -27,6 +27,9 @@ public class Product {
 	private int price;
 	private int enabled;
 	
+	
+	private int imageCount;
+	private List<String> productImagesName;
 	private List<ProductImages> productImages;
 	private List<ProductMainImages> productMainImages;
 	

@@ -12,7 +12,7 @@ public interface ProductDAO {
 	//ch
 	List<Product> selectProductListAll();
 
-	List<ProductImages> selectProductMainImages(int productNo);
+	List<ProductMainImages> selectProductMainImages(int productNo);
 
 	List<Product> searchProductList(Map<String, Object> map);
 	
@@ -26,6 +26,8 @@ public interface ProductDAO {
 	Product selectProductOne(String productNo);
 
 	int productImageEnroll(ProductImages productImage);
+
+	List<ProductMainImages> selectProductMainImages(String productNo);
 
 
 

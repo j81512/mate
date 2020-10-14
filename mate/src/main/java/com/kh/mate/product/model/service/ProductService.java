@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
+import com.kh.mate.product.model.vo.ProductMainImages;
 
 public interface ProductService {
 	//ch
@@ -15,12 +16,13 @@ public interface ProductService {
 	//jw
 	int productEnroll(Product product);
 
-
 	List<Product> searchProductList(Map<String, Object> map);
 
 	Product selectProductOne(String productNo);
 
 	int productImageEnroll(ProductImages productImage);
+
+	List<ProductMainImages> selectProductMainImages(String productNo);
 
 
 

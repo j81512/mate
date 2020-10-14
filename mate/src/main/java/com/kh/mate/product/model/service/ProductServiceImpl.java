@@ -11,7 +11,10 @@ import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class ProductServiceImpl implements ProductService {
 	
 	@Autowired
@@ -23,8 +26,8 @@ public class ProductServiceImpl implements ProductService {
 		
 		if(list != null) {
 			for(Product p : list) {
-				List<ProductImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
-				p.setProductImages(imgs);
+				List<ProductMainImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
+				p.setProductMainImages(imgs);
 			}
 		}
 		return list;
@@ -37,8 +40,8 @@ public class ProductServiceImpl implements ProductService {
 		
 		if(list != null) {
 			for(Product p : list) {
-				List<ProductImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
-				p.setProductImages(imgs);
+				List<ProductMainImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
+				p.setProductMainImages(imgs);
 			}
 		}
 		
@@ -52,8 +55,8 @@ public class ProductServiceImpl implements ProductService {
 		List<Product> list = productDAO.productCategory(category);
 		if(list != null) {
 			for(Product p : list) {
-				List<ProductImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
-				p.setProductImages(imgs);
+				List<ProductMainImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
+				p.setProductMainImages(imgs);
 			}
 		}
 		
@@ -76,17 +79,40 @@ public class ProductServiceImpl implements ProductService {
 				result = productDAO.mainImagesEnroll(mainImg);
 			}
 		}
+		
+		//ImagesName도 추가
+		if(product.getProductImagesName() != null) {
+			List<String> imagesName = product.getProductImagesName();
+			String str = "";
+			for(int i = 0; i < imagesName.size(); i++) {
+				str += imagesName.get(i);
+				if(i != (imagesName.size() - 1)) {
+					str += ",";
+				}
+			}
+			log.debug("str = {}", str);
+			
+		ProductImages pigs = new ProductImages(0, str, product.getProductNo());
+		result = productDAO.productImageEnroll(pigs);
+		}
+		
 		return result;
 	}
 
 	@Override
 	public Product selectProductOne(String productNo) {
+		Product product = productDAO.selectProductOne(productNo);
 		return productDAO.selectProductOne(productNo);
 	}
 
 	@Override
 	public int productImageEnroll(ProductImages productImage) {
 		return productDAO.productImageEnroll(productImage);
+	}
+
+	@Override
+	public List<ProductMainImages> selectProductMainImages(String productNo) {
+		return productDAO.selectProductMainImages(productNo);
 	}
 	
 	
