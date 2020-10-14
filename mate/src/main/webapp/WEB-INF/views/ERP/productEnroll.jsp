@@ -5,7 +5,7 @@
 <script>
 $(function(){
 	CKEDITOR.replace('content',{
-				filebrowserUploadUrl : "${ pageContext.request.contextPath }/product/imageFileUpload.do"
+				filebrowserUploadUrl : "${ pageContext.request.contextPath }/ERP/imageFileUpload.do"
 		});
 });
 
@@ -54,7 +54,7 @@ div#form-container label.custom-file-label{text-align:left;}
 </head>
 <body>
 <div id="form-container" class="mx-auto">
-<form action = "${ pageContext.request.contextPath }/product/productEnroll.do"
+<form action = "${ pageContext.request.contextPath }/ERP/productEnroll.do"
 	  method = "POST"
 	  enctype = "multipart/form-data"
 	  id="productEnrollFrm">
@@ -140,7 +140,7 @@ div#form-container label.custom-file-label{text-align:left;}
 function goBackWithDel(){
 	var $enrollFrm = $("#productEnrollFrm");
 
-	$enrollFrm.attr("action", "${ pageContext.request.contextPath }/product/fileDelMethod.do");
+	$enrollFrm.attr("action", "${ pageContext.request.contextPath }/ERP/fileDelMethod.do");
 	$enrollFrm.attr("method", "get");
 	$enrollFrm.submit();
 	history.go(-1);

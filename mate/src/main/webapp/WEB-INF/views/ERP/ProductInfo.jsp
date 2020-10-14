@@ -129,7 +129,7 @@ function orderProduct(empId,pNo){
 				<c:forEach items="${ list }" var="product">
 					<tr>
 						<td>${ product.productNo }</td>
-						<td>${ product.productName }</td>
+						<td><a href="${ pageContext.request.contextPath }/ERP/productDetail?productNo=${product.productNo}">${ product.productName }</a></td>
 						<td>${ product.category }</td>
 						<td>${ product.empId }</td>
 						<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>
@@ -149,5 +149,18 @@ function orderProduct(empId,pNo){
 		</form>
 	</section>
 
+	<!-- 종완 상품 등록 버튼  -->
+	<div class="form-group">
+		<button type="button" class="btn btn-light" onclick="history.go(-1)">뒤로 가기</button>
+		<button type="button" class="btn btn-dark" onclick="productEnroll();">상품 등록</button>
+	</div>
+	
+<script>
+function productEnroll(){
+
+location.href="${ pageContext.request.contextPath }/ERP/productEnroll.do";
+	
+}
+</script>
 	</body>
 </html>

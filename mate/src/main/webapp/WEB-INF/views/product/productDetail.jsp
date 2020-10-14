@@ -8,17 +8,6 @@
 <script>
 $(function(){
 
-$("#updateBtn").on("click", function(){
-
-	var $frm = $("#productDetailFrm");
-
-	$frm.attr("action", "${ pageContext.request.contextPath }/product/productUpdate.do");
-	$frm.attr("method", "GET");
-	$frm.submit();
-
-	
-});
-
 	
 });
 
@@ -45,8 +34,6 @@ $("#updateBtn").on("click", function(){
 			가격 : <span><fmt:formatNumber value="${ product.price }" pattern="#,###"></fmt:formatNumber></span>원
 		</div>
 		
-		<c:choose>
-			<c:when test="${ not empty loginMember }">
 				<!-- 구입 수량 입력  -->
 				<div class="product-amount">
 					수량 : <input type="range" name="amount" />
@@ -57,18 +44,6 @@ $("#updateBtn").on("click", function(){
 					<button type="button" class="btn btn-primary">장바구니</button>
 					<button type="button" class="btn btn-primary">구매하기</button>
 				</div>
-			</c:when>
-			
-			<c:otherwise>
-				<!-- erp사용 회원일 경우 수정하기 | 삭제하기 버튼 추가 -->
-				<div class="btn-group">
-					<button type="button" class="btn btn-primary" id="updateBtn">수정하기</button>
-					<button type="button" class="btn btn-primary" id="delBtn">삭제하기</button>
-				</div>
-			</c:otherwise>
-		</c:choose>
-		
-		
 	
 	</div>
 </form>

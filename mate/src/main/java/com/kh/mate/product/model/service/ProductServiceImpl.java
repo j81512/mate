@@ -92,7 +92,7 @@ public class ProductServiceImpl implements ProductService {
 			}
 			log.debug("str = {}", str);
 			
-		ProductImages pigs = new ProductImages(0, null, str, product.getProductNo());
+		ProductImages pigs = new ProductImages(0, str, product.getProductNo());
 		result = productDAO.productImageEnroll(pigs);
 		}
 		

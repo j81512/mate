@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.product.model.vo.Product;
+import com.kh.mate.product.model.vo.ProductImages;
+import com.kh.mate.product.model.vo.ProductMainImages;
 
 @Repository
 public class ErpDAOImpl implements ErpDAO {
@@ -44,8 +46,30 @@ public class ErpDAOImpl implements ErpDAO {
 	public Product orderProduct(Map<String, Object> map) {
 		return sqlSession.selectOne("erp.orderProduct",map);
 	}
+
   
-  
+  //김종완
+	
+	@Override
+	public int productEnroll(Product product) {
+		return sqlSession.insert("erp.productEnroll", product);
+	}
+
+	@Override
+	public int productImageEnroll(ProductImages pigs) {
+		return sqlSession.insert("erp.productImageEnroll", pigs);
+	}
+
+	@Override
+	public Product selectProductOne(String productNo) {
+		return sqlSession.selectOne("erp.selectProductOne", productNo);
+	}
+
+	@Override
+	public List<ProductMainImages> selectProductMainImages(String productNo) {
+		return sqlSession.selectList("erp.selectProductMainImages", productNo);
+	}
+	
   
 
 	
