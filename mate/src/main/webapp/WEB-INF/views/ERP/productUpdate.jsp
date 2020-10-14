@@ -54,7 +54,7 @@ $(function(){
 </head>
 <body>
 <div id="form-container" class="mx-auto">
-<form action = "${ pageContext.request.contextPath }/product/productUpdate.do"
+<form action = "${ pageContext.request.contextPath }/ERP/productUpdate.do"
 	  method = "POST"
 	  enctype = "multipart/form-data"
 	  id="productUpdateFrm">
@@ -110,11 +110,14 @@ $(function(){
   
   <!-- 등록자  -->
   <input type="hidden" name="empId" value="testId"/>
+
+  <!-- 상품 번호 -->
+  <input type="hidden" name="productNo" value="${ product.productNo }" />
   
   <div class="form-group col">
     <div class="col-sm-10">
-      <button type="submit" class="btn btn-primary">수정 하기</button>
-      <button type="submit" class="btn btn-primary">삭제 하기</button>
+      <button type="submit" class="btn btn-primary" >수정 하기</button>
+      <button type="button" class="btn btn-primary" onclick="return delProduct();">삭제 하기</button>
       <button type="button" class="btn btn-danger" onclick="return goBackWithDel();">뒤로 가기</button>
     </div>
   </div>
@@ -130,6 +133,14 @@ function goBackWithDel(){
 	history.go(-1);
 
 	
+}
+
+function delProduct(){
+	var $updateFrm = $("#productUpdateFrm");
+
+	$updateFrm.attr("action", "${ pageContext.request.contextPath }/ERP/productDelete.do");
+	$updateFrm.attr("method", "post");
+	$updateFrm.submit();
 }
 </script>
 </body>

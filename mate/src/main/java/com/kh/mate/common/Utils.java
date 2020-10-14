@@ -64,7 +64,7 @@ public class Utils {
 	    }
 	
 	//폴더 내 파일명 가져오기
-	public static List<String> getOriginFileNameOnTemp(File sourceF) {
+	public static List<String> getFileName(File sourceF) {
 		File[] targetF = sourceF.listFiles();
 		List<String> fileNameList = new ArrayList<>();
 		for(File f : targetF) {

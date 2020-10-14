@@ -32,6 +32,7 @@ import com.kh.mate.common.Utils;
 import com.kh.mate.erp.model.service.ErpService;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.product.model.vo.Product;
+import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
 
 
@@ -257,9 +258,12 @@ public class ErpContorller {
 		File folder1 = new File(tempDir);
 		File folder2 = new File(imgDir);
 		
-		List<String> productImages = Utils.getOriginFileNameOnTemp(folder1);
+		List<String> productImages = Utils.getFileName(folder1);
 		log.debug("productImages = {}",productImages);
 		product.setProductImagesName(productImages);
+		product.setProductImagesName(Utils.getFileName(folder1));
+//		ProductImages productImage = new ProductImages();
+//		productImage.setRenamedFilename(Utils.getFileName(folder1));
 		
 		log.debug("product = {}", product);
 		int result = erpService.productEnroll(product);
