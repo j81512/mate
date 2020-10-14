@@ -34,6 +34,7 @@ $(function(){
 
 	//파일 선택 | 취소 파일라벨명을 변경한다.
 	$("[name=upFile]").on("change", function(){
+			var $valid = $("[name=fileChange]");
 			var file = $(this).prop('files')[0];
 			//console.log("this = " + $(this).val()); //선택된 파일이 this로 넘어옴
 			//console.log(file);
@@ -41,9 +42,11 @@ $(function(){
 			var $label = $(this).next(".custom-file-label");
 
 			if(file == undefined){
-				$label.html("파일을 선택하세요");		
+				$label.html("파일을 선택해 주세요");
+				$valid.val(0);	
 			}else{
 				$label.html(file.name);
+				$valid.val(1);
 			}
 				
 		});
@@ -97,6 +100,7 @@ $(function(){
 	  </div>
 	</c:forEach>
  </c:if>
+ <input type="hidden" name="fileChange" value="0" />
   			<!-- 내용 -->
   <div class="form-group">
    <textarea name="content">${ product.content }</textarea>

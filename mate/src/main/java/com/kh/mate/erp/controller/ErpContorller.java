@@ -261,7 +261,7 @@ public class ErpContorller {
 		List<String> productImages = Utils.getFileName(folder1);
 		log.debug("productImages = {}",productImages);
 		product.setProductImagesName(productImages);
-		product.setProductImagesName(Utils.getFileName(folder1));
+		//product.setProductImagesName(Utils.getFileName(folder1));
 //		ProductImages productImage = new ProductImages();
 //		productImage.setRenamedFilename(Utils.getFileName(folder1));
 		
@@ -362,7 +362,41 @@ public class ErpContorller {
 	//수정
 	@RequestMapping(value = "/ERP/productUpdate.do",
 					method = RequestMethod.POST)
-	public String productUpdate() {
+	public String productUpdate(Product product, 
+								@RequestParam("upFile") MultipartFile[] upFiles, 
+								@RequestParam("fileChange") int fileChange,
+								HttpServletRequest request) {
+		//Content내 저장 폴더 명 변경
+		String content = product.getContent();
+		log.debug("content = {}", content);
+		String repCont = content.replaceAll("temp", "images");
+		log.debug("repCont = {}", repCont);
+		product.setContent(repCont);
+		
+		
+		//fileChange값이 1이면 섬네일 이미지 수정감지 
+		log.debug("fileChange = {}", fileChange);
+		if(fileChange > 0) {
+			List<ProductMainImages> pmi 
+				= erpService.selectProductMainImages(String.valueOf(product.getProductNo()));
+			String mainDirectory = request.getServletContext()
+										  .getRealPath("/resources/upload/mainimages/");
+			
+				//저장된 파일 삭제
+				for(ProductMainImages p : pmi) {
+					boolean result = new File(mainDirectory, p.getRenamedFilename()).delete();
+					log.debug("result = {}", result);
+				}
+			
+			
+			
+			
+				
+				
+		}
+		
+		
+		
 		return null;
 	}
 }
