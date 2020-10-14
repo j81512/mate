@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,6 +56,7 @@ public class ErpContorller {
 	@RequestMapping("/ERP/EmpManage.do")
 	public ModelAndView empManage(ModelAndView mav) {
 		
+		
 		mav.setViewName("/ERP/EmpManage");
 		return mav;
 	}
@@ -101,22 +103,68 @@ public class ErpContorller {
 
 	//김찬희 ERP 상품검색
 	@RequestMapping("/ERP/searchInfo.do")
-	public String searchInfo(String category, String select) {
+	public String searchInfo(String category, String search, String select,String upper, String lower, Model model) {
 		
 		log.debug(category);
-		log.debug(select);
+		log.debug(search);
+		log.debug("upper = {}", upper);
+		log.debug("lower = {}", lower);
+		
+		log.debug("select = {}", select);
+		
 		Map<String,Object> map = new HashMap<String, Object>();
+		
+		if(!upper.isEmpty() && upper != null) {
+			int uNum = Integer.parseInt(upper);
+			map.put("uNum", uNum);
+			
+		}
+		if(!lower.isEmpty() && lower != null) {
+			int lNum = Integer.parseInt(lower);
+			map.put("lNum", lNum);
+			
+		}
+		if(select.equals("product_no")) {
+			int sNum = Integer.parseInt(search);
+			log.debug("sNum = {}",sNum);
+			map.put("sNum", sNum);
+		}
+		
 		
 		map.put("category", category);
 		map.put("select", select);
+		map.put("search", search);
 		
 		
 		List<Product> list = erpService.searchInfo(map);
 		
 		log.debug("list = {}",list);
 		
+		model.addAttribute("list",list);
 		
 		return "/ERP/ProductInfo";
+	}
+	
+	//김찬희 erp발주
+	@RequestMapping("/ERP/orderERP.do")
+	public String orderProduct(String eId, String pNo, Model model) {
+		
+		log.debug("productNo = {}", pNo);
+		log.debug("empId = {}", eId);
+		
+		int productNo = Integer.parseInt(pNo);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("eId", eId);
+		map.put("productNo", productNo);
+		
+		Product product = erpService.orderProduct(map);
+		
+		model.addAttribute("product",product);
+		
+		log.debug("product = {}",product);
+		
+		return "/ERP/productOrder";
 	}
 	
 	@RequestMapping("/ERP/empList.do")

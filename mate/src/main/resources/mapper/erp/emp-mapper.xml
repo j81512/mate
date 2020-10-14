@@ -15,7 +15,7 @@
 			#{ empPhone },
 			default,		
 			#{ empStatus }
-		)
+		)5
 	</insert>
 	
 	<select id="selectOneEmp" resultMap="empMap">
@@ -32,14 +32,6 @@
 	<resultMap type="emp" id="empMap">
 	
 	</resultMap>
-	
-
-	<select id="searchInfo" resultMap="productMap">
-		select
-			*
-		from
-			product
-	</select>
 	
 	<resultMap type="Product" id="productMap"></resultMap>
 	

@@ -143,7 +143,6 @@ CREATE TABLE PRODUCT (
 --DROP TABLE PRODUCT_IMAGES;
 CREATE TABLE PRODUCT_IMAGES (
 	product_image_no number		NOT NULL,
-	original_filename	varchar2(256)		NOT NULL,
 	renamed_filename	varchar2(256)		NOT NULL,
 	product_no	number		NOT NULL,
     
@@ -431,7 +430,7 @@ CREATE TABLE REVIEW (
 
 --DROP TABLE QUIT_MEMBER;
 CREATE TABLE QUIT_MEMBER (
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	member_pwd	varchar2(300)		NOT NULL,
 	member_name	varchar2(128)		NOT NULL,
 	gender	char(1)		NOT NULL,

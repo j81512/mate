@@ -26,8 +26,6 @@ function category(ct){
 	$searchCategory.submit();
 	
 }
-function clickBtn(){
-};
 </script>
 <!-- 김찬희 카테고리작업 스크립트끝 -->
 </head>
@@ -40,7 +38,7 @@ function clickBtn(){
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1">
-          <span class="sr-only"><img src="${ pageContext.request.contextPath }/resources/images/play.png" onclick="clickBtn();" width="50px" class="menuImg"/></span>
+          <span class="sr-only"><img src="${ pageContext.request.contextPath }/resources/images/play.png"  width="50px" class="menuImg"/></span>
           </button>
           <a class="navbar-brand" href="${ pageContext.request.contextPath }">Mate</a>
         </div>
@@ -56,9 +54,10 @@ function clickBtn(){
                <li class="nav-item">
 			        <a class="nav-link" href="${ pageContext.request.contextPath }/ERP/menu.do">ERP확인용</a>
 			   </li>
-            <li><a href="#">MyPage</a></li>
-            <li><a href="#">C/S</a></li>
-            <li><a href="#">Location</a></li>
+
+            <li><a href="${ pageContext.request.contextPath }/member/myPage.do">MyPage</a></li>
+            <li><a href="${pageContext.request.contextPath}/cs/cs.do">C/S</a></li>
+            <li><a href="${ pageContext.request.contextPath }/company/location.do">Location</a></li>
             <!-- 1. 추가 : 판매 상품 보기 -> toy -->
             <li class="nav-item dropdown">
 		        <a class="nav-link dropdown-toggle" href="#"
@@ -88,7 +87,7 @@ function clickBtn(){
 				${ loginMember.memberName }님, 반갑습니다.	
 				<button class="btn btn-outline-success my-2 my-sm-0"
 	               type="button"
-	               onclick="location.href='${ pageContext.request.contextPath}/member/logout.do';">로그아웃</button>
+	               onclick="location.href='${ pageContext.request.contextPath}/member/logout.do'"><img src="${ pageContext.request.contextPath }/resources/images/cart.png" width="80px" class="loginImg"/>로그아웃</button>
 			</c:otherwise>
 	
 		   </c:choose>
@@ -103,4 +102,8 @@ function clickBtn(){
 	<input type="hidden" name="category" value=""/>
 </form>
 <!-- 김찬희 작업끝 -->
+
 </header>
+
+<section id="content-sec">
+
