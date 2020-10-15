@@ -23,7 +23,7 @@
     	<li>
 	    	<button type="button" 
 	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/EmpManage.do';">
+	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/empManage.do';">
 			  <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>지점/업체 관리
 			</button>
     	</li>

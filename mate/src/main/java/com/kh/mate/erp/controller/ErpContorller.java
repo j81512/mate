@@ -68,16 +68,28 @@ public class ErpContorller {
 		return mav;
 	}
 	
-	@RequestMapping("/ERP/EmpManage.do")
-	public ModelAndView empManage(ModelAndView mav) {
-		mav.setViewName("ERP/EmpManage");
+	@RequestMapping("/ERP/empInfoDetail.do")
+	public ModelAndView empInfoDetail(ModelAndView mav) {
+		
+		mav.setViewName("/ERP/empInfoDetail");
 		return mav;
 	}
 	
-	@RequestMapping("/ERP/empList.do")
-	public String empList(Model model, EMP emp) {
+	@RequestMapping("/ERP/empManage.do")
+	public String empManage(Model model) {
+		List<EMP> list = erpService.empList();
 		
-		List<EMP> list = erpService.empList(emp);
+		log.debug("list = {} ", list);
+		
+		model.addAttribute("list", list);
+		return "ERP/empManage";
+	}
+	
+	@RequestMapping(value="/ERP/empList.do",
+					method = RequestMethod.GET)
+	public String empList(Model model) {
+		
+		List<EMP> list = erpService.empList();
 		
 		log.debug("list = {} ", list);
 		
@@ -125,6 +137,12 @@ public class ErpContorller {
 		return map;
 	}
 	
+	@RequestMapping("/ERP/empInfoView.do")
+	public String empInfoView(String empId, Model model) {
+		model.addAttribute("emp", erpService.selectOneEmp(empId));
+		log.debug("empId = {}", empId);
+		return "ERP/empInfoView";
+	}
 
 	//김찬희 ERP 상품검색
 	@RequestMapping("/ERP/searchInfo.do")
