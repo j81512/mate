@@ -30,6 +30,7 @@ public interface ErpDAO {
 
 	List<ProductMainImages> selectProductMainImages(String productNo);
 
+
 	int productMainImagesEnroll(ProductMainImages mainImg);
 
 	int productUpdate(Product product);
@@ -42,5 +43,6 @@ public interface ErpDAO {
 
 	int productImagesDelete(String productNo);
 
+	String findEmpid(int productNo);
 
 }
