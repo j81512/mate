@@ -145,16 +145,17 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-3 col-md-offset-4">
-			<div class="form-login">
-				<form class="form-signin"
+		 <ul class="nav nav-tabs">
+             <li class="active"><a href="#member" data-toggle="tab">일반 회원</a></li>
+             <li><a href="#adminTab" data-toggle="tab">관리자 회원</a></li>
+         </ul>
+          <div id="myTabContent" class="tab-content">
+          <div class="tab-pane active in" id="member">
+			<div class="form">
+				<form class="form"
 					action="${ pageContext.request.contextPath }/member/loginCheck.do"
 					method="post" id="login-form">
 					<h3 class="heading-desc">로그인</h3>
-					<label class="radio-inline"> <input type="radio"
-						name="member" id="buyMember_" value="C" checked> 일반회원
-					</label> <label class="radio-inline"> <input type="radio"
-						name="member" id="businessMember_" value="B"> 관리자 회원
-					</label> <br />
 					<div class="form-group">
 						<input type="text" class="form-control" name="memberId" id="memberId_"
 							placeholder="아이디" required autofocus />
@@ -272,11 +273,39 @@
 						</div>
 					</div>
 				</form>
-
+					</div>
+				</div>
+					<!-- 관리자용 로그인 화면 -->
+	
+				  <div class="tab-pane fade" id="adminTab">
+                      <form id="adminTab">
+                     	<h3 class="heading-desc">관리자 로그인</h3>
+                     	<div class="form-group">
+	                        <label for="empName_">아이디</label>
+	                        <input type="text" name="empName" value="" class="input-xlarge">
+	                    </div>
+	                    <div class="form-group">   
+	                        <label for="empPassword_">비밀번호</label>
+	                        <input type="password" name="empPassword"  class="input-xlarge">
+                       	</div>
+                       	<div class="form-check form-check-inline">
+							<input type="radio" class="form-check-input" name="status" id="status2" value="2" checked>
+							<label  class="form-check-label" for="status2">제조사</label>&nbsp;
+							<input type="radio" class="form-check-input" name="status" id="status1" value="1" >
+							<label  class="form-check-label" for="status1">지점</label>
+							<input type="radio" class="form-check-input" name="status" id="status0" value="0" >
+							<label  class="form-check-label" for="status0">본사</label>
+						</div>
+                        <div>
+                          <button type="submit" class="btn btn-primary">로그인</button>
+                        </div>
+                      </form>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
 <!-- 비밀번호 찾기용 모달 창 -->
 
 <jsp:include page="/WEB-INF/views/common/footerS.jsp" />
