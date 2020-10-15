@@ -1,5 +1,6 @@
 package com.kh.mate.erp.model.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +59,15 @@ public class ErpServiceImpl implements ErpService {
 		
 		int result = erpDAO.productEnroll(product);
 		
+		//MainImages가 추가되어있다면 실행될 메소드
+		if(product.getProductMainImages() != null) {
+			for(ProductMainImages mainImg : product.getProductMainImages()) {
+				
+				mainImg.setProductNo(product.getProductNo());
+				result = erpDAO.productMainImagesEnroll(mainImg);
+			}
+		}
+
 		//ImagesName도 추가
 		if(product.getProductImagesName() != null) {
 			List<String> imagesName = product.getProductImagesName();
@@ -87,8 +97,58 @@ public class ErpServiceImpl implements ErpService {
 		return erpDAO.selectProductMainImages(productNo);
 	}
 
+	@Override
+	public List<ProductImages> selectProductImages(String productNo) {
+		return erpDAO.selectProductImages(productNo);
+	}
 	
-	
+	@Override
+	public int productUpdate(Product product) {
+		int result = erpDAO.productUpdate(product);
+		
+		//productMainImage 수정 여부 확인 후 진행
+		if(result > 0 && product.getProductMainImages() != null) {
+			//기존 섬네일 이미지 삭제
+			result = erpDAO.productMainImagesDelete(String.valueOf(product.getProductNo()));
+			//업데이트된 이미지 새로 등록
+			for(ProductMainImages mainImg : product.getProductMainImages()) {
+				mainImg.setProductNo(product.getProductNo());
+				result = erpDAO.productMainImagesEnroll(mainImg);
+			}
+			
+		}
+		
+		//productImage 수정 여부 확인 후 진행
+		if(product.getProductImagesName() != null) {
+			List<String> imagesName = product.getProductImagesName();
+			String str = "";
+			for(int i = 0; i < imagesName.size(); i++) {
+				str += imagesName.get(i);
+				if(i != (imagesName.size() - 1)) {
+					str += ",";
+				}
+			}
+			log.debug("str = {}", str);
+			
+		ProductImages pigs = new ProductImages(0, str, product.getProductNo());
+		result = erpDAO.productImageEnroll(pigs);
+		}
+		
+		log.debug("result@service = {}", result);
+		return result;
+	}
+
+	@Override
+	public int productDelete(String productNo) {
+		//productTable 데이터 삭제
+		int result = 0;
+		
+		result = erpDAO.productDelete(productNo);
+		log.debug("result@service1 = {}", result);
+		
+		
+		return result;
+	}
 	
 	
 	

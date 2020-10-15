@@ -35,19 +35,19 @@
  		update
  			member
  		<set>
- 			<if test="memberId != null and memberId != ''">
+ 			<if test="memberId != null">
  				member_id = #{ memberId },
  			</if>
- 			<if test="memberPWD != null and memberPWD != ''">
+ 			<if test="memberPWD != null">
  				member_pwd = #{ memberPWD },
  			</if>
- 			<if test="memberName != null and memberName != ''">
+ 			<if test="memberName != null">
  				member_name = #{ memberName },
  			</if>
- 			<if test="gender != null and gender != ''">
+ 			<if test="gender != null">
  				gender = #{ gender },
  			</if>
- 			<if test="phone != null and phone != ''">
+ 			<if test="phone != null">
  				phone = #{ phone }
  			</if>
  		</set>
