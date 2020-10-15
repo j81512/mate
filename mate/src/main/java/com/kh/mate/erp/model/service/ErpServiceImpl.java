@@ -93,12 +93,18 @@ public class ErpServiceImpl implements ErpService {
 	}
 
 	@Override
+	public List<ProductImages> selectProductImages(String productNo) {
+		return erpDAO.selectProductImages(productNo);
+	}
+	
+	@Override
 	public int productUpdate(Product product) {
 		int result = erpDAO.productUpdate(product);
 		
-		if(result > 0) {
+		//productMainImage 수정 여부 확인 후 진행
+		if(result > 0 && product.getProductMainImages() != null) {
 			//기존 섬네일 이미지 삭제
-			result = erpDAO.productMainImagesDelete(product.getProductNo());
+			result = erpDAO.productMainImagesDelete(String.valueOf(product.getProductNo()));
 			//업데이트된 이미지 새로 등록
 			for(ProductMainImages mainImg : product.getProductMainImages()) {
 				mainImg.setProductNo(product.getProductNo());
@@ -107,7 +113,7 @@ public class ErpServiceImpl implements ErpService {
 			
 		}
 		
-		//ImagesName도 추가
+		//productImage 수정 여부 확인 후 진행
 		if(product.getProductImagesName() != null) {
 			List<String> imagesName = product.getProductImagesName();
 			String str = "";
@@ -123,11 +129,21 @@ public class ErpServiceImpl implements ErpService {
 		result = erpDAO.productImageEnroll(pigs);
 		}
 		
+		log.debug("result@service = {}", result);
 		return result;
 	}
 
-	
-	
+	@Override
+	public int productDelete(String productNo) {
+		//productTable 데이터 삭제
+		int result = 0;
+		
+		result = erpDAO.productDelete(productNo);
+		log.debug("result@service1 = {}", result);
+		
+		
+		return result;
+	}
 	
 	
 	

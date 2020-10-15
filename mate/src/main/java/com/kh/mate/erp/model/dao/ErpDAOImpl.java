@@ -69,6 +69,11 @@ public class ErpDAOImpl implements ErpDAO {
 	public List<ProductMainImages> selectProductMainImages(String productNo) {
 		return sqlSession.selectList("erp.selectProductMainImages", productNo);
 	}
+	
+	@Override
+	public List<ProductImages> selectProductImages(String productNo) {
+		return sqlSession.selectList("erp.selectProductImages", productNo);
+	}
 
 	@Override
 	public int productMainImagesEnroll(ProductMainImages mainImg) {
@@ -81,9 +86,21 @@ public class ErpDAOImpl implements ErpDAO {
 	}
 
 	@Override
-	public int productMainImagesDelete(int productNo) {
+	public int productMainImagesDelete(String productNo) {
 		return sqlSession.delete("erp.productMainImagesDelete", productNo);
 	}
+
+	@Override
+	public int productDelete(String productNo) {
+		return sqlSession.delete("erp.productDelete", productNo);
+	}
+
+
+	@Override
+	public int productImagesDelete(String productNo) {
+		return sqlSession.delete("erp.productImagesDelete", productNo);
+	}
+	
 	
 	
 	
