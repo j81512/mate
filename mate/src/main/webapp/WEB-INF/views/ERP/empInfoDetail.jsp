@@ -6,8 +6,9 @@
 
 <jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
 <div id="enroll-container" class="mx-auto text-center">
-	<form id="empEnrollFrm" 
-		  action="EmpEnroll.do" 
+	<form id="infoDetailFrm"
+		  name = "infoDetailFrm"
+		  action="${pageContext.request.contextPath}/ERP/infoUpdate.do" 
 		  method="post">
 		<table class="mx-auto">
 			<tr>
@@ -16,28 +17,19 @@
 					<div id="empId-container">
 						<input type="text" 
 							   class="form-control" 
-							   placeholder="4글자이상"
 							   name="empId" 
 							   id="empId_"
-							   required>
-						<span class="guide ok">이 아이디는 사용가능합니다.</span>
-						<span class="guide error">이 아이디는 사용할 수 없습니다.</span>
-						<input type="hidden" id="idValid" value="0" />
+							   value="${ emp.empId }"
+							   readyonly="readonly">
 					</div>
 				</td>
 			</tr>
 			<tr>
 				<th>패스워드</th>
 				<td>
-					<input type="password" class="form-control" name="empPwd" id="password_" required>
+					<input type="password" class="form-control" name="empPwd" id="password_">
 				</td>
 			</tr>
-			<tr>
-				<th>패스워드확인</th>
-				<td>	
-					<input type="password" class="form-control" id="password2" required>
-				</td>
-			</tr>  
 			<tr>
 				<th>지점/업체 선택</th>
 				<td>	
@@ -48,103 +40,29 @@
 			<tr>
 				<th>지점/업체명</th>
 				<td>	
-					<input type="text" class="form-control" name="empName" id="empName" required>
+					<input type="text" class="form-control" name="empName" id="empName" value="${ emp.empName }">
 				</td>
 			</tr>
 			<tr>
 				<th>전화번호</th>
 				<td>	
-					<input type="tel" class="form-control" placeholder="(-없이)01012345678" name="empPhone" id="empPhone" maxlength="11" required>
+					<input type="tel" class="form-control" placeholder="(-없이)01012345678" name="empPhone" id="empPhone" value="${ emp.empPhone }"maxlength="11" required>
 				</td>
 			</tr>
 			<tr>
 				<th>주소</th>
 				<td>
-					<input class="form-control" style="width: 40%; display: inline;" placeholder="우편번호" name="empAddr1" id="empAddr1" type="text" readonly="readonly" >
+					<input class="form-control" style="width: 40%; display: inline;" placeholder="우편번호" name="empAddr1" id="empAddr1" type="text" value="${ emp.empAddr1 }"readonly="readonly" >
     				<button type="button" class="btn btn-default" onclick="execPostCode();"><i class="fa fa-search"></i> 우편번호 찾기</button> 	
-					<input class="form-control" style="top: 5px;" placeholder="도로명 주소" name="empAddr2" id="empAddr2" type="text" readonly="readonly" />
-					<input class="form-control" placeholder="상세주소" name="empAddr3" id="empAddr3" type="text"  />
+					<input class="form-control" style="top: 5px;" placeholder="도로명 주소" name="empAddr2" id="empAddr2" type="text" value="${ emp.empAddr2 }"readonly="readonly" />
+					<input class="form-control" placeholder="상세주소" name="empAddr3" id="empAddr3" value="${ emp.empAddr3 }"type="text"  />
 				</td>
 			</tr>
 		</table>
-		<input type="submit" value="생성" >
-		<input type="reset" value="취소">
+		<input type="submit" value="수정">
+		<input type="button" value="삭제">
 	</form>
 </div>
-<script>
-$("#empId_").keyup(function(){
-	var $this = $(this);
-
-	if($this.val().length < 4){
-		$(".guide").hide();
-		$("#idValid").val(0);
-		return;
-	}
-	
-	$.ajax({
-		url : "${ pageContext.request.contextPath }/ERP/checkIdDuplicate.do",
-		data : {
-			empId : $this.val()
-		},
-		method : "GET",
-		dataType : "json",
-		success : function(data){
-			console.log(data);
-			var $ok = $(".guide.ok");
-			var $error = $(".guide.error");
-			var $idValid = $("#idValid");
-	
-			if(data.isAvailable){
-				$ok.show();
-				$error.hide();
-				$idValid.val(1);
-			}
-			else{
-				$ok.hide();
-				$error.show();
-				$idValid.val(0);
-			}
-			
-		},
-		error : function(xhr, status, err){
-			console.log("처리실패!");
-			console.log(xhr);
-			console.log(status);
-			console.log(err);
-		}
-	});
-
-});
-
-$("#password2").blur(function(){
-	var $p1 = $("#password_"), $p2 = $("#password2");
-	if(p1.val() != p2.val()){
-		alert("패스워드가 일치하지 않습니다.");
-		$p1.focus();
-	}
-});
-	
-$("#empEnrollFrm").submit(function(){
-
-	var $empId = $("#empId_");
-	if(/^\w{4,}$/.test($empId.val()) == false) {
-		alert("아이디는 최소 4자리이상이어야 합니다.");
-		$empId.focus();
-		return false;
-	}
-
-	var $idValid = $("#idValid");
-	if($idValid.val() == 0){
-		alert("사용가능한 아이디를 입력하세요.");
-		$empId.select();
-		return false;
-	}
-
-	return true;
-});
-
-
-</script>
 
 <!-- 주소API -->
 <!-- 주소검색용 스크립트 -->

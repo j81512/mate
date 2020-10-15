@@ -38,8 +38,8 @@ public class ErpServiceImpl implements ErpService {
 	}
 	
 	@Override
-	public List<EMP> empList(EMP emp) {
-		return erpDAO.empList(emp);
+	public List<EMP> empList() {
+		return erpDAO.empList();
 	}
 
 	@Override
@@ -52,8 +52,9 @@ public class ErpServiceImpl implements ErpService {
 		return product;
 	}
 	
-	//김종완
 	
+	//김종완
+
 	@Override
 	public int productEnroll(Product product) {
 		

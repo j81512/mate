@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cs">
+  
+ <select id="selectCsList" resultType="cs">
+		select
+			*
+		from 
+			CS
+		order by
+			cs_no DESC
+	</select>
+	
+	<insert id="insertCs">
+		insert into
+			CS
+		values (
+			seq_cs_no.nextval,
+			#{ title },
+			#{ content },
+			#{ memberId },
+			default,
+			#{ secret },
+			#{ notice }		
+		)
+	</insert>
+
+	<delete id="deleteCs">
+        delete from 
+        	CS 
+     	where 
+     		cs_no = #{ csNo } 
+    </delete>
+
+</mapper>

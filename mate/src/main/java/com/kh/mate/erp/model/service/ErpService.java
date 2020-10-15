@@ -18,7 +18,7 @@ public interface ErpService {
 
 	List<Product> searchInfo(Map<String, Object> map);
 
-	List<EMP> empList(EMP emp);
+	List<EMP> empList();
 
 	Product orderProduct(Map<String, Object> map);
 
@@ -33,6 +33,8 @@ public interface ErpService {
 	int productDelete(String productNo);
 
 	List<ProductImages> selectProductImages(String productNo);
+
+
 
 
 

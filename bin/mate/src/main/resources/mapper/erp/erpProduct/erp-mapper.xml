@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="erp">
+
+
+	<resultMap type="Product" id="productMap"></resultMap>
+	
+	<select id="searchInfo" resultMap="productMap">
+		select p.product_no,
+			p.product_name,
+			p.category,
+			s.emp_id,
+			p.reg_date,
+			s.stock 
+		from product p left join stock s
+		on (p.product_no = s.product_no)
+		<where>
+			<if test="category != null and category != ''">
+				p.category = #{category}
+			</if>
+			<if test="select != null and select.equals('product_name')">
+				<if test="search != null and !search.isempty">
+					and p.product_name like '%' || #{search} || '%'
+				</if>
+			</if>
+			<if test="select != null and select.equals('product_no')">
+				<if test="search != null and !search.isempty">
+					and p.product_no = #{sNum}
+				</if>
+			</if>
+			<if test="lNum != null">
+				and s.stock <![CDATA[ <= ]]> #{lNum}
+			</if>
+			<if test="uNum!= null">
+				and s.stock <![CDATA[ >= ]]> #{uNum}
+			</if>
+			
+			
+		</where>
+	</select>
+	
+	<select id="orderProduct" resultMap="productMap">
+		select p.product_no,
+			p.product_name,
+			p.category,
+			s.emp_id,
+			p.reg_date,
+			s.stock 
+		from product p left join stock s
+		on (p.product_no = s.product_no)
+		where p.product_no = #{productNo} and
+			s.emp_id = #{eId}
+	</select>
+	
+	<select id="selectProductOne" resultType="product">
+ 		select
+ 			*
+ 		from
+ 			product 
+ 		where
+ 			product_no = #{ productNo }
+ 	</select>
+ 	
+ 	<select id="selectProductMainImages" resultType="productMainImages">
+ 		select
+ 			*
+ 		from
+ 			product_main_images
+ 		where
+ 			product_no = #{ productNo }
+ 	</select>
+ 	
+	<insert id="productEnroll">
+ 		insert into 
+ 			product
+ 		values
+ 		(
+ 		seq_product_no.nextval,
+ 		 #{productName},
+ 		 default,
+ 		 #{category},
+ 		 #{content},
+ 		 #{price},
+ 		 #{empId},
+ 		 default
+ 		)
+ 		<selectKey order="AFTER" resultType="_int" keyProperty="productNo">
+			select
+				seq_product_no.currval 			
+ 			from
+ 				dual
+ 		</selectKey>
+ 	</insert>
+ 
+ 	
+ 	<insert id="productImageEnroll">
+ 		insert into
+ 			product_images
+ 		values
+ 		(
+		seq_product_image_no.nextval,
+		#{ renamedFilename },
+		#{ productNo }
+ 		)
+ 	</insert>
+
+</mapper>
