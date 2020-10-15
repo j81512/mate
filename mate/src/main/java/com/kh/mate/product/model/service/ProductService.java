@@ -14,7 +14,6 @@ public interface ProductService {
 	List<Product> productCategory(String category);
 	
 	//jw
-	int productEnroll(Product product);
 
 	List<Product> searchProductList(Map<String, Object> map);
 

@@ -27,6 +27,9 @@ public interface ErpService {
 
 	List<ProductMainImages> selectProductMainImages(String productNo);
 
+	int productUpdate(Product product);
+
+
 
 
 }

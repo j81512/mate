@@ -105,5 +105,37 @@
 		#{ productNo }
  		)
  	</insert>
+ 	
+ 	<insert id="productMainImagesEnroll">
+ 		insert into
+ 			product_main_images
+ 		values
+ 		(
+ 		seq_product_main_image_no.nextval,
+ 		#{ originalFilename },
+ 		#{ renamedFilename },
+ 		#{ productNo }
+ 		)
+ 	</insert>
+ 	
+ 	<update id="productUpdate">
+ 		update product
+ 			set
+ 		product_name = #{ productName },
+ 		category = #{ category },
+ 		content = #{ content },
+ 		price = #{ price }
+ 			where
+ 		product_no = #{ productNo }	
+ 	</update>
+ 	
+ 	
+ 	<delete id="productMainImagesDelete">
+ 		delete from
+ 			product_main_images
+ 		where
+ 			product_no = #{ productNo }
+ 	</delete>
+ 	
 
 </mapper>

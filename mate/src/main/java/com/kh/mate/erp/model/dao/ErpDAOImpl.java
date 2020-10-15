@@ -69,6 +69,24 @@ public class ErpDAOImpl implements ErpDAO {
 	public List<ProductMainImages> selectProductMainImages(String productNo) {
 		return sqlSession.selectList("erp.selectProductMainImages", productNo);
 	}
+
+	@Override
+	public int productMainImagesEnroll(ProductMainImages mainImg) {
+		return sqlSession.insert("erp.productMainImagesEnroll", mainImg);
+	}
+
+	@Override
+	public int productUpdate(Product product) {
+		return sqlSession.update("erp.productUpdate", product);
+	}
+
+	@Override
+	public int productMainImagesDelete(int productNo) {
+		return sqlSession.delete("erp.productMainImagesDelete", productNo);
+	}
+	
+	
+	
 	
   
 
