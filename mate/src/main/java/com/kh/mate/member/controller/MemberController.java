@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.http.HttpResponse;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -276,12 +278,13 @@ public class MemberController {
 	
 	@PostMapping("/member/loginCheck.do")
 	public String memberLogin(@RequestParam("memberId") String userId
-			  ,@RequestParam("password") String password
+			  ,@RequestParam("memberPWD") String password
 			  ,RedirectAttributes redirectAttr
 			  ,Model model
 			  ,HttpSession session) {
 		log.debug("userId = {}", userId);
 		log.debug("password ={}", password);
+
 		Member loginMember = memberService.selectOneMember(userId);
 		
 		log.debug("loginMember = {}", loginMember);
@@ -342,7 +345,7 @@ public class MemberController {
 	}
 	
 	@PostMapping("/member/memberUpdate.do")
-	public String memberUpdate(@RequestBody Member member,RedirectAttributes redirectAttr) {
+	public String memberUpdate(Member member,RedirectAttributes redirectAttr) {
 		
 			log.debug("member = {}", member);
 			try {
@@ -372,7 +375,8 @@ public class MemberController {
 	}
 	
 	@PostMapping("/member/memberDelete.do")
-	public String memberDelete(@RequestBody Member member,RedirectAttributes redirectAttr) {
+	public String memberDelete(@RequestBody Member member,RedirectAttributes redirectAttr
+								,SessionStatus sessionStatus) {
 		
 		log.debug("member = {}", member);
 		try {
@@ -385,16 +389,32 @@ public class MemberController {
 			log.debug("result = {}", result);
 			log.debug("map = {}", map);
 			String msg = "아이디가 삭제 되었습니다";
-			redirectAttr.addFlashAttribute("msg", msg);
+		
+			if(!sessionStatus.isComplete())
+			sessionStatus.setComplete();
 		
 		}catch(Exception e) {
 			String msg = "아이디가 삭제 되지 않았습니다.";
 			redirectAttr.addFlashAttribute("msg", msg);
 			log.error("error = {}", e);
 		}
-		
-		return "redirect:/member/logout.do";
+		return "redirect:/";
 		
 	}
 	
+	@RequestMapping("/member/checkPasswordDuplicate.do")
+	@ResponseBody
+	public Map<String, Object> checkIdDuplicate(@RequestParam("memberId") String memberId, @RequestParam("memberPWD") String memberPWD){
+		Map<String, Object> map = new HashMap<>();
+		
+		Member member = memberService.selectOneMember(memberId);
+		log.debug("member = {}", member);
+		
+		boolean isAvailable = member.getMemberPWD().equals(memberPWD) == true;
+		log.debug("isVailable ={}", isAvailable);
+		map.put("memeberId" , memberId);
+		map.put("isAvailable", isAvailable);
+				
+		return map;
+	}
 }

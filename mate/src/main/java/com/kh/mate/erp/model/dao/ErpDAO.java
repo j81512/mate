@@ -31,4 +31,18 @@ public interface ErpDAO {
 	List<ProductMainImages> selectProductMainImages(String productNo);
 
 
+	int productMainImagesEnroll(ProductMainImages mainImg);
+
+	int productUpdate(Product product);
+
+	int productMainImagesDelete(String productNo);
+
+	int productDelete(String productNo);
+
+	List<ProductImages> selectProductImages(String productNo);
+
+	int productImagesDelete(String productNo);
+
+	String findEmpid(int productNo);
+
 }

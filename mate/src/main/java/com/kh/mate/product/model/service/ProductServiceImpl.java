@@ -66,38 +66,6 @@ public class ProductServiceImpl implements ProductService {
 	
 	
 	//jw
-	@Override
-	public int productEnroll(Product product) {
-		
-		int result = productDAO.productEnroll(product);
-		
-		//MainImages가 추가되어있다면 실행될 메소드
-		if(product.getProductMainImages() != null) {
-			for(ProductMainImages mainImg : product.getProductMainImages()) {
-				
-				mainImg.setProductNo(product.getProductNo());
-				result = productDAO.mainImagesEnroll(mainImg);
-			}
-		}
-		
-		//ImagesName도 추가
-		if(product.getProductImagesName() != null) {
-			List<String> imagesName = product.getProductImagesName();
-			String str = "";
-			for(int i = 0; i < imagesName.size(); i++) {
-				str += imagesName.get(i);
-				if(i != (imagesName.size() - 1)) {
-					str += ",";
-				}
-			}
-			log.debug("str = {}", str);
-			
-		ProductImages pigs = new ProductImages(0, str, product.getProductNo());
-		result = productDAO.productImageEnroll(pigs);
-		}
-		
-		return result;
-	}
 
 	@Override
 	public Product selectProductOne(String productNo) {

@@ -46,10 +46,21 @@ public class ErpDAOImpl implements ErpDAO {
 	public Product orderProduct(Map<String, Object> map) {
 		return sqlSession.selectOne("erp.orderProduct",map);
 	}
+	
+	@Override
+	public String findEmpid(int productNo) {
+		return sqlSession.selectOne("erp.findEmpid",productNo);
+	}
+
+	
+	
 
   
   //김종완
 	
+
+
+
 	@Override
 	public int productEnroll(Product product) {
 		return sqlSession.insert("erp.productEnroll", product);
@@ -69,6 +80,41 @@ public class ErpDAOImpl implements ErpDAO {
 	public List<ProductMainImages> selectProductMainImages(String productNo) {
 		return sqlSession.selectList("erp.selectProductMainImages", productNo);
 	}
+	
+	@Override
+	public List<ProductImages> selectProductImages(String productNo) {
+		return sqlSession.selectList("erp.selectProductImages", productNo);
+	}
+
+	@Override
+	public int productMainImagesEnroll(ProductMainImages mainImg) {
+		return sqlSession.insert("erp.productMainImagesEnroll", mainImg);
+	}
+
+	@Override
+	public int productUpdate(Product product) {
+		return sqlSession.update("erp.productUpdate", product);
+	}
+
+	@Override
+	public int productMainImagesDelete(String productNo) {
+		return sqlSession.delete("erp.productMainImagesDelete", productNo);
+	}
+
+	@Override
+	public int productDelete(String productNo) {
+		return sqlSession.delete("erp.productDelete", productNo);
+	}
+
+
+	@Override
+	public int productImagesDelete(String productNo) {
+		return sqlSession.delete("erp.productImagesDelete", productNo);
+	}
+	
+	
+	
+	
 	
   
 

@@ -33,6 +33,7 @@ import com.kh.mate.common.Utils;
 import com.kh.mate.erp.model.service.ErpService;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.product.model.vo.Product;
+import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
 
 
@@ -203,9 +204,11 @@ public class ErpContorller {
 		
 		Product product = erpService.orderProduct(map);
 		
-		model.addAttribute("product",product);
 		
 		log.debug("product = {}",product);
+		
+		model.addAttribute("product",product);
+		
 		
 		return "/ERP/productOrder";
 	}
@@ -268,15 +271,22 @@ public class ErpContorller {
 		log.debug("mainImgList = {}", mainImgList);	
 		product.setProductMainImages(mainImgList);
 		
-		//Product객체에 ImagesName Setting
+		//Content에 Image파일이 있을 경우 (temp폴더내 파일이 저장되었을 경우)
+		//productImage객체 생성 후 DB에 저장
 		String tempDir = request.getServletContext().getRealPath("/resources/upload/temp");
 		String imgDir = request.getServletContext().getRealPath("/resources/upload/images");
 		File folder1 = new File(tempDir);
 		File folder2 = new File(imgDir);
 		
-		List<String> productImages = Utils.getOriginFileNameOnTemp(folder1);
-		log.debug("productImages = {}",productImages);
-		product.setProductImagesName(productImages);
+		List<String> productImages = new ArrayList<>();
+		
+		if(folder1.listFiles().length > 0) {
+			log.debug("디버깅 확인용");
+			productImages = Utils.getFileName(folder1);
+			product.setProductImagesName(productImages);
+		}
+		
+		log.debug("productImages@controller = {}", productImages);
 		
 		log.debug("product = {}", product);
 		int result = erpService.productEnroll(product);
@@ -375,7 +385,106 @@ public class ErpContorller {
 	//수정
 	@RequestMapping(value = "/ERP/productUpdate.do",
 					method = RequestMethod.POST)
-	public String productUpdate() {
-		return null;
+	public String productUpdate(Product product, 
+								@RequestParam("upFile") MultipartFile[] upFiles, 
+								@RequestParam("fileChange") int fileChange,
+								@RequestParam("productImageNo") String[] productImageNos,
+								HttpServletRequest request) throws IllegalStateException, IOException {
+		//Content내 저장 폴더 명 변경
+		String content = product.getContent();
+		log.debug("content = {}", content);
+		String repCont = content.replaceAll("temp", "images");
+		log.debug("repCont = {}", repCont);
+		product.setContent(repCont);
+		
+		
+		//fileChange값이 1이면 섬네일 이미지 수정감지 
+		log.debug("fileChange = {}", fileChange);
+		if(fileChange > 0) {
+			List<ProductMainImages> storedMainImgs 
+				= erpService.selectProductMainImages(String.valueOf(product.getProductNo()));
+			String mainDirectory = request.getServletContext()
+										  .getRealPath("/resources/upload/mainimages/");
+			
+				//저장된 파일 삭제
+				for(ProductMainImages smi : storedMainImgs) {
+					boolean result = new File(mainDirectory, smi.getRenamedFilename()).delete();
+					log.debug("result = {}", result);
+				}
+			
+			//새로 넘어온 파일 저장
+			List<ProductMainImages> mainImgList = new ArrayList<>();
+			
+				for(MultipartFile upFile : upFiles) {
+					String renamedFilename = Utils.getRenamedFileName(upFile.getOriginalFilename());
+					
+					File dest = new File(mainDirectory, renamedFilename);
+					upFile.transferTo(dest);
+					
+					ProductMainImages newMainImgs = new ProductMainImages();
+					newMainImgs.setOriginalFilename(upFile.getOriginalFilename());
+					newMainImgs.setRenamedFilename(renamedFilename);
+					newMainImgs.setProductNo(product.getProductNo());
+					mainImgList.add(newMainImgs);
+			
+				}
+				
+			product.setProductMainImages(mainImgList);
+			
+		}
+		
+		String tempDir = request.getServletContext().getRealPath("/resources/upload/temp");
+		String imgDir = request.getServletContext().getRealPath("/resources/upload/images");
+		File folder1 = new File(tempDir);
+		File folder2 = new File(imgDir);
+		
+		if(folder1.listFiles().length > 0) {
+			List<String> productImages = Utils.getFileName(folder1);
+			log.debug("productImages = {}",productImages);
+			product.setProductImagesName(productImages);
+		}
+		
+		log.debug("product = {}", product);
+		int result = erpService.productUpdate(product);
+		
+		//product입력 시, file입력 처리 -> DB에 image등록과 동시에 fileDir옮기기  
+		if(result > 0) {
+			Utils.fileCopy(folder1, folder2);
+			Utils.fileDelete(folder1.toString());
+		}else {
+			Utils.fileDelete(folder1.toString());
+		}
+		
+		return "redirect:/";
 	}
+	
+	@RequestMapping(value = "/ERP/productDelete.do",
+					method = RequestMethod.POST)
+	public String productDelete(@RequestParam("productNo") String productNo,
+								HttpServletRequest request) {
+		
+		List<ProductMainImages> pmis = erpService.selectProductMainImages(productNo);
+		List<ProductImages> pis = erpService.selectProductImages(productNo);
+		String mainDir = request.getServletContext().getRealPath("/resources/upload/mainimages");
+		String imgDir = request.getServletContext().getRealPath("/resources/upload/images");
+		
+		int result = erpService.productDelete(productNo);
+		
+		log.debug("result@controller = {}", result);
+		
+		if(result > 0) {
+			//폴더 내 파일 모두 삭제 
+			boolean flag = false;
+			for(ProductMainImages p : pmis) {
+				flag = new File(mainDir, p.getRenamedFilename()).delete();
+			}
+			for(ProductImages pp : pis) {
+				flag = new File(imgDir, pp.getRenamedFilename()).delete();
+			}
+			log.debug("flag,result = {}, {}",flag,result);
+		}
+		
+		return "ERP/ProductInfo";
+	}
+	
 }
