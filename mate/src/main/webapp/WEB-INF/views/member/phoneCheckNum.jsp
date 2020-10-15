@@ -17,26 +17,26 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 <script>
 $(function(){
-$(".guide").hide();
-	
-	$("#phone_").keyup(function(){
-		var $this = $(this);
-		var $phoneCheck = parseInt("${ num }");
-		console.log($this.val());
-		console.log($phoneCheck);
-		var $ok = $(".guide.ok");
-		var $error = $(".guide.error");
-	
-		if($this.val() == $phoneCheck){
-			$ok.show();
-			$error.hide();
-			setTimeout("closed()", 3000);
-		}else{
-			$error.show();
-			$ok.hide();
-		}
-			
-	});
+	$(".guide").hide();
+		
+		$("#phone_").keyup(function(){
+			var $this = $(this);
+			var $phoneCheck = parseInt("${ num }");
+			console.log($this.val());
+			console.log($phoneCheck);
+			var $ok = $(".guide.ok");
+			var $error = $(".guide.error");
+		
+			if($this.val() == $phoneCheck){
+				$ok.show();
+				$error.hide();
+				setTimeout("closed()", 3000);
+			}else{
+				$error.show();
+				$ok.hide();
+			}
+				
+		});
 
 });
 
@@ -53,8 +53,7 @@ function closed(){
 					action="#" role="form" >
 	<h3 class="heading-desc">핸드폰인증</h3>
 	<div class="form-group">
-		<input type="text" name="phone" id="phone_" tabindex="1"
-			class="form-control" placeholder="인증번호를 입력해주세요" value="">
+		<input type="text" name="phone" id="phone_" tabindex="1" class="form-control" placeholder="인증번호를 입력해주세요" value="">
 			<span class="guide ok" style="color:blue;">인증 되었습니다.</span> 
 			<span class="guide error"style="color:red;">잘못 입력하셨습니다.</span>
 	</div>
@@ -64,7 +63,7 @@ function closed(){
 				 <input type="button" class="btn btn-lg btn-block purple-bg" value="창닫기" onclick="window.close()">
 			</div>
 		</div>
-						
+	</div>			
 </form>
 			 
 </body>
