@@ -34,7 +34,13 @@ public interface ErpDAO {
 
 	int productUpdate(Product product);
 
-	int productMainImagesDelete(int productNo);
+	int productMainImagesDelete(String productNo);
+
+	int productDelete(String productNo);
+
+	List<ProductImages> selectProductImages(String productNo);
+
+	int productImagesDelete(String productNo);
 
 
 }

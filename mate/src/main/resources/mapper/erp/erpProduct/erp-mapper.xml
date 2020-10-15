@@ -72,6 +72,15 @@
  			product_no = #{ productNo }
  	</select>
  	
+ 	<select id="selectProductImages" resultType="productImages">
+ 		select
+ 			*
+ 		from
+ 			product_images
+ 		where
+ 			product_no = #{ productNo }
+ 	</select>
+ 	
 	<insert id="productEnroll">
  		insert into 
  			product
@@ -137,5 +146,18 @@
  			product_no = #{ productNo }
  	</delete>
  	
+ 	<delete id="productDelete">
+ 		delete from
+ 			product
+ 		where
+ 			product_no = #{ productNo }
+ 	</delete>
+
+	<delete id="productImagesDelete">
+		delete from
+			product_images
+		where
+			product_no = #{ productNo }
+	</delete>
 
 </mapper>
