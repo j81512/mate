@@ -46,8 +46,8 @@ li{
 						<dl>
 								<a href="${ pageContext.request.contextPath }/product/productDetail.do?productNo=${ product.productNo }"  >
 									<dt>
-										<img src="${ pageContext.request.contextPath }/resources/images/default.jpg" 
-											 alt="default" 
+										<img src="${ pageContext.request.contextPath }/resources/upload/mainimages/default.jpg" 
+											 alt="Thumnail" 
 											 width="250px" />
 									</dt>
 									<dd>
