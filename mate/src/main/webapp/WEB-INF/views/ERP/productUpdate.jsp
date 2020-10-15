@@ -29,7 +29,7 @@ $(function(){
 
 	//ckEditor적용
 	CKEDITOR.replace('content',{
-				filebrowserUploadUrl : "${ pageContext.request.contextPath }/product/imageFileUpload.do"
+				filebrowserUploadUrl : "${ pageContext.request.contextPath }/ERP/imageFileUpload.do"
 		});
 
 	//파일 선택 | 취소 파일라벨명을 변경한다.
@@ -96,6 +96,7 @@ $(function(){
 	   <div class="custom-file">
 	     <input type="file" class="custom-file-input" name="upFile" id="upFile${ vs.count }" >
 	     <label class="custom-file-label" for="upFile${ vs.count }">${ mainImage.originalFilename }</label>
+	     <input type="hidden" name="productImageNo" value="${ mainImage.productImageNo }"/>
 	   </div>
 	  </div>
 	</c:forEach>

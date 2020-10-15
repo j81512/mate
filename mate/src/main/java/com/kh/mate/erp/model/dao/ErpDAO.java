@@ -30,5 +30,11 @@ public interface ErpDAO {
 
 	List<ProductMainImages> selectProductMainImages(String productNo);
 
+	int productMainImagesEnroll(ProductMainImages mainImg);
+
+	int productUpdate(Product product);
+
+	int productMainImagesDelete(int productNo);
+
 
 }

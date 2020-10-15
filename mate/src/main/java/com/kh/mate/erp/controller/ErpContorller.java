@@ -365,7 +365,8 @@ public class ErpContorller {
 	public String productUpdate(Product product, 
 								@RequestParam("upFile") MultipartFile[] upFiles, 
 								@RequestParam("fileChange") int fileChange,
-								HttpServletRequest request) {
+								@RequestParam("productImageNo") String[] productImageNos,
+								HttpServletRequest request) throws IllegalStateException, IOException {
 		//Content내 저장 폴더 명 변경
 		String content = product.getContent();
 		log.debug("content = {}", content);
@@ -377,26 +378,58 @@ public class ErpContorller {
 		//fileChange값이 1이면 섬네일 이미지 수정감지 
 		log.debug("fileChange = {}", fileChange);
 		if(fileChange > 0) {
-			List<ProductMainImages> pmi 
+			List<ProductMainImages> storedMainImgs 
 				= erpService.selectProductMainImages(String.valueOf(product.getProductNo()));
 			String mainDirectory = request.getServletContext()
 										  .getRealPath("/resources/upload/mainimages/");
 			
 				//저장된 파일 삭제
-				for(ProductMainImages p : pmi) {
-					boolean result = new File(mainDirectory, p.getRenamedFilename()).delete();
+				for(ProductMainImages smi : storedMainImgs) {
+					boolean result = new File(mainDirectory, smi.getRenamedFilename()).delete();
 					log.debug("result = {}", result);
 				}
 			
+			//새로 넘어온 파일 저장
+			List<ProductMainImages> mainImgList = new ArrayList<>();
 			
+				for(MultipartFile upFile : upFiles) {
+					String renamedFilename = Utils.getRenamedFileName(upFile.getOriginalFilename());
+					
+					File dest = new File(mainDirectory, renamedFilename);
+					upFile.transferTo(dest);
+					
+					ProductMainImages newMainImgs = new ProductMainImages();
+					newMainImgs.setOriginalFilename(upFile.getOriginalFilename());
+					newMainImgs.setRenamedFilename(renamedFilename);
+					newMainImgs.setProductNo(product.getProductNo());
+					mainImgList.add(newMainImgs);
 			
-			
+				}
 				
-				
+			product.setProductMainImages(mainImgList);
+			
 		}
 		
+		String tempDir = request.getServletContext().getRealPath("/resources/upload/temp");
+		String imgDir = request.getServletContext().getRealPath("/resources/upload/images");
+		File folder1 = new File(tempDir);
+		File folder2 = new File(imgDir);
 		
+		List<String> productImages = Utils.getFileName(folder1);
+		log.debug("productImages = {}",productImages);
+		product.setProductImagesName(productImages);
 		
-		return null;
+		log.debug("product = {}", product);
+		int result = erpService.productUpdate(product);
+		
+		//product입력 시, file입력 처리 -> DB에 image등록과 동시에 fileDir옮기기  
+		if(result > 0) {
+			Utils.fileCopy(folder1, folder2);
+			Utils.fileDelete(folder1.toString());
+		}else {
+			Utils.fileDelete(folder1.toString());
+		}
+		
+		return "redirect:/";
 	}
 }
