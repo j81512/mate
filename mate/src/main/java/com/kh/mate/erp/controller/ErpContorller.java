@@ -199,7 +199,10 @@ public class ErpContorller {
 	//상품 등록 시 jsp연결
 	@RequestMapping(value = "/ERP/productEnroll.do",
 					method = RequestMethod.GET)
-	public String productinsert() {
+	public String productinsert(Model model,EMP emp) {
+		
+		List<EMP> list = erpService.empList(emp);
+		model.addAttribute("list", list);
 		
 		return "/ERP/productEnroll";
 	}
