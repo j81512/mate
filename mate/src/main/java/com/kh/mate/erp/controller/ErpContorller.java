@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,11 +35,12 @@ import com.google.gson.JsonObject;
 import com.kh.mate.common.Utils;
 import com.kh.mate.erp.model.service.ErpService;
 import com.kh.mate.erp.model.vo.EMP;
+import com.kh.mate.member.model.vo.Member;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
 
-
+@SessionAttributes({"loginEmp"})
 @Controller
 public class ErpContorller {
 
@@ -100,9 +104,10 @@ public class ErpContorller {
 	public String EmpEnroll(RedirectAttributes redirectAttr,
 							EMP emp) {
 		
-		String rawPassword = emp.getEmpPwd();
-		String encodedPassword = bcryptPasswordEncoder.encode(rawPassword);
-		emp.setEmpPwd(encodedPassword);
+//		String rawPassword = emp.getEmpPwd();
+		// 호근 암호화 처리 날림.
+//		String encodedPassword = bcryptPasswordEncoder.encode(rawPassword);
+//		emp.setEmpPwd(encodedPassword);
 		
 		log.debug("emp = " + emp);
 		
@@ -469,4 +474,36 @@ public class ErpContorller {
 		return "ERP/ProductInfo";
 	}
 	
+	// 호근 관리자 로그인 및 로그인 세션 추가 
+	@PostMapping("/ERP/erpLogin.do")
+	public String memberLogin(@RequestParam("empId") String empId
+			  ,@RequestParam("empPwd") String empPwd
+			  ,@RequestParam("status") int status
+			  ,RedirectAttributes redirectAttr
+			  ,Model model
+			  ,HttpSession session) {
+		log.debug("empId = {}", empId);
+		log.debug("empPwd ={}", empPwd);
+		log.debug("status ={}", status);
+
+		EMP loginEmp = erpService.selectOneEmp(empId);
+		
+		log.debug("loginEmp = {}", loginEmp);
+		String location = "/";
+		
+		if(	loginEmp != null && (loginEmp.getEmpId().equals(empId))
+				&& (loginEmp.getEmpPwd().equals(empPwd))
+				&& (loginEmp.getStatus() == status )) {
+			model.addAttribute("loginEmp", loginEmp);
+			String next = (String)session.getAttribute("next");
+			if( next != null) 
+				location = next;
+		
+		}
+		else {
+			redirectAttr.addFlashAttribute("msg", "아이디 또는 비밀번호가 틀립니다.");
+			log.debug("location = " + location);
+		}
+		return "redirect:" + location;
+	}
 }
