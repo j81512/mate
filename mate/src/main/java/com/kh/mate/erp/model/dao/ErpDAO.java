@@ -30,5 +30,9 @@ public interface ErpDAO {
 
 	List<ProductMainImages> selectProductMainImages(String productNo);
 
+	String findEmpid(int productNo);
+
+
+
 
 }

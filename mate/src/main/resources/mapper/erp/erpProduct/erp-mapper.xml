@@ -105,5 +105,9 @@
 		#{ productNo }
  		)
  	</insert>
+ 	
+ 	<select id="findEmpid" resultType="string">
+ 		select emp_id from product where product_no = #{productNo}
+ 	</select>
 
 </mapper>

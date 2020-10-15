@@ -46,10 +46,21 @@ public class ErpDAOImpl implements ErpDAO {
 	public Product orderProduct(Map<String, Object> map) {
 		return sqlSession.selectOne("erp.orderProduct",map);
 	}
+	
+	@Override
+	public String findEmpid(int productNo) {
+		return sqlSession.selectOne("erp.findEmpid",productNo);
+	}
+
+	
+	
 
   
   //김종완
 	
+
+
+
 	@Override
 	public int productEnroll(Product product) {
 		return sqlSession.insert("erp.productEnroll", product);

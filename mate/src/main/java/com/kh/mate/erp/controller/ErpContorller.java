@@ -185,9 +185,11 @@ public class ErpContorller {
 		
 		Product product = erpService.orderProduct(map);
 		
-		model.addAttribute("product",product);
 		
 		log.debug("product = {}",product);
+		
+		model.addAttribute("product",product);
+		
 		
 		return "/ERP/productOrder";
 	}

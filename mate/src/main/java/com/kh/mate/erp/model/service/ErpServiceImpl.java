@@ -43,7 +43,12 @@ public class ErpServiceImpl implements ErpService {
 
 	@Override
 	public Product orderProduct(Map<String, Object> map) {
-		return erpDAO.orderProduct(map);
+		
+		Product product = erpDAO.orderProduct(map);
+		
+		product.setEId(erpDAO.findEmpid(product.getProductNo()));
+		
+		return product;
 	}
 	
 	//김종완
