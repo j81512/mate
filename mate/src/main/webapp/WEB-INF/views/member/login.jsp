@@ -77,6 +77,68 @@
 			
 		});
 	});
+
+	$(document).ready(function(){
+		var key = getCookie("key");	
+		var $memberId = $("#memberId_").val(key);
+		var $remember = $("#remember_");
+
+		if( $memberId != ""){
+			$remember.prop("checked", true);
+		}else{
+			$remember.prop("checked", false)
+
+		}
+
+		$("#remember_").change(function(){
+
+			if($remember.is(":checked")){
+				setCookie("key", $("#memberId_").val(), 7);
+			}else{
+				deleteCookie("key");
+				$remember.prop("checked", false)
+			}
+		});
+
+		$($memberId).keyup(function(){
+			if($remember.is(":checked")){
+				setCookie("key", $("#memberId_").val(), 7);
+			}else{
+				deleteCookie("key");
+				$remember.prop("checked", false)
+			}	
+		});
+		
+	});
+
+	function setCookie(cookieName, value, exdays){
+		var exdate = new Date();
+		exdate.setDate(exdate.getDate() + exdays);
+
+		var cookieValue = escape(value) + ((exdays==null) ? "" : "; expires=" + exdate.toGMTString());
+		document.cookie = cookieName + "=" +cookieValue;
+		
+	}
+
+	function deleteCookie(cookieName){
+	    var expireDate = new Date();
+	    expireDate.setDate(expireDate.getDate() - 1);
+	    document.cookie = cookieName + "= " + "; expires=" + expireDate.toGMTString();
+	}
+	 
+	function getCookie(cookieName) {
+	    cookieName = cookieName + '=';
+	    var cookieData = document.cookie;
+	    var start = cookieData.indexOf(cookieName);
+	    var cookieValue = '';
+	    if(start != -1){
+	        start += cookieName.length;
+	        var end = cookieData.indexOf(';', start);
+	        if(end == -1)end = cookieData.length;
+	        cookieValue = cookieData.substring(start, end);
+	    }
+	    return unescape(cookieValue);
+	}
 </script>
 
 
@@ -91,19 +153,20 @@
 					<label class="radio-inline"> <input type="radio"
 						name="member" id="buyMember_" value="C" checked> 일반회원
 					</label> <label class="radio-inline"> <input type="radio"
-						name="member" id="businessMember_" value="B"> 기업회원
+						name="member" id="businessMember_" value="B"> 관리자 회원
 					</label> <br />
 					<div class="form-group">
 						<input type="text" class="form-control" name="memberId" id="memberId_"
 							placeholder="아이디" required autofocus />
 					</div>
 					<div class="form-group">
-						<input type="password" class="form-control" name="password"
-							id="password_" placeholder="비밀번호" required />
+						<input type="password" class="form-control" name="memberPWD"
+							id="memberPWD_" placeholder="비밀번호" required />
 					</div>
-					<label class="checkbox"> <input type="checkbox"
-						value="remember" /> 아이디저장
-					</label> <a class="forgotLnk" href="#">비밀번호를 잊어 버리셨나요 ?</a>
+					<label class="checkbox"> 
+						<input type="checkbox" name="remember" id="remember_"  /> 아이디저장
+					</label> 
+					<a class="forgotLnk" href="#" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modalPassword">비밀번호를 잊어 버리셨나요 ?</a>
 					<button class="btn btn-lg btn-block purple-bg" type="submit">
 						로그인</button>
 						<div class="or-box">
@@ -214,6 +277,6 @@
 		</div>
 	</div>
 </div>
-
+<!-- 비밀번호 찾기용 모달 창 -->
 
 <jsp:include page="/WEB-INF/views/common/footerS.jsp" />
