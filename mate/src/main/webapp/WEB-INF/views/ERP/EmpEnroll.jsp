@@ -41,8 +41,8 @@
 			<tr>
 				<th>지점/업체 선택</th>
 				<td>	
-					<input type="radio" name="empStatus" id="empStatus" value="1" checked>지점
-					<input type="radio" name="empStatus" id="empStatus" value="2" >제조사				
+					<input type="radio" name="status" id="status" value="1" checked>지점
+					<input type="radio" name="status" id="status" value="2" >제조사				
 				</td>
 			</tr>  	
 			<tr>
