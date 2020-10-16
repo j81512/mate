@@ -84,9 +84,9 @@ public class ErpContorller {
 	
 
 	@RequestMapping("/ERP/EmpBoardList.do")
-	public String empBoardList(Model model, EMP emp) {
+	public String empBoardList(Model model) {
 //		호근 empList.do가 게시판 가르킴  수정하겠음
-		List<EMP> list = erpService.empList(emp);
+		List<EMP> list = erpService.empList();
 		List<Map<String, Object>> empBoardList = erpService.empBoardList();
 		log.debug("list = {} ", list);
 		log.debug("empBoardList = {} ", empBoardList);
