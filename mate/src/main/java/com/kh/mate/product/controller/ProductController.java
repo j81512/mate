@@ -61,9 +61,7 @@ public class ProductController {
 	public String productList(Model model) {
 		
 		List<Product> list = productService.selectProductListAll();
-		List<Map<String, Object>> mapList = productService.selectProductListMap();
 		log.debug("list = {}", list);
-		List<ProductMainImages> pmisList = new ArrayList<>();
 		model.addAttribute("list", list);
 		return "product/productList";
 	}

@@ -27,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
 		if(list != null) {
 			for(Product p : list) {
 				List<ProductMainImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
-				p.setProductMainImages(imgs);
+				p.setPmiList(imgs);
 			}
 		}
 		return list;
@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
 		if(list != null) {
 			for(Product p : list) {
 				List<ProductMainImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
-				p.setProductMainImages(imgs);
+				p.setPmiList(imgs);
 			}
 		}
 		
@@ -56,7 +56,7 @@ public class ProductServiceImpl implements ProductService {
 		if(list != null) {
 			for(Product p : list) {
 				List<ProductMainImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
-				p.setProductMainImages(imgs);
+				p.setPmiList(imgs);
 			}
 		}
 		
