@@ -16,32 +16,37 @@
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 </head>
-	<body>  
-		
-		<table class="table w-75 mx-auto">
-			<tr>
-				<th scope="col">계정명</th>
-				<th scope="col">사업명</th>
-				<th scope="col">주소</th>
-				<th scope="col">연락처</th>
-				<th scope="col">등록일</th>
-				<th scope="col">상태</th>
-				<th>
-					<button type="button" 
-							onclick="location.href='${ pageContext.request.contextPath }/ERP/EmpEnroll.do';">지점/제조사 생성
-					</button>
-				</th>
-			</tr>
-			<c:forEach items="${ list }" var="emp">
-			<tr>
-				<td>${ emp.empId }</td>
-				<td>${ emp.empName }</td>
-				<td>${ emp.empAddress }</td>
-				<td>${ emp.empPhone }</td>
-				<td><fmt:formatDate value="${ emp.empEnrollDate }" pattern="yy/MM/dd"/></td>
-				<td>${ emp.empStatus }</td>		
-			</tr>
-			</c:forEach>	
-		</table>
+  	<body>
+		<section>
+			<div class="productInfo">
+				<tr>
+					<th>상품번호</th>
+					<th>상품명</th>
+					<th>카테고리</th>
+					<th>브랜드</th>
+					<th>입출고 날짜</th>
+					<th>수량</th>
+					<th>업체명</th>
+					<th>상태</th>
+				</tr>
+			</div>
+			
+			
+			<div class="productInfo">
+				<tr>
+					<td>${ product.no }</td>
+					<td>${ product.productName }</td>
+					<td>${ product.category }</td>
+					<td>${ product.empId }</td>
+					<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>
+					<td>${ receive.amount }</td>
+					<td>${ emp.emp_id }</td>
+					<td>
+						<button type="submit">확인</button>
+						<button type="submit">거절</button>
+					</td>
+				</tr>
+			</div>
+		</section>
 	</body>
 </html>

@@ -5,7 +5,7 @@
 <script>
 $(function(){
 	CKEDITOR.replace('content',{
-				filebrowserUploadUrl : "${ pageContext.request.contextPath }/cke/fileUpload.do"
+				filebrowserUploadUrl : "${ pageContext.request.contextPath }/ERP/imageFileUpload.do"
 		});
 });
 
@@ -37,7 +37,8 @@ $(function(){
 
 	});
 
-	
+
+
 });
 
 </script>
@@ -53,9 +54,10 @@ div#form-container label.custom-file-label{text-align:left;}
 </head>
 <body>
 <div id="form-container" class="mx-auto">
-<form action = "${ pageContext.request.contextPath }/product/productEnroll.do"
+<form action = "${ pageContext.request.contextPath }/ERP/productEnroll.do"
 	  method = "POST"
-	  enctype = "multipart/form-data">
+	  enctype = "multipart/form-data"
+	  id="productEnrollFrm">
   			<!-- 상품명 -->
   <div class="form-group row">
     <label for="productName" class="col-sm-2 col-form-label">상품명</label>
@@ -69,13 +71,13 @@ div#form-container label.custom-file-label{text-align:left;}
       <legend class="col-form-label col-sm-2 pt-0">카테고리</legend>
       <div class="col-sm-10">
         <div class="form-check">
-          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category1" value="figure" checked>
+          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category1" value="fg" checked>
           <label class="form-check-label" for="category1">피규어</label>
-          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category2" value="plamodel">
+          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category2" value="pl">
           <label class="form-check-label" for="category2">프라모델</label>
-          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category3" value="rccar" >
+          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category3" value="rc" >
           <label class="form-check-label" for="category3">RC카</label>
-          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category4" value="drone" >
+          <input class="form-check-input-col-xs-3" type="radio" name="category" id="category4" value="dr" >
           <label class="form-check-label" for="category4">드론</label>
         </div>
       </div>
@@ -123,14 +125,29 @@ div#form-container label.custom-file-label{text-align:left;}
   <!-- 등록자  -->
   <input type="hidden" name="empId" value="testId"/>
   
-  <div class="form-group row">
+  <div class="form-group col">
     <div class="col-sm-10">
       <button type="submit" class="btn btn-primary">등록</button>
+    </div>
+    <div class="col-sm-10">
+      <button type="button" class="btn btn-danger" onclick="return goBackWithDel();">취소</button>
     </div>
   </div>
 </form>
 </div>
 </body>
+<script>
+function goBackWithDel(){
+	var $enrollFrm = $("#productEnrollFrm");
+
+	$enrollFrm.attr("action", "${ pageContext.request.contextPath }/ERP/fileDelMethod.do");
+	$enrollFrm.attr("method", "get");
+	$enrollFrm.submit();
+	history.go(-1);
+
+	
+}
+</script>
 </html>
 
 <jsp:include page="/WEB-INF/views/common/footerS.jsp"/>

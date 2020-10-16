@@ -93,6 +93,7 @@ CREATE TABLE MEMBER (
     constraint chk_member_gender check (gender in ('M','F'))
 );
 
+
 --DROP TABLE Address;
 CREATE TABLE Address (
 	address_name	varchar2(128)		NOT NULL,
@@ -110,17 +111,29 @@ CREATE TABLE Address (
 );
 
 --DROP TABLE EMP;
+--DROP TABLE EMP CASCADE CONSTRAINTS;
+
 CREATE TABLE EMP (
 	emp_id	varchar2(15)		NOT NULL,
 	emp_pwd	varchar2(300)		NOT NULL,
 	emp_name	varchar2(256)		NOT NULL,
-	address	varchar2(512)		NOT NULL,
+	addr1	varchar2(512)		NOT NULL,
+	addr2	varchar2(512)		NOT NULL,
+	addr3	varchar2(512)		NOT NULL,
 	phone   char(11)		NOT NULL,
 	enroll_date	date	DEFAULT sysdate	NOT NULL,
 	status	number		NOT NULL,
     
     constraint pk_emp primary key (emp_id)
 );
+
+select
+	*
+from
+    emp
+order by
+    enroll_date;
+
 
 --DROP TABLE PRODUCT;
 CREATE TABLE PRODUCT (
@@ -142,7 +155,6 @@ CREATE TABLE PRODUCT (
 --DROP TABLE PRODUCT_IMAGES;
 CREATE TABLE PRODUCT_IMAGES (
 	product_image_no number		NOT NULL,
-	original_filename	varchar2(256)		NOT NULL,
 	renamed_filename	varchar2(256)		NOT NULL,
 	product_no	number		NOT NULL,
     
@@ -430,7 +442,7 @@ CREATE TABLE REVIEW (
 
 --DROP TABLE QUIT_MEMBER;
 CREATE TABLE QUIT_MEMBER (
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	member_pwd	varchar2(300)		NOT NULL,
 	member_name	varchar2(128)		NOT NULL,
 	gender	char(1)		NOT NULL,

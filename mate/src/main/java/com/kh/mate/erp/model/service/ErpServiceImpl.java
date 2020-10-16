@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.mate.erp.model.dao.ErpDAO;
 import com.kh.mate.erp.model.vo.EMP;
+import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -38,17 +39,23 @@ public class ErpServiceImpl implements ErpService {
 	}
 	
 	@Override
-	public List<EMP> empList(EMP emp) {
-		return erpDAO.empList(emp);
+	public List<EMP> empList() {
+		return erpDAO.empList();
 	}
 
 	@Override
 	public Product orderProduct(Map<String, Object> map) {
-		return erpDAO.orderProduct(map);
+		
+		Product product = erpDAO.orderProduct(map);
+		
+		product.setEId(erpDAO.findEmpid(product.getProductNo()));
+		
+		return product;
 	}
 	
-	//김종완
 	
+	//김종완
+
 	@Override
 	public int productEnroll(Product product) {
 		
@@ -143,6 +150,17 @@ public class ErpServiceImpl implements ErpService {
 		
 		
 		return result;
+	}
+
+	//호근 emp 게시판 추가
+	@Override
+	public List<Map<String, Object>> empBoardList() {
+		return erpDAO.empBoardList();
+	}
+
+	@Override
+	public EmpBoard selectOneEmpBoard(int no) {
+		return erpDAO.selectOneEmpBoard(no);
 	}
 	
 	

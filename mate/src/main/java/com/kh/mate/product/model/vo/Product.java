@@ -34,6 +34,6 @@ public class Product {
 	private List<ProductMainImages> productMainImages;
 	
 	private String empName;//지점명(임시)
-	private int eId; //지점ID(임시)
+	private String eId; //지점ID(임시)
 	
 }
