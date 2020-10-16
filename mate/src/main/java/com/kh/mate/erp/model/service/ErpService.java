@@ -6,6 +6,7 @@ import java.util.Map;
 
 
 import com.kh.mate.erp.model.vo.EMP;
+import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -18,7 +19,7 @@ public interface ErpService {
 
 	List<Product> searchInfo(Map<String, Object> map);
 
-	List<EMP> empList(EMP emp);
+	List<EMP> empList();
 
 	Product orderProduct(Map<String, Object> map);
 
@@ -33,6 +34,12 @@ public interface ErpService {
 	int productDelete(String productNo);
 
 	List<ProductImages> selectProductImages(String productNo);
+
+	List<Map<String, Object>> empBoardList();
+
+	EmpBoard selectOneEmpBoard(int no);
+
+
 
 
 

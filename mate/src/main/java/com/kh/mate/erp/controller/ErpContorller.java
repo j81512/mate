@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -31,12 +35,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.google.gson.JsonObject;
 import com.kh.mate.common.Utils;
 import com.kh.mate.erp.model.service.ErpService;
+import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
 
 
+@SessionAttributes({"loginEmp"})
 @Controller
 public class ErpContorller {
 
@@ -69,16 +75,44 @@ public class ErpContorller {
 		return mav;
 	}
 	
-	@RequestMapping("/ERP/EmpManage.do")
-	public ModelAndView empManage(ModelAndView mav) {
-		mav.setViewName("ERP/EmpManage");
+	@RequestMapping("/ERP/empInfoDetail.do")
+	public ModelAndView empInfoDetail(ModelAndView mav) {
+		
+		mav.setViewName("/ERP/empInfoDetail");
 		return mav;
 	}
 	
-	@RequestMapping("/ERP/empList.do")
-	public String empList(Model model, EMP emp) {
+
+	@RequestMapping("/ERP/EmpBoardList.do")
+	public String empBoardList(Model model) {
+//		호근 empList.do가 게시판 가르킴  수정하겠음
+		List<EMP> list = erpService.empList();
+		List<Map<String, Object>> empBoardList = erpService.empBoardList();
+		log.debug("list = {} ", list);
+		log.debug("empBoardList = {} ", empBoardList);
 		
-		List<EMP> list = erpService.empList(emp);
+		model.addAttribute("list", list);
+		//model 추가함
+		model.addAttribute("empBoardList", empBoardList);
+		return "ERP/EmpBoardList";
+		
+	}
+
+	@RequestMapping("/ERP/empManage.do")
+	public String empManage(Model model) {
+		List<EMP> list = erpService.empList();
+		
+		log.debug("list = {} ", list);
+		
+		model.addAttribute("list", list);
+		return "ERP/empManage";
+	}
+	
+	@RequestMapping(value="/ERP/empList.do",
+					method = RequestMethod.GET)
+	public String empList(Model model) {
+		
+		List<EMP> list = erpService.empList();
 		
 		log.debug("list = {} ", list);
 		
@@ -86,6 +120,9 @@ public class ErpContorller {
 		return "ERP/empList";
 		
 	}
+
+		
+	
 	
 	@RequestMapping(value="/ERP/EmpEnroll.do",
 					method= RequestMethod.GET)
@@ -100,9 +137,10 @@ public class ErpContorller {
 	public String EmpEnroll(RedirectAttributes redirectAttr,
 							EMP emp) {
 		
-		String rawPassword = emp.getEmpPwd();
-		String encodedPassword = bcryptPasswordEncoder.encode(rawPassword);
-		emp.setEmpPwd(encodedPassword);
+//		String rawPassword = emp.getEmpPwd();
+		// 호근 암호화 처리 날림.
+//		String encodedPassword = bcryptPasswordEncoder.encode(rawPassword);
+//		emp.setEmpPwd(encodedPassword);
 		
 		log.debug("emp = " + emp);
 		
@@ -126,6 +164,12 @@ public class ErpContorller {
 		return map;
 	}
 	
+	@RequestMapping("/ERP/empInfoView.do")
+	public String empInfoView(String empId, Model model) {
+		model.addAttribute("emp", erpService.selectOneEmp(empId));
+		log.debug("empId = {}", empId);
+		return "ERP/empInfoView";
+	}
 
 	//김찬희 ERP 상품검색
 	@RequestMapping("/ERP/searchInfo.do")
@@ -186,9 +230,11 @@ public class ErpContorller {
 		
 		Product product = erpService.orderProduct(map);
 		
-		model.addAttribute("product",product);
 		
 		log.debug("product = {}",product);
+		
+		model.addAttribute("product",product);
+		
 		
 		return "/ERP/productOrder";
 	}
@@ -199,9 +245,9 @@ public class ErpContorller {
 	//상품 등록 시 jsp연결
 	@RequestMapping(value = "/ERP/productEnroll.do",
 					method = RequestMethod.GET)
-	public String productinsert(Model model,EMP emp) {
+	public String productinsert(Model model) {
 		
-		List<EMP> list = erpService.empList(emp);
+		List<EMP> list = erpService.empList();
 		model.addAttribute("list", list);
 		
 		return "/ERP/productEnroll";
@@ -470,4 +516,58 @@ public class ErpContorller {
 		return "ERP/ProductInfo";
 	}
 	
+	// 호근 관리자 로그인 및 로그인 세션 추가 
+	@PostMapping("/ERP/erpLogin.do")
+	public String empLogin(@RequestParam("empId") String empId
+			  ,@RequestParam("empPwd") String empPwd
+			  ,@RequestParam("status") int status
+			  ,RedirectAttributes redirectAttr
+			  ,Model model
+			  ,HttpSession session) {
+		log.debug("empId = {}", empId);
+		log.debug("empPwd ={}", empPwd);
+		log.debug("status ={}", status);
+
+		EMP loginEmp = erpService.selectOneEmp(empId);
+		
+		log.debug("loginEmp = {}", loginEmp);
+		String location = "/";
+		
+		if(	loginEmp != null && (loginEmp.getEmpId().equals(empId))
+				&& (loginEmp.getEmpPwd().equals(empPwd))
+				&& (loginEmp.getStatus() == status )) {
+			model.addAttribute("loginEmp", loginEmp);
+	
+		}
+		else {
+			redirectAttr.addFlashAttribute("msg", "아이디 또는 비밀번호가 틀립니다.");
+			log.debug("location = " + location);
+		}
+		return "redirect:/ERP/menu.do";
+	}
+	@RequestMapping("/ERP/logout.do")
+	public String empLogout(SessionStatus sessionStatus) {
+		if(!sessionStatus.isComplete()) {
+			sessionStatus.setComplete();
+			
+		}
+		return "redirect:/";
+	}
+	
+	@PostMapping("/ERP/empboardEnroll.do")
+	public String empboardEnroll() {
+		
+		return null;
+	}
+	
+	@RequestMapping("/ERP/EmpBoardDetail.do")
+	public ModelAndView boardDetail(@RequestParam("no") int no,
+									ModelAndView mav) {
+		log.debug("no = {}", no);
+	    EmpBoard empBoard = erpService.selectOneEmpBoard(no);
+		mav.addObject("empBoard", empBoard);
+//		model.addAttribute("board", boardList);
+		mav.setViewName("ERP/EmpBoardDetail");
+		 return mav;
+	}
 }

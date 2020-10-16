@@ -5,13 +5,13 @@
 --identified by mate
 --default tablespace users;
 --grant RESOURCE,CONNECT to mate;
---------------------------------------------------------------
+----------------------------------------------------------------
 --grant create any job to mate;
 --=====================================
 -- 유저 삭제 (system 계정)
 --=====================================
 --select sid,serial#,username,status from v$session where schemaname = 'MATE'; --여기서 나온 숫자를
---alter system kill session '116,2255'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
+--alter system kill session '115,765'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
 --DROP USER mate CASCADE;
 --=====================================
 -- Drop 관련
@@ -100,7 +100,9 @@ CREATE TABLE Address (
 	member_id	varchar2(15)		NOT NULL,
 	reciever_name	varchar2(128)		NOT NULL,
 	receiver_phone	char(11)		NOT NULL,
-	address	varchar2(512)		NOT NULL,
+	addr1	varchar2(512)		NOT NULL,
+	addr2	varchar2(512)		NOT NULL,
+	addr3	varchar2(512)		NOT NULL,
 	reg_date	date	DEFAULT sysdate	NOT NULL,
 	is_check	number	DEFAULT 0	NOT NULL,
     
@@ -126,13 +128,6 @@ CREATE TABLE EMP (
     
     constraint pk_emp primary key (emp_id)
 );
-
-select
-	*
-from
-    emp
-order by
-    enroll_date;
 
 
 --DROP TABLE PRODUCT;
@@ -491,7 +486,9 @@ CREATE TABLE DELETE_EMP (
 	emp_id	varchar2(15)		NOT NULL,
 	emp_pwd	varchar2(300)		NOT NULL,
 	emp_name	varchar2(256)		NOT NULL,
-	address	varchar2(512)		NOT NULL,
+	addr1	varchar2(512)		NOT NULL,
+	addr2	varchar2(512)		NOT NULL,
+	addr3	varchar2(512)		NOT NULL,
 	phone	char(11)		NOT NULL,
 	enroll_date	date	NOT NULL,
 	status	char(1)		NOT NULL,
@@ -599,7 +596,9 @@ begin
         :old.emp_id, 
         :old.emp_pwd, 
         :old.emp_name, 
-        :old.address, 
+        :old.addr1,
+        :old.addr2,
+        :old.addr3,
         :old.phone,
         :old.enroll_date,
         :old.status,

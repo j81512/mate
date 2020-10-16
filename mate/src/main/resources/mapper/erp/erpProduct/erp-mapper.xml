@@ -115,6 +115,7 @@
  		)
  	</insert>
  	
+
  	<insert id="productMainImagesEnroll">
  		insert into
  			product_main_images
@@ -159,5 +160,9 @@
 		where
 			product_no = #{ productNo }
 	</delete>
+	
+	<select id="findEmpid" resultType="string">
+ 		select emp_id from product where product_no = #{productNo}
+ 	</select>
 
 </mapper>
