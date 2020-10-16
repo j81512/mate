@@ -1,5 +1,6 @@
 package com.kh.mate.member.model.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -31,6 +32,11 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public int deleteMember(Map<String, Object> map) {
 		return sqlSession.delete("member.deleteMember", map);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectAllPurchase(String memberId) {
+		return sqlSession.selectList("member.selectAllPurchase", memberId);
 	}
 
 	
