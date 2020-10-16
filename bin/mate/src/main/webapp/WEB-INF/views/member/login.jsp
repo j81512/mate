@@ -77,33 +77,97 @@
 			
 		});
 	});
+
+	$(document).ready(function(){
+		var key = getCookie("key");	
+		var $memberId = $("#memberId_").val(key);
+		var $remember = $("#remember_");
+
+		if( $memberId != ""){
+			$remember.prop("checked", true);
+		}else{
+			$remember.prop("checked", false)
+
+		}
+
+		$("#remember_").change(function(){
+
+			if($remember.is(":checked")){
+				setCookie("key", $("#memberId_").val(), 7);
+			}else{
+				deleteCookie("key");
+				$remember.prop("checked", false)
+			}
+		});
+
+		$($memberId).keyup(function(){
+			if($remember.is(":checked")){
+				setCookie("key", $("#memberId_").val(), 7);
+			}else{
+				deleteCookie("key");
+				$remember.prop("checked", false)
+			}	
+		});
+		
+	});
+
+	function setCookie(cookieName, value, exdays){
+		var exdate = new Date();
+		exdate.setDate(exdate.getDate() + exdays);
+
+		var cookieValue = escape(value) + ((exdays==null) ? "" : "; expires=" + exdate.toGMTString());
+		document.cookie = cookieName + "=" +cookieValue;
+		
+	}
+
+	function deleteCookie(cookieName){
+	    var expireDate = new Date();
+	    expireDate.setDate(expireDate.getDate() - 1);
+	    document.cookie = cookieName + "= " + "; expires=" + expireDate.toGMTString();
+	}
+	 
+	function getCookie(cookieName) {
+	    cookieName = cookieName + '=';
+	    var cookieData = document.cookie;
+	    var start = cookieData.indexOf(cookieName);
+	    var cookieValue = '';
+	    if(start != -1){
+	        start += cookieName.length;
+	        var end = cookieData.indexOf(';', start);
+	        if(end == -1)end = cookieData.length;
+	        cookieValue = cookieData.substring(start, end);
+	    }
+	    return unescape(cookieValue);
+	}
 </script>
 
 
 <div class="container">
 	<div class="row">
 		<div class="col-md-3 col-md-offset-4">
-			<div class="form-login">
-				<form class="form-signin"
+		 <ul class="nav nav-tabs">
+             <li class="active"><a href="#member" data-toggle="tab">일반 회원</a></li>
+             <li><a href="#adminTab" data-toggle="tab">관리자 회원</a></li>
+         </ul>
+          <div id="myTabContent" class="tab-content">
+          <div class="tab-pane active in" id="member">
+			<div class="form">
+				<form class="form"
 					action="${ pageContext.request.contextPath }/member/loginCheck.do"
 					method="post" id="login-form">
 					<h3 class="heading-desc">로그인</h3>
-					<label class="radio-inline"> <input type="radio"
-						name="member" id="buyMember_" value="C" checked> 일반회원
-					</label> <label class="radio-inline"> <input type="radio"
-						name="member" id="businessMember_" value="B"> 기업회원
-					</label> <br />
 					<div class="form-group">
 						<input type="text" class="form-control" name="memberId" id="memberId_"
 							placeholder="아이디" required autofocus />
 					</div>
 					<div class="form-group">
-						<input type="password" class="form-control" name="password"
-							id="password_" placeholder="비밀번호" required />
+						<input type="password" class="form-control" name="memberPWD"
+							id="memberPWD_" placeholder="비밀번호" required />
 					</div>
-					<label class="checkbox"> <input type="checkbox"
-						value="remember" /> 아이디저장
-					</label> <a class="forgotLnk" href="#">비밀번호를 잊어 버리셨나요 ?</a>
+					<label class="checkbox"> 
+						<input type="checkbox" name="remember" id="remember_"  /> 아이디저장
+					</label> 
+					<a class="forgotLnk" href="#" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modalPassword">비밀번호를 잊어 버리셨나요 ?</a>
 					<button class="btn btn-lg btn-block purple-bg" type="submit">
 						로그인</button>
 						<div class="or-box">
@@ -209,11 +273,39 @@
 						</div>
 					</div>
 				</form>
-
+					</div>
+				</div>
+					<!-- 관리자용 로그인 화면 -->
+	
+				  <div class="tab-pane fade" id="adminTab">
+                      <form id="adminTab" action="${ pageContext.request.contextPath }/ERP/erpLogin.do" method="post">
+                     	<h3 class="heading-desc">관리자 로그인</h3>
+                     	<div class="form-group">
+	                        <label for="empId_">아이디</label>
+	                        <input type="text" name="empId" id="empId" class="input-xlarge">
+	                    </div>
+	                    <div class="form-group">   
+	                        <label for="empPassword_">비밀번호</label>
+	                        <input type="password" name="empPwd"  class="input-xlarge">
+                       	</div>
+                       	<div class="form-check form-check-inline">
+							<input type="radio" class="form-check-input" name="status" id="status2" value="2" checked>
+							<label  class="form-check-label" for="status2">제조사</label>&nbsp;
+							<input type="radio" class="form-check-input" name="status" id="status1" value="1" >
+							<label  class="form-check-label" for="status1">지점</label>
+							<input type="radio" class="form-check-input" name="status" id="status0" value="0" >
+							<label  class="form-check-label" for="status0">본사</label>
+						</div>
+                        <div>
+                          <button type="submit" class="btn btn-primary">로그인</button>
+                        </div>
+                      </form>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
+<!-- 비밀번호 찾기용 모달 창 -->
 
 <jsp:include page="/WEB-INF/views/common/footerS.jsp" />

@@ -6,7 +6,6 @@
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>
 <!DOCTYPE html>
 <html lang="ko">
-<head>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
 <!-- bootstrap js: jquery load 이후에 작성할것.-->
@@ -15,33 +14,15 @@
 
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-</head>
-	<body>  
-		
-		<table class="table w-75 mx-auto">
-			<tr>
-				<th scope="col">계정명</th>
-				<th scope="col">사업명</th>
-				<th scope="col">주소</th>
-				<th scope="col">연락처</th>
-				<th scope="col">등록일</th>
-				<th scope="col">상태</th>
-				<th>
-					<button type="button" 
-							onclick="location.href='${ pageContext.request.contextPath }/ERP/EmpEnroll.do';">지점/제조사 생성
-					</button>
-				</th>
-			</tr>
-			<c:forEach items="${ list }" var="emp">
-			<tr>
-				<td>${ emp.empId }</td>
-				<td>${ emp.empName }</td>
-				<td>${ emp.empAddress }</td>
-				<td>${ emp.empPhone }</td>
-				<td><fmt:formatDate value="${ emp.empEnrollDate }" pattern="yy/MM/dd"/></td>
-				<td>${ emp.empStatus }</td>		
-			</tr>
-			</c:forEach>	
-		</table>
-	</body>
-</html>
+<!-- 호근 헤더 처리-->
+<title></title>
+<script>
+
+</script>
+<jsp:include page="/WEB-INF/views/common/headerE.jsp" />
+
+
+
+
+ <!--호근 푸터 처리  -->
+<jsp:include page="/WEB-INF/views/common/footerE.jsp" />

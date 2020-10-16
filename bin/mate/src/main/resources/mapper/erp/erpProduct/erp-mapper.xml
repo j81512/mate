@@ -72,6 +72,15 @@
  			product_no = #{ productNo }
  	</select>
  	
+ 	<select id="selectProductImages" resultType="productImages">
+ 		select
+ 			*
+ 		from
+ 			product_images
+ 		where
+ 			product_no = #{ productNo }
+ 	</select>
+ 	
 	<insert id="productEnroll">
  		insert into 
  			product
@@ -105,5 +114,55 @@
 		#{ productNo }
  		)
  	</insert>
+ 	
+
+ 	<insert id="productMainImagesEnroll">
+ 		insert into
+ 			product_main_images
+ 		values
+ 		(
+ 		seq_product_main_image_no.nextval,
+ 		#{ originalFilename },
+ 		#{ renamedFilename },
+ 		#{ productNo }
+ 		)
+ 	</insert>
+ 	
+ 	<update id="productUpdate">
+ 		update product
+ 			set
+ 		product_name = #{ productName },
+ 		category = #{ category },
+ 		content = #{ content },
+ 		price = #{ price }
+ 			where
+ 		product_no = #{ productNo }	
+ 	</update>
+ 	
+ 	
+ 	<delete id="productMainImagesDelete">
+ 		delete from
+ 			product_main_images
+ 		where
+ 			product_no = #{ productNo }
+ 	</delete>
+ 	
+ 	<delete id="productDelete">
+ 		delete from
+ 			product
+ 		where
+ 			product_no = #{ productNo }
+ 	</delete>
+
+	<delete id="productImagesDelete">
+		delete from
+			product_images
+		where
+			product_no = #{ productNo }
+	</delete>
+	
+	<select id="findEmpid" resultType="string">
+ 		select emp_id from product where product_no = #{productNo}
+ 	</select>
 
 </mapper>
