@@ -11,23 +11,11 @@
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 <!-- bootstrap css -->
 <link rel="stylesheet"
 	href="${ pageContext.request.contextPath }/resources/css/headerS.css" />
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-<!-- 김찬희 카테고리 작업 스크립트 -->
-<script>
-function category(ct){
-	console.log(ct);
-	var $searchCategory = $('[name=searchCategory]');
-	var $category = $('[name=category]');
-	$category.val(ct);
-	console.log($category.val())
-	$searchCategory.submit();
-	
-}
-</script>
-<!-- 김찬희 카테고리작업 스크립트끝 -->
 </head>
 <body>
 <header>
@@ -50,12 +38,7 @@ function category(ct){
               </a>
           </ul>
           <ul class="collapse nav navbar-nav nav-collapse" id="nav-collapse1">
-              <!-- 도균이 erp확인용  -->
-               <li class="nav-item">
-			        <a class="nav-link" href="${ pageContext.request.contextPath }/ERP/menu.do">ERP확인용</a>
-			   </li>
-
-            <li><a href="${ pageContext.request.contextPath }/member/myPage.do">MyPage</a></li>
+            <li><a href="#">회원관리</a></li>
             <li><a href="${pageContext.request.contextPath}/cs/cs.do">C/S</a></li>
             <li><a href="${ pageContext.request.contextPath }/company/location.do">Location</a></li>
             <!-- 1. 추가 : 판매 상품 보기 -> toy -->
@@ -75,42 +58,18 @@ function category(ct){
 	          <a class="dropdown-item" onclick="category('RC')">RC카</a>
 	         <a class="dropdown-item" onclick="category('DR')">드론</a>
 	        </div>
-	      </li>
-	      <!-- 로그인 -->
-			<!-- otherwise쓰면 오류떠서 when으로 수정 -->
-			<!-- emp session 추가 -->
-	   <c:choose>
-			<c:when test="${ empty loginMember && empty loginEmp }">
-				<li class="nav-item">
-		        	<a class="nav-link" href="${ pageContext.request.contextPath}/member/memberLogin.do"><img src="${ pageContext.request.contextPath }/resources/images/cart.png" width="80px" class="loginImg"/>로그인</a>
-		      	</li>
-			</c:when>
-			<c:when test="${ not empty loginMember }">
-				${ loginMember.memberName }님, 반갑습니다.	
-				<button class="btn btn-outline-success my-2 my-sm-0"
+	   	 	</li>
+   	 	
+   	 		<c:if test="${not empty loginEmp }" >
+			${ loginEmp.empName }님, 반갑습니다.	
+			<button class="btn btn-outline-success my-2 my-sm-0"
 	               type="button"
-	               onclick="location.href='${ pageContext.request.contextPath}/member/logout.do'"><img src="${ pageContext.request.contextPath }/resources/images/cart.png" width="80px" class="loginImg"/>로그아웃</button>
-			</c:when>
-			<c:when test="${not empty loginEmp }" >
-				${ loginEmp.empName }님, 반갑습니다.	
-				<button class="btn btn-outline-success my-2 my-sm-0"
-		               type="button"
-		               onclick="location.href='${ pageContext.request.contextPath}/ERP/logout.do'"><img src="${ pageContext.request.contextPath }/resources/images/cart.png" width="80px" class="loginImg"/>로그아웃</button>
-			</c:when>
-		   </c:choose> 
-          </ul>
-        </div><!-- /.navbar-collapse -->
+	               onclick="location.href='${ pageContext.request.contextPath}/ERP/logout.do'"><img src="${ pageContext.request.contextPath }/resources/images/cart.png" width="80px" class="loginImg"/>로그아웃</button>
+			</c:if>
+	   	 	</ul>
+  		</div><!-- /.navbar-collapse -->
       </div><!-- /.container -->
     </nav><!-- /.navbar -->
 </div><!-- /.container-fluid -->
- <!-- 김찬희 작업 -->
-<form action="${ pageContext.request.contextPath }/product/productCategory.do"
-		name="searchCategory">
-	<input type="hidden" name="category" value=""/>
-</form>
-<!-- 김찬희 작업끝 -->
-
 </header>
-
 <section id="content-sec">
-
