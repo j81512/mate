@@ -54,7 +54,7 @@
 			addr2 AS empAddr2,
 			phone AS empPhone,
 			enroll_date AS empEnrollDate,
-			status AS empStatus
+			status AS status
 		from
 			EMP
 		order by
