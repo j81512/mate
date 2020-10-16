@@ -16,7 +16,9 @@
   	<id column="emp_id" property="empId"/>
   	<result column="emp_pwd" property="empPwd"/>
   	<result column="emp_name" property="empName"/>
-  	<result column="address" property="address"/>
+  	<result column="addr1" property="addr1"/>
+  	<result column="addr2" property="addr2"/>
+  	<result column="addr3" property="addr3"/>
   	<result column="phone" property="phone"/>
   	<result column="enroll_date" property="enrollDate"/>
   	<result column="status" property="status"/>
