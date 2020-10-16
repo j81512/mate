@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,7 +36,7 @@ import com.google.gson.JsonObject;
 import com.kh.mate.common.Utils;
 import com.kh.mate.erp.model.service.ErpService;
 import com.kh.mate.erp.model.vo.EMP;
-import com.kh.mate.member.model.vo.Member;
+import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -80,6 +81,23 @@ public class ErpContorller {
 		return mav;
 	}
 	
+
+	@RequestMapping("/ERP/EmpBoardList.do")
+	public String empBoardList(Model model) {
+//		호근 empList.do가 게시판 가르킴  수정하겠음
+		List<EMP> list = erpService.empList();
+		List<Map<String, Object>> empBoardList = erpService.empBoardList();
+		log.debug("list = {} ", list);
+		log.debug("empBoardList = {} ", empBoardList);
+		
+		model.addAttribute("list", list);
+		//model 추가함
+		model.addAttribute("empBoardList", empBoardList);
+		return "ERP/empList";
+		
+	}
+
+
 	@RequestMapping("/ERP/empManage.do")
 	public String empManage(Model model) {
 		List<EMP> list = erpService.empList();
@@ -216,6 +234,16 @@ public class ErpContorller {
 		
 		
 		return "/ERP/productOrder";
+	}
+	
+	@RequestMapping("/ERP/productOrder.do")
+	public String productOrder(Product product) {
+		
+		log.debug("product = {}",product);
+		
+		int result = erpService.productOrder(product);
+		
+		return "/ERP/ProductInfo";
 	}
 	
 	
@@ -516,15 +544,33 @@ public class ErpContorller {
 				&& (loginEmp.getEmpPwd().equals(empPwd))
 				&& (loginEmp.getStatus() == status )) {
 			model.addAttribute("loginEmp", loginEmp);
-			String next = (String)session.getAttribute("next");
-			if( next != null) 
-				location = next;
-		
+	
 		}
-		else {
-			redirectAttr.addFlashAttribute("msg", "아이디 또는 비밀번호가 틀립니다.");
-			log.debug("location = " + location);
+
+		return "redirect:/ERP/menu.do";
+	}
+	@RequestMapping("/ERP/logout.do")
+	public String empLogout(SessionStatus sessionStatus) {
+		if(!sessionStatus.isComplete()) {
+			sessionStatus.setComplete();
+			
 		}
-		return "redirect:" + location;
+		return "redirect:/";
+	}
+	
+	@RequestMapping("/ERP/EmpBoardEnroll.do")
+	public void EmpboardEnroll() {
+			
+	}
+	
+	@RequestMapping("/ERP/EmpBoardDetail.do")
+	public ModelAndView boardDetail(@RequestParam("no") int no,
+									ModelAndView mav) {
+		log.debug("no = {}", no);
+	    EmpBoard empBoard = erpService.selectOneEmpBoard(no);
+		mav.addObject("empBoard", empBoard);
+//		model.addAttribute("board", boardList);
+		mav.setViewName("ERP/EmpBoardDetail");
+		 return mav;
 	}
 }

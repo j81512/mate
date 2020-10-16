@@ -2,15 +2,14 @@ package com.kh.mate.member.controller;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.http.HttpResponse;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -320,7 +319,10 @@ public class MemberController {
 		
 		log.debug("loginMember = {}", loginMember);
 		
-		mav.addObject("loginMember = {}", loginMember);
+		List<Map<String, Object>> mapList = memberService.selectAllPurchase(loginMember.getMemberId());
+		
+		mav.addObject("loginMember", loginMember);
+		mav.addObject("mapList", mapList);
 		mav.setViewName("member/myPage");
 		return mav;
 	}

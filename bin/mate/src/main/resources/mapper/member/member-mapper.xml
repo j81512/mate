@@ -35,6 +35,8 @@
  		update
  			member
  		<set>
+<<<<<<< HEAD
+<<<<<<< HEAD
  			<if test="memberId != null">
  				member_id = #{ memberId },
  			</if>
@@ -48,6 +50,28 @@
  				gender = #{ gender },
  			</if>
  			<if test="phone != null">
+=======
+ 			<if test="memberId != null and memberId != ''">
+=======
+ 			<if test="memberId != null">
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
+ 				member_id = #{ memberId },
+ 			</if>
+ 			<if test="memberPWD != null">
+ 				member_pwd = #{ memberPWD },
+ 			</if>
+ 			<if test="memberName != null">
+ 				member_name = #{ memberName },
+ 			</if>
+ 			<if test="gender != null">
+ 				gender = #{ gender },
+ 			</if>
+<<<<<<< HEAD
+ 			<if test="phone != null and phone != ''">
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
+=======
+ 			<if test="phone != null">
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
  				phone = #{ phone }
  			</if>
  		</set>

@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>   
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <link rel="stylesheet"
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
@@ -26,11 +29,19 @@
 	margin: 10px 0px 60px;
 	border: 1px solid GREY;
 }
+#purchaseLog-table table{
+	border: 1px solid black;
+	text-align: center;
+}
+#purchaseLog-table td, #purchaseLog-table th{
+	border: 1px solid black;
+	padding: 10px;
+	text-align: center;
+}
 </style>
 <script>
 
 	$(function(){
-		
 		$("#memberFrm .btn-delete").click(function(){
 			var $memberId = $("#memberId_");
 			var $frm = $("#memberFrm");
@@ -185,10 +196,34 @@
 <div id="buy" class="tab-pane fade">
 	<div class="col-md-15">
 	    <div class="form-area">  
-			<table>
+			<table id="purchaseLog-table">
 				<tr>
-					<th>구매내역</th>
+					<th></th>
+					<th>주문번호</th>
+					<th>구매날짜</th>
+					<th>상품번호</th>
+					<th>상품명</th>
+					<th>수량</th>
+					<th>상태</th>
 				</tr>
+				<c:if test="${ !empty mapList }">
+					<tr>
+					<c:forEach items="${ mapList }" var="purchase" varStatus="vs">
+						<td>${ vs.count }</td>
+						<td>${ purchase.purchaseNo }</td>
+						<td><fmt:formatDate value="${ purchase.purchaseDate }" pattern="yyyy-MM-dd HH:mm"/></td>
+						<td>${ purchase.productNo }</td>
+						<td>${ purchase.productName }</td>
+						<td>${ purchase.amount }</td>
+						<td>${ purchase.status == 0 ? "<input type='button' value='환불/교환' /><input type='button' value='구매확정' />" : purchase.status == 1 ? "구매확정<input type='button' value='리뷰쓰기' />" : "환불/교환" }</td>
+					</c:forEach>
+					</tr>
+				</c:if>
+				<c:if test="${ empty mapList }">
+					<tr>
+						<td colspan="7">구매 내역이 존재하지 않습니다.</td>
+					</tr>
+				</c:if>
 			</table>
 		</div>
 	</div>

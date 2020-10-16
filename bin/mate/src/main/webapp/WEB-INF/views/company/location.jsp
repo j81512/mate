@@ -13,7 +13,7 @@
 					${ company.empName }
 					<input type="hidden" name="companyName" value="${ company.empName }" />
 					<input type="hidden" name="companyPhone" value="${ company.phone }" />
-					<input type="hidden" name="companyAddress" value="${ company.address }" />
+					<input type="hidden" name="companyAddress" value="${ company.addr2 } ${ company.addr3 }" />
 				</div>
 			</c:forEach>
 		
