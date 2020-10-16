@@ -129,18 +129,6 @@ CREATE TABLE EMP (
     constraint pk_emp primary key (emp_id)
 );
 
-<<<<<<< HEAD
-select
-	*
-from
-    emp
-order by
-    enroll_date;
-
-insert into spring.EMP values ('test', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '테스터1호', 16941, '경기 용인시 수지구 상현로 2 (상현동)', '4321', '01012341234', default, 2);
-=======
->>>>>>> branch 'master' of https://github.com/j81512/mate.git
-
 --DROP TABLE PRODUCT;
 CREATE TABLE PRODUCT (
 	product_no	number	NOT NULL	,
@@ -326,7 +314,7 @@ CREATE TABLE CS (
 	cs_no	number		NOT NULL,
 	title	varchar2(128)		NOT NULL,
 	content	varchar2(3000)		NOT NULL,
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	reg_date	date	DEFAULT sysdate	NOT NULL,
 	secret	number	DEFAULT 0	NOT NULL,
 	notice	number	DEFAULT 0	NOT NULL,
@@ -365,7 +353,7 @@ CREATE TABLE CS_REPLY (
 
 --DROP TABLE CART;
 CREATE TABLE CART (
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	product_no	number		NOT NULL,
 	amount	number	DEFAULT 0	NOT NULL,
     
@@ -381,7 +369,7 @@ CREATE TABLE CART (
 --DROP TABLE PURCHASE;
 CREATE TABLE PURCHASE (
 	purchase_no	number		NOT NULL,
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	purchase_date	date	DEFAULT sysdate	NOT NULL,
     
     constraint pk_purchase primary key (purchase_no),
@@ -462,7 +450,7 @@ CREATE TABLE DELETE_CS (
 	cs_no	number		NOT NULL,
 	title	varchar2(128)		NOT NULL,
 	content	varchar2(3000)		NOT NULL,
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	reg_date	date	NOT NULL,
 	secret	number	NOT NULL,
 	notice	number	NOT NULL,
