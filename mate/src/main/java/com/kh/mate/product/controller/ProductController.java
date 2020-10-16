@@ -55,6 +55,23 @@ public class ProductController {
 		return "product/productDetail";
 	}
 	
+	@RequestMapping("/saveCart.do")
+	public String saveCart (@RequestParam("amount") String amount,
+							@RequestParam("productNo") String productNo,
+							@RequestParam("memberId") String memberId){
+		
+		log.debug("amount = {}",amount);
+		log.debug("productNo={}",productNo);
+		Map<String, Object> param = new HashMap<>();
+		param.put("amount", amount);
+		param.put("productNo", productNo);
+		param.put("memberId", memberId);
+		
+		int result = productService.insertCart(param);
+		
+		return "redirect:/";
+	}
+	
 	//CH
 	@RequestMapping(value = "/productList.do",
 					method = RequestMethod.GET)

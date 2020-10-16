@@ -31,7 +31,7 @@ public class Product {
 	private int imageCount;
 	private List<String> productImagesName;
 	private List<ProductImages> productImages;
-	private List<ProductMainImages> productMainImages;
+	private List<ProductMainImages> pmiList;
 	
 	private String empName;//지점명(임시)
 	private String branchEmp; //지점ID(임시)

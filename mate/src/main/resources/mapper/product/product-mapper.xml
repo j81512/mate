@@ -3,6 +3,10 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="product">
+
+	<select id="selectProductListMap" resultMap="productMap">
+	
+	</select>
  
  	<select id="selectProductListAll" resultType="product">
  		select
@@ -60,5 +64,38 @@
  		select * from product
  			where category = #{category}
  	</select>
+ 	
+ 	
+ 	<insert id="insertCart">
+ 		insert into
+ 			cart
+ 		values
+ 		(
+ 		#{memberId},
+ 		#{productNo},
+ 		#{amount}
+ 		)
+ 	
+ 	</insert>
+ 	
+ 	
+ 	<resultMap type="product" id="productMap">
+ 		<id column="product_no" property="productNo"/>
+ 		<result column="product_name" property="productName"/>
+ 		<result column="reg_date" property="regDate"/>
+ 		<result column="category" property="category"/>
+ 		<result column="content" property="content"/>
+ 		<result column="price" property="price"/>
+ 		<result column="emp_id" property="empId"/>
+ 		<result column="enabled" property="enabled"/>
+ 		
+ 		<collection property="productMainImages" ofType="productMainImages">
+	 		<id column="product_main_image_no" property="productMainImageNo"/>
+	 		<result column="original_filename" property="originalFilename"/>
+	 		<result column="renamed_filename" property="renamedFilename"/>
+	 		<result column="product_no" property="productNo"/>
+ 		</collection>
+ 	</resultMap>
+ 	
  
 </mapper>

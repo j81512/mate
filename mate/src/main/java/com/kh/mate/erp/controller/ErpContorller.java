@@ -305,7 +305,7 @@ public class ErpContorller {
 		
 		//Product객체에 MainImages객체를 Setting
 		log.debug("mainImgList = {}", mainImgList);	
-		product.setProductMainImages(mainImgList);
+		product.setPmiList(mainImgList);
 		
 		//Content에 Image파일이 있을 경우 (temp폴더내 파일이 저장되었을 경우)
 		//productImage객체 생성 후 DB에 저장
@@ -465,7 +465,7 @@ public class ErpContorller {
 			
 				}
 				
-			product.setProductMainImages(mainImgList);
+			product.setPmiList(mainImgList);
 			
 		}
 		
