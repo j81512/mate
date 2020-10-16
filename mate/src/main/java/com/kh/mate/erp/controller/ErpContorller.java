@@ -531,14 +531,7 @@ public class ErpContorller {
 				&& (loginEmp.getEmpPwd().equals(empPwd))
 				&& (loginEmp.getStatus() == status )) {
 			model.addAttribute("loginEmp", loginEmp);
-			String next = (String)session.getAttribute("next");
-			if( next != null) 
-				location = next;
-		
-		}
-		else {
-			redirectAttr.addFlashAttribute("msg", "아이디 또는 비밀번호가 틀립니다.");
-			log.debug("location = " + location);
+	
 		}
 
 		return "redirect:/ERP/menu.do";
