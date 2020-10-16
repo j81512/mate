@@ -11,7 +11,7 @@
 -- 유저 삭제 (system 계정)
 --=====================================
 --select sid,serial#,username,status from v$session where schemaname = 'MATE'; --여기서 나온 숫자를
---alter system kill session '115,767'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
+--alter system kill session '91,3539'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
 --DROP USER mate CASCADE;
 --=====================================
 -- Drop 관련
@@ -137,11 +137,11 @@ CREATE TABLE PRODUCT (
 	category	varchar2(128)		NOT NULL,
 	content	varchar2(4000)		NOT NULL,
 	price	number		NOT NULL,
-    emp_id varchar2(15) NOT NULL,
+    manufacturer_id varchar2(15) NOT NULL,
 	enabled	number	DEFAULT 0	NOT NULL,
     
     constraint pk_product primary key (product_no),
-    constraint fk_product_emp_id foreign key (emp_id)
+    constraint fk_product_emp_id foreign key (manufacturer_id)
                                          references emp (emp_id)
                                          on delete cascade
 );

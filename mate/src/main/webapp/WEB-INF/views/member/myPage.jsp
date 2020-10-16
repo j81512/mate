@@ -29,11 +29,19 @@
 	margin: 10px 0px 60px;
 	border: 1px solid GREY;
 }
+#purchaseLog-table table{
+	border: 1px solid black;
+	text-align: center;
+}
+#purchaseLog-table td, #purchaseLog-table th{
+	border: 1px solid black;
+	padding: 10px;
+	text-align: center;
+}
 </style>
 <script>
 
 	$(function(){
-		
 		$("#memberFrm .btn-delete").click(function(){
 			var $memberId = $("#memberId_");
 			var $frm = $("#memberFrm");
@@ -188,10 +196,11 @@
 <div id="buy" class="tab-pane fade">
 	<div class="col-md-15">
 	    <div class="form-area">  
-			<table>
+			<table id="purchaseLog-table">
 				<tr>
 					<th></th>
-					<th>날짜</th>
+					<th>주문번호</th>
+					<th>구매날짜</th>
 					<th>상품번호</th>
 					<th>상품명</th>
 					<th>수량</th>
@@ -199,9 +208,10 @@
 				</tr>
 				<c:if test="${ !empty mapList }">
 					<tr>
-					<c:forEach items="mapList" var="purchase" varStatus="vs">
+					<c:forEach items="${ mapList }" var="purchase" varStatus="vs">
 						<td>${ vs.count }</td>
-						<td>${ purchase.purchaseDate }</td>
+						<td>${ purchase.purchaseNo }</td>
+						<td><fmt:formatDate value="${ purchase.purchaseDate }" pattern="yyyy-MM-dd HH:mm"/></td>
 						<td>${ purchase.productNo }</td>
 						<td>${ purchase.productName }</td>
 						<td>${ purchase.amount }</td>
