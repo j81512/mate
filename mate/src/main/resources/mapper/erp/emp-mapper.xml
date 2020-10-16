@@ -16,7 +16,7 @@
 			#{ empAddr3 },
 			#{ empPhone },
 			default,		
-			#{ empStatus }
+			#{ status }
 		)
 	</insert>
 	
@@ -29,14 +29,12 @@
 			addr3 AS empAddr3,
 			phone AS empPhone,
 			enroll_date AS empEnrollDate,
-			status AS empStatus
+			status AS status
 		from
 			emp
 		where
 			emp_id = #{ empId }
 	</select>
-	
-	
 	
 	<resultMap type="emp" id="empMap">
 	
@@ -60,5 +58,6 @@
 		order by
 			enroll_date
 	</select>
+	
 
 </mapper>

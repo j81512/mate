@@ -8,13 +8,6 @@
 <html lang="ko">
 <head>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<script>
-function orderModal(){
-
-	$("#modelTest").modal()
-	
-}
-</script>
 
 <!-- bootstrap js: jquery load 이후에 작성할것.-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
@@ -23,40 +16,45 @@ function orderModal(){
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 </head>
-  	<body onload="orderModal()">
-		<section>
-			
-			<div class="modal" id="modelTest" tabindex="-1">
-			  <div class="modal-dialog">
-			    <div class="modal-content">
-			      <div class="modal-header">
-			        <h5 class="modal-title">Modal title</h5>
-			        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			          <span aria-hidden="true">&times;</span>
-			        </button>
-			      </div>
-			      <div class="modal-body">
-			      
-			      	<form action="" method="post">
-			      	
-			      		<p>현재수량 : ${ product.stock }</p>
-			      		<p>상품번호 : ${ product.productNo }</p>
-			      		<p>신청지점 : ${ product.empId }</p>
-			      		<%-- <p>제조사 : ${ product.eId }</p> --%>
-			      		
-					      <div class="modal-footer">
-					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					        <button type="button" class="btn btn-primary">Save changes</button>
-					      </div>
-			      		
-			      	
-			      	</form>
-			      
-			      </div>
-			    </div>
-			  </div>
-			</div>
-					
-		</section>
+	<body>  
+		
+		<table class="table w-75 mx-auto">
+			<tr>
+				<th scope="col">계정명</th>
+				<th scope="col">사업명</th>
+				<th scope="col">주소</th>
+				<th scope="col">연락처</th>
+				<th scope="col">등록일</th>
+				<th scope="col">상태</th>
+				<th>
+					<button type="button" 
+							onclick="location.href='${ pageContext.request.contextPath }/ERP/EmpEnroll.do';">지점/제조사 생성
+					</button>
+				</th>
+			</tr>
+			<c:if test="${ not empty list }">
+				<c:forEach items="${ list }" var="emp">
+				<tr>
+					<td>${ emp.empId }</td>
+					<td><a href="${ pageContext.request.contextPath }/ERP/empInfoDetail.do">${ emp.empName }</a></td>
+					<td>${ emp.empAddr2 }</td>
+					<td>${ emp.empPhone }</td>
+					<td><fmt:formatDate value="${ emp.empEnrollDate }" pattern="yyyy년MM월dd일"/></td>				
+					<td>
+						<c:if test="${ emp.status == 1}">지점
+						</c:if>
+						<c:if test="${ emp.status == 2}">제조사
+						</c:if>
+					</td>		
+				</tr>
+				</c:forEach>
+				</c:if>
+				<!-- 상품이 없을 경우 -->
+				<c:if test="${ empty list }">
+					<li>
+						<span>목록이 존재하지 않습니다.</span>
+					</li>
+				</c:if>	
+		</table>
 	</body>
 </html>
