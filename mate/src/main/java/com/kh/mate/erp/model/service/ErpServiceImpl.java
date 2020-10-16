@@ -38,8 +38,8 @@ public class ErpServiceImpl implements ErpService {
 	}
 	
 	@Override
-	public List<EMP> empList(EMP emp) {
-		return erpDAO.empList(emp);
+	public List<EMP> empList() {
+		return erpDAO.empList();
 	}
 
 	@Override
@@ -47,13 +47,21 @@ public class ErpServiceImpl implements ErpService {
 		
 		Product product = erpDAO.orderProduct(map);
 		
-		product.setEId(erpDAO.findEmpid(product.getProductNo()));
+//		product.setEId(erpDAO.findEmpid(product.getProductNo()));
 		
 		return product;
 	}
 	
-	//김종완
 	
+	@Override
+	public int productOrder(Product product) {
+		return erpDAO.productOrder(product);
+	}
+	
+	
+	//김종완
+
+
 	@Override
 	public int productEnroll(Product product) {
 		

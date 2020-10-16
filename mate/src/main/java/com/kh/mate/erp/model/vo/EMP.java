@@ -25,6 +25,7 @@ public class EMP implements Serializable{
 	private String empAddr3;
 	private String empPhone;
 	private Date empEnrollDate;
-	private int empStatus;
+	//호근 이름 status로 수정
+	private int status;
 	
 }

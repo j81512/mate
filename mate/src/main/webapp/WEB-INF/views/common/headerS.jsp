@@ -77,20 +77,27 @@ function category(ct){
 	        </div>
 	      </li>
 	      <!-- 로그인 -->
-	      <c:choose>
-			<c:when test="${ empty loginMember }">
+			<!-- otherwise쓰면 오류떠서 when으로 수정 -->
+			<!-- emp session 추가 -->
+	   <c:choose>
+			<c:when test="${ empty loginMember && empty loginEmp }">
 				<li class="nav-item">
 		        	<a class="nav-link" href="${ pageContext.request.contextPath}/member/memberLogin.do"><img src="${ pageContext.request.contextPath }/resources/images/cart.png" width="80px" class="loginImg"/>로그인</a>
 		      	</li>
 			</c:when>
-			<c:otherwise >
+			<c:when test="${ not empty loginMember }">
 				${ loginMember.memberName }님, 반갑습니다.	
 				<button class="btn btn-outline-success my-2 my-sm-0"
 	               type="button"
 	               onclick="location.href='${ pageContext.request.contextPath}/member/logout.do'"><img src="${ pageContext.request.contextPath }/resources/images/cart.png" width="80px" class="loginImg"/>로그아웃</button>
-			</c:otherwise>
-	
-		   </c:choose>
+			</c:when>
+			<c:when test="${not empty loginEmp }" >
+				${ loginEmp.empName }님, 반갑습니다.	
+				<button class="btn btn-outline-success my-2 my-sm-0"
+		               type="button"
+		               onclick="location.href='${ pageContext.request.contextPath}/member/logout.do'"><img src="${ pageContext.request.contextPath }/resources/images/cart.png" width="80px" class="loginImg"/>로그아웃</button>
+			</c:when>
+		   </c:choose> 
           </ul>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container -->

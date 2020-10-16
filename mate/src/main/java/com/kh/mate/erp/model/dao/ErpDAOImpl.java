@@ -38,7 +38,7 @@ public class ErpDAOImpl implements ErpDAO {
 	
 	
   @Override
-	public List<EMP> empList(EMP emp) {
+	public List<EMP> empList() {
 		return sqlSession.selectList("emp.empList");
 	}
 
@@ -53,6 +53,11 @@ public class ErpDAOImpl implements ErpDAO {
 	}
 
 	
+	
+	@Override
+	public int productOrder(Product product) {
+		return sqlSession.insert("erp.productOrder",product);
+	}
 	
 
   

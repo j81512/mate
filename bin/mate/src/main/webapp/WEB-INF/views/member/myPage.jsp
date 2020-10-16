@@ -28,6 +28,7 @@
 }
 </style>
 <script>
+<<<<<<< HEAD
 
 	$(function(){
 		
@@ -193,5 +194,102 @@
 		</div>
 	</div>
 </div>
+=======
+	$(function(){
+
+		$("#memberFrm .btn-update").click(function(){
+			var $memberId = $("#memberId_");
+			var $frm = $("#memberFrm");
+			var member = {
+					memberId : $memberId.val(),
+					memberPWD : $frm.find("[name=memberPWD]").val(),
+					memberName : $frm.find("[name=memberName]").val(),
+					gender : $frm.find("[name=gender]:checked").val(),
+					phone : $frm.find("[name=phone]").val()
+				};
+			 
+			console.log(member);
+			$.ajax({
+				url: "${ pageContext.request.contextPath}/member/memberUpdate.do",
+				method: "POST",
+				contentType : "application/json; charset=utf-8",
+				data : JSON.stringify(member),
+				success:function(data){
+					console.log(data.msg);
+					alert(data.msg);
+				},
+				error:function(err, status, xhr){
+
+				}					
+			});
+		});
+		
+		$("#memberFrm .btn-delete").click(function(){
+			var $memberId = $("#memberId_");
+			var $frm = $("#memberFrm");
+			var member = {
+					memberId : $memberId.val(),
+					memberPWD : $frm.find("[name=memberPWD]").val(),
+				};
+			 
+			console.log(member);
+			$.ajax({
+				url: "${ pageContext.request.contextPath}/member/memberDelete.do",
+				method: "POST",
+				contentType : "application/json; charset=utf-8",
+				data : JSON.stringify(member),
+				success:function(data){
+					alert(data.msg);
+				},
+				error:function(err, status, xhr){
+
+				}					
+			});
+		});
+		
+	});
+</script>
+<jsp:include page="/WEB-INF/views/common/headerS.jsp" />
+
+<div>
+	<button type="button" class="btn btn-success">구매내역</button>
+	<button type="button" class="btn btn-success">내정보수정</button>
+
+</div>
+<div class="col-md-15">
+    <div class="form-area">  
+		<form action="" id="memberFrm">
+			<div class="form-group">
+			 	<label class="control-label " for="memberId_">아이디:</label>
+			 	
+					<input type="text" class="form-control" placeholder="아이디 (4글자이상)"name="memberId" id="memberId_" readonly value="${ loginMember.memberId }" required> 
+			</div>
+			<div class="form-group">
+			  	<label class="control-label" for="memberPWD_">비밀번호:</label>
+				<input type="password" class="form-control"  name="memberPWD" id="memberPWD_" value="${ loginMember.memberPWD}" required> 
+			</div>
+			<div class="form-group">
+			  	<label class="control-label" for="memberName_">이름:</label>
+				<input type="text" class="form-control" placeholder="이름" name="memberName" id="memberName_" value="${ loginMember.memberName}" required> 
+			</div>
+			<div class="form-group">
+			  	<label class="control-label " for="phone_">전화번호:</label>
+				<input type="tel" class="form-control" placeholder="전화번호 (예:01012345678)" name="phone"  id="phone_" value="${ loginMember.phone }" id="phone" maxlength="11"required> 
+			</div>
+			<div class="form-check form-check-inline">
+			  <label class="control-label " for="gender">성별:</label>
+				<input type="radio" class="form-check-input" name="gender" id="gender0" value="M" ${ loginMember.gender eq  "M" ? "checked" :"" }>
+				<label  class="form-check-label" for="gender0">남</label>&nbsp;
+				<input type="radio" class="form-check-input" name="gender" id="gender1" value="F" ${ loginMember.gender eq  "F" ? "checked" :"" } >
+				<label  class="form-check-label" for="gender1">여</label>
+			</div>
+			<div class="form-group">
+				<button type="button" class="btn btn-success btn-update" id="memberUpdate">정보수정</button>
+				<button type="button" class="btn btn-danger btn-delete" id="memberDelete">회원탈퇴</button>
+				<button type="button" class="btn btn-warning" onclick="location.href='${pageContext.request.contextPath }'">닫기</button>
+			</div>
+		</form>
+	</div>
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
 </div>
 <jsp:include page="/WEB-INF/views/common/footerS.jsp" />

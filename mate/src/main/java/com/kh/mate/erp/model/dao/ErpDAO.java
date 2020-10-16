@@ -18,7 +18,7 @@ public interface ErpDAO {
 
 	List<Product> searchInfo(Map<String, Object> map);
 
-	List<EMP> empList(EMP emp);
+	List<EMP> empList();
 
 	Product orderProduct(Map<String, Object> map);
 
@@ -44,5 +44,7 @@ public interface ErpDAO {
 	int productImagesDelete(String productNo);
 
 	String findEmpid(int productNo);
+
+	int productOrder(Product product);
 
 }
