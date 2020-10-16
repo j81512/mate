@@ -97,7 +97,7 @@ CREATE TABLE MEMBER (
 --DROP TABLE Address;
 CREATE TABLE Address (
 	address_name	varchar2(128)		NOT NULL,
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	reciever_name	varchar2(128)		NOT NULL,
 	receiver_phone	char(11)		NOT NULL,
 	addr1	varchar2(512)		NOT NULL,
