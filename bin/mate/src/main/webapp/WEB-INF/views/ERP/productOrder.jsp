@@ -9,6 +9,7 @@
 <head>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <<<<<<< HEAD
+<<<<<<< HEAD
 <script>
 function orderModal(){
 
@@ -59,6 +60,15 @@ function orderModal(){
 			</div>
 					
 =======
+=======
+<script>
+function orderModal(){
+
+	$("#modelTest").modal()
+	
+}
+</script>
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
 
 <!-- bootstrap js: jquery load 이후에 작성할것.-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
@@ -67,37 +77,43 @@ function orderModal(){
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 </head>
-  	<body>
+  	<body onload="orderModal()">
 		<section>
-			<div class="productInfo">
-				<tr>
-					<th>상품번호</th>
-					<th>상품명</th>
-					<th>카테고리</th>
-					<th>브랜드</th>
-					<th>입출고 날짜</th>
-					<th>수량</th>
-					<th>업체명</th>
-					<th>상태</th>
-				</tr>
-			</div>
 			
-			
-			<div class="productInfo">
-				<tr>
-					<td>${ product.no }</td>
-					<td>${ product.productName }</td>
-					<td>${ product.category }</td>
-					<td>${ product.empId }</td>
-					<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>
-					<td>${ receive.amount }</td>
-					<td>${ emp.emp_id }</td>
-					<td>
-						<button type="submit">확인</button>
-						<button type="submit">거절</button>
-					</td>
-				</tr>
+			<div class="modal" id="modelTest" tabindex="-1">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title">Modal title</h5>
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			          <span aria-hidden="true">&times;</span>
+			        </button>
+			      </div>
+			      <div class="modal-body">
+			      
+			      	<form action="" method="post">
+			      	
+			      		<p>현재수량 : ${ product.stock }</p>
+			      		<p>상품번호 : ${ product.productNo }</p>
+			      		<p>신청지점 : ${ product.empId }</p>
+			      		<%-- <p>제조사 : ${ product.eId }</p> --%>
+			      		
+					      <div class="modal-footer">
+					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					        <button type="button" class="btn btn-primary">Save changes</button>
+					      </div>
+			      		
+			      	
+			      	</form>
+			      
+			      </div>
+			    </div>
+			  </div>
 			</div>
+<<<<<<< HEAD
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
+=======
+					
 >>>>>>> branch 'master' of https://github.com/j81512/mate.git
 		</section>
 	</body>

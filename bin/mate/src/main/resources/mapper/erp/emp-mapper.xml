@@ -22,14 +22,19 @@
 	
 	<select id="selectOneEmp" resultMap="empMap">
 		select
-			*
+			emp_id AS empId,
+			emp_name AS empName,
+			addr1 AS empAddr1,
+			addr2 AS empAddr2,
+			addr3 AS empAddr3,
+			phone AS empPhone,
+			enroll_date AS empEnrollDate,
+			status AS empStatus
 		from
 			emp
 		where
 			emp_id = #{ empId }
 	</select>
-	
-	
 	
 	<resultMap type="emp" id="empMap">
 	
@@ -44,14 +49,15 @@
 		select
 			emp_id AS empId,
 			emp_name AS empName,
-			address AS empAddress,
+			addr2 AS empAddr2,
 			phone AS empPhone,
 			enroll_date AS empEnrollDate,
 			status AS empStatus
 		from
-			emp
+			EMP
 		order by
 			enroll_date
 	</select>
+	
 
 </mapper>

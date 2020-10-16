@@ -30,6 +30,7 @@ $(function(){
 	//ckEditor적용
 	CKEDITOR.replace('content',{
 <<<<<<< HEAD
+<<<<<<< HEAD
 				filebrowserUploadUrl : "${ pageContext.request.contextPath }/ERP/imageFileUpload.do"
 		});
 
@@ -149,10 +150,14 @@ function delProduct(){
 	$updateFrm.submit();
 =======
 				filebrowserUploadUrl : "${ pageContext.request.contextPath }/product/imageFileUpload.do"
+=======
+				filebrowserUploadUrl : "${ pageContext.request.contextPath }/ERP/imageFileUpload.do"
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
 		});
 
 	//파일 선택 | 취소 파일라벨명을 변경한다.
 	$("[name=upFile]").on("change", function(){
+			var $valid = $("[name=fileChange]");
 			var file = $(this).prop('files')[0];
 			//console.log("this = " + $(this).val()); //선택된 파일이 this로 넘어옴
 			//console.log(file);
@@ -160,9 +165,11 @@ function delProduct(){
 			var $label = $(this).next(".custom-file-label");
 
 			if(file == undefined){
-				$label.html("파일을 선택하세요");		
+				$label.html("파일을 선택해 주세요");
+				$valid.val(0);	
 			}else{
 				$label.html(file.name);
+				$valid.val(1);
 			}
 				
 		});
@@ -173,7 +180,7 @@ function delProduct(){
 </head>
 <body>
 <div id="form-container" class="mx-auto">
-<form action = "${ pageContext.request.contextPath }/product/productUpdate.do"
+<form action = "${ pageContext.request.contextPath }/ERP/productUpdate.do"
 	  method = "POST"
 	  enctype = "multipart/form-data"
 	  id="productUpdateFrm">
@@ -212,10 +219,12 @@ function delProduct(){
 	   <div class="custom-file">
 	     <input type="file" class="custom-file-input" name="upFile" id="upFile${ vs.count }" >
 	     <label class="custom-file-label" for="upFile${ vs.count }">${ mainImage.originalFilename }</label>
+	     <input type="hidden" name="productImageNo" value="${ mainImage.productImageNo }"/>
 	   </div>
 	  </div>
 	</c:forEach>
  </c:if>
+ <input type="hidden" name="fileChange" value="0" />
   			<!-- 내용 -->
   <div class="form-group">
    <textarea name="content">${ product.content }</textarea>
@@ -229,11 +238,14 @@ function delProduct(){
   
   <!-- 등록자  -->
   <input type="hidden" name="empId" value="testId"/>
+
+  <!-- 상품 번호 -->
+  <input type="hidden" name="productNo" value="${ product.productNo }" />
   
   <div class="form-group col">
     <div class="col-sm-10">
-      <button type="submit" class="btn btn-primary">수정 하기</button>
-      <button type="submit" class="btn btn-primary">삭제 하기</button>
+      <button type="submit" class="btn btn-primary" >수정 하기</button>
+      <button type="button" class="btn btn-primary" onclick="return delProduct();">삭제 하기</button>
       <button type="button" class="btn btn-danger" onclick="return goBackWithDel();">뒤로 가기</button>
     </div>
   </div>
@@ -250,6 +262,14 @@ function goBackWithDel(){
 
 	
 >>>>>>> branch 'master' of https://github.com/j81512/mate.git
+}
+
+function delProduct(){
+	var $updateFrm = $("#productUpdateFrm");
+
+	$updateFrm.attr("action", "${ pageContext.request.contextPath }/ERP/productDelete.do");
+	$updateFrm.attr("method", "post");
+	$updateFrm.submit();
 }
 </script>
 </body>

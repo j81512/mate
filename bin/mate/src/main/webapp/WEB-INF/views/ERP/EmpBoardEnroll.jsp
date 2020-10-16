@@ -6,7 +6,6 @@
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>
 <!DOCTYPE html>
 <html lang="ko">
-<head>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
 <!-- bootstrap js: jquery load 이후에 작성할것.-->
@@ -15,29 +14,15 @@
 
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+<!-- 호근 헤더 처리-->
+<title></title>
+<script>
 
-</head>
-  <body>
- 
-    
-    <div>
-    	<li>
-	    	<button type="button" 
-	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/.do';">
-			  <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>쇼핑몰
-			</button>
-    	</li>
-    	<li>
-	    	<button type="button" 
-	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/erpMain.do';">
-			  <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>ERP
-			</button>
-    	</li>
-    </div>
-     
-		
-		
-  </body>
-</html>
+</script>
+<jsp:include page="/WEB-INF/views/common/headerE.jsp" />
+
+
+
+
+ <!--호근 푸터 처리  -->
+<jsp:include page="/WEB-INF/views/common/footerE.jsp" />

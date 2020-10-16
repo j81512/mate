@@ -11,7 +11,7 @@
 -- 유저 삭제 (system 계정)
 --=====================================
 --select sid,serial#,username,status from v$session where schemaname = 'MATE'; --여기서 나온 숫자를
---alter system kill session '115,765'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
+--alter system kill session '115,767'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
 --DROP USER mate CASCADE;
 --=====================================
 -- Drop 관련
@@ -97,7 +97,7 @@ CREATE TABLE MEMBER (
 --DROP TABLE Address;
 CREATE TABLE Address (
 	address_name	varchar2(128)		NOT NULL,
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	reciever_name	varchar2(128)		NOT NULL,
 	receiver_phone	char(11)		NOT NULL,
 	addr1	varchar2(512)		NOT NULL,
@@ -128,7 +128,6 @@ CREATE TABLE EMP (
     
     constraint pk_emp primary key (emp_id)
 );
-
 
 --DROP TABLE PRODUCT;
 CREATE TABLE PRODUCT (
@@ -315,7 +314,7 @@ CREATE TABLE CS (
 	cs_no	number		NOT NULL,
 	title	varchar2(128)		NOT NULL,
 	content	varchar2(3000)		NOT NULL,
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	reg_date	date	DEFAULT sysdate	NOT NULL,
 	secret	number	DEFAULT 0	NOT NULL,
 	notice	number	DEFAULT 0	NOT NULL,
@@ -354,7 +353,7 @@ CREATE TABLE CS_REPLY (
 
 --DROP TABLE CART;
 CREATE TABLE CART (
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	product_no	number		NOT NULL,
 	amount	number	DEFAULT 0	NOT NULL,
     
@@ -370,7 +369,7 @@ CREATE TABLE CART (
 --DROP TABLE PURCHASE;
 CREATE TABLE PURCHASE (
 	purchase_no	number		NOT NULL,
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	purchase_date	date	DEFAULT sysdate	NOT NULL,
     
     constraint pk_purchase primary key (purchase_no),
@@ -451,7 +450,7 @@ CREATE TABLE DELETE_CS (
 	cs_no	number		NOT NULL,
 	title	varchar2(128)		NOT NULL,
 	content	varchar2(3000)		NOT NULL,
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	reg_date	date	NOT NULL,
 	secret	number	NOT NULL,
 	notice	number	NOT NULL,
