@@ -95,7 +95,7 @@ function category(ct){
 				${ loginEmp.empName }님, 반갑습니다.	
 				<button class="btn btn-outline-success my-2 my-sm-0"
 		               type="button"
-		               onclick="location.href='${ pageContext.request.contextPath}/member/logout.do'"><img src="${ pageContext.request.contextPath }/resources/images/cart.png" width="80px" class="loginImg"/>로그아웃</button>
+		               onclick="location.href='${ pageContext.request.contextPath}/ERP/logout.do'"><img src="${ pageContext.request.contextPath }/resources/images/cart.png" width="80px" class="loginImg"/>로그아웃</button>
 			</c:when>
 		   </c:choose> 
           </ul>

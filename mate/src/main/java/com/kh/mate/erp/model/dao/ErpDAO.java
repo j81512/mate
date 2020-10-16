@@ -6,6 +6,7 @@ import java.util.Map;
 
 
 import com.kh.mate.erp.model.vo.EMP;
+import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -44,5 +45,9 @@ public interface ErpDAO {
 	int productImagesDelete(String productNo);
 
 	String findEmpid(int productNo);
+
+	List<Map<String, Object>> empBoardList();
+
+	EmpBoard selectOneEmpBoard(int no);
 
 }
