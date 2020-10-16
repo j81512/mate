@@ -87,6 +87,11 @@ public class ProductServiceImpl implements ProductService {
 	public List<Map<String, Object>> selectProductListMap() {
 		return productDAO.selectProductListMap();
 	}
+
+	@Override
+	public int insertCart(Map<String, Object> param) {
+		return productDAO.insertCart(param);
+	}
 	
 	
 	

@@ -8,14 +8,17 @@
 <script>
 $(function(){
 
-	
 });
 
 </script>
 
 <div class="product-container">
 <form id="productDetailFrm">
-<input type="hidden" name="productNo" value="${ product.productNo }" />
+	
+	<!-- 상품 번호 -->
+	<input type="hidden" name="productNo" value="${ product.productNo }" />
+	<input type="hidden" name="memberId" value="${ loginMember.memberId }" />
+	
 	<!-- 내용이 입력될 자리 -->
 	<div class="product-content">
 	${ product.content }
@@ -34,20 +37,29 @@ $(function(){
 			가격 : <span><fmt:formatNumber value="${ product.price }" pattern="#,###"></fmt:formatNumber></span>원
 		</div>
 		
-				<!-- 구입 수량 입력  -->
-				<div class="product-amount">
-					수량 : <input type="range" name="amount" />
-				</div>
-				
+		<!-- 구입 수량 입력  -->
+		<div class="product-amount">
+			수량 : <input type="range" name="amount" required/>
+		</div>
+		
 				<!-- 일반 쇼핑몰 회원일 경우 장바구니 | 구매하기 버튼 추가 -->
 				<div class="btn-group">
-					<button type="button" class="btn btn-primary">장바구니</button>
-					<button type="button" class="btn btn-primary">구매하기</button>
+					<button type="button" class="btn btn-primary" onclick="saveCart();">장바구니</button>
+					<button type="submit" class="btn btn-primary">구매하기</button>
 				</div>
 	
 	</div>
 </form>
 </div>
 
+<script>
+function saveCart(){
+	var $frm = $("#productDetailFrm");
+	$frm.attr("action", "${ pageContext.request.contextPath}/product/saveCart.do");
+	$frm.attr("method", "POST");
+	$frm.submit();
+	
+}
+</script>
 
 <jsp:include page="/WEB-INF/views/common/footerS.jsp"/>

@@ -31,6 +31,8 @@ public interface ProductDAO {
 
 	List<Map<String, Object>> selectProductListMap();
 
+	int insertCart(Map<String, Object> param);
+
 
 
 }

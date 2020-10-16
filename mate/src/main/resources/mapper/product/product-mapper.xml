@@ -65,6 +65,20 @@
  			where category = #{category}
  	</select>
  	
+ 	
+ 	<insert id="insertCart">
+ 		insert into
+ 			cart
+ 		values
+ 		(
+ 		#{memberId},
+ 		#{productNo},
+ 		#{amount}
+ 		)
+ 	
+ 	</insert>
+ 	
+ 	
  	<resultMap type="product" id="productMap">
  		<id column="product_no" property="productNo"/>
  		<result column="product_name" property="productName"/>
