@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.mate.erp.model.dao.ErpDAO;
 import com.kh.mate.erp.model.vo.EMP;
+import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -148,6 +149,17 @@ public class ErpServiceImpl implements ErpService {
 		
 		
 		return result;
+	}
+
+	//호근 emp 게시판 추가
+	@Override
+	public List<Map<String, Object>> empBoardList() {
+		return erpDAO.empBoardList();
+	}
+
+	@Override
+	public EmpBoard selectOneEmpBoard(int no) {
+		return erpDAO.selectOneEmpBoard(no);
 	}
 	
 	

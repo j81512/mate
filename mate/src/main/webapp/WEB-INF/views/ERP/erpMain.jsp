@@ -51,9 +51,10 @@
 			</button>
     	</li>
     	<li>
+    	<!-- 호근 게시판 url 수정함 -->
 	    	<button type="button" 
 	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/EmpList.do';">
+	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/EmpBoardList.do';">
 			  <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>게시판
 			</button>
     	</li>	

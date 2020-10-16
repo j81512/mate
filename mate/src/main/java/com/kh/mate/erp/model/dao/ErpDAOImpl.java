@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.kh.mate.erp.model.vo.EMP;
+import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -110,6 +111,17 @@ public class ErpDAOImpl implements ErpDAO {
 	@Override
 	public int productImagesDelete(String productNo) {
 		return sqlSession.delete("erp.productImagesDelete", productNo);
+	}
+
+	//호근 추가
+	@Override
+	public List<Map<String, Object>> empBoardList() {
+		return sqlSession.selectList("erp.empBoard");
+	}
+
+	@Override
+	public EmpBoard selectOneEmpBoard(int no) {
+		return sqlSession.selectOne("erp.selectOneEmpBoard",no);
 	}
 	
 	
