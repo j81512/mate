@@ -32,16 +32,29 @@
 					</button>
 				</th>
 			</tr>
-			<c:forEach items="${ list }" var="emp">
-			<tr>
-				<td>${ emp.empId }</td>
-				<td>${ emp.empName }</td>
-				<td>${ emp.empAddress }</td>
-				<td>${ emp.empPhone }</td>
-				<td><fmt:formatDate value="${ emp.empEnrollDate }" pattern="yy/MM/dd"/></td>
-				<td>${ emp.empStatus }</td>		
-			</tr>
-			</c:forEach>	
+			<c:if test="${ not empty list }">
+				<c:forEach items="${ list }" var="emp">
+				<tr>
+					<td>${ emp.empId }</td>
+					<td><a href="${ pageContext.request.contextPath }/ERP/empInfoDetail.do">${ emp.empName }</a></td>
+					<td>${ emp.empAddr2 }</td>
+					<td>${ emp.empPhone }</td>
+					<td><fmt:formatDate value="${ emp.empEnrollDate }" pattern="yyyy년MM월dd일"/></td>				
+					<td>
+						<c:if test="${ emp.empStatus == 1}">지점
+						</c:if>
+						<c:if test="${ emp.empStatus == 2}">제조사
+						</c:if>
+					</td>		
+				</tr>
+				</c:forEach>
+				</c:if>
+				<!-- 상품이 없을 경우 -->
+				<c:if test="${ empty list }">
+					<li>
+						<span>목록이 존재하지 않습니다.</span>
+					</li>
+				</c:if>	
 		</table>
 	</body>
 </html>
