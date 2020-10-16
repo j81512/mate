@@ -35,12 +35,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.google.gson.JsonObject;
 import com.kh.mate.common.Utils;
 import com.kh.mate.erp.model.service.ErpService;
-import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.erp.model.vo.EMP;
+import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
-
 
 @SessionAttributes({"loginEmp"})
 @Controller
@@ -98,6 +97,7 @@ public class ErpContorller {
 		
 	}
 
+
 	@RequestMapping("/ERP/empManage.do")
 	public String empManage(Model model) {
 		List<EMP> list = erpService.empList();
@@ -120,9 +120,6 @@ public class ErpContorller {
 		return "ERP/empList";
 		
 	}
-
-		
-	
 	
 	@RequestMapping(value="/ERP/EmpEnroll.do",
 					method= RequestMethod.GET)
@@ -515,7 +512,7 @@ public class ErpContorller {
 	
 	// 호근 관리자 로그인 및 로그인 세션 추가 
 	@PostMapping("/ERP/erpLogin.do")
-	public String empLogin(@RequestParam("empId") String empId
+	public String memberLogin(@RequestParam("empId") String empId
 			  ,@RequestParam("empPwd") String empPwd
 			  ,@RequestParam("status") int status
 			  ,RedirectAttributes redirectAttr
@@ -534,12 +531,16 @@ public class ErpContorller {
 				&& (loginEmp.getEmpPwd().equals(empPwd))
 				&& (loginEmp.getStatus() == status )) {
 			model.addAttribute("loginEmp", loginEmp);
-	
+			String next = (String)session.getAttribute("next");
+			if( next != null) 
+				location = next;
+		
 		}
 		else {
 			redirectAttr.addFlashAttribute("msg", "아이디 또는 비밀번호가 틀립니다.");
 			log.debug("location = " + location);
 		}
+
 		return "redirect:/ERP/menu.do";
 	}
 	@RequestMapping("/ERP/logout.do")

@@ -33,8 +33,8 @@
 			<tr>
 				<th>지점/업체 선택</th>
 				<td>	
-					<input type="radio" name="empStatus" id="empStatus" value="1" checked>지점
-					<input type="radio" name="empStatus" id="empStatus" value="2" >제조사				
+					<input type="radio" name="empStatus" id="empStatus" value="1" ${ emp.empStatus eq "1" ? "checked" : "" }>지점
+					<input type="radio" name="empStatus" id="empStatus" value="2" ${ emp.empStatus eq "2" ? "checked" : "" }>제조사				
 				</td>
 			</tr>  	
 			<tr>
@@ -61,6 +61,7 @@
 		</table>
 		<input type="submit" value="수정">
 		<input type="button" value="삭제">
+		<input type="button" value="취소">
 	</form>
 </div>
 

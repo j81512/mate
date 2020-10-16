@@ -11,7 +11,7 @@
 -- 유저 삭제 (system 계정)
 --=====================================
 --select sid,serial#,username,status from v$session where schemaname = 'MATE'; --여기서 나온 숫자를
---alter system kill session '115,765'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
+--alter system kill session '115,767'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
 --DROP USER mate CASCADE;
 --=====================================
 -- Drop 관련
@@ -129,6 +129,17 @@ CREATE TABLE EMP (
     constraint pk_emp primary key (emp_id)
 );
 
+<<<<<<< HEAD
+select
+	*
+from
+    emp
+order by
+    enroll_date;
+
+insert into spring.EMP values ('test', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '테스터1호', 16941, '경기 용인시 수지구 상현로 2 (상현동)', '4321', '01012341234', default, 2);
+=======
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
 
 --DROP TABLE PRODUCT;
 CREATE TABLE PRODUCT (
