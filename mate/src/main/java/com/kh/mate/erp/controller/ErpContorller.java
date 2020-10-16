@@ -236,6 +236,16 @@ public class ErpContorller {
 		return "/ERP/productOrder";
 	}
 	
+	@RequestMapping("/ERP/productOrder.do")
+	public String productOrder(Product product) {
+		
+		log.debug("product = {}",product);
+		
+		int result = erpService.productOrder(product);
+		
+		return "/ERP/ProductInfo";
+	}
+	
 	
 	//김종완 상품등록
 
