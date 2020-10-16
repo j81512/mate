@@ -131,7 +131,7 @@ div#form-container label.custom-file-label{text-align:left;}
   	<select name="empId" id="empId" required>
   	<option value="" disabled selected>제조사를 선택해 주세요</option>
 	  	<c:forEach items="${ list }" var="emp" varStatus="vs">
-			<option value="${ emp.empStatus eq 2 ? emp.empName : '' }">${ emp.empStatus eq 2 ? emp.empName : '' }</option>
+			<option value="${ emp.status eq 2 ? emp.empName : '' }">${ emp.status eq 2 ? emp.empName : '' }</option>
 	  	</c:forEach>
   	</select>
   </c:if>
