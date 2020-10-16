@@ -9,10 +9,9 @@
 			member
 		values (
 			#{ memberId },
-			#{ password },
-			#{ name },
+			#{ memberPWD },
+			#{ memberName },
 			#{ gender },
-			#{ birthday },
 			#{ phone },
 			default
 		)
@@ -25,11 +24,37 @@
 		from
 			member
 		where
-			member_id = #{ memberID }
+			member_id = #{ memberId }
 	</select>
 	
 	<resultMap type="member" id="memberMap">
 	
 	</resultMap>
 	
+	<update id="updateMember">
+ 		update
+ 			member
+ 		<set>
+ 			<if test="memberId != null and memberId != ''">
+ 				member_id = #{ memberId },
+ 			</if>
+ 			<if test="memberPWD != null and memberPWD != ''">
+ 				member_pwd = #{ memberPWD },
+ 			</if>
+ 			<if test="memberName != null and memberName != ''">
+ 				member_name = #{ memberName },
+ 			</if>
+ 			<if test="gender != null and gender != ''">
+ 				gender = #{ gender },
+ 			</if>
+ 			<if test="phone != null and phone != ''">
+ 				phone = #{ phone }
+ 			</if>
+ 		</set>
+ 		where member_id = #{ memberId }
+ 	</update>
+	
+	<delete id="deleteMember">
+		delete from member where member_id = #{ memberId }
+	</delete>
 </mapper>
