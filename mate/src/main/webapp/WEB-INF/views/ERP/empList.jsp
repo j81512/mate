@@ -24,11 +24,16 @@ $(function(){
 		location.href = "${ pageContext.request.contextPath }/ERP/EmpBoardDetail.do?no=" + no;
 		});
 });
+
+function empBoardEnroll(){
+	location.href = "${pageContext.request.contextPath}/ERP/EmpBoardEnroll.do";
+}
+
 </script>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp" />
 
 
-	<input type="button" value="글쓰기" id="btn-add" class="btn btn-outline-success" onclick="goBoardForm();"/>
+	<input type="button" value="글쓰기" id="btn-add" class="btn btn-outline-success" onclick="empBoardEnroll();"/>
 	<table id="tbl-board" class="table table-striped table-hover">
 	<!--  -->
          <tr>

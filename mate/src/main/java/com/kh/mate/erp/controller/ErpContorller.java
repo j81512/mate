@@ -94,7 +94,7 @@ public class ErpContorller {
 		model.addAttribute("list", list);
 		//model 추가함
 		model.addAttribute("empBoardList", empBoardList);
-		return "ERP/EmpBoardList";
+		return "ERP/empList";
 		
 	}
 	
@@ -519,10 +519,9 @@ public class ErpContorller {
 		return "redirect:/";
 	}
 	
-	@PostMapping("/ERP/empboardEnroll.do")
-	public String empboardEnroll() {
-		
-		return null;
+	@RequestMapping("/ERP/EmpBoardEnroll.do")
+	public void EmpboardEnroll() {
+			
 	}
 	
 	@RequestMapping("/ERP/EmpBoardDetail.do")
