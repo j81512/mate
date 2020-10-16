@@ -10,9 +10,10 @@ table, tr, th, td {
 	border: 1px solid black;
 }
 
-dl, li, ul{
+li{
 	margin 0;
-	display: inline;
+	list-style: none;
+	display: inline-block;
 }
 </style>
 <div class="product-container">
@@ -21,13 +22,18 @@ dl, li, ul{
 		<form class="form-inline"
 				action="${pageContext.request.contextPath}/product/searchProduct.do">
 		    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
-			<select class="type" name="type" id="type">
-			  <option selected>검색유형</option>
-			  <option value="emp_id">제조사</option>
-			  <option value="product_name">키워드</option>
-			</select>
-			<input type="hidden" name="category" value="${ category }" />
+			<br />
+			<p>카테고리 선택</p>
+				<label for="PM">프라모델</label>
+				<input type="checkbox" name="category" id="pm" value="pm"/>
+				<label for="FG">피규어</label>
+				<input type="checkbox" name="category" id="fg" value="fg"/>
+				<label for="RC">RC카</label>
+				<input type="checkbox" name="category" id="rc" value="rc"/>
+				<label for="DR">드론</label>
+				<input type="checkbox" name="category" id="dr" value="dr"/>
 		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
+			<%-- <input type="hidden" name="category" value="${ category }" /> --%>
 		</form>
 	</div>
 	
@@ -36,8 +42,8 @@ dl, li, ul{
 			<li>
 				<!-- 상품이 있을 경우 -->
 				<c:if test="${ not empty list }">
+						<c:forEach items="${ list }" var="product">
 						<dl>
-							<c:forEach items="${ list }" var="product">
 								<a href="${ pageContext.request.contextPath }/product/productDetail.do?productNo=${ product.productNo }"  >
 									<dt>
 										<img src="${ pageContext.request.contextPath }/resources/images/default.jpg" 
@@ -62,8 +68,10 @@ dl, li, ul{
 										</div>
 									</dd>
 							</a>
-							</c:forEach>
+							
 						</dl>
+							
+							</c:forEach>
 				</c:if>
 				<!-- 상품이 없을 경우 -->
 				<c:if test="${ empty list }">
