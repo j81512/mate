@@ -3,6 +3,10 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="product">
+
+	<select id="selectProductListMap" resultMap="productMap">
+	
+	</select>
  
  	<select id="selectProductListAll" resultType="product">
  		select
@@ -60,5 +64,8 @@
  		select * from product
  			where category = #{category}
  	</select>
+ 	
+ 	<resultMap type="" id="productMap"></resultMap>
+ 	
  
 </mapper>

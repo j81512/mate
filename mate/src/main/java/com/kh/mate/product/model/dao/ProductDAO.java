@@ -29,6 +29,8 @@ public interface ProductDAO {
 
 	List<ProductMainImages> selectProductMainImages(String productNo);
 
+	List<Map<String, Object>> selectProductListMap();
+
 
 
 }

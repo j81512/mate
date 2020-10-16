@@ -16,6 +16,22 @@ li{
 	display: inline-block;
 }
 </style>
+<script>
+<c:forEach items="${ list }" var="product" varStatus="vs">
+	var imgArr = new Array();
+	imgArr[${ vs.count }] = ${ product.renamedFilename };
+</c:forEach>
+
+window.onload = function(){
+
+	var imgNum = Math.round(Math.random()*3); 
+	var ImgTag = document.getElementById("Thums"); 
+	ImgTag.src = imgArray[imgNum]; 
+	setTimeout(showImage,5000);
+	
+};
+
+</script>
 <div class="product-container">
 	<!-- ajax처리 -->
 	<div class="product-search">
@@ -46,7 +62,7 @@ li{
 						<dl>
 								<a href="${ pageContext.request.contextPath }/product/productDetail.do?productNo=${ product.productNo }"  >
 									<dt>
-										<img src="${ pageContext.request.contextPath }/resources/upload/mainimages/default.jpg" 
+										<img id="Thums"
 											 alt="Thumnail" 
 											 width="250px" />
 									</dt>

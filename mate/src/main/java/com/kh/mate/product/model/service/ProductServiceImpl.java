@@ -82,6 +82,12 @@ public class ProductServiceImpl implements ProductService {
 	public List<ProductMainImages> selectProductMainImages(String productNo) {
 		return productDAO.selectProductMainImages(productNo);
 	}
+
+	@Override
+	public List<Map<String, Object>> selectProductListMap() {
+		return productDAO.selectProductListMap();
+	}
+	
 	
 	
 
