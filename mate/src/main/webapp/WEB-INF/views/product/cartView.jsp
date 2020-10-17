@@ -50,6 +50,9 @@
     </c:forEach>
     </c:if>
   </tbody>
+  <div class="sum">
+  합계금액 : <c:forEach items="${cart}" var="sum"><fmt:formatNumber value="${ sum.amount * sum.selectedProduct.price }" pattern="#,###"/>원</c:forEach>
+  </div>
 </table>
 
 <jsp:include page="/WEB-INF/views/common/footerS.jsp"></jsp:include>
