@@ -92,6 +92,11 @@ public class ProductServiceImpl implements ProductService {
 	public int insertCart(Map<String, Object> param) {
 		return productDAO.insertCart(param);
 	}
+
+	@Override
+	public List<Map<String, Object>> selectCartList(String memberId) {
+		return productDAO.selectCartList(memberId);
+	}
 	
 	
 	

@@ -28,7 +28,7 @@ public class Product {
 	private int enabled;
 	
 	
-	private int imageCount;
+//	private int imageCount;
 	private List<String> productImagesName;
 	private List<ProductImages> productImages;
 	private List<ProductMainImages> pmiList;

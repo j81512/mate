@@ -27,6 +27,8 @@ public interface ProductService {
 
 	int insertCart(Map<String, Object> param);
 
+	List<Map<String, Object>> selectCartList(String memberId);
+
 
 
 

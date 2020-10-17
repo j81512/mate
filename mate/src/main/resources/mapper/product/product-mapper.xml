@@ -7,6 +7,19 @@
 	<select id="selectProductListMap" resultMap="productMap">
 	
 	</select>
+	
+	<select id="selectCartList" resultMap="cartMap">
+	select
+    	*
+	from
+    	cart C 
+    		inner join 
+    	product p 
+    		on 
+    	C.product_no = P.product_no
+    where
+    	member_id = #{memberId}
+	</select>
  
  	<select id="selectProductListAll" resultType="product">
  		select
@@ -95,6 +108,24 @@
 	 		<result column="renamed_filename" property="renamedFilename"/>
 	 		<result column="product_no" property="productNo"/>
  		</collection>
+ 	</resultMap>
+ 	
+ 	
+ 	<resultMap type="cart" id="cartMap">
+ 		<id column="member_id" property="memberId"/>
+ 		<result column="product_no" property="productNo"/>
+ 		<result column="amount" property="amount"/>
+		
+		<collection property="selectedProduct" ofType="product">
+			<id column="product_no" property="productNo"/>
+	 		<result column="product_name" property="productName"/>
+	 		<result column="reg_date" property="regDate"/>
+	 		<result column="category" property="category"/>
+	 		<result column="content" property="content"/>
+	 		<result column="price" property="price"/>
+	 		<result column="emp_id" property="empId"/>
+	 		<result column="enabled" property="enabled"/>
+		</collection> 	
  	</resultMap>
  	
  
