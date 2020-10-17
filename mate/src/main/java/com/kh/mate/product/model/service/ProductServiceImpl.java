@@ -27,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
 		if(list != null) {
 			for(Product p : list) {
 				List<ProductMainImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
-				p.setProductMainImages(imgs);
+				p.setPmiList(imgs);
 			}
 		}
 		return list;
@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
 		if(list != null) {
 			for(Product p : list) {
 				List<ProductMainImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
-				p.setProductMainImages(imgs);
+				p.setPmiList(imgs);
 			}
 		}
 		
@@ -56,7 +56,7 @@ public class ProductServiceImpl implements ProductService {
 		if(list != null) {
 			for(Product p : list) {
 				List<ProductMainImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
-				p.setProductMainImages(imgs);
+				p.setPmiList(imgs);
 			}
 		}
 		
@@ -82,6 +82,22 @@ public class ProductServiceImpl implements ProductService {
 	public List<ProductMainImages> selectProductMainImages(String productNo) {
 		return productDAO.selectProductMainImages(productNo);
 	}
+
+	@Override
+	public List<Map<String, Object>> selectProductListMap() {
+		return productDAO.selectProductListMap();
+	}
+
+	@Override
+	public int insertCart(Map<String, Object> param) {
+		return productDAO.insertCart(param);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectCartList(String memberId) {
+		return productDAO.selectCartList(memberId);
+	}
+	
 	
 	
 

@@ -1,3 +1,7 @@
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.kh.mate.product.model.vo.ProductMainImages"%>
+<%@page import="com.kh.mate.product.model.vo.Product"%>
+<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -16,6 +20,11 @@ li{
 	display: inline-block;
 }
 </style>
+<script>
+window.onload = function(){
+
+};
+</script>
 <div class="product-container">
 	<!-- ajax처리 -->
 	<div class="product-search">
@@ -46,9 +55,24 @@ li{
 						<dl>
 								<a href="${ pageContext.request.contextPath }/product/productDetail.do?productNo=${ product.productNo }"  >
 									<dt>
-										<img src="${ pageContext.request.contextPath }/resources/images/default.jpg" 
-											 alt="default" 
-											 width="250px" />
+										<c:if test="${ not empty product.pmiList }" >
+											<c:forEach items="${ product.pmiList }" var="pmi" varStatus="vs">
+											<div class="img-container" >
+												<img src="${ pageContext.request.contextPath }/resources/upload/mainimages/${pmi.renamedFilename}"
+													 alt="img" 
+													 width="250px"
+													 id="imgTag"/>
+											</div>
+											</c:forEach>
+										</c:if>
+										<!-- <img id="Thums"
+											 alt="Thumnail" 
+											 width="250px" /> -->
+										<c:if test="${ empty product.pmiList }">
+											<script>
+											console.log("empty");
+											</script>	
+										</c:if>	 
 									</dt>
 									<dd>
 										<div class="product-name">

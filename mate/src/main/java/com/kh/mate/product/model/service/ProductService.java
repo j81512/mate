@@ -23,6 +23,12 @@ public interface ProductService {
 
 	List<ProductMainImages> selectProductMainImages(String productNo);
 
+	List<Map<String, Object>> selectProductListMap();
+
+	int insertCart(Map<String, Object> param);
+
+	List<Map<String, Object>> selectCartList(String memberId);
+
 
 
 

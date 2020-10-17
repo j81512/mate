@@ -1,17 +1,10 @@
 package com.kh.mate.product.controller;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,16 +12,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.google.gson.JsonObject;
-import com.kh.mate.common.Utils;
+import com.kh.mate.member.model.vo.Member;
 import com.kh.mate.product.model.service.ProductService;
 import com.kh.mate.product.model.vo.Product;
-import com.kh.mate.product.model.vo.ProductImages;
-import com.kh.mate.product.model.vo.ProductMainImages;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,6 +40,34 @@ public class ProductController {
 		model.addAttribute("product", product);
 		
 		return "product/productDetail";
+	}
+	
+	@RequestMapping("/saveCart.do")
+	public String saveCart (@RequestParam("amount") String amount,
+							@RequestParam("productNo") String productNo,
+							@RequestParam("memberId") String memberId){
+		
+		log.debug("amount = {}",amount);
+		log.debug("productNo={}",productNo);
+		Map<String, Object> param = new HashMap<>();
+		param.put("amount", amount);
+		param.put("productNo", productNo);
+		param.put("memberId", memberId);
+		
+		int result = productService.insertCart(param);
+		
+		return "redirect:/";
+	}
+	
+	@RequestMapping("/selectCart.do")
+	public String selectCart (@RequestParam("memberId") String memberId,
+							  Model model) {
+		
+		List<Map<String, Object>> cart = productService.selectCartList(memberId);
+		log.debug("cart = {}", cart);
+		
+		model.addAttribute("cart",cart);
+		return "product/cartView";
 	}
 	
 	//CH
