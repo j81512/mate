@@ -84,11 +84,6 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Map<String, Object>> selectProductListMap() {
-		return productDAO.selectProductListMap();
-	}
-
-	@Override
 	public int insertCart(Map<String, Object> param) {
 		return productDAO.insertCart(param);
 	}
@@ -96,6 +91,11 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public List<Map<String, Object>> selectCartList(String memberId) {
 		return productDAO.selectCartList(memberId);
+	}
+
+	@Override
+	public int deleteFromCart(Map<String, Object> param) {
+		return productDAO.deleteFromCart(param);
 	}
 	
 	

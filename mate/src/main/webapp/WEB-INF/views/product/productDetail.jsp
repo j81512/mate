@@ -5,12 +5,13 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>   
 <jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
 <script src="${ pageContext.request.contextPath }/resources/ckeditor/ckeditor.js"></script>
-<script>
-$(function(){
 
-});
+<c:if test="${ not empty msg }">
+	<script>
+		alert("${msg}");
+	</script>
+</c:if>
 
-</script>
 
 <div class="product-container">
 <form id="productDetailFrm">

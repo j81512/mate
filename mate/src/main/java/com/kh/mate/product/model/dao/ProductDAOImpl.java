@@ -69,11 +69,6 @@ public class ProductDAOImpl implements ProductDAO {
 	}
 
 	@Override
-	public List<Map<String, Object>> selectProductListMap() {
-		return session.selectList("product.selectProductListMap");
-	}
-
-	@Override
 	public int insertCart(Map<String, Object> param) {
 		return session.insert("product.insertCart", param);
 	}
@@ -82,6 +77,12 @@ public class ProductDAOImpl implements ProductDAO {
 	public List<Map<String, Object>> selectCartList(String memberId) {
 		return session.selectList("product.selectCartList", memberId);
 	}
+
+	@Override
+	public int deleteFromCart(Map<String, Object> param) {
+		return session.delete("product.deleteFromCart", param);
+	}
+	
 	
 	
 	

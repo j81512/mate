@@ -1,9 +1,11 @@
 package com.kh.mate.product.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +14,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.mate.member.model.vo.Member;
 import com.kh.mate.product.model.service.ProductService;
+import com.kh.mate.product.model.vo.Cart;
 import com.kh.mate.product.model.vo.Product;
+import com.kh.mate.product.model.vo.ProductMainImages;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,7 +51,10 @@ public class ProductController {
 	@RequestMapping("/saveCart.do")
 	public String saveCart (@RequestParam("amount") String amount,
 							@RequestParam("productNo") String productNo,
-							@RequestParam("memberId") String memberId){
+							@RequestParam("memberId") String memberId,
+							HttpServletRequest request,
+							Model model,
+							RedirectAttributes redirectAttribute){
 		
 		log.debug("amount = {}",amount);
 		log.debug("productNo={}",productNo);
@@ -55,8 +64,16 @@ public class ProductController {
 		param.put("memberId", memberId);
 		
 		int result = productService.insertCart(param);
+		log.debug("result = {}", result);
 		
-		return "redirect:/";
+		if(result > 0) {
+			redirectAttribute.addFlashAttribute("msg", "장바구니 저장 성공");
+		}else {
+			redirectAttribute.addFlashAttribute("msg", "장바구니 저장 실패");
+		}
+		
+		String redUrl = "product/productDetail.do?productNo="+productNo;
+		return "redirect:/" + redUrl;
 	}
 	
 	@RequestMapping("/selectCart.do")
@@ -65,8 +82,45 @@ public class ProductController {
 		
 		List<Map<String, Object>> cart = productService.selectCartList(memberId);
 		log.debug("cart = {}", cart);
+		Map<String, Object> temp = new HashMap<>();
+		for(int i = 0; i < cart.size(); i++) {
+			temp.put(String.valueOf(i), cart.get(i));
+		}
+		log.debug("temp = {}", temp);
 		
-		model.addAttribute("cart",cart);
+		Cart c = (Cart)temp.get("0");
+		log.debug("c = {}", c);
+//		String productNo = String.valueOf(temp.get("productNo"));
+//		log.debug("productNo = {}",productNo);
+		
+		List<ProductMainImages> pmi = new ArrayList<>();
+		if(cart != null) {
+			pmi = productService.selectProductMainImages(String.valueOf(c.getProductNo()));
+			log.debug("pmi = {}", pmi);
+		}
+		
+		model.addAttribute("pmi", pmi);
+		model.addAttribute("cart", cart);
+		return "product/cartView";
+	}
+	
+	@RequestMapping("/deleteFromCart.do")
+	public String deleteFromCart(@RequestParam("productNo") String prodctNo,
+								 HttpSession session,
+								 Model model) {
+		Member loginMember = (Member) session.getAttribute("loginMember");
+		String memberId = loginMember.getMemberId();
+		Map<String, Object> param = new HashMap<>();
+		param.put("productNo", prodctNo);
+		param.put("memberId", memberId);
+		
+		int result = productService.deleteFromCart(param);
+		
+		if(result > 0) {
+			model.addAttribute("msg", "장바구니에서 상품이 제거되었습니다.");
+		}else {
+			model.addAttribute("msg", "상품 제거에 실패하였습니다. 다시 시도하여주세요.");
+		}
 		return "product/cartView";
 	}
 	
