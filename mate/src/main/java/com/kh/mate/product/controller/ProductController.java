@@ -14,9 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.member.model.vo.Member;
 import com.kh.mate.product.model.service.ProductService;
 import com.kh.mate.product.model.vo.Cart;
@@ -122,6 +122,40 @@ public class ProductController {
 			model.addAttribute("msg", "상품 제거에 실패하였습니다. 다시 시도하여주세요.");
 		}
 		return "product/cartView";
+	}
+	
+	//단일 상품 구매 페이지 우회
+	@RequestMapping(value = "/purchaseProductOne.do",
+					method = RequestMethod.POST)
+	public String purchaseProductOne(@RequestParam("productNo") String productNo,
+								  @RequestParam("memberId") String memberId,
+								  @RequestParam("amount") String amount,
+								  Model model) {
+		
+		//1.선택한 상품 정보 및 배송지 정보 가져오기
+		
+		//1.1  선택한 상품 정보 가져오기
+		Product purProduct = productService.selectProductOne(productNo);
+		
+		//1.2  배송지 정보 가져오기
+		List<Address> memAddr = productService.selectAddressList(memberId);
+		Address[] addrArr = new Address[memAddr.size()];
+		
+		//1.2.1 배송지 정보 값 유무로 분기
+		if(!memAddr.isEmpty()) {
+			//1.2.2 입력된 배송지 정보가 있을 경우 -> 가장 최근 입력된 배송지를 값으로 전송
+			for(int i=0; i<memAddr.size(); i++) {
+				addrArr[i] = memAddr.get(i);
+			}
+			
+			log.debug("addrArr = {}", addrArr);
+			model.addAttribute("recentAddr", addrArr[0]);
+		}
+		
+		//2.페이지로 전달
+		model.addAttribute("purProduct", purProduct);
+		model.addAttribute("amount", amount);
+		return "product/purchaseProduct";
 	}
 	
 	//CH

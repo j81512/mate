@@ -75,6 +75,17 @@
  			where category = #{category}
  	</select>
  	
+ 	<select id="selectAddressList" resultType="address">
+ 		select
+ 			*
+ 		from
+ 			address
+ 		where
+ 			member_id = #{memberId}
+ 		order by 
+ 			reg_date desc
+ 	</select>
+ 	
  	
  	<insert id="insertCart">
  		insert into

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.product.model.dao.ProductDAO;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
@@ -96,6 +97,11 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public int deleteFromCart(Map<String, Object> param) {
 		return productDAO.deleteFromCart(param);
+	}
+
+	@Override
+	public List<Address> selectAddressList(String memberId) {
+		return productDAO.selectAddressList(memberId);
 	}
 	
 	

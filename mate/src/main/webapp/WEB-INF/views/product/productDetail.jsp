@@ -46,7 +46,7 @@
 				<!-- 일반 쇼핑몰 회원일 경우 장바구니 | 구매하기 버튼 추가 -->
 				<div class="btn-group">
 					<button type="button" class="btn btn-primary" onclick="saveCart();">장바구니</button>
-					<button type="submit" class="btn btn-primary">구매하기</button>
+					<button type="submit" class="btn btn-primary" onclick="purchaseProduct();">구매하기</button>
 				</div>
 	
 	</div>
@@ -57,6 +57,14 @@
 function saveCart(){
 	var $frm = $("#productDetailFrm");
 	$frm.attr("action", "${ pageContext.request.contextPath}/product/saveCart.do");
+	$frm.attr("method", "POST");
+	$frm.submit();
+	
+}
+
+function purchaseProduct(){
+	var $frm = $("#productDetailFrm");
+	$frm.attr("action", "${ pageContext.request.contextPath }/product/purchaseProductOne.do");
 	$frm.attr("method", "POST");
 	$frm.submit();
 	

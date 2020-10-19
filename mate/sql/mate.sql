@@ -11,7 +11,7 @@
 -- 유저 삭제 (system 계정)
 --=====================================
 --select sid,serial#,username,status from v$session where schemaname = 'MATE'; --여기서 나온 숫자를
---alter system kill session '91,3539'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
+--alter system kill session '115,825'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
 --DROP USER mate CASCADE;
 --=====================================
 -- Drop 관련
@@ -94,6 +94,7 @@ CREATE TABLE MEMBER (
 );
 
 
+
 --DROP TABLE Address;
 CREATE TABLE Address (
 	address_name	varchar2(128)		NOT NULL,
@@ -128,6 +129,7 @@ CREATE TABLE EMP (
     
     constraint pk_emp primary key (emp_id)
 );
+
 
 --DROP TABLE PRODUCT;
 CREATE TABLE PRODUCT (
