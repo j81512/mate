@@ -21,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -75,10 +76,64 @@ public class ErpContorller {
 	}
 	
 	@RequestMapping("/ERP/empInfoDetail.do")
-	public ModelAndView empInfoDetail(ModelAndView mav) {
+	public String empInfoDetail(@RequestParam("empId") String empId, 
+								Model model) {
 		
-		mav.setViewName("/ERP/empInfoDetail");
-		return mav;
+		log.debug("empId ={} ", empId);
+		EMP emp = erpService.selectOneEmp(empId);
+		log.debug("emp = {}", emp);
+		model.addAttribute("emp", emp);
+		return "ERP/empInfoDetail";
+	}
+	
+	@RequestMapping("/ERP/infoUpdate.do")
+	public String infoUpdate(EMP emp, RedirectAttributes redirectAttr) {
+		try {
+			Map<String, Object>map = new HashMap<>();
+			map.put("empId", emp.getEmpId());
+			map.put("empPwd", emp.getEmpPwd());
+			map.put("empName", emp.getEmpName());
+			map.put("empAddr1", emp.getEmpAddr1());
+			map.put("empAddr2", emp.getEmpAddr2());
+			map.put("empAddr3", emp.getEmpAddr3());
+			map.put("status", emp.getStatus());	
+			
+			int result = erpService.infoUpdate(map);
+			log.debug("result ={}", result);
+			log.debug("map={}", map);
+			String msg = "정보수정 성공";
+			redirectAttr.addFlashAttribute("msg", msg);
+			
+		}catch(Exception e) {
+			String msg = "정보수정 실패";
+			redirectAttr.addFlashAttribute("msg", msg);
+		}
+		return "redirect:/ERP/empManage.do";
+	}
+	
+	@RequestMapping("/ERP/infoDelete.do")
+	public String infoDelete(@RequestBody EMP emp, 
+							 RedirectAttributes redirectAttr,
+							 SessionStatus sessionStatus) {
+		log.debug("emp = {}", emp);
+		try {
+			Map<String, Object> map = new HashMap<>();
+			map.put("empId", emp.getEmpId());
+			map.put("empPwd", emp.getEmpPwd());
+			
+			int result = erpService.infoDelete(map);
+			log.debug("result = {}", result);
+			log.debug("map = {}", map);
+			String msg = "삭제가 완료 되었습니다.";
+			
+			if(!sessionStatus.isComplete())
+				sessionStatus.setComplete();
+		}catch(Exception e) {
+			String msg = "삭제 실패";
+			redirectAttr.addFlashAttribute("msg", msg);
+			log.error("error = {}", e);
+		}
+		return "redirect:/ERP/empManage.do";
 	}
 	
 

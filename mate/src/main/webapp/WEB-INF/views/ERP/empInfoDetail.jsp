@@ -6,9 +6,8 @@
 
 <jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
 <div id="enroll-container" class="mx-auto text-center">
-	<form id="infoDetailFrm"
-		  name = "infoDetailFrm"
-		  action="${pageContext.request.contextPath}/ERP/infoUpdate.do" 
+	<form id="infoFrm"
+		  name = "infoFrm" 
 		  method="post">
 		<table class="mx-auto">
 			<tr>
@@ -20,21 +19,25 @@
 							   name="empId" 
 							   id="empId_"
 							   value="${ emp.empId }"
-							   readyonly="readonly">
+							   readonly="readonly">
 					</div>
 				</td>
 			</tr>
 			<tr>
 				<th>패스워드</th>
 				<td>
-					<input type="password" class="form-control" name="empPwd" id="password_">
+					<input type="hidden" class="form-control" name="adminPCK" id="adminPCK_"  value="${ loginMember.memberPWD}" required>
+					<input type="password" class="form-control" name="password_" id="password_">
+					<span class="guide ok" style="color:blue;">비밀 번호가 일치 합니다.</span> 
+					<span class="guide error" style="color:red;">비밀 번호가 일치하지 않습니다.</span>
+					<input type="hidden" id="idValid" value="0"/> 
 				</td>
 			</tr>
 			<tr>
 				<th>지점/업체 선택</th>
 				<td>	
-					<input type="radio" name="empStatus" id="empStatus" value="1" ${ emp.empStatus eq "1" ? "checked" : "" }>지점
-					<input type="radio" name="empStatus" id="empStatus" value="2" ${ emp.empStatus eq "2" ? "checked" : "" }>제조사				
+					<input type="radio" name="status" id="status" value="1" ${ emp.status eq "1" ? "checked" : "" }>지점
+					<input type="radio" name="status" id="status" value="2" ${ emp.status eq "2" ? "checked" : "" }>제조사				
 				</td>
 			</tr>  	
 			<tr>
@@ -46,7 +49,7 @@
 			<tr>
 				<th>전화번호</th>
 				<td>	
-					<input type="tel" class="form-control" placeholder="(-없이)01012345678" name="empPhone" id="empPhone" value="${ emp.empPhone }"maxlength="11" required>
+					<input type="tel" class="form-control" placeholder="(-없이)01012345678" name="empPhone" id="empPhone" value="${ emp.empPhone }" maxlength="11" required>
 				</td>
 			</tr>
 			<tr>
@@ -58,10 +61,14 @@
 					<input class="form-control" placeholder="상세주소" name="empAddr3" id="empAddr3" value="${ emp.empAddr3 }"type="text"  />
 				</td>
 			</tr>
+			<tr>
+				<td>
+					<button type="submit" value="수정" id="infoUpdate"></button>
+					<button type="submit" value="삭제" id="infoDelete"></button>
+					<button type="button" value="취소" ></button>				
+				</td>
+			</tr>
 		</table>
-		<input type="submit" value="수정">
-		<input type="button" value="삭제">
-		<input type="button" value="취소">
 	</form>
 </div>
 
@@ -113,4 +120,44 @@ function execPostCode() {
     }).open();
 }
 </script>
+<script>
+	$(function(){
+		$("#infoFrm .btn-delete").click(function(){
+			var $empId = $("#empId_");
+			var $frm = $("#infoFrm");
+			var $adminPwd = $frm.find("[name=password_]").val();
 
+			var admin = {
+					empId : $empId.val(),
+					adminPwd : $adminPwd
+				};
+				var delConfirm = confirm("정말로 삭제하시겠습니까?");
+				if(delConfirm){
+					$.ajax({
+						url: "${ pageContext.request.contextPath}/member/memberDelete.do",
+						method: "POST",
+						contentType : "application/json; charset=utf-8",
+						data : JSON.stringify(member),
+						success: window.location.href = "${ pageContext.request.contextPath }",
+						error:function(err, status, xhr){
+							console.log(err);
+							console.log(status);
+							console.log(xhr);
+						}					
+					});
+				}else{
+					alert("취소되었습니다");
+					return;
+				}
+			});
+		});
+	$(function(){
+		$("#infoFrm").submit(function(){
+			var $ frm = $("infoFrm");
+			var $ 
+			})
+		})
+		
+		
+	
+</script>
