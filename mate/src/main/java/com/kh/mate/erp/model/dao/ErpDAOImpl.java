@@ -154,6 +154,11 @@ public class ErpDAOImpl implements ErpDAO {
 	public int deleteReply(int boardReplyNo) {
 		return sqlSession.delete("erpBoard.deleteReply", boardReplyNo);
 	}
+
+	@Override
+	public int updateReply(Map<String, Object> map) {
+		return sqlSession.update("erpBoard.updateReply", map);
+	}
 	
 	
 	

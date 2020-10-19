@@ -45,4 +45,11 @@
 		where board_reply_no = #{ boardReplyNo } 
 	
 	</delete>
+	
+	<update id="updateReply">
+		update board_reply 
+			set
+		 content = #{ content }
+		 where board_reply_no = #{ boardReplyNo } 
+	</update>
 </mapper>
