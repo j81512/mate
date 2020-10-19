@@ -41,9 +41,9 @@
 					<td>${ emp.empPhone }</td>
 					<td><fmt:formatDate value="${ emp.empEnrollDate }" pattern="yyyy년MM월dd일"/></td>				
 					<td>
-						<c:if test="${ emp.empStatus == 1}">지점
+						<c:if test="${ emp.status == 1}">지점
 						</c:if>
-						<c:if test="${ emp.empStatus == 2}">제조사
+						<c:if test="${ emp.status == 2}">제조사
 						</c:if>
 					</td>		
 				</tr>

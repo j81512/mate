@@ -16,7 +16,7 @@
 			#{ empAddr3 },
 			#{ empPhone },
 			default,		
-			#{ empStatus }
+			#{ status }
 		)
 	</insert>
 	
@@ -24,12 +24,13 @@
 		select
 			emp_id AS empId,
 			emp_name AS empName,
+			emp_pwd AS empPWD,
 			addr1 AS empAddr1,
 			addr2 AS empAddr2,
 			addr3 AS empAddr3,
 			phone AS empPhone,
 			enroll_date AS empEnrollDate,
-			status AS empStatus
+			status AS status
 		from
 			emp
 		where
@@ -52,7 +53,7 @@
 			addr2 AS empAddr2,
 			phone AS empPhone,
 			enroll_date AS empEnrollDate,
-			status AS empStatus
+			status AS status
 		from
 			EMP
 		order by

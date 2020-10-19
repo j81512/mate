@@ -132,6 +132,16 @@ CREATE TABLE EMP (
 select * from emp;
 insert into EMP values('admin', '1234', '본사관리자', '06234', '서울특별시 강남구 테헤란로14길 6', '남도빌딩', '01012341234', default, 0);
 
+
+select
+	*
+from
+    emp
+order by
+    enroll_date;
+
+insert into spring.EMP values ('test', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '테스터1호', 16941, '경기 용인시 수지구 상현로 2 (상현동)', '4321', '01012341234', default, 2);
+
 --DROP TABLE PRODUCT;
 CREATE TABLE PRODUCT (
 	product_no	number	NOT NULL	,

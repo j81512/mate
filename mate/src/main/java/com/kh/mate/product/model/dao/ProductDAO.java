@@ -35,6 +35,9 @@ public interface ProductDAO {
 
 	List<Map<String, Object>> selectCartList(String memberId);
 
+	//jh
+	int insertReview(Map<String, Object> param);
+
 
 
 }

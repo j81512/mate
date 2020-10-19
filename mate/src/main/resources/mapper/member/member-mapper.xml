@@ -60,19 +60,21 @@
 	
 	<select id="selectAllPurchase" resultMap="purchaseMap">
 		select
-		    PL.purchase_no purchase_no,
+		    p.purchase_no purchase_no,
 		    p.purchase_date purchase_date,
 		    p.member_id member_id,
 		    pl.purchase_log_no purchase_log_no,
 		    pl.product_no product_no,
 		    (select product_name from product where product_no = pl.product_no) product_name,
 		    pl.amount amount,
-		    pl.status status
+		    pl.status status,
+            R.review_no review_no
 		from
 			purchase_log PL
-				join
-			purchase P
-				on P.purchase_no = PL.purchase_no
+				join purchase P
+                    on P.purchase_no = PL.purchase_no
+                left join review R
+                    on PL.purchase_log_no = R.purchase_log_no
         where
             member_id = #{ memberId }
         order by
@@ -87,5 +89,6 @@
 		<result column="product_name" property="productName"/>
 		<result column="amount" property="amount"/>
 		<result column="status" property="status"/>
+		<result column="review_no" property="reviewNo"/>
 	</resultMap>
 </mapper>
