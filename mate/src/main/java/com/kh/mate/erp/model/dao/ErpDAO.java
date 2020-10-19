@@ -52,4 +52,8 @@ public interface ErpDAO {
 	
 	EmpBoard selectOneEmpBoard(int no);
 
+	int infoUpdate(Map<String, Object> map);
+
+	int infoDelete(Map<String, Object> map);
+
 }
