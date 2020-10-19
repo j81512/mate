@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -77,10 +78,64 @@ public class ErpContorller {
 	}
 	
 	@RequestMapping("/ERP/empInfoDetail.do")
-	public ModelAndView empInfoDetail(ModelAndView mav) {
+	public String empInfoDetail(@RequestParam("empId") String empId, 
+								Model model) {
 		
-		mav.setViewName("/ERP/empInfoDetail");
-		return mav;
+		log.debug("empId ={} ", empId);
+		EMP emp = erpService.selectOneEmp(empId);
+		log.debug("emp = {}", emp);
+		model.addAttribute("emp", emp);
+		return "ERP/empInfoDetail";
+	}
+	
+	@RequestMapping("/ERP/infoUpdate.do")
+	public String infoUpdate(EMP emp, RedirectAttributes redirectAttr) {
+		try {
+			Map<String, Object>map = new HashMap<>();
+			map.put("empId", emp.getEmpId());
+			map.put("empPwd", emp.getEmpPwd());
+			map.put("empName", emp.getEmpName());
+			map.put("empAddr1", emp.getEmpAddr1());
+			map.put("empAddr2", emp.getEmpAddr2());
+			map.put("empAddr3", emp.getEmpAddr3());
+			map.put("status", emp.getStatus());	
+			
+			int result = erpService.infoUpdate(map);
+			log.debug("result ={}", result);
+			log.debug("map={}", map);
+			String msg = "정보수정 성공";
+			redirectAttr.addFlashAttribute("msg", msg);
+			
+		}catch(Exception e) {
+			String msg = "정보수정 실패";
+			redirectAttr.addFlashAttribute("msg", msg);
+		}
+		return "redirect:/ERP/empManage.do";
+	}
+	
+	@RequestMapping("/ERP/infoDelete.do")
+	public String infoDelete(@RequestBody EMP emp, 
+							 RedirectAttributes redirectAttr,
+							 SessionStatus sessionStatus) {
+		log.debug("emp = {}", emp);
+		try {
+			Map<String, Object> map = new HashMap<>();
+			map.put("empId", emp.getEmpId());
+			map.put("empPwd", emp.getEmpPwd());
+			
+			int result = erpService.infoDelete(map);
+			log.debug("result = {}", result);
+			log.debug("map = {}", map);
+			String msg = "삭제가 완료 되었습니다.";
+			
+			if(!sessionStatus.isComplete())
+				sessionStatus.setComplete();
+		}catch(Exception e) {
+			String msg = "삭제 실패";
+			redirectAttr.addFlashAttribute("msg", msg);
+			log.error("error = {}", e);
+		}
+		return "redirect:/ERP/empManage.do";
 	}
 	
 
@@ -238,13 +293,26 @@ public class ErpContorller {
 		return "/ERP/productOrder";
 	}
 	
+	@RequestMapping("/ERP/productOrder.do")
+	public String productOrder(Product product) {
+		
+		log.debug("product = {}",product);
+		
+		int result = erpService.productOrder(product);
+		
+		return "/ERP/ProductInfo";
+	}
+	
 	
 	//김종완 상품등록
 
 	//상품 등록 시 jsp연결
 	@RequestMapping(value = "/ERP/productEnroll.do",
 					method = RequestMethod.GET)
-	public String productinsert() {
+	public String productinsert(Model model) {
+		
+		List<EMP> list = erpService.empList();
+		model.addAttribute("list", list);
 		
 		return "/ERP/productEnroll";
 	}
@@ -294,7 +362,7 @@ public class ErpContorller {
 		
 		//Product객체에 MainImages객체를 Setting
 		log.debug("mainImgList = {}", mainImgList);	
-		product.setProductMainImages(mainImgList);
+		product.setPmiList(mainImgList);
 		
 		//Content에 Image파일이 있을 경우 (temp폴더내 파일이 저장되었을 경우)
 		//productImage객체 생성 후 DB에 저장
@@ -454,7 +522,7 @@ public class ErpContorller {
 			
 				}
 				
-			product.setProductMainImages(mainImgList);
+			product.setPmiList(mainImgList);
 			
 		}
 		

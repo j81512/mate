@@ -36,6 +36,8 @@ public interface ErpService {
 
 	List<ProductImages> selectProductImages(String productNo);
 
+	int productOrder(Product product);
+
 	List<Map<String, Object>> empBoardList();
 
 	EmpBoard selectOneEmpBoard(int no);
@@ -45,6 +47,11 @@ public interface ErpService {
 	int boardReply(EmpBoardReply boardReply);
 
 	int deleteReply(int boardReplyNo);
+
+	int infoUpdate(Map<String, Object> map);
+
+	int infoDelete(Map<String, Object> map);
+
 
 
 

@@ -45,9 +45,10 @@
 		select p.product_no,
 			p.product_name,
 			p.category,
-			s.emp_id,
+			p.emp_id,
 			p.reg_date,
-			s.stock 
+			s.stock,
+			s.emp_id branchEmp 
 		from product p left join stock s
 		on (p.product_no = s.product_no)
 		where p.product_no = #{productNo} and
@@ -164,5 +165,17 @@
 	<select id="findEmpid" resultType="string">
  		select emp_id from product where product_no = #{productNo}
  	</select>
+ 	
+ 	<insert id="productOrder">
+ 		insert into request_log values (
+ 		seq_request_no.nextval,
+ 		#{empId},
+ 		#{stock},
+ 		default,
+ 		default,
+ 		#{productNo},
+ 		#{branchEmp}
+ 		)
+ 	</insert>
 
 </mapper>

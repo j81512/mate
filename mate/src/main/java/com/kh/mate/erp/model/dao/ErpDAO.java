@@ -47,14 +47,22 @@ public interface ErpDAO {
 
 	String findEmpid(int productNo);
 
+	int productOrder(Product product);
+	
 	List<Map<String, Object>> empBoardList();
-
+	
 	EmpBoard selectOneEmpBoard(int no);
+
 
 	List<EmpBoardReply> replyList(int boardNo);
 
 	int boardReply(EmpBoardReply boardReply);
 
 	int deleteReply(int boardReplyNo);
+
+	int infoUpdate(Map<String, Object> map);
+
+	int infoDelete(Map<String, Object> map);
+
 
 }
