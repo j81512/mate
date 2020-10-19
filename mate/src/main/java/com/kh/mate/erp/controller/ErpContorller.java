@@ -37,10 +37,7 @@ import com.google.gson.JsonObject;
 import com.kh.mate.common.Utils;
 import com.kh.mate.erp.model.service.ErpService;
 import com.kh.mate.erp.model.vo.EMP;
-<<<<<<< HEAD
-=======
 import com.kh.mate.erp.model.vo.EmpBoard;
->>>>>>> branch 'master' of https://github.com/j81512/mate.git
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
