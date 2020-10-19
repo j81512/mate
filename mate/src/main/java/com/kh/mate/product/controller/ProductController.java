@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,8 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.FlashMap;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.kh.mate.member.model.vo.Member;
 import com.kh.mate.product.model.service.ProductService;
 import com.kh.mate.product.model.vo.Product;
 
@@ -115,6 +116,29 @@ public class ProductController {
 		model.addAttribute("category", category);
 		
 		return "product/productList";
+	}
+	
+	
+	//jh
+	@RequestMapping("/insertReview.do")
+	public String insertReview(RedirectAttributes redirectAttr,
+							 @RequestParam("purchaseLogNo") int purchaseLogNo,
+							 @RequestParam("comments") String comments,
+							 @RequestParam("score") int score) {
+		
+		Map<String, Object> param = new HashMap<>();
+		param.put("purchaseLogNo", purchaseLogNo);
+		param.put("comments", comments);
+		param.put("score", score);
+		
+		log.debug("param@Controller = {}", param);
+		int result = productService.insertReview(param);
+		String msg = "";
+		if(result > 0) msg = "리뷰를 등록해 주셔서 감사합니다.";
+		else msg = "리뷰 등록에 실패하셨습니다. 다시 시도해주세요.";
+		redirectAttr.addFlashAttribute("msg", msg);
+		
+		return "redirect:/member/mypage.do";
 	}
 	
 }
