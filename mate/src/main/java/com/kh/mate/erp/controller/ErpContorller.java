@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,7 @@ import com.kh.mate.common.Utils;
 import com.kh.mate.erp.model.service.ErpService;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
+import com.kh.mate.erp.model.vo.EmpBoardReply;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -619,7 +621,7 @@ public class ErpContorller {
 	}
 	
 	@RequestMapping("/ERP/EmpBoardDetail.do")
-	public ModelAndView boardDetail(@RequestParam("no") int no,
+	public ModelAndView empBoardDetail(@RequestParam("no") int no,
 									ModelAndView mav) {
 		log.debug("no = {}", no);
 	    EmpBoard empBoard = erpService.selectOneEmpBoard(no);
@@ -628,4 +630,59 @@ public class ErpContorller {
 		mav.setViewName("ERP/EmpBoardDetail");
 		 return mav;
 	}
+	
+	@PostMapping("/ERP/empBoardCkEnroll.do")
+	public String empBoardCKEnroll(RedirectAttributes redirectAttr, EmpBoard empBoard, EMP emp) {
+		
+		
+		return "redirect:/";
+	}
+	
+	// 호근 board image 추가	
+	@PostMapping("/ERP/empBoardimageFileUpload.do")
+	@ResponseBody
+	public String empBoardImage() {
+		
+		return null;
+	}
+	
+	// 호근 empBoard Reply 달기
+	@GetMapping("/ERP/empReplyList.do")
+	@ResponseBody
+	public List<EmpBoardReply> empReplyList(Model model, @RequestParam("boardNo") int boardNo) {
+		
+		log.debug("replyBoardNo = {}", boardNo);
+		
+		List<EmpBoardReply> list = erpService.replyList(boardNo);
+		log.debug("replylist = {}", list);
+
+		return list;
+	}
+	
+	@PostMapping("/ERP/empReplyEnroll.do")
+	public String replyEnroll(EmpBoardReply boardReply, ModelAndView mav
+							  ,RedirectAttributes redirectAttributes) {
+			
+		log.debug("boardReply= {}", boardReply);
+		int result = erpService.boardReply(boardReply);
+		log.debug("result = {}", result);
+		
+		log.debug("boardNo = {}", boardReply.getBoardNo());
+		return "redirect:/ERP/EmpBoardDetail.do?no=" + boardReply.getBoardNo();
+	}
+	
+	@PostMapping("/ERP/erpBoardReply.do")
+	@ResponseBody
+	public Map<String, Object> replydelete(@RequestParam("boardReplyNo") int boardReplyNo, RedirectAttributes redirectAttr, Model model) {
+		
+		Map<String, Object> map = new HashMap<>();
+		log.debug("boardReplyNo = {}", boardReplyNo);
+		int result = erpService.deleteReply(boardReplyNo);
+		
+		boolean isValiable = (result > 0) ?  true : false;
+		log.debug("isValiable= {}", isValiable);
+		map.put("isValialble", isValiable);
+		return map;
+	}
+	
 }

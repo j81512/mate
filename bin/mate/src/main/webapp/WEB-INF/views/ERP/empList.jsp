@@ -35,7 +35,6 @@ function empBoardEnroll(){
 
 	<input type="button" value="글쓰기" id="btn-add" class="btn btn-outline-success" onclick="empBoardEnroll();"/>
 	<table id="tbl-board" class="table table-striped table-hover">
-	<!--  -->
          <tr>
 			<th>번호</th>
 			<th>제목</th>
@@ -57,6 +56,4 @@ function empBoardEnroll(){
 		</c:forEach>
 		</c:if>
 	</table>
-	  
- <!--호근 푸터 처리  -->
 <jsp:include page="/WEB-INF/views/common/footerE.jsp" />
