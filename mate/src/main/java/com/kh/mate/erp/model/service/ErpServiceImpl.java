@@ -195,6 +195,14 @@ public class ErpServiceImpl implements ErpService {
 	public int deleteReply(int boardReplyNo) {
 		return erpDAO.deleteReply(boardReplyNo);
 	}
+
+	@Override
+	public int updateReply(Map<String, Object> map) {
+	
+		return erpDAO.updateReply(map);
+	}
+
+
 	
 	
 	

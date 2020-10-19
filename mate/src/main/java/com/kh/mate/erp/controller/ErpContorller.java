@@ -679,9 +679,26 @@ public class ErpContorller {
 		log.debug("boardReplyNo = {}", boardReplyNo);
 		int result = erpService.deleteReply(boardReplyNo);
 		
-		boolean isValiable = (result > 0) ?  true : false;
-		log.debug("isValiable= {}", isValiable);
-		map.put("isValialble", isValiable);
+		boolean Available= (result > 0) ?  true : false;
+		log.debug("isValiable= {}", Available);
+		map.put("isAvailable", Available);
+		return map;
+	}
+	@PostMapping("/ERP/replyUpdateReal.do")
+	@ResponseBody
+	public Map<String, Object> replyUpdate(@RequestParam("boardReplyNo") int boardReplyNo, @RequestParam("content") String content, RedirectAttributes redirectAttr, Model model) {
+		
+		Map<String, Object> map = new HashMap<>();
+		log.debug("boardReplyNo = {}", boardReplyNo);
+		log.debug("content = {}", content);
+		
+		map.put("boardReplyNo", boardReplyNo);
+		map.put("content", content);
+		int result = erpService.updateReply(map);
+		
+		boolean Available= (result > 0) ?  true : false;
+		log.debug("isValiable= {}", Available);
+		map.put("isAvailable", Available);
 		return map;
 	}
 	

@@ -37,7 +37,7 @@ $(document).ready(function(){
 	            $.each(data, function(key, value){                
 		            	html += '<div class="replyArea" style="border-bottom:1px solid darkgray; margin-bottom: 15px;">';
 		            	html += "<div class='replyInfo'>" + "작성자 :" + value.empName;
-		            	html += '<a onclick="replyUpdate('+ value.boardReplyNo +','+ value.content + ');" class="btn btn-primary"> 수정 </a>';
+		            	html += '<a onclick="replyUpdate('+ value.boardReplyNo +',\''+ value.content + '\');" class="btn btn-primary"> 수정 </a>';
 		            	html += '<a onclick="replyDelete('+ value.boardReplyNo +');" class="btn btn-default"> 삭제 </a> </div>';
 		            	html += '<div class="replyContent'+ value.boardReplyNo+'"> <p> 내용 : '+value.content +'</p>';
 		            	html += '</div></div>';
@@ -52,12 +52,44 @@ $(document).ready(function(){
 		function replyUpdate(boardReplyNo, content){
 					var boardReplyNo = boardReplyNo;
 					var content = content;	
-					
+					var html = "";
 					console.log(boardReplyNo);
 					console.log(content);
-				
+					html += '<div class="input-group">';
+					html += '<input type="text" class="form-control" name="replyContent_'+boardReplyNo+'" value="'+content+'"/>';
+					html += '<span class="input-group-btn"><button class="btn btn-default" type="button" onclick="replyUpdateReal('+boardReplyNo+');">수정</button> </span>';
+					html += '</div>';
+				    
+				    $('.replyContent'+ boardReplyNo ).html(html);
+
+
 		}
 
+		function replyUpdateReal(boardReplyNo){
+				console.log(boardReplyNo);
+				var updateContent = $('[name=replyContent_'+boardReplyNo+']').val();
+				console.log(updateContent);
+				$.ajax({
+					url : "${ pageContext.request.contextPath}/ERP/replyUpdateReal.do",
+					method : "POST",
+					dataType : "json",
+					data : {
+						"boardReplyNo" : boardReplyNo,
+						"content" : updateContent
+					},
+					success : function(data){
+						console.log(data);
+						if(data.isAvailable){
+							replyList(boardNo);
+						}
+					},
+					error : function(xhr, status, err){
+						console.log(xhr);
+						console.log(status);
+						console.log(err);
+					}
+				});
+		};
 
 	function replyDelete(boardReplyNo) {
 		var boardReplyNo = boardReplyNo;
@@ -72,6 +104,10 @@ $(document).ready(function(){
 			},
 			success : function(data){
 				console.log(data);
+				if(data.isAvailable) {
+					alert("삭제 되었습니다.");
+					location.reload();
+				}
 			},
 			error : function(xhr, status ,err){
 				console.log(xhr);

@@ -64,5 +64,7 @@ public interface ErpDAO {
 
 	int infoDelete(Map<String, Object> map);
 
+	int updateReply(Map<String, Object> map);
+
 
 }
