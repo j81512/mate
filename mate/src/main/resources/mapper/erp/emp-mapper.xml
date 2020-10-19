@@ -20,10 +20,11 @@
 		)
 	</insert>
 	
-	<select id="selectOneEmp" resultMap="empMap">
+	<select id="selectOneEmp" resultType="emp">
 		select
 			emp_id AS empId,
 			emp_name AS empName,
+			emp_pwd AS empPWD,
 			addr1 AS empAddr1,
 			addr2 AS empAddr2,
 			addr3 AS empAddr3,
@@ -35,6 +36,47 @@
 		where
 			emp_id = #{ empId }
 	</select>
+	
+	<update id="infoUpdate">
+		update
+			emp
+		<set>
+			<if test="empId != null">
+			emp_id = #{ empId },
+			</if>
+			<if test="empPwd != null">
+			emp_pwd = #{ empPwd },
+			</if>
+			<if test="empName != null">
+			emp_name = #{ empName },
+			</if>
+			<if test="empAddr1 != null">
+			addr1 = #{ empAddr1 },
+			</if>
+			<if test="empAddr2 != null">
+			addr2 = #{ empAddr2 },
+			</if>
+			<if test="empAddr3 != null">
+			addr3 = #{ empAddr3 },
+			</if>
+			<if test="empPhone != null">
+			phone = #{ empPhone },
+			</if>
+			<if test="status != null">
+			status = #{ status }
+			</if>
+		</set>
+		where
+			emp_id = #{ empId }
+	</update>
+	
+	<delete id="infoDelete">
+		delete
+		from
+			emp
+		where
+			emp_id = #{ emp_id }
+	</delete>
 	
 	<resultMap type="emp" id="empMap">
 	

@@ -33,6 +33,16 @@ public class ErpDAOImpl implements ErpDAO {
 	}
 
 	@Override
+	public int infoUpdate(Map<String, Object> map) {
+		return sqlSession.update("emp.infoUpdate", map);
+	}
+
+	@Override
+	public int infoDelete(Map<String, Object> map) {
+		return sqlSession.delete("emp.infoDelete", map);
+	}
+
+	@Override
 	public List<Product> searchInfo(Map<String, Object> map) {
 		return sqlSession.selectList("erp.searchInfo",map);
 	}

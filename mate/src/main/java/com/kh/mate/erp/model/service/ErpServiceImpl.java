@@ -34,6 +34,16 @@ public class ErpServiceImpl implements ErpService {
 	}
 
 	@Override
+	public int infoUpdate(Map<String, Object> map) {
+		return erpDAO.infoUpdate(map);
+	}
+
+	@Override
+	public int infoDelete(Map<String, Object> map) {
+		return erpDAO.infoDelete(map);
+	}
+
+	@Override
 	public List<Product> searchInfo(Map<String, Object> map) {
 		return erpDAO.searchInfo(map);
 	}
