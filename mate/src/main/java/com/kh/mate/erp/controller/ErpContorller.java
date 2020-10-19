@@ -145,7 +145,7 @@ public class ErpContorller {
 		String msg = result > 0 ? "생성 성공" : "생성 실패";
 		redirectAttr.addFlashAttribute("msg", msg);
 		
-		return "redirect:/";
+		return "redirect:/ERP/empManage.do";
 	}
 	
 	@RequestMapping("/ERP/checkIdDuplicate.do")

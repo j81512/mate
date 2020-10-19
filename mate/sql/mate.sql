@@ -17,7 +17,7 @@
 -- Drop 관련
 --=====================================
 --DROP TABLE MEMBER;
---DROP TABLE  EMP;
+--DROP TABLE  EMP cascade constraints;
 --DROP TABLE PRODUCT;
 --DROP TABLE Address;
 --DROP TABLE PRODUCT_IMAGES;
