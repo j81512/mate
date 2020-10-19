@@ -93,7 +93,8 @@ CREATE TABLE MEMBER (
     constraint chk_member_gender check (gender in ('M','F'))
 );
 
-
+insert into member values('admin', '1234', '본사관리자', 'M', '01012341234', default);
+select * from member;
 --DROP TABLE Address;
 CREATE TABLE Address (
 	address_name	varchar2(128)		NOT NULL,
@@ -128,6 +129,8 @@ CREATE TABLE EMP (
     
     constraint pk_emp primary key (emp_id)
 );
+select * from emp;
+insert into EMP values('admin', '1234', '본사관리자', '06234', '서울특별시 강남구 테헤란로14길 6', '남도빌딩', '01012341234', default, 0);
 
 --DROP TABLE PRODUCT;
 CREATE TABLE PRODUCT (
