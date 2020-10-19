@@ -2,6 +2,7 @@ package com.kh.mate.member.controller;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -275,12 +277,13 @@ public class MemberController {
 	
 	@PostMapping("/member/loginCheck.do")
 	public String memberLogin(@RequestParam("memberId") String userId
-			  ,@RequestParam("password") String password
+			  ,@RequestParam("memberPWD") String password
 			  ,RedirectAttributes redirectAttr
 			  ,Model model
 			  ,HttpSession session) {
 		log.debug("userId = {}", userId);
 		log.debug("password ={}", password);
+
 		Member loginMember = memberService.selectOneMember(userId);
 		
 		log.debug("loginMember = {}", loginMember);
@@ -316,7 +319,10 @@ public class MemberController {
 		
 		log.debug("loginMember = {}", loginMember);
 		
-		mav.addObject("loginMember = {}", loginMember);
+		List<Map<String, Object>> mapList = memberService.selectAllPurchase(loginMember.getMemberId());
+		
+		mav.addObject("loginMember", loginMember);
+		mav.addObject("mapList", mapList);
 		mav.setViewName("member/myPage");
 		return mav;
 	}
@@ -330,15 +336,89 @@ public class MemberController {
 			int result = memberService.insertMember(member);
 			map.put("msg", "회원 가입 축하드립니다~!");
 			redirectAttr.addFlashAttribute("msg", map);
-			return "member/login";
+
 		}catch(Exception e) {
 			log.error("error = {}", e);
 			map.put("msg", "회원 가입에 실패하셨습니다.");
 			redirectAttr.addFlashAttribute("msg", map);
-			return "/member/login";
 		}
+		return "redirect:/member/memberLogin.do";
 		
 	}
 	
+	@PostMapping("/member/memberUpdate.do")
+	public String memberUpdate(Member member,RedirectAttributes redirectAttr) {
+		
+			log.debug("member = {}", member);
+			try {
+				
+				Map<String, Object> map = new HashMap<>();
+				map.put("memberId", member.getMemberId());
+				map.put("memberPWD", member.getMemberPWD());
+				map.put("memberName", member.getMemberName());
+				map.put("gender", member.getGender());
+				map.put("phone", member.getPhone());
+		
+				int result = memberService.updateMember(map);
+				log.debug("result = {}", result);
+				log.debug("map = {}", map);
+				String msg = "정보 변경에 성공하였습니다.";
+				redirectAttr.addFlashAttribute("msg", msg);
+			
+				
+			}catch(Exception e) {
+				log.error("error = {}", e);
+				String msg = "정보 변경에 실패하였습니다.";
+				redirectAttr.addFlashAttribute("msg", msg);
+			}
+			
+			return "redirect:/member/myPage.do";
+		
+	}
 	
+	@PostMapping("/member/memberDelete.do")
+	public String memberDelete(@RequestBody Member member,RedirectAttributes redirectAttr
+								,SessionStatus sessionStatus) {
+		
+		log.debug("member = {}", member);
+		try {
+			
+			Map<String, Object> map = new HashMap<>();
+			map.put("memberId", member.getMemberId());
+			map.put("memberPWD", member.getMemberPWD());
+			
+			int result = memberService.deleteMember(map);
+			log.debug("result = {}", result);
+			log.debug("map = {}", map);
+			String msg = "아이디가 삭제 되었습니다";
+		
+			if(!sessionStatus.isComplete())
+			sessionStatus.setComplete();
+		
+		}catch(Exception e) {
+			String msg = "아이디가 삭제 되지 않았습니다.";
+			redirectAttr.addFlashAttribute("msg", msg);
+			log.error("error = {}", e);
+		}
+		return "redirect:/";
+		
+	}
+	
+	@RequestMapping("/member/checkPasswordDuplicate.do")
+	@ResponseBody
+	public Map<String, Object> checkIdDuplicate(@RequestParam("memberId") String memberId, @RequestParam("memberPWD") String memberPWD){
+		Map<String, Object> map = new HashMap<>();
+		
+		Member member = memberService.selectOneMember(memberId);
+		log.debug("member = {}", member);
+		
+		boolean isAvailable = member.getMemberPWD().equals(memberPWD) == true;
+		log.debug("isVailable ={}", isAvailable);
+		map.put("memeberId" , memberId);
+		map.put("isAvailable", isAvailable);
+				
+		return map;
+	}
+	
+
 }

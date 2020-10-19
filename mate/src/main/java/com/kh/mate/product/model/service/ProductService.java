@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
+import com.kh.mate.product.model.vo.ProductMainImages;
 
 public interface ProductService {
 	//ch
@@ -13,14 +14,24 @@ public interface ProductService {
 	List<Product> productCategory(String category);
 	
 	//jw
-	int productEnroll(Product product);
-
 
 	List<Product> searchProductList(Map<String, Object> map);
 
 	Product selectProductOne(String productNo);
 
 	int productImageEnroll(ProductImages productImage);
+
+	List<ProductMainImages> selectProductMainImages(String productNo);
+
+	List<Map<String, Object>> selectProductListMap();
+
+	int insertCart(Map<String, Object> param);
+
+	List<Map<String, Object>> selectCartList(String memberId);
+
+	
+	//jh
+	int insertReview(Map<String, Object> param);
 
 
 

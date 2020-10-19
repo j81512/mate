@@ -11,7 +11,10 @@ import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class ProductServiceImpl implements ProductService {
 	
 	@Autowired
@@ -23,8 +26,8 @@ public class ProductServiceImpl implements ProductService {
 		
 		if(list != null) {
 			for(Product p : list) {
-				List<ProductImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
-				p.setProductImages(imgs);
+				List<ProductMainImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
+				p.setPmiList(imgs);
 			}
 		}
 		return list;
@@ -37,8 +40,8 @@ public class ProductServiceImpl implements ProductService {
 		
 		if(list != null) {
 			for(Product p : list) {
-				List<ProductImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
-				p.setProductImages(imgs);
+				List<ProductMainImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
+				p.setPmiList(imgs);
 			}
 		}
 		
@@ -52,8 +55,8 @@ public class ProductServiceImpl implements ProductService {
 		List<Product> list = productDAO.productCategory(category);
 		if(list != null) {
 			for(Product p : list) {
-				List<ProductImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
-				p.setProductImages(imgs);
+				List<ProductMainImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
+				p.setPmiList(imgs);
 			}
 		}
 		
@@ -63,24 +66,10 @@ public class ProductServiceImpl implements ProductService {
 	
 	
 	//jw
-	@Override
-	public int productEnroll(Product product) {
-		
-		int result = productDAO.productEnroll(product);
-		
-		//MainImages가 추가되어있다면 실행될 메소드
-		if(product.getProductMainImages() != null) {
-			for(ProductMainImages mainImg : product.getProductMainImages()) {
-				
-				mainImg.setProductNo(product.getProductNo());
-				result = productDAO.mainImagesEnroll(mainImg);
-			}
-		}
-		return result;
-	}
 
 	@Override
 	public Product selectProductOne(String productNo) {
+		Product product = productDAO.selectProductOne(productNo);
 		return productDAO.selectProductOne(productNo);
 	}
 
@@ -88,6 +77,34 @@ public class ProductServiceImpl implements ProductService {
 	public int productImageEnroll(ProductImages productImage) {
 		return productDAO.productImageEnroll(productImage);
 	}
+
+	@Override
+	public List<ProductMainImages> selectProductMainImages(String productNo) {
+		return productDAO.selectProductMainImages(productNo);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectProductListMap() {
+		return productDAO.selectProductListMap();
+	}
+
+	@Override
+	public int insertCart(Map<String, Object> param) {
+		return productDAO.insertCart(param);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectCartList(String memberId) {
+		return productDAO.selectCartList(memberId);
+	}
+
+	
+	//jh
+	@Override
+	public int insertReview(Map<String, Object> param) {
+		return productDAO.insertReview(param);
+	}
+	
 	
 	
 

@@ -11,51 +11,95 @@
 			#{ empId },
 			#{ empPwd },
 			#{ empName },
-			#{ empAddress },
+			#{ empAddr1 },
+			#{ empAddr2 },
+			#{ empAddr3 },
 			#{ empPhone },
 			default,		
-			#{ empStatus }
+			#{ status }
 		)
 	</insert>
 	
-	<select id="selectOneEmp" resultMap="empMap">
+	<select id="selectOneEmp" resultType="emp">
 		select
-			*
+			emp_id AS empId,
+			emp_name AS empName,
+			emp_pwd AS empPWD,
+			addr1 AS empAddr1,
+			addr2 AS empAddr2,
+			addr3 AS empAddr3,
+			phone AS empPhone,
+			enroll_date AS empEnrollDate,
+			status AS status
 		from
 			emp
 		where
 			emp_id = #{ empId }
 	</select>
 	
+	<update id="infoUpdate">
+		update
+			emp
+		<set>
+			<if test="empId != null">
+			emp_id = #{ empId },
+			</if>
+			<if test="empPwd != null">
+			emp_pwd = #{ empPwd },
+			</if>
+			<if test="empName != null">
+			emp_name = #{ empName },
+			</if>
+			<if test="empAddr1 != null">
+			addr1 = #{ empAddr1 },
+			</if>
+			<if test="empAddr2 != null">
+			addr2 = #{ empAddr2 },
+			</if>
+			<if test="empAddr3 != null">
+			addr3 = #{ empAddr3 },
+			</if>
+			<if test="empPhone != null">
+			phone = #{ empPhone },
+			</if>
+			<if test="status != null">
+			status = #{ status }
+			</if>
+		</set>
+		where
+			emp_id = #{ empId }
+	</update>
 	
+	<delete id="infoDelete">
+		delete
+		from
+			emp
+		where
+			emp_id = #{ emp_id }
+	</delete>
 	
 	<resultMap type="emp" id="empMap">
 	
 	</resultMap>
 	
-
-	<select id="searchInfo" resultMap="productMap">
-		select
-			*
-		from
-			product
-	</select>
+	<resultMap type="Product" id="productMap">
 	
-	<resultMap type="Product" id="productMap"></resultMap>
+	</resultMap>
 	
 
-	<select id="empList">
+	<select id="empList" resultType="EMP">
 		select
-			emp_id as empId
-			emp_name as empName
-			address as empAddress
-			phone as empPhone
-			enroll_date as empEnrollDate
-			status as empStatus
+			emp_id AS empId,
+			emp_name AS empName,
+			addr2 AS empAddr2,
+			phone AS empPhone,
+			enroll_date AS empEnrollDate,
+			status AS status
 		from
-			tbl_emp
+			EMP
 		order by
 			enroll_date
 	</select>
+	
 
 </mapper>

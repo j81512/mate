@@ -1,5 +1,8 @@
 package com.kh.mate.member.model.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -20,5 +23,24 @@ public class MemberDAOImpl implements MemberDAO {
 	public int insertMember(Member member) {
 		return sqlSession.insert("member.insertMember", member);
 	}
+
+	@Override
+	public int updateMember(Map<String, Object> map) {
+		return sqlSession.update("member.updateMember", map);
+	}
+
+	@Override
+	public int deleteMember(Map<String, Object> map) {
+		return sqlSession.delete("member.deleteMember", map);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectAllPurchase(String memberId) {
+		return sqlSession.selectList("member.selectAllPurchase", memberId);
+	}
+
+	
+	
+	
 	
 }

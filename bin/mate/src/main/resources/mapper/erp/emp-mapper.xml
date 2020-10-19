@@ -6,34 +6,31 @@
 
 	<insert id="insertEmp">
 		insert into
-<<<<<<< HEAD
 			EMP
 		values(
 			#{ empId },
 			#{ empPwd },
 			#{ empName },
-			#{ empAddress },
+			#{ empAddr1 },
+			#{ empAddr2 },
+			#{ empAddr3 },
 			#{ empPhone },
 			default,		
-			#{ empStatus }
-=======
-			emp
-		values(
-			#{ empId },
-			#{ empPassword },
-			#{ empName },
-			#{ empAddress },
-			#{ empPhone },
-			default,
-			default
-			
->>>>>>> branch 'master' of https://github.com/j81512/mate.git
+			#{ status }
 		)
 	</insert>
 	
 	<select id="selectOneEmp" resultMap="empMap">
 		select
-			*
+			emp_id AS empId,
+			emp_name AS empName,
+			emp_pwd AS empPWD,
+			addr1 AS empAddr1,
+			addr2 AS empAddr2,
+			addr3 AS empAddr3,
+			phone AS empPhone,
+			enroll_date AS empEnrollDate,
+			status AS status
 		from
 			emp
 		where
@@ -43,4 +40,25 @@
 	<resultMap type="emp" id="empMap">
 	
 	</resultMap>
+	
+	<resultMap type="Product" id="productMap">
+	
+	</resultMap>
+	
+
+	<select id="empList" resultType="EMP">
+		select
+			emp_id AS empId,
+			emp_name AS empName,
+			addr2 AS empAddr2,
+			phone AS empPhone,
+			enroll_date AS empEnrollDate,
+			status AS status
+		from
+			EMP
+		order by
+			enroll_date
+	</select>
+	
+
 </mapper>

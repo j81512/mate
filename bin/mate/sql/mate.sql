@@ -5,13 +5,13 @@
 --identified by mate
 --default tablespace users;
 --grant RESOURCE,CONNECT to mate;
---------------------------------------------------------------
+----------------------------------------------------------------
 --grant create any job to mate;
 --=====================================
 -- 유저 삭제 (system 계정)
 --=====================================
 --select sid,serial#,username,status from v$session where schemaname = 'MATE'; --여기서 나온 숫자를
---alter system kill session '116,2255'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
+--alter system kill session '115,767'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
 --DROP USER mate CASCADE;
 --=====================================
 -- Drop 관련
@@ -93,13 +93,16 @@ CREATE TABLE MEMBER (
     constraint chk_member_gender check (gender in ('M','F'))
 );
 
+
 --DROP TABLE Address;
 CREATE TABLE Address (
 	address_name	varchar2(128)		NOT NULL,
 	member_id	varchar2(15)		NOT NULL,
 	reciever_name	varchar2(128)		NOT NULL,
 	receiver_phone	char(11)		NOT NULL,
-	address	varchar2(512)		NOT NULL,
+	addr1	varchar2(512)		NOT NULL,
+	addr2	varchar2(512)		NOT NULL,
+	addr3	varchar2(512)		NOT NULL,
 	reg_date	date	DEFAULT sysdate	NOT NULL,
 	is_check	number	DEFAULT 0	NOT NULL,
     
@@ -110,11 +113,15 @@ CREATE TABLE Address (
 );
 
 --DROP TABLE EMP;
+--DROP TABLE EMP CASCADE CONSTRAINTS;
+
 CREATE TABLE EMP (
 	emp_id	varchar2(15)		NOT NULL,
 	emp_pwd	varchar2(300)		NOT NULL,
 	emp_name	varchar2(256)		NOT NULL,
-	address	varchar2(512)		NOT NULL,
+	addr1	varchar2(512)		NOT NULL,
+	addr2	varchar2(512)		NOT NULL,
+	addr3	varchar2(512)		NOT NULL,
 	phone   char(11)		NOT NULL,
 	enroll_date	date	DEFAULT sysdate	NOT NULL,
 	status	number		NOT NULL,
@@ -122,6 +129,14 @@ CREATE TABLE EMP (
     constraint pk_emp primary key (emp_id)
 );
 
+select
+	*
+from
+    emp
+order by
+    enroll_date;
+
+insert into spring.EMP values ('test', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '테스터1호', 16941, '경기 용인시 수지구 상현로 2 (상현동)', '4321', '01012341234', default, 2);
 --DROP TABLE PRODUCT;
 CREATE TABLE PRODUCT (
 	product_no	number	NOT NULL	,
@@ -142,7 +157,6 @@ CREATE TABLE PRODUCT (
 --DROP TABLE PRODUCT_IMAGES;
 CREATE TABLE PRODUCT_IMAGES (
 	product_image_no number		NOT NULL,
-	original_filename	varchar2(256)		NOT NULL,
 	renamed_filename	varchar2(256)		NOT NULL,
 	product_no	number		NOT NULL,
     
@@ -430,7 +444,7 @@ CREATE TABLE REVIEW (
 
 --DROP TABLE QUIT_MEMBER;
 CREATE TABLE QUIT_MEMBER (
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	member_pwd	varchar2(300)		NOT NULL,
 	member_name	varchar2(128)		NOT NULL,
 	gender	char(1)		NOT NULL,
@@ -479,7 +493,9 @@ CREATE TABLE DELETE_EMP (
 	emp_id	varchar2(15)		NOT NULL,
 	emp_pwd	varchar2(300)		NOT NULL,
 	emp_name	varchar2(256)		NOT NULL,
-	address	varchar2(512)		NOT NULL,
+	addr1	varchar2(512)		NOT NULL,
+	addr2	varchar2(512)		NOT NULL,
+	addr3	varchar2(512)		NOT NULL,
 	phone	char(11)		NOT NULL,
 	enroll_date	date	NOT NULL,
 	status	char(1)		NOT NULL,
@@ -587,7 +603,9 @@ begin
         :old.emp_id, 
         :old.emp_pwd, 
         :old.emp_name, 
-        :old.address, 
+        :old.addr1,
+        :old.addr2,
+        :old.addr3,
         :old.phone,
         :old.enroll_date,
         :old.status,
