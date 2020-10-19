@@ -5,41 +5,63 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%--한글깨짐 방지 --%>
 <jsp:include page="/WEB-INF/views/common/headerS.jsp">
-	<jsp:param value="글등록" name="csInsert"/>
+	<jsp:param value="문의글 등록" name="csInsert"/>
 </jsp:include>			
-	
-		<!-- 내용, 작성자(수정불가), 공지 체크박스(관리자만), 첨부파일 -->
-	<form id="csFrm" action="<%= request.getContextPath() %>/cs/insertCs" method="get" enctype="multipart/form-data">
-		<p>
-		<label for="csTitle">제목</label>
-		<input type="text" name="title" id="csTitle" />
-		</p>
-		<p>
-		<label for="csTitle">내용</label>
-		<input type="text" name="content" id="csContent" />
-		</p>
-		<p>
-		<label for="loginMember">작성자</label>
-		<input type="text" name="memberId" id="loginMember" value="${ loginMember.memberId }" readonly>
-		</p>
-		<p>
-		<label for="secret">비밀글 설정</label>
-		<input type="checkbox" id="secret" name="secret" value="1"/>
-		</p>
-		<p>
-		<label for="secret">공지 여부</label>
-		<input type="checkbox" id="notice" name="notice" value="1"/>
-		</p>
-		<p>
-		<label for="csimages" id="cs-file-upload">파일 찾아보기</label>
-		<input type="file" name="csimages" id="csimages"/>
-		</p>
-		<button type="button" onclick="insertCs();" class="list-group-item list-group-item-action">등록하기</button>
-	</form>
+<style>
+div#cs-container{width:400px; margin:0 auto; text-align:center;}
+div#cs-container input{margin-bottom:15px;}
+/* 부트스트랩 : 파일라벨명 정렬*/
+div#cs-container label.custom-file-label{text-align:left;}
+</style>	
+
 <script>
 function insertCs(){
 	$("#csFrm").attr("action","${pageContext.request.contextPath}/cs/insertCs.do")
 			   .attr("method", "POST")
 			   .submit();
 }
+function csValidate(){
+	var $content = $("[name=content]");
+	if(/^(.|\n)+$/.test($content.val()) == false){
+		alert("내용을 입력하세요");
+		return false;
+	}
+	return true;
+}
+
+$(function(){
+	//파일 선택/취소 파일라벨명을 변경
+	$("[name=upFile]").on("change", function(){
+		var file = $(this).prop('files')[0];
+		var $label = $(this).next(".custom-file-label");
+
+		if(file == undefined) $label.html("파일을 선택하세요.");
+		else $label.html(file.name);
+	});
+});
 </script>
+
+<div id="cs-container">	
+	<form name="csFrm" action="${pageContext.request.contextPath}/cs/insertCs.do" method="post" enctype="multipart/form-data" onsubmit="return csValidate();">
+
+		<input type="text" class="form-control" placeholder="제목" name="title" id="title" required>
+		<input type="text" class="form-control" name="memberId" value="${loginMember.memberId}" readonly required>
+		
+		<div class="input-group mb-3" style="padding:0px;">
+		<div class="input-group-prepend" style="padding:0px;">
+		 <span class="input-group-text">첨부파일1</span>
+		</div>
+		<div class="custom-file">
+		    <input type="file" class="custom-file-input" name="upFile" id="upFile1" >
+		    <label class="custom-file-label" for="upFile">파일을 선택하세요</label>
+		</div>
+		</div>
+	    <textarea class="form-control" name="content" placeholder="내용" required></textarea>
+		<br />
+		<label for="secret">비밀글 설정</label>
+		<input type="checkbox" id="secret" name="secret" value="1"/>		
+		<label for="notice">공지 여부</label>
+		<input type="checkbox" id="notice" name="notice" value="1"/>
+		<input type="submit" class="btn btn-outline-success" value ="등록하기">
+	</form>
+</div>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="csReply">
+  
+ <insert id="ReplyInsert">
+ 	Insert Into
+ 	cs_reply(CsReplyNo,content,memberId,regDate,csNo) 
+ 	values(
+ 		seq_cs_no.nextval,
+ 		#{content},
+ 		#{memberId},
+ 		default,
+ 		#{ csNo }
+ 		)
+ </insert>
+ 
+<delete id="ReplyDelete">
+		delete from reply where cs_reply_no = #{csReplyNo}
+</delete>
+
+
+    <!-- 페이지에 해당하는 댓글 목록 조회 -->
+<select id="listPage" resultType="ReplyVO">
+		select *
+		from CSREPLY
+		where csNo = #{csNo}
+		order by csReplyNo desc
+</select>
+
+</mapper>

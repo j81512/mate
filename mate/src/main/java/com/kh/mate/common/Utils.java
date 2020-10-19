@@ -10,14 +10,13 @@ import java.util.Date;
 
 public class Utils {
 
+	
 	public static String getRenamedFileName(String originalFilename) {
 		String renamedFilename = null;
-		
-		//확장자 처리
+
 		int beginIndex = originalFilename.lastIndexOf('.');
 		String ext = originalFilename.substring(beginIndex); // .png ....
-		
-		//년월일 포맷, 난수 포맷
+
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmssSSS_");
 		DecimalFormat df = new DecimalFormat("000");
 		
@@ -28,7 +27,6 @@ public class Utils {
 		return renamedFilename;
 	}
 
-	//파일 복사
 	public static void fileCopy(File sourceF, File targetF) {
 		File[] target_file = sourceF.listFiles();
 		for (File file : target_file) {
@@ -61,7 +59,6 @@ public class Utils {
 		   }
 	    }
 	
-	//파일 삭제
 	public static void fileDelete(String path) {
 		File folder = new File(path);
 		try {
@@ -81,4 +78,6 @@ public class Utils {
 			e.printStackTrace();
 		}
 	}
+
+
 }

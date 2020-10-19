@@ -1,9 +1,10 @@
 package com.kh.mate.cs.model.dao;
 
 import java.util.List;
-import java.util.Map;
 
+import com.kh.mate.cs.model.vo.CsImages;
 import com.kh.mate.cs.model.vo.Cs;
+
 
 public interface CsDAO {
 
@@ -13,4 +14,13 @@ public interface CsDAO {
 
 	int deleteCs(int csNo);
 
+	CsImages selectOneAttachment(int csNo);
+	
+	Cs selectOneCsCollection(int csNo);
+
+	Cs selectOneCs(int csNo);
+
+	int insertCsImage(CsImages csImage);
+
+	CsImages selectCsImage(int csNo);
 }

@@ -1,16 +1,24 @@
 package com.kh.mate.cs.model.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.kh.mate.cs.model.vo.Cs;
+import com.kh.mate.cs.model.vo.CsImages;
 
 public interface CsService {
 
-	int insertCs(Cs cs);
-
 	List<Cs> selectCsList();
 
+	int insertCs(Cs cs);
+
 	int deleteCs(int csNo);
+	
+	Cs selectOneCs(int csNo);
+
+	Cs selectOneCsCollection(int csNo);
+
+	CsImages selectOneAttachment(int csNo);
+
+	
 
 }
