@@ -80,26 +80,26 @@ public class ProductController {
 	public String selectCart (@RequestParam("memberId") String memberId,
 							  Model model) {
 		
-		List<Map<String, Object>> cart = productService.selectCartList(memberId);
+		List<Cart> cart = productService.selectCartList(memberId);
 		log.debug("cart = {}", cart);
-		Map<String, Object> temp = new HashMap<>();
-		for(int i = 0; i < cart.size(); i++) {
-			temp.put(String.valueOf(i), cart.get(i));
-		}
-		log.debug("temp = {}", temp);
-		
-		Cart c = (Cart)temp.get("0");
-		log.debug("c = {}", c);
+//		Map<String, Object> temp = new HashMap<>();
+//		for(int i = 0; i < cart.size(); i++) {
+//			temp.put(String.valueOf(i), cart.get(i));
+//		}
+//		log.debug("temp = {}", temp);
+//		
+//		Cart c = (Cart)temp.get("0");
+//		log.debug("c = {}", c);
 //		String productNo = String.valueOf(temp.get("productNo"));
 //		log.debug("productNo = {}",productNo);
 		
-		List<ProductMainImages> pmi = new ArrayList<>();
-		if(cart != null) {
-			pmi = productService.selectProductMainImages(String.valueOf(c.getProductNo()));
-			log.debug("pmi = {}", pmi);
-		}
-		
-		model.addAttribute("pmi", pmi);
+//		List<ProductMainImages> pmi = new ArrayList<>();
+//		if(cart != null) {
+//			pmi = productService.selectProductMainImages(String.valueOf(c.getProductNo()));
+//			log.debug("pmi = {}", pmi);
+//		}
+//		
+//		model.addAttribute("pmi", pmi);
 		model.addAttribute("cart", cart);
 		return "product/cartView";
 	}

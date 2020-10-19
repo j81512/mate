@@ -27,13 +27,12 @@
   </thead>
   <tbody>
     <c:if test="${ not empty cart }">
-    <c:forEach items="${cart}" var="c">
+    <c:forEach items="${cart}" var="c" varStatus="vs">
     	<tr>
-    		<th scope="row">1</th>
+    		<th scope="row">${vs.count }</th>
     		<td>
-    			<c:forEach items="${ pmi }" var="p">
-    				<img src="${ pageContext.request.contextPath }/resources/upload/mainimages/${ p.renamedFilename }" alt="" width="50px"/>
-    			</c:forEach>
+    			<img src="${ pageContext.request.contextPath }/resources/upload/mainimages/${ c.selectedProduct.pmiList.get(0).renamedFilename }" 
+    				 alt="상품이미지" width="50px"/>
     		</td>
     		<td>${ c.selectedProduct.productName }</td>
     		<td>

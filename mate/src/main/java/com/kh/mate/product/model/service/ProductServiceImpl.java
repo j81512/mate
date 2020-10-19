@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.product.model.dao.ProductDAO;
+import com.kh.mate.product.model.vo.Cart;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -90,8 +91,14 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Map<String, Object>> selectCartList(String memberId) {
-		return productDAO.selectCartList(memberId);
+	public List<Cart> selectCartList(String memberId) {
+		
+		List<Cart> cartList = productDAO.selectCartList(memberId);
+		for(Cart c : cartList) {
+			c.setSelectedProduct(productDAO.selectProductOne(String.valueOf(c.getProductNo())));
+			c.getSelectedProduct().setPmiList(productDAO.selectProductMainImages(c.getProductNo()));
+		}
+		return cartList;
 	}
 
 	@Override

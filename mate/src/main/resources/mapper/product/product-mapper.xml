@@ -5,9 +5,15 @@
 <mapper namespace="product">
 
 	
-	<select id="selectCartList" resultMap="cartMap">
+	<select id="selectCartList" resultType="cart">
 		select
-	    	*
+	    	C.member_id member_id,
+            C.product_no product_no,
+            C.amount amount,
+            p.product_name product_name,
+            p.reg_date reg_date,
+            p.category category,
+            p.price price
 		from
 	    	cart C 
 	    		inner join 
@@ -15,7 +21,7 @@
 	    		on 
 	    	C.product_no = P.product_no
 	    where
-	    	member_id = #{memberId}
+	    	member_id = #{ memberId }
 	</select>
  
  	<select id="selectProductListAll" resultType="product">
