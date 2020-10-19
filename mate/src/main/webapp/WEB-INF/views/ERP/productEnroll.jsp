@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
 <script src="${ pageContext.request.contextPath }/resources/ckeditor/ckeditor.js"></script>
 <script>
@@ -89,7 +92,7 @@ div#form-container label.custom-file-label{text-align:left;}
      <span class="input-group-text">섬네일 사진 1</span>
    </div>
    <div class="custom-file">
-     <input type="file" class="custom-file-input" name="upFile" id="upFile1" >
+     <input type="file" class="custom-file-input" name="upFile" id="upFile1"  required>
      <label class="custom-file-label" for="upFile1">파일을 선택하세요</label>
    </div>
   </div>
@@ -98,7 +101,7 @@ div#form-container label.custom-file-label{text-align:left;}
      <span class="input-group-text">섬네일 사진 2</span>
    </div>
    <div class="custom-file">
-     <input type="file" class="custom-file-input" name="upFile" id="upFile1" >
+     <input type="file" class="custom-file-input" name="upFile" id="upFile1" required>
      <label class="custom-file-label" for="upFile1">파일을 선택하세요</label>
    </div>
   </div>
@@ -107,7 +110,7 @@ div#form-container label.custom-file-label{text-align:left;}
      <span class="input-group-text">섬네일 사진 3</span>
    </div>
    <div class="custom-file">
-     <input type="file" class="custom-file-input" name="upFile" id="upFile1" >
+     <input type="file" class="custom-file-input" name="upFile" id="upFile1" required>
      <label class="custom-file-label" for="upFile1">파일을 선택하세요</label>
    </div>
   </div>
@@ -122,8 +125,17 @@ div#form-container label.custom-file-label{text-align:left;}
 	<input type="text" name="price" id="priceValue" value="" required/> 원
   </div>
   
-  <!-- 등록자  -->
-  <input type="hidden" name="empId" value="testId"/>
+  <!-- 제조사  -->
+  <c:if test="${ not empty list }">
+  	<label for="empId">제조사 :</label>
+  	<select name="empId" id="empId" required>
+  	<option value="" disabled selected>제조사를 선택해 주세요</option>
+	  	<c:forEach items="${ list }" var="emp" varStatus="vs">
+			<option value="${ emp.status eq 2 ? emp.empId : '' }">${ emp.status eq 2 ? emp.empName : '' }</option>
+	  	</c:forEach>
+  	</select>
+  </c:if>
+  
   
   <div class="form-group col">
     <div class="col-sm-10">

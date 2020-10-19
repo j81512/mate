@@ -58,13 +58,20 @@ public class ErpServiceImpl implements ErpService {
 		
 		Product product = erpDAO.orderProduct(map);
 		
-		product.setEId(erpDAO.findEmpid(product.getProductNo()));
+//		product.setEId(erpDAO.findEmpid(product.getProductNo()));
 		
 		return product;
 	}
 	
 	
+	@Override
+	public int productOrder(Product product) {
+		return erpDAO.productOrder(product);
+	}
+	
+	
 	//김종완
+
 
 	@Override
 	public int productEnroll(Product product) {
@@ -72,8 +79,8 @@ public class ErpServiceImpl implements ErpService {
 		int result = erpDAO.productEnroll(product);
 		
 		//MainImages가 추가되어있다면 실행될 메소드
-		if(product.getProductMainImages() != null) {
-			for(ProductMainImages mainImg : product.getProductMainImages()) {
+		if(product.getPmiList() != null) {
+			for(ProductMainImages mainImg : product.getPmiList()) {
 				
 				mainImg.setProductNo(product.getProductNo());
 				result = erpDAO.productMainImagesEnroll(mainImg);
@@ -119,11 +126,11 @@ public class ErpServiceImpl implements ErpService {
 		int result = erpDAO.productUpdate(product);
 		
 		//productMainImage 수정 여부 확인 후 진행
-		if(result > 0 && product.getProductMainImages() != null) {
+		if(result > 0 && product.getPmiList() != null) {
 			//기존 섬네일 이미지 삭제
 			result = erpDAO.productMainImagesDelete(String.valueOf(product.getProductNo()));
 			//업데이트된 이미지 새로 등록
-			for(ProductMainImages mainImg : product.getProductMainImages()) {
+			for(ProductMainImages mainImg : product.getPmiList()) {
 				mainImg.setProductNo(product.getProductNo());
 				result = erpDAO.productMainImagesEnroll(mainImg);
 			}

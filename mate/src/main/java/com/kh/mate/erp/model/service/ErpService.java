@@ -35,6 +35,8 @@ public interface ErpService {
 
 	List<ProductImages> selectProductImages(String productNo);
 
+	int productOrder(Product product);
+
 	List<Map<String, Object>> empBoardList();
 
 	EmpBoard selectOneEmpBoard(int no);

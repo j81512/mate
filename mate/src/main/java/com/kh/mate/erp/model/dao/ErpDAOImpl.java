@@ -65,6 +65,11 @@ public class ErpDAOImpl implements ErpDAO {
 
 	
 	
+	@Override
+	public int productOrder(Product product) {
+		return sqlSession.insert("erp.productOrder",product);
+	}
+	
 
   
   //김종완

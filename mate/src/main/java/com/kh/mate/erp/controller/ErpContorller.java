@@ -37,6 +37,10 @@ import com.google.gson.JsonObject;
 import com.kh.mate.common.Utils;
 import com.kh.mate.erp.model.service.ErpService;
 import com.kh.mate.erp.model.vo.EMP;
+<<<<<<< HEAD
+=======
+import com.kh.mate.erp.model.vo.EmpBoard;
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -135,6 +139,23 @@ public class ErpContorller {
 		return "redirect:/ERP/empManage.do";
 	}
 	
+
+	@RequestMapping("/ERP/EmpBoardList.do")
+	public String empBoardList(Model model) {
+//		호근 empList.do가 게시판 가르킴  수정하겠음
+		List<EMP> list = erpService.empList();
+		List<Map<String, Object>> empBoardList = erpService.empBoardList();
+		log.debug("list = {} ", list);
+		log.debug("empBoardList = {} ", empBoardList);
+		
+		model.addAttribute("list", list);
+		//model 추가함
+		model.addAttribute("empBoardList", empBoardList);
+		return "ERP/empList";
+		
+	}
+
+
 	@RequestMapping("/ERP/empManage.do")
 	public String empManage(Model model) {
 		List<EMP> list = erpService.empList();
@@ -273,13 +294,26 @@ public class ErpContorller {
 		return "/ERP/productOrder";
 	}
 	
+	@RequestMapping("/ERP/productOrder.do")
+	public String productOrder(Product product) {
+		
+		log.debug("product = {}",product);
+		
+		int result = erpService.productOrder(product);
+		
+		return "/ERP/ProductInfo";
+	}
+	
 	
 	//김종완 상품등록
 
 	//상품 등록 시 jsp연결
 	@RequestMapping(value = "/ERP/productEnroll.do",
 					method = RequestMethod.GET)
-	public String productinsert() {
+	public String productinsert(Model model) {
+		
+		List<EMP> list = erpService.empList();
+		model.addAttribute("list", list);
 		
 		return "/ERP/productEnroll";
 	}
@@ -329,7 +363,7 @@ public class ErpContorller {
 		
 		//Product객체에 MainImages객체를 Setting
 		log.debug("mainImgList = {}", mainImgList);	
-		product.setProductMainImages(mainImgList);
+		product.setPmiList(mainImgList);
 		
 		//Content에 Image파일이 있을 경우 (temp폴더내 파일이 저장되었을 경우)
 		//productImage객체 생성 후 DB에 저장
@@ -489,7 +523,7 @@ public class ErpContorller {
 			
 				}
 				
-			product.setProductMainImages(mainImgList);
+			product.setPmiList(mainImgList);
 			
 		}
 		
@@ -568,15 +602,33 @@ public class ErpContorller {
 				&& (loginEmp.getEmpPwd().equals(empPwd))
 				&& (loginEmp.getStatus() == status )) {
 			model.addAttribute("loginEmp", loginEmp);
-			String next = (String)session.getAttribute("next");
-			if( next != null) 
-				location = next;
-		
+	
 		}
-		else {
-			redirectAttr.addFlashAttribute("msg", "아이디 또는 비밀번호가 틀립니다.");
-			log.debug("location = " + location);
+
+		return "redirect:/ERP/menu.do";
+	}
+	@RequestMapping("/ERP/logout.do")
+	public String empLogout(SessionStatus sessionStatus) {
+		if(!sessionStatus.isComplete()) {
+			sessionStatus.setComplete();
+			
 		}
-		return "redirect:" + location;
+		return "redirect:/";
+	}
+	
+	@RequestMapping("/ERP/EmpBoardEnroll.do")
+	public void EmpboardEnroll() {
+			
+	}
+	
+	@RequestMapping("/ERP/EmpBoardDetail.do")
+	public ModelAndView boardDetail(@RequestParam("no") int no,
+									ModelAndView mav) {
+		log.debug("no = {}", no);
+	    EmpBoard empBoard = erpService.selectOneEmpBoard(no);
+		mav.addObject("empBoard", empBoard);
+//		model.addAttribute("board", boardList);
+		mav.setViewName("ERP/EmpBoardDetail");
+		 return mav;
 	}
 }

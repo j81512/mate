@@ -1,5 +1,6 @@
 package com.kh.mate.member.model.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,11 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public int deleteMember(Map<String, Object> map) {
 		return memberDAO.deleteMember(map);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectAllPurchase(String memberId) {
+		return memberDAO.selectAllPurchase(memberId);
 	}
 
 	

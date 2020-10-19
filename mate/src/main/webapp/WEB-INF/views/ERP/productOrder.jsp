@@ -30,29 +30,30 @@ function orderModal(){
 			  <div class="modal-dialog">
 			    <div class="modal-content">
 			      <div class="modal-header">
-			        <h5 class="modal-title">Modal title</h5>
+			        <h5 class="modal-title">발주</h5>
 			        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			          <span aria-hidden="true">&times;</span>
 			        </button>
 			      </div>
+			      	<form action="${pageContext.request.contextPath}/ERP/productOrder.do">
 			      <div class="modal-body">
 			      
-			      	<form action="" method="post">
 			      	
+			      		<p>제조사 : ${ product.empId }</p>
 			      		<p>현재수량 : ${ product.stock }</p>
 			      		<p>상품번호 : ${ product.productNo }</p>
-			      		<p>신청지점 : ${ product.empId }</p>
-			      		<%-- <p>제조사 : ${ product.eId }</p> --%>
+			      		<p>지점 아이디 ${ product.branchEmp }</p>
+			      		<p>요청수량 : <input type="number" name="stock" id="order" /></p>
+			      		<input type="hidden" name="branchEmp" value="${ product.branchEmp }"/>
+			      		<input type="hidden" name="empId" value="${ product.empId }"/>
+			      		<input type="hidden" name="productNo" value="${ product.productNo }"/>
 			      		
-					      <div class="modal-footer">
-					        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					        <button type="button" class="btn btn-primary">Save changes</button>
-					      </div>
-			      		
-			      	
-			      	</form>
-			      
 			      </div>
+				<div class="modal-footer">
+				   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Save changes</button>
+				</div>
+			      	</form>
 			    </div>
 			  </div>
 			</div>

@@ -46,8 +46,10 @@ public interface ErpDAO {
 
 	String findEmpid(int productNo);
 
+	int productOrder(Product product);
+	
 	List<Map<String, Object>> empBoardList();
-
+	
 	EmpBoard selectOneEmpBoard(int no);
 
 	int infoUpdate(Map<String, Object> map);
