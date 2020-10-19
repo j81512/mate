@@ -16,8 +16,7 @@
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 
-</head>
-  <body>
+<jsp:include page="/WEB-INF/views/common/headerE.jsp" />
  
     
     <div>
@@ -37,7 +36,5 @@
     	</li>
     </div>
      
+<jsp:include page="/WEB-INF/views/common/footerE.jsp" />		
 		
-		
-  </body>
-</html>

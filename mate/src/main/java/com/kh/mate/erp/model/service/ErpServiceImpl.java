@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.kh.mate.erp.model.dao.ErpDAO;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
+import com.kh.mate.erp.model.vo.EmpBoardReply;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -161,6 +162,21 @@ public class ErpServiceImpl implements ErpService {
 	@Override
 	public EmpBoard selectOneEmpBoard(int no) {
 		return erpDAO.selectOneEmpBoard(no);
+	}
+
+	@Override
+	public List<EmpBoardReply> replyList(int boardNo) {
+		return erpDAO.replyList(boardNo);
+	}
+
+	@Override
+	public int boardReply(EmpBoardReply boardReply) {
+		return erpDAO.boardReply(boardReply);
+	}
+
+	@Override
+	public int deleteReply(int boardReplyNo) {
+		return erpDAO.deleteReply(boardReplyNo);
 	}
 	
 	

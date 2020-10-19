@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="erpBoard">
+	<select id="empBoard" resultType="EmpBoard">
+		select
+			*
+		from
+			board
+		order by
+			reg_date desc
+	</select>
+	<select id="selectOneEmpBoard" resultType="EmpBoard">
+		select 
+			*	
+		from 
+			board 
+		 where board_no = #{ no }
+	</select>
+	
+	<select id="selectReplyList" resultType="EmpBoardReply">
+		select 
+		    * 
+		from  (select r.* ,e.emp_name empName from emp e join board_reply r on e.emp_id = r.emp_id) 
+		where  board_no = #{ boardNo }
+		order by reg_date desc
+			
+	</select>
+	
+	<insert id="insertBoardReply">
+		insert into
+			 board_reply 
+			 values(
+			  seq_board_reply_no.nextval,
+			   #{ content }, 
+			   sysdate, 
+			   #{ boardNo },
+			    #{ empId })
+	
+	</insert>
+</mapper>

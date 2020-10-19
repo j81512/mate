@@ -13,7 +13,8 @@
 					${ company.empName }
 					<input type="hidden" name="companyName" value="${ company.empName }" />
 					<input type="hidden" name="companyPhone" value="${ company.phone }" />
-					<input type="hidden" name="companyAddress" value="${ company.addr2 } ${ company.addr3 }" />
+					<input type="hidden" name="companyAddress" value="${ company.addr2 }" />
+					<input type="hidden" name="companyAddressDetail" value="${ company.addr3 }" />
 				</div>
 			</c:forEach>
 		
@@ -27,6 +28,7 @@
 		var name = $(this).find("[name=companyName]").val();
 		var phone = $(this).find("[name=companyPhone]").val();
 		var address = $(this).find("[name=companyAddress]").val();
+		var addressDetail = $(this).find("[name=companyAddressDetail]").val();
 		
 		var container = document.getElementById('map');
 		var options = {
@@ -50,7 +52,7 @@
 		        });
 
 		        var infowindow = new kakao.maps.InfoWindow({
-		            content: '<div style="width:150px;text-align:center;padding:6px 0;">' + name + '<br />' + phone + '</div>'
+		            content: '<div style="width:150px;text-align:center;padding:6px 0;">' + name + '<hr style="margin: 3px;"/>' + addressDetail + '<br />' + phone + '</div>'
 		        });
 		        infowindow.open(map, marker);
 

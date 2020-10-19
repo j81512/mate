@@ -129,7 +129,6 @@ CREATE TABLE EMP (
     constraint pk_emp primary key (emp_id)
 );
 
-<<<<<<< HEAD
 select
 	*
 from
@@ -138,9 +137,6 @@ order by
     enroll_date;
 
 insert into spring.EMP values ('test', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '테스터1호', 16941, '경기 용인시 수지구 상현로 2 (상현동)', '4321', '01012341234', default, 2);
-=======
->>>>>>> branch 'master' of https://github.com/j81512/mate.git
-
 --DROP TABLE PRODUCT;
 CREATE TABLE PRODUCT (
 	product_no	number	NOT NULL	,
