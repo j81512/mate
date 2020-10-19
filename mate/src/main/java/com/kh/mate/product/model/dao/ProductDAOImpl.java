@@ -82,6 +82,13 @@ public class ProductDAOImpl implements ProductDAO {
 	public List<Map<String, Object>> selectCartList(String memberId) {
 		return session.selectList("product.selectCartList", memberId);
 	}
+
+	
+	//jh
+	@Override
+	public int insertReview(Map<String, Object> param) {
+		return session.insert("product.insertReview", param);
+	}
 	
 	
 	

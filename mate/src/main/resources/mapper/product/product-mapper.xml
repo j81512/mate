@@ -91,6 +91,17 @@
  	
  	</insert>
  	
+ 	<insert id="insertReview">
+ 		insert into
+ 			review
+ 		values(
+ 			seq_review_no.nextval,
+ 			#{ purchaseLogNo },
+ 			#{ comments },
+ 			#{ score },
+ 			default
+ 		)
+ 	</insert>
  	
  	<resultMap type="product" id="productMap">
  		<id column="product_no" property="productNo"/>
