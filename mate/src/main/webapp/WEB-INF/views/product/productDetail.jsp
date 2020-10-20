@@ -64,7 +64,7 @@ function saveCart(){
 
 function purchaseProduct(){
 	var $frm = $("#productDetailFrm");
-	$frm.attr("action", "${ pageContext.request.contextPath }/product/purchaseProductOne.do");
+	$frm.attr("action", "${ pageContext.request.contextPath }/product/purchaseProduct.do");
 	$frm.attr("method", "POST");
 	$frm.submit();
 	

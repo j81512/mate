@@ -115,7 +115,7 @@ CREATE TABLE Address (
 
 --DROP TABLE EMP;
 --DROP TABLE EMP CASCADE CONSTRAINTS;
-
+select * from cart;
 CREATE TABLE EMP (
 	emp_id	varchar2(15)		NOT NULL,
 	emp_pwd	varchar2(300)		NOT NULL,

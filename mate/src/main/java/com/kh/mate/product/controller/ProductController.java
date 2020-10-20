@@ -125,36 +125,39 @@ public class ProductController {
 	}
 	
 	//단일 상품 구매 페이지 우회
-	@RequestMapping(value = "/purchaseProductOne.do",
+	@RequestMapping(value = "/purchaseProduct.do",
 					method = RequestMethod.POST)
 	public String purchaseProductOne(@RequestParam("productNo") String productNo,
 								  @RequestParam("memberId") String memberId,
 								  @RequestParam("amount") String amount,
 								  Model model) {
-		
-		//1.선택한 상품 정보 및 배송지 정보 가져오기
-		
-		//1.1  선택한 상품 정보 가져오기
-		Product purProduct = productService.selectProductOne(productNo);
-		
-		//1.2  배송지 정보 가져오기
+		//0. 로그인 아이디로 입력된 배송지정보 받아오기
 		List<Address> memAddr = productService.selectAddressList(memberId);
 		Address[] addrArr = new Address[memAddr.size()];
-		
-		//1.2.1 배송지 정보 값 유무로 분기
+		//0.1 배송지 정보 유무 여부로 분기 처리 
 		if(!memAddr.isEmpty()) {
-			//1.2.2 입력된 배송지 정보가 있을 경우 -> 가장 최근 입력된 배송지를 값으로 전송
+			//0.2 최근 입력된 배송지 정보 저장
 			for(int i=0; i<memAddr.size(); i++) {
 				addrArr[i] = memAddr.get(i);
 			}
-			
+			//0.3 전송준비
 			log.debug("addrArr = {}", addrArr);
 			model.addAttribute("recentAddr", addrArr[0]);
 		}
 		
-		//2.페이지로 전달
-		model.addAttribute("purProduct", purProduct);
-		model.addAttribute("amount", amount);
+		//1. 로그인 아이디로 입력된 장바구니 정보 받아오기
+		List<Cart> cartList = productService.selectCartList(memberId);
+		//1.1 장바구니 입력 유무로 분기 처리
+		if(!cartList.isEmpty()) {
+			//1.2 장바구니 입력된 상품정보가 있다면 전송 준비
+			model.addAttribute("cartList", cartList);
+		}
+		
+			//2.2 단일 상품 구매건에 대해서도 추가
+			Product purProduct = productService.selectProductOne(productNo);
+			model.addAttribute("purProduct", purProduct);
+			model.addAttribute("amount", amount);
+		
 		return "product/purchaseProduct";
 	}
 	

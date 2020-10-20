@@ -34,14 +34,7 @@
  	
  	<select id="selectProductOne" resultType="product">
  		select
- 			P.*,
-            ( 
-            select 
-            	count(*)
-            from 
-                product_main_images PMI
-            where 
-                P.product_no = PMI.product_no ) image_count
+ 			P.*
  		from
  			product P
  		where

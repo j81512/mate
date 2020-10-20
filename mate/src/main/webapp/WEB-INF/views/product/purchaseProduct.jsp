@@ -69,45 +69,76 @@
 	<table class="table table-hover">
 	  <thead>
 	    <tr>
-	      <th scope="col">#</th>
-	      <th scope="col">상품 이미지</th>
+	      <th scope="col">구매 여부</th>
 	      <th scope="col">상품명</th>
 	      <th scope="col">카테고리</th>
 	      <th scope="col">가격</th>
 	      <th scope="col">수량</th>
-	      <th scope="col">가격</th>
-	      <th scope="col">삭제</th>
+	      <th scope="col">합계</th>
 	    </tr>
 	  </thead>
 	  <tbody>
-	  	<tr>
-	  		<td>1</td>
-	  		<td>상품 이미지 자리</td>
-	  		<td>${ purProduct.productName }</td>
-	  		<td>${ purProduct.productName }</td>
-	  		<td>
-	  			<c:if test="${ c.selectedProduct.category eq 'fg' }">
-	    		피규어
-	    		</c:if>
-	    		<c:if test="${ c.selectedProduct.category eq 'pm' }">
-	    		프라모델
-	    		</c:if>
-	    		<c:if test="${ c.selectedProduct.category eq 'rc' }">
-	    		RC카
-	    		</c:if>
-	    		<c:if test="${ c.selectedProduct.category eq 'dr' }">
-	    		드론
-	    		</c:if>
-	  		</td>
-	  		<td></td>
-	  		<td></td>
-	  		<td></td>
-	  	</tr>
+	  	<!-- 단일 상품 추가 우선 -->
+	  	<c:if test="${ not empty purProduct }">
+		  	<tr>
+		  		<td>
+		  			<input type="checkbox" name="valid" id="valid" value="1" checked/>
+		  		</td>
+		  		<td>${ purProduct.productName }</td>
+		  		<td>
+		  			<c:if test="${ purProduct.category eq 'fg' }">
+		    		피규어
+		    		</c:if>
+		    		<c:if test="${ purProduct.category eq 'pm' }">
+		    		프라모델
+		    		</c:if>
+		    		<c:if test="${ purProduct.category eq 'rc' }">
+		    		RC카
+		    		</c:if>
+		    		<c:if test="${ purProduct.category eq 'dr' }">
+		    		드론
+		    		</c:if>
+		  		</td>
+		  		<td>${ purProduct.price }</td>
+		  		
+		  		<td>${ amount }</td>
+		  		<td>${ amount * purProduct.price }</td>
+		  	</tr>
+  		</c:if>
+  		
+  		<!-- 장바구니 상품 추가 -->
+  		<c:if test="${ not empty cartList }">
+	  		<c:forEach items="${ cartList }" var="cart">
+	  		<tr>
+		  		<td>
+		  			<input type="checkbox" name="valid" id="valid" value="1" checked/>
+		  		</td>
+		  		<td>${ cart.selectedProduct.productName }</td>
+		  		<td>
+		  			<c:if test="${ cart.selectedProduct.category eq 'fg' }">
+		    		피규어
+		    		</c:if>
+		    		<c:if test="${ cart.selectedProduct.category eq 'pm' }">
+		    		프라모델
+		    		</c:if>
+		    		<c:if test="${ cart.selectedProduct.category eq 'rc' }">
+		    		RC카
+		    		</c:if>
+		    		<c:if test="${ cart.selectedProduct.category eq 'dr' }">
+		    		드론
+		    		</c:if>
+		  		</td>
+		  		<td>${ cart.selectedProduct.price }</td>
+		  		
+		  		<td>${ cart.amount }</td>
+		  		<td>${ cart.amount * cart.selectedProduct.price }</td>
+		  	</tr>
+	  		</c:forEach>
+  		</c:if>
+  		
 	  </tbody>
 	</table>
 	</div>
-
-
 </form>
 
 <!-- 주소API -->
