@@ -56,26 +56,53 @@ public class ErpContorller {
 	@Autowired
 	private BCryptPasswordEncoder bcryptPasswordEncoder;
 	
+	//ERP-쇼핑몰 선택
 	@RequestMapping("/ERP/menu.do")
 	public ModelAndView Menu(ModelAndView mav) {
-		
 		mav.setViewName("/ERP/menu");
 		return mav;
 	}
 	
+	//ERP선택후 메뉴5개
 	@RequestMapping("/ERP/erpMain.do")
 	public ModelAndView erpMain(ModelAndView mav) {
-		
 		mav.setViewName("/ERP/erpMain");
 		return mav;
 	}
-	
+	//상품관리
 	@RequestMapping("/ERP/ProductInfo.do")
-	public ModelAndView productInfo(ModelAndView mav) {
-		
+	public ModelAndView productInfo(ModelAndView mav) {		
 		mav.setViewName("/ERP/ProductInfo");
 		return mav;
 	}
+	//현황조회 진입부
+	@RequestMapping("/ERP/EmpDetail.do")
+	public ModelAndView EmpDetail(ModelAndView mav) {	
+		mav.setViewName("/ERP/EmpDetail");
+		return mav;
+	}
+	
+	//재고확인 진입
+	@RequestMapping("/ERP/StockLog.do")
+	public ModelAndView StockLog(ModelAndView mav) {	
+		mav.setViewName("/ERP/StockLog");
+		return mav;
+	}
+	
+	//발주확인 진입
+	@RequestMapping("/ERP/OrderLog.do")
+	public ModelAndView OrderLog(ModelAndView mav) {	
+		mav.setViewName("/ERP/OrderLog");
+		return mav;
+	}
+	
+	//매출확인 진입
+	@RequestMapping("/ERP/PriceLog.do")
+	public ModelAndView PriceLog(ModelAndView mav) {	
+		mav.setViewName("/ERP/PriceLog");
+		return mav;
+	}
+	
 	
 	//박도균 제조사/지점 상세보기
 	@RequestMapping("/ERP/empInfoDetail.do")
@@ -263,12 +290,9 @@ public class ErpContorller {
 		map.put("search", search);
 		
 		
-		List<Product> list = erpService.searchInfo(map);
-		
-		log.debug("list = {}",list);
-		
-		model.addAttribute("list",list);
-		
+		List<Product> list = erpService.searchInfo(map);		
+		log.debug("list = {}",list);		
+		model.addAttribute("list",list);		
 		return "/ERP/ProductInfo";
 	}
 	
