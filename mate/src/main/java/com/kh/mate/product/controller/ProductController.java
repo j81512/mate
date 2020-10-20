@@ -124,7 +124,28 @@ public class ProductController {
 		return "product/cartView";
 	}
 	
-	//단일 상품 구매 페이지 우회
+	
+	//구매 페이지 단순 우회
+	@RequestMapping("/purchaseProduct.do")
+	public String purchaseProductOne(@RequestParam("memberId") String memberId,
+									Model model) {
+		//로그인 아이디로 입력된 배송지 정보만 전달
+		List<Address> memAddr = productService.selectAddressList(memberId);
+		Address[] addrArr = new Address[memAddr.size()];
+		if(!memAddr.isEmpty()) {
+			//최근 입력된 배송지 정보 저장
+			for(int i=0; i<memAddr.size(); i++) {
+				addrArr[i] = memAddr.get(i);
+			}
+			// 전송준비
+			log.debug("addrArr = {}", addrArr);
+			model.addAttribute("recentAddr", addrArr[0]);
+		}
+		return "product/purchaseProduct";
+	}
+	
+	
+	//단일 상품 구매 페이지 상품 전달
 	@RequestMapping(value = "/purchaseProduct.do",
 					method = RequestMethod.POST)
 	public String purchaseProductOne(@RequestParam("productNo") String productNo,
@@ -160,6 +181,20 @@ public class ProductController {
 		
 		return "product/purchaseProduct";
 	}
+	
+	
+	//상품 구매목록 전체 삭제 버튼 클릭 시
+	@RequestMapping("deleteCartAll.do")
+	public String deleteCartAll(@RequestParam("memberId")String memberId,
+								RedirectAttributes redirectAttr) {
+		
+		//장바구니 목록 전체 삭제 후
+		log.debug("memberId={}",memberId);
+		
+		//비어있는 구매 목록 화면으로 리 다이렉트
+		return "redirect:/product/purchaseProduct.do?memberId="+memberId;
+	}
+	
 	
 	//CH
 	@RequestMapping(value = "/productList.do",

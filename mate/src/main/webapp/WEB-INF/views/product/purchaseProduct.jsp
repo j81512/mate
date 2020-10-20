@@ -6,17 +6,32 @@
 <jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
 <script src="${ pageContext.request.contextPath }/resources/ckeditor/ckeditor.js"></script>
 <c:if test="${ empty recentAddr }">
+
 	<script>
 	$(function(){
 		var $input = $(".form-control");
 
 		$input.removeAttr("readonly");
+
+		var sumArr = new Array();
+		sumArr = $(".sum");
+
+		var sum = 0;
+		$.each(sumArr, function(index, elem){
+			sum += parseInt(elem.innerText);
+		});
+
+		var $container = $("#payment");
+		$container.html(sum);
+		
 	});
 	</script>
 </c:if>
 
 <!--전체 감쌀 div <div class="container-purchase-form"></div> -->
-<form action="">
+<form action="${ pageContext.request.contextPath }/product/productPayment.do"
+	  id="paymentFrm"
+	  method="POST">
 
 	<!-- 주소 불러오기 버튼 만들기 -->
 	
@@ -82,7 +97,7 @@
 	  	<c:if test="${ not empty purProduct }">
 		  	<tr>
 		  		<td>
-		  			<input type="checkbox" name="valid" id="valid" value="1" checked/>
+		  			<input type="checkbox" name="valid" class="valid" value="1" checked/>
 		  		</td>
 		  		<td>${ purProduct.productName }</td>
 		  		<td>
@@ -101,8 +116,10 @@
 		  		</td>
 		  		<td>${ purProduct.price }</td>
 		  		
-		  		<td>${ amount }</td>
-		  		<td>${ amount * purProduct.price }</td>
+		  		<td>
+		  			<input type="number" name="amount"  value="${ not empty amount ? amount : '' }"/>
+		  		</td>
+		  		<td class="sum">${ amount * purProduct.price }</td>
 		  	</tr>
   		</c:if>
   		
@@ -111,7 +128,7 @@
 	  		<c:forEach items="${ cartList }" var="cart">
 	  		<tr>
 		  		<td>
-		  			<input type="checkbox" name="valid" id="valid" value="1" checked/>
+		  			<input type="checkbox" name="valid" class="valid" value="1" checked/>
 		  		</td>
 		  		<td>${ cart.selectedProduct.productName }</td>
 		  		<td>
@@ -130,13 +147,35 @@
 		  		</td>
 		  		<td>${ cart.selectedProduct.price }</td>
 		  		
-		  		<td>${ cart.amount }</td>
-		  		<td>${ cart.amount * cart.selectedProduct.price }</td>
+		  		<td>
+		  			<input type="number" name="amount"  value="${ not empty cart.amount ? cart.amount : '' }"/>
+		  		</td>
+		  		<td class="sum">${ cart.amount * cart.selectedProduct.price }</td>
 		  	</tr>
 	  		</c:forEach>
   		</c:if>
   		
 	  </tbody>
+	</table>
+	</div>
+	
+	<div class="container-result">
+	<table class="table table-hover">
+		<tr>
+			<th>총 결제 금액 : 
+				<div id="payment">
+				</div>
+			</th>
+			<th>
+				<button type="button" class="btn btn-primary" onclick="pp();">결제 하기</button>
+			</th>
+			<th>
+				<button type="button" class="btn btn-danger" onclick="deleteListAll();">전체 삭제</button>
+			</th>
+			<th>
+				<button type="button" class="btn btn-light" onclick="history.go(-1)">뒤로 가기</button>
+			</th>
+		</tr>
 	</table>
 	</div>
 </form>
@@ -188,5 +227,54 @@ function execPostCode() {
        }
     }).open();
 }
+</script>
+
+<!-- jsp에서 사용하는 function  -->
+<script>
+function deleteListAll(){
+
+	if(confirm("장바구니에 등록되어있는 모든 상품들이 삭제됩니다. 진행하시겠습니까?")){
+
+		location.href="${ pageContext.request.contextPath }/product/deleteCartAll.do?memberId=${loginMember.memberId}";
+
+	}else{
+		return false;
+	}
+}
+
+function pp(){
+	var $frm = $("#paymentFrm");
+	var $sum = $("#payment");
+
+	window.open(
+		"${pageContext.request.contextPath}/member/kakaopay.do?memberId=${loginMember.memberId}&sum="+$sum.html(),
+		"kakaoPay",
+		""
+		);
+	
+	$frm.submit();
+}
+
+/* value값을 가져와서 1인 값들의 형제 td중 class값이 sum인 td의 innerText가져와서...합계금액 변경  */
+var sumArr = new Array();
+sumArr = $(".sum");
+
+var valArr = new Array();
+valArr = $(".valid");
+console.log(valArr)
+	
+$(".valid").on("change", function(){
+
+	$.each(valArr, function(index, elem){
+	
+		console.log(valArr[index]);
+		console.log(elem);
+
+	});
+
+
+});
+
+
 </script>
 <jsp:include page="/WEB-INF/views/common/footerS.jsp"/>

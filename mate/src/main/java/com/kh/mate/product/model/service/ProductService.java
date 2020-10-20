@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.kh.mate.member.model.vo.Address;
+import com.kh.mate.member.model.vo.Member;
 import com.kh.mate.product.model.vo.Cart;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
@@ -32,6 +33,7 @@ public interface ProductService {
 	int deleteFromCart(Map<String, Object> param);
 
 	List<Address> selectAddressList(String memberId);
+
 
 
 
