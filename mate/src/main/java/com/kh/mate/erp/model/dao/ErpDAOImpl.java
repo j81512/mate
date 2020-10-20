@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
+import com.kh.mate.erp.model.vo.EmpBoardReply;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -30,6 +31,16 @@ public class ErpDAOImpl implements ErpDAO {
 	@Override
 	public int insertEmp(EMP emp) {
 		return sqlSession.insert("emp.insertEmp", emp);
+	}
+
+	@Override
+	public int infoUpdate(Map<String, Object> map) {
+		return sqlSession.update("emp.infoUpdate", map);
+	}
+
+	@Override
+	public int infoDelete(Map<String, Object> map) {
+		return sqlSession.delete("emp.infoDelete", map);
 	}
 
 	@Override
@@ -121,12 +132,32 @@ public class ErpDAOImpl implements ErpDAO {
 	//호근 추가
 	@Override
 	public List<Map<String, Object>> empBoardList() {
-		return sqlSession.selectList("erp.empBoard");
+		return sqlSession.selectList("erpBoard.empBoard");
 	}
 
 	@Override
 	public EmpBoard selectOneEmpBoard(int no) {
-		return sqlSession.selectOne("erp.selectOneEmpBoard",no);
+		return sqlSession.selectOne("erpBoard.selectOneEmpBoard",no);
+	}
+
+	@Override
+	public List<EmpBoardReply> replyList(int boardNo) {
+		return sqlSession.selectList("erpBoard.selectReplyList", boardNo);
+	}
+
+	@Override
+	public int boardReply(EmpBoardReply boardReply) {
+		return sqlSession.insert("erpBoard.insertBoardReply", boardReply);
+	}
+
+	@Override
+	public int deleteReply(int boardReplyNo) {
+		return sqlSession.delete("erpBoard.deleteReply", boardReplyNo);
+	}
+
+	@Override
+	public int updateReply(Map<String, Object> map) {
+		return sqlSession.update("erpBoard.updateReply", map);
 	}
 	
 	

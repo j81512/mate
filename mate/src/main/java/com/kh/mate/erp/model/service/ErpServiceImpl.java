@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.kh.mate.erp.model.dao.ErpDAO;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
+import com.kh.mate.erp.model.vo.EmpBoardReply;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -31,6 +32,16 @@ public class ErpServiceImpl implements ErpService {
 	@Override
 	public EMP selectOneEmp(String empId) {
 		return erpDAO.selectOneEmp(empId);
+	}
+
+	@Override
+	public int infoUpdate(Map<String, Object> map) {
+		return erpDAO.infoUpdate(map);
+	}
+
+	@Override
+	public int infoDelete(Map<String, Object> map) {
+		return erpDAO.infoDelete(map);
 	}
 
 	@Override
@@ -69,8 +80,8 @@ public class ErpServiceImpl implements ErpService {
 		int result = erpDAO.productEnroll(product);
 		
 		//MainImages가 추가되어있다면 실행될 메소드
-		if(product.getProductMainImages() != null) {
-			for(ProductMainImages mainImg : product.getProductMainImages()) {
+		if(product.getPmiList() != null) {
+			for(ProductMainImages mainImg : product.getPmiList()) {
 				
 				mainImg.setProductNo(product.getProductNo());
 				result = erpDAO.productMainImagesEnroll(mainImg);
@@ -116,11 +127,11 @@ public class ErpServiceImpl implements ErpService {
 		int result = erpDAO.productUpdate(product);
 		
 		//productMainImage 수정 여부 확인 후 진행
-		if(result > 0 && product.getProductMainImages() != null) {
+		if(result > 0 && product.getPmiList() != null) {
 			//기존 섬네일 이미지 삭제
 			result = erpDAO.productMainImagesDelete(String.valueOf(product.getProductNo()));
 			//업데이트된 이미지 새로 등록
-			for(ProductMainImages mainImg : product.getProductMainImages()) {
+			for(ProductMainImages mainImg : product.getPmiList()) {
 				mainImg.setProductNo(product.getProductNo());
 				result = erpDAO.productMainImagesEnroll(mainImg);
 			}
@@ -169,6 +180,29 @@ public class ErpServiceImpl implements ErpService {
 	public EmpBoard selectOneEmpBoard(int no) {
 		return erpDAO.selectOneEmpBoard(no);
 	}
+
+	@Override
+	public List<EmpBoardReply> replyList(int boardNo) {
+		return erpDAO.replyList(boardNo);
+	}
+
+	@Override
+	public int boardReply(EmpBoardReply boardReply) {
+		return erpDAO.boardReply(boardReply);
+	}
+
+	@Override
+	public int deleteReply(int boardReplyNo) {
+		return erpDAO.deleteReply(boardReplyNo);
+	}
+
+	@Override
+	public int updateReply(Map<String, Object> map) {
+	
+		return erpDAO.updateReply(map);
+	}
+
+
 	
 	
 	

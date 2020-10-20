@@ -20,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +39,7 @@ import com.kh.mate.common.Utils;
 import com.kh.mate.erp.model.service.ErpService;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
+import com.kh.mate.erp.model.vo.EmpBoardReply;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -74,11 +77,68 @@ public class ErpContorller {
 		return mav;
 	}
 	
+	//박도균 제조사/지점 상세보기
 	@RequestMapping("/ERP/empInfoDetail.do")
-	public ModelAndView empInfoDetail(ModelAndView mav) {
+	public String empInfoDetail(@RequestParam("empId") String empId, 
+								Model model) {
 		
-		mav.setViewName("/ERP/empInfoDetail");
-		return mav;
+		log.debug("empId ={} ", empId);
+		EMP emp = erpService.selectOneEmp(empId);
+		log.debug("emp = {}", emp);
+		model.addAttribute("emp", emp);
+		return "ERP/empInfoDetail";
+	}
+	
+	//박도균 지점/제조사 정보 수정
+	@RequestMapping("/ERP/infoUpdate.do")
+	public String infoUpdate(EMP emp, RedirectAttributes redirectAttr) {
+		try {
+			Map<String, Object>map = new HashMap<>();
+			map.put("empId", emp.getEmpId());
+			map.put("empPwd", emp.getEmpPwd());
+			map.put("empName", emp.getEmpName());
+			map.put("empAddr1", emp.getEmpAddr1());
+			map.put("empAddr2", emp.getEmpAddr2());
+			map.put("empAddr3", emp.getEmpAddr3());
+			map.put("status", emp.getStatus());	
+			
+			int result = erpService.infoUpdate(map);
+			log.debug("result ={}", result);
+			log.debug("map={}", map);
+			String msg = "정보수정 성공";
+			redirectAttr.addFlashAttribute("msg", msg);
+			
+		}catch(Exception e) {
+			String msg = "정보수정 실패";
+			redirectAttr.addFlashAttribute("msg", msg);
+		}
+		return "redirect:/ERP/empManage.do";
+	}
+	
+	//박도균 지점/제조사 정보 삭제
+	@RequestMapping("/ERP/infoDelete.do")
+	public String infoDelete(@RequestBody EMP emp, 
+							 RedirectAttributes redirectAttr,
+							 SessionStatus sessionStatus) {
+		log.debug("emp = {}", emp);
+		try {
+			Map<String, Object> map = new HashMap<>();
+			map.put("empId", emp.getEmpId());
+			map.put("empPwd", emp.getEmpPwd());
+			
+			int result = erpService.infoDelete(map);
+			log.debug("result = {}", result);
+			log.debug("map = {}", map);
+			String msg = "삭제가 완료 되었습니다.";
+			
+			if(!sessionStatus.isComplete())
+				sessionStatus.setComplete();
+		}catch(Exception e) {
+			String msg = "삭제 실패";
+			redirectAttr.addFlashAttribute("msg", msg);
+			log.error("error = {}", e);
+		}
+		return "redirect:/ERP/empManage.do";
 	}
 	
 
@@ -97,7 +157,7 @@ public class ErpContorller {
 		
 	}
 
-
+	//박도균 지점/제조사 관리
 	@RequestMapping("/ERP/empManage.do")
 	public String empManage(Model model) {
 		List<EMP> list = erpService.empList();
@@ -107,7 +167,7 @@ public class ErpContorller {
 		model.addAttribute("list", list);
 		return "ERP/empManage";
 	}
-	
+	//박도균 지점/제조사 목록불러오기
 	@RequestMapping(value="/ERP/empList.do",
 					method = RequestMethod.GET)
 	public String empList(Model model) {
@@ -120,7 +180,7 @@ public class ErpContorller {
 		return "ERP/empList";
 		
 	}
-	
+	//박도균 지점/제조사 생성
 	@RequestMapping(value="/ERP/EmpEnroll.do",
 					method= RequestMethod.GET)
 	public ModelAndView EmpEnroll(ModelAndView mav) {
@@ -128,7 +188,7 @@ public class ErpContorller {
 		mav.setViewName("ERP/EmpEnroll");
 		return mav;
 	}
-	
+	//박도균 지점/제조사 생성
 	@RequestMapping(value="/ERP/EmpEnroll.do",
 					method= RequestMethod.POST)
 	public String EmpEnroll(RedirectAttributes redirectAttr,
@@ -145,7 +205,7 @@ public class ErpContorller {
 		String msg = result > 0 ? "생성 성공" : "생성 실패";
 		redirectAttr.addFlashAttribute("msg", msg);
 		
-		return "redirect:/";
+		return "redirect:/ERP/empManage.do";
 	}
 	
 	@RequestMapping("/ERP/checkIdDuplicate.do")
@@ -160,7 +220,7 @@ public class ErpContorller {
 		
 		return map;
 	}
-	
+	//박도균 제조사/지점 상세보기
 	@RequestMapping("/ERP/empInfoView.do")
 	public String empInfoView(String empId, Model model) {
 		model.addAttribute("emp", erpService.selectOneEmp(empId));
@@ -252,7 +312,10 @@ public class ErpContorller {
 	//상품 등록 시 jsp연결
 	@RequestMapping(value = "/ERP/productEnroll.do",
 					method = RequestMethod.GET)
-	public String productinsert() {
+	public String productinsert(Model model) {
+		
+		List<EMP> list = erpService.empList();
+		model.addAttribute("list", list);
 		
 		return "/ERP/productEnroll";
 	}
@@ -302,7 +365,7 @@ public class ErpContorller {
 		
 		//Product객체에 MainImages객체를 Setting
 		log.debug("mainImgList = {}", mainImgList);	
-		product.setProductMainImages(mainImgList);
+		product.setPmiList(mainImgList);
 		
 		//Content에 Image파일이 있을 경우 (temp폴더내 파일이 저장되었을 경우)
 		//productImage객체 생성 후 DB에 저장
@@ -462,7 +525,7 @@ public class ErpContorller {
 			
 				}
 				
-			product.setProductMainImages(mainImgList);
+			product.setPmiList(mainImgList);
 			
 		}
 		
@@ -561,7 +624,7 @@ public class ErpContorller {
 	}
 	
 	@RequestMapping("/ERP/EmpBoardDetail.do")
-	public ModelAndView boardDetail(@RequestParam("no") int no,
+	public ModelAndView empBoardDetail(@RequestParam("no") int no,
 									ModelAndView mav) {
 		log.debug("no = {}", no);
 	    EmpBoard empBoard = erpService.selectOneEmpBoard(no);
@@ -570,4 +633,76 @@ public class ErpContorller {
 		mav.setViewName("ERP/EmpBoardDetail");
 		 return mav;
 	}
+	
+	@PostMapping("/ERP/empBoardCkEnroll.do")
+	public String empBoardCKEnroll(RedirectAttributes redirectAttr, EmpBoard empBoard, EMP emp) {
+		
+		
+		return "redirect:/";
+	}
+	
+	// 호근 board image 추가	
+	@PostMapping("/ERP/empBoardimageFileUpload.do")
+	@ResponseBody
+	public String empBoardImage() {
+		
+		return null;
+	}
+	
+	// 호근 empBoard Reply 달기
+	@GetMapping("/ERP/empReplyList.do")
+	@ResponseBody
+	public List<EmpBoardReply> empReplyList(Model model, @RequestParam("boardNo") int boardNo) {
+		
+		log.debug("replyBoardNo = {}", boardNo);
+		
+		List<EmpBoardReply> list = erpService.replyList(boardNo);
+		log.debug("replylist = {}", list);
+
+		return list;
+	}
+	
+	@PostMapping("/ERP/empReplyEnroll.do")
+	public String replyEnroll(EmpBoardReply boardReply, ModelAndView mav
+							  ,RedirectAttributes redirectAttributes) {
+			
+		log.debug("boardReply= {}", boardReply);
+		int result = erpService.boardReply(boardReply);
+		log.debug("result = {}", result);
+		
+		log.debug("boardNo = {}", boardReply.getBoardNo());
+		return "redirect:/ERP/EmpBoardDetail.do?no=" + boardReply.getBoardNo();
+	}
+	
+	@PostMapping("/ERP/erpBoardReply.do")
+	@ResponseBody
+	public Map<String, Object> replydelete(@RequestParam("boardReplyNo") int boardReplyNo, RedirectAttributes redirectAttr, Model model) {
+		
+		Map<String, Object> map = new HashMap<>();
+		log.debug("boardReplyNo = {}", boardReplyNo);
+		int result = erpService.deleteReply(boardReplyNo);
+		
+		boolean Available= (result > 0) ?  true : false;
+		log.debug("isValiable= {}", Available);
+		map.put("isAvailable", Available);
+		return map;
+	}
+	@PostMapping("/ERP/replyUpdateReal.do")
+	@ResponseBody
+	public Map<String, Object> replyUpdate(@RequestParam("boardReplyNo") int boardReplyNo, @RequestParam("content") String content, RedirectAttributes redirectAttr, Model model) {
+		
+		Map<String, Object> map = new HashMap<>();
+		log.debug("boardReplyNo = {}", boardReplyNo);
+		log.debug("content = {}", content);
+		
+		map.put("boardReplyNo", boardReplyNo);
+		map.put("content", content);
+		int result = erpService.updateReply(map);
+		
+		boolean Available= (result > 0) ?  true : false;
+		log.debug("isValiable= {}", Available);
+		map.put("isAvailable", Available);
+		return map;
+	}
+	
 }

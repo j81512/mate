@@ -1,16 +1,9 @@
 package com.kh.mate.product.controller;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +12,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.FlashMap;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.google.gson.JsonObject;
-import com.kh.mate.common.Utils;
 import com.kh.mate.product.model.service.ProductService;
 import com.kh.mate.product.model.vo.Product;
-import com.kh.mate.product.model.vo.ProductImages;
-import com.kh.mate.product.model.vo.ProductMainImages;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,6 +43,34 @@ public class ProductController {
 		return "product/productDetail";
 	}
 	
+	@RequestMapping("/saveCart.do")
+	public String saveCart (@RequestParam("amount") String amount,
+							@RequestParam("productNo") String productNo,
+							@RequestParam("memberId") String memberId){
+		
+		log.debug("amount = {}",amount);
+		log.debug("productNo={}",productNo);
+		Map<String, Object> param = new HashMap<>();
+		param.put("amount", amount);
+		param.put("productNo", productNo);
+		param.put("memberId", memberId);
+		
+		int result = productService.insertCart(param);
+		
+		return "redirect:/";
+	}
+	
+	@RequestMapping("/selectCart.do")
+	public String selectCart (@RequestParam("memberId") String memberId,
+							  Model model) {
+		
+		List<Map<String, Object>> cart = productService.selectCartList(memberId);
+		log.debug("cart = {}", cart);
+		
+		model.addAttribute("cart",cart);
+		return "product/cartView";
+	}
+	
 	//CH
 	@RequestMapping(value = "/productList.do",
 					method = RequestMethod.GET)
@@ -73,15 +89,19 @@ public class ProductController {
 		
 		log.debug("search = {}",search);
 		
-		String[] cateArr = category.split(",");
-		map.put("category", cateArr);
+		if(!category.isEmpty()) {
+			String[] cateArr = category.split(",");
+			map.put("cateArr", cateArr);
+			log.debug("cateArr = {}",cateArr);
+			map.put("category", category);
+			log.debug("category = {}",category);
+			
+		}
 		
-		log.debug("category = {}",category);
-		log.debug("category = {}",category);
+		
 		
 		
 		map.put("search", search);
-		map.put("category", category);
 		
 		List<Product> list = productService.searchProductList(map);
 		
@@ -100,6 +120,29 @@ public class ProductController {
 		model.addAttribute("category", category);
 		
 		return "product/productList";
+	}
+	
+	
+	//jh
+	@RequestMapping("/insertReview.do")
+	public String insertReview(RedirectAttributes redirectAttr,
+							 @RequestParam("purchaseLogNo") int purchaseLogNo,
+							 @RequestParam("comments") String comments,
+							 @RequestParam("score") int score) {
+		
+		Map<String, Object> param = new HashMap<>();
+		param.put("purchaseLogNo", purchaseLogNo);
+		param.put("comments", comments);
+		param.put("score", score);
+		
+		log.debug("param@Controller = {}", param);
+		int result = productService.insertReview(param);
+		String msg = "";
+		if(result > 0) msg = "리뷰를 등록해 주셔서 감사합니다.";
+		else msg = "리뷰 등록에 실패하셨습니다. 다시 시도해주세요.";
+		redirectAttr.addFlashAttribute("msg", msg);
+		
+		return "redirect:/member/mypage.do";
 	}
 	
 }

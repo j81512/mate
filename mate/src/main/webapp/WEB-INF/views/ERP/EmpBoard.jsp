@@ -9,7 +9,7 @@
 <div id="board-container">
 	<form name="boardFrm" action="${pageContext.request.contextPath}/ERP/empboardEnroll.do" 
 	method="post" 	
-	enctype="multipart/form-data">
+	>
 		
 	</form>
 </div>

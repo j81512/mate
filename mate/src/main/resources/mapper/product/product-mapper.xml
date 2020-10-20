@@ -3,6 +3,23 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="product">
+
+	<select id="selectProductListMap" resultMap="productMap">
+	
+	</select>
+	
+	<select id="selectCartList" resultMap="cartMap">
+	select
+    	*
+	from
+    	cart C 
+    		inner join 
+    	product p 
+    		on 
+    	C.product_no = P.product_no
+    where
+    	member_id = #{memberId}
+	</select>
  
  	<select id="selectProductListAll" resultType="product">
  		select
@@ -41,15 +58,16 @@
  	<select id="searchProductList" resultType="product">
  		select * from product
  		<where>
- 		
  		product_name like '%' || #{search} || '%'
- 		<if test="cateArr != null and !cateArr.isEmpty">
+ 		
+ 		
+ 		<if test="cateArr != null">
  			and category in  <foreach collection="cateArr"
-			    		 item="category"
+			    		 item="cateArr"
 			    		 open="("
 			    		 close=")"
 			    		 separator=",">
-			    	#{ category }
+			    	#{ cateArr }
 			    	</foreach>
  		</if>
  		
@@ -60,5 +78,67 @@
  		select * from product
  			where category = #{category}
  	</select>
+ 	
+ 	
+ 	<insert id="insertCart">
+ 		insert into
+ 			cart
+ 		values
+ 		(
+ 		#{memberId},
+ 		#{productNo},
+ 		#{amount}
+ 		)
+ 	
+ 	</insert>
+ 	
+ 	<insert id="insertReview">
+ 		insert into
+ 			review
+ 		values(
+ 			seq_review_no.nextval,
+ 			#{ purchaseLogNo },
+ 			#{ comments },
+ 			#{ score },
+ 			default
+ 		)
+ 	</insert>
+ 	
+ 	<resultMap type="product" id="productMap">
+ 		<id column="product_no" property="productNo"/>
+ 		<result column="product_name" property="productName"/>
+ 		<result column="reg_date" property="regDate"/>
+ 		<result column="category" property="category"/>
+ 		<result column="content" property="content"/>
+ 		<result column="price" property="price"/>
+ 		<result column="emp_id" property="empId"/>
+ 		<result column="enabled" property="enabled"/>
+ 		
+ 		<collection property="productMainImages" ofType="productMainImages">
+	 		<id column="product_main_image_no" property="productMainImageNo"/>
+	 		<result column="original_filename" property="originalFilename"/>
+	 		<result column="renamed_filename" property="renamedFilename"/>
+	 		<result column="product_no" property="productNo"/>
+ 		</collection>
+ 	</resultMap>
+ 	
+ 	
+ 	<resultMap type="cart" id="cartMap">
+ 		<id column="member_id" property="memberId"/>
+ 		<result column="product_no" property="productNo"/>
+ 		<result column="amount" property="amount"/>
+		
+		<collection property="selectedProduct" ofType="product">
+			<id column="product_no" property="productNo"/>
+	 		<result column="product_name" property="productName"/>
+	 		<result column="reg_date" property="regDate"/>
+	 		<result column="category" property="category"/>
+	 		<result column="content" property="content"/>
+	 		<result column="price" property="price"/>
+	 		<result column="emp_id" property="empId"/>
+	 		<result column="enabled" property="enabled"/>
+		</collection> 	
+ 	</resultMap>
+ 	
  
 </mapper>
