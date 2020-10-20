@@ -49,7 +49,7 @@ function empBoardEnroll(){
 				<td>${ board.boardNo }</td> 
 				<td>${ board.title }</td>
 				<td>${ board.empId }</td>	
-				<td>${ board.category }</td> 
+				<td>${ board.category == 'ntc' ? "공지사항"  : board.category eq 'req' ? '요청' : board.category eq 'adv' ? '광고' : board.category eq 'def' ? '일반' : board.category eq 'evt' ? '이벤트' : ''}</td> 
 				<td><fmt:formatDate value="${ board.regDate }" pattern="yyyy-MM-dd"/></td>
 				<td>${ board.enabled }</td> 
 		</tr>

@@ -633,9 +633,15 @@ public class ErpContorller {
 	
 	@PostMapping("/ERP/empBoardCkEnroll.do")
 	public String empBoardCKEnroll(RedirectAttributes redirectAttr, EmpBoard empBoard, EMP emp) {
-		
-		
-		return "redirect:/";
+		log.debug("empBoard = {}", empBoard);
+		log.debug("emp = {}", emp);
+		Map<String, Object> map = new HashMap<>();
+		map.put("category", empBoard.getCategory());
+		map.put("title", empBoard.getTitle());
+		map.put("content", empBoard.getContent());
+		map.put("empId", emp.getEmpId());
+	
+		return "redirect:/ERP/EmpBoardDetail.do";
 	}
 	
 	// 호근 board image 추가	

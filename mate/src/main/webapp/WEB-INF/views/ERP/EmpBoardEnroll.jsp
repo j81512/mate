@@ -44,11 +44,22 @@ $("#erpBoardFrm").submit(function(){
 			  enctype="multipart/form-data">
 			   <div class="form-group">
 			   	<input type="text" name="title"  id="title_" />
-			   	<input type="text" name="empId"  id="empId_" value="${loginEmp.empId }" readOnly/>
-			   	<input type="text" name="empName"  id="empName" value="${loginEmp.empName}" readOnly/>
+			   	<input type="hidden" name="empId"  id="empId_" value="${loginEmp.empId }" readOnly/>
+			   	<input type="hidden" name="empName"  id="empName" value="${loginEmp.empName}" readOnly/>
 			   </div>
+			   	<select class="form-control" name="category" id="category_">
+				  <option seleceted disabled>카테고리를 선택하세요</option>
+				  <option value="ntc">공지</option>
+				  <option value="req">요청</option>
+				  <option value="adv">홍보</option>
+				  <option value="def">일반</option>
+				  <option value="evt">이벤트</option>
+				</select>
 			  <div class="form-group">
 			  	<textarea name="content" id="content_"></textarea>
+			  </div>
+			  <div class="form-group">
+			  	
 			  </div>
 				
 			 <div class="button-gruop">
