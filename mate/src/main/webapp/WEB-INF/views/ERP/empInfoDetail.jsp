@@ -6,9 +6,7 @@
 
 <jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
 <div id="enroll-container" class="mx-auto text-center">
-	<form id="infoFrm"
-		  name = "infoFrm" 
-		  method="post">
+	<form action="" id="infoFrm" method="post" >
 		<table class="mx-auto">
 			<tr>
 				<th>아이디</th>
@@ -26,11 +24,9 @@
 			<tr>
 				<th>패스워드</th>
 				<td>
-					<input type="hidden" class="form-control" name="adminPCK" id="adminPCK_"  value="${ loginMember.memberPWD}" required>
-					<input type="password" class="form-control" name="password_" id="password_">
-					<span class="guide ok" style="color:blue;">비밀 번호가 일치 합니다.</span> 
-					<span class="guide error" style="color:red;">비밀 번호가 일치하지 않습니다.</span>
-					<input type="hidden" id="idValid" value="0"/> 
+					<input type="hidden" class="form-control" name="memberPCK" id="memberPCK_"  value="${ loginMember.memberPWD}" required>
+					<input type="text" class="form-control" name="password_" id="password_" value="${ emp.empPwd }">
+					
 				</td>
 			</tr>
 			<tr>
@@ -61,15 +57,45 @@
 					<input class="form-control" placeholder="상세주소" name="empAddr3" id="empAddr3" value="${ emp.empAddr3 }"type="text"  />
 				</td>
 			</tr>
-			<tr>
-				<td>
-					<button type="submit" value="수정" id="infoUpdate"></button>
-					<button type="submit" value="삭제" id="infoDelete"></button>
-					<button type="button" value="취소" ></button>				
-				</td>
-			</tr>
 		</table>
 	</form>
+					<!-- 정보수정모달버튼 -->
+					<button type="button" class="btn btn-primary btn-lg btn-update" data-toggle="modal" data-target="#myModal">
+					  수정하기
+					</button>				
+					
+					
+					<!-- 정보삭제 모달버튼 -->
+					<button type="button" class="btn btn-primary btn-lg1 btn-delete" data-toggle="modal" data-target="#myModal">
+					  삭제하기
+					</button>	
+								
+					<!-- 관리자 확인 모달내용 -->
+					<div class="modal fade1" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+					  <div class="modal-dialog1">
+					    <div class="modal-content1">
+					      <div class="modal-header1">
+					        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					        <span aria-hidden="true">&times;</span>
+					        </button>
+					        <h4 class="modal-title1" id="myModalLabel1">관리자의 비밀번호를 입력하세요</h4>
+					      </div>
+					      <div class="modal-body1">
+						        비밀번호 : 
+						     <input type="password" class="form-control1" name="adminPwd" id="adminPwd" >
+						     <input type="hidden" class="form-control1" name="adminPCK" id="adminPCK_"  value="${ loginMember.memberPWD }" required>
+					      </div>
+					      <div class="modal-footer1">
+					        <button type="button" class="btn btn-default1" data-dismiss="modal">닫기</button>
+					        <input type="submit" class="btn btn-primary1 btn-delete" id="infoSubmit" name="infoDelete" value="확인" >
+					      </div>
+					    </div>
+					  </div>
+					</div>
+					<button type="button" value="취소" onclick="location.href='${pageContext.request.contextPath }/ERP/empManage.do'">취소</button>				
+			
+		
+	
 </div>
 
 <!-- 주소API -->
@@ -121,9 +147,61 @@ function execPostCode() {
 }
 </script>
 <script>
+$(function(){
+	$("#infoFrm").submit(function(){
+		
+		var $frm = $("#infoFrm");
+		var $adminPwd = $frm.find("[name=adminPwd]");
+		var $adminPCK = $frm.find("[name=adminPCK]");
+		
+	    if($adminPwd.val() != $adminPCK.val() ){
+			alert("비밀 번호가 일치 하지 않습니다.");
+			$adminPCK.select();
+			return false;
+		}
+
+		return true;
+	});
+	
+	//  업데이트 확인 버튼
+	$("#infoUpdate").click(function(){
+		
+		var $frm = $("#infoFrm");
+		var $adminPwd = $frm.find("[name=adminPwd]");
+		var $adminPCK = $frm.find("[name=adminPCK]");
+		
+	    if($adminPwd.val() != $adminPCK.val() ){
+			alert("비밀 번호가 일치 하지 않습니다.");
+			$adminPCK.select();
+			return;
+		}else{
+	
+			info
+		}
+
+	});
+
 	$(function(){
+		$("#infoSubmit").click(function(){
+			//유효성검사
+			
+			//아니면 return
+
+
+
+			
+			$("#infoFrm").submit();
+		});
+		
+		$("#infoFrm .btn-update").click(function(){
+			$("#infoFrm").addr("action", "${ pageContext.request.contextPath }/ERP/infoUpdate.do");
+
+		});
 		$("#infoFrm .btn-delete").click(function(){
-			var $empId = $("#empId_");
+			$("#infoFrm").addr("action", "${ pageContext.request.contextPath }/ERP/infoDelete.do");
+
+			
+			/* var $empId = $("#empId_");
 			var $frm = $("#infoFrm");
 			var $adminPwd = $frm.find("[name=password_]").val();
 
@@ -131,10 +209,11 @@ function execPostCode() {
 					empId : $empId.val(),
 					adminPwd : $adminPwd
 				};
+			console.log(admin);
 				var delConfirm = confirm("정말로 삭제하시겠습니까?");
 				if(delConfirm){
 					$.ajax({
-						url: "${ pageContext.request.contextPath}/member/memberDelete.do",
+						url: "${ pageContext.request.contextPath}/ERP/infoDelete.do",
 						method: "POST",
 						contentType : "application/json; charset=utf-8",
 						data : JSON.stringify(member),
@@ -148,16 +227,11 @@ function execPostCode() {
 				}else{
 					alert("취소되었습니다");
 					return;
-				}
+				} */
+
+
 			});
 		});
-	$(function(){
-		$("#infoFrm").submit(function(){
-			var $ frm = $("infoFrm");
-			var $ 
-			})
-		})
-		
 		
 	
 </script>
