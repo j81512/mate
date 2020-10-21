@@ -2,9 +2,6 @@ package com.kh.mate.cs.model.vo;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
-
-import com.kh.mate.cs.model.vo.CsImages;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,16 +14,11 @@ import lombok.ToString;
 @NoArgsConstructor 
 @AllArgsConstructor 
 @ToString
-public class Cs implements Serializable {
+public class CsReply implements Serializable {
 
-	private int csNo;
-	private String title;
+	private int csReplyNo;
 	private String content;
-	private String memberId;
 	private Date regDate;
-	private int secret;
-	private int notice;
-	
-	private CsImages csImage;
-	
+	private int csNo;
+	private String memberId;
 }
