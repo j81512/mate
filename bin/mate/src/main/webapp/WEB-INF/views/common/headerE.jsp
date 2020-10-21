@@ -59,7 +59,6 @@
 	         <a class="dropdown-item" onclick="category('DR')">드론</a>
 	        </div>
 	   	 	</li>
-	   	 	</ul>
    	 	
    	 		<c:if test="${not empty loginEmp }" >
 			${ loginEmp.empName }님, 반갑습니다.	
@@ -67,6 +66,7 @@
 	               type="button"
 	               onclick="location.href='${ pageContext.request.contextPath}/ERP/logout.do'"><img src="${ pageContext.request.contextPath }/resources/images/cart.png" width="80px" class="loginImg"/>로그아웃</button>
 			</c:if>
+	   	 	</ul>
   		</div><!-- /.navbar-collapse -->
       </div><!-- /.container -->
     </nav><!-- /.navbar -->

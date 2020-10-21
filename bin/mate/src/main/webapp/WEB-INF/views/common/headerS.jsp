@@ -46,8 +46,8 @@ function category(ct){
         <div class="collapse navbar-collapse" id="navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
               <a class="btn btn-default btn-outline btn-circle"  data-toggle="collapse" href="#nav-collapse1" aria-expanded="false" aria-controls="nav-collapse1">
-              	<img src="${ pageContext.request.contextPath }/resources/images/play.png" width="50px" class="menuImg"/>
-              </a>
+              	<img src="${ pageContext.request.contextPath }/resources/images/play.png" width="50px" class="menuImg"/> 
+             </a>
           </ul>
           <ul class="collapse nav navbar-nav nav-collapse" id="nav-collapse1">
               <!-- 도균이 erp확인용  -->
@@ -82,20 +82,23 @@ function category(ct){
 	   <c:choose>
 			<c:when test="${ empty loginMember && empty loginEmp }">
 				<li class="nav-item">
-		        	<a class="nav-link" href="${ pageContext.request.contextPath}/member/memberLogin.do"><img src="${ pageContext.request.contextPath }/resources/images/cart.png" width="80px" class="loginImg"/>로그인</a>
+		        	<a class="nav-link" href="${ pageContext.request.contextPath}/member/memberLogin.do">로그인</a>
+		      	<!-- 장바구니 불리 -->
+				<li class="nav-item">
+		        	<a class="nav-link" href="#"><img src="${ pageContext.request.contextPath }/resources/images/cart.png" width="80px" class="loginImg"/></a>
 		      	</li>
 			</c:when>
 			<c:when test="${ not empty loginMember }">
 				${ loginMember.memberName }님, 반갑습니다.	
 				<button class="btn btn-outline-success my-2 my-sm-0"
 	               type="button"
-	               onclick="location.href='${ pageContext.request.contextPath}/member/logout.do'"><img src="${ pageContext.request.contextPath }/resources/images/cart.png" width="80px" class="loginImg"/>로그아웃</button>
+	               onclick="location.href='${ pageContext.request.contextPath}/member/logout.do'">로그아웃</button>
 			</c:when>
 			<c:when test="${not empty loginEmp }" >
 				${ loginEmp.empName }님, 반갑습니다.	
 				<button class="btn btn-outline-success my-2 my-sm-0"
 		               type="button"
-		               onclick="location.href='${ pageContext.request.contextPath}/ERP/logout.do'"><img src="${ pageContext.request.contextPath }/resources/images/cart.png" width="80px" class="loginImg"/>로그아웃</button>
+		               onclick="location.href='${ pageContext.request.contextPath}/ERP/logout.do'">로그아웃</button>
 			</c:when>
 		   </c:choose> 
           </ul>
