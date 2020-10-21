@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +22,10 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,6 +42,7 @@ import com.kh.mate.cs.model.service.CsService;
 import com.kh.mate.cs.model.vo.Cs;
 import com.kh.mate.cs.model.vo.CsImages;
 import com.kh.mate.cs.model.vo.CsReply;
+import com.kh.mate.erp.model.vo.EmpBoardReply;
 import com.kh.mate.common.Utils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -227,6 +233,37 @@ public class CsController {
 		
 	}
 	
+	@GetMapping("/csReplyList.do")
+	@ResponseBody
+	public List<CsReply> csReplyList(Model model, @RequestParam("csNo") int csNo){
+		
+		List<CsReply> list = csService.csReplyList(csNo);
+		return list;
+	}
+
 	
+	@PostMapping("/csReplyEnroll.do")
+	public String csReplyEnroll(CsReply csReply, ModelAndView mav
+							  ,RedirectAttributes redirectAttributes) {
+			
+		log.debug("csReply= {}", csReply);
+		int result = csService.csReply(csReply);
+		log.debug("result = {}", result);
+		
+		return "redirect:/cs/csDetail.do?csNo=" + csReply.getCsReplyNo();
+	}
 	
+	@PostMapping("/csReply.do")
+	@ResponseBody
+	public Map<String, Object> replydelete(@RequestParam("csReplyNo") int csReplyNo, RedirectAttributes redirectAttr, Model model) {
+		
+		Map<String, Object> map = new HashMap<>();
+		log.debug("csReplyNo = {}", csReplyNo);
+		int result = csService.csDeleteReply(csReplyNo);
+		
+		boolean Available= (result > 0) ?  true : false;
+		log.debug("isValiable= {}", Available);
+		map.put("isAvailable", Available);
+		return map;
+	}
 }

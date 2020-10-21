@@ -63,15 +63,27 @@ div#board-container label.custom-file-label{text-align:left;}
 	
 	</table>
 </div>
-<div>
-		
-			작성자 : <input type="text" name="replyer" id="newReplyWriter" />
-	
-			내용 : <textarea name="replytext" id="newReplyText" cols="30" rows="3"></textarea>
-	
-		<button id="btnReplyAdd" class="btn btn-primary">등록</button>
-</div>
-	
+<div id="reply-container">
+			<form action="${ pageContext.request.contextPath }/cs/csReplyEnroll.do" method="POST">
+				<div class="form-group">				
+					<input type="hidden" name="memberId" value="${ loginMember.memberId != null ? loginMember.memberId : 'ㅋㅋㅋ'}" />
+				</div>
+				<div class="form-group">
+					<input type="hidden" name="csNo" value="${ cs.csNo }" />
+				</div>
+				<div class="form-group">
+					<textarea class="form-control col-sm-10" name="content"  rows="10"></textarea>
+				</div>
+				<div class="button-group">
+					<input type="submit" class="btn btn-primary" value="등록하기" />
+				</div>
+			</form>
+		</div>
+	<div class="container">
+		<div class="row">
+	        <div class="csReplyList"></div>
+		</div>
+    </div>
 <script>
 	function fileDownload(csNo){
 		location.href = "${ pageContext.request.contextPath }/cs/fileDownload.do?csNo=" + csNo;
@@ -81,6 +93,58 @@ div#board-container label.custom-file-label{text-align:left;}
 		if(confirm("정말 삭제 하시겠습니까?") == false) return;
 		$("#hidden-no").val(csNo);
 		$("#deleteFrm").submit();
+	}
+	$(document).ready(function(){
+	    csReplyList(); 
+	});	
+	function csReplyList(){
+	    var csNo = $("#csNo").val();
+	     
+	     console.log(csNo);
+	    $.ajax({
+	        url : "${ pageContext.request.contextPath}/cs/csReplyList.do",
+	        method: 'get',
+	        dataType: 'json',
+	        contentType: "application/json; charset=utf-8;",
+	        data :  {"csNo" :csNo},
+	        success : function(data){
+	            var html =''; 
+	         /*    console.log(data); */
+	            $.each(data, function(key, value){                
+		            	html += '<div class="csReplyArea" style="border-bottom:1px solid darkgray; margin-bottom: 15px;">';
+		            	html += "<div class='csReplyInfo'>" + "작성자 :" + value.memberId;
+		            	html += '<a onclick="csReplyDelete('+ value.csReplyNo +');" class="btn btn-default"> 삭제 </a> </div>';
+		            	html += '<div class="csReplyContent'+ value.csReplyNo+'"> <p> 내용 : '+value.content +'</p>';
+		            	html += '</div></div>';
+	            });
+	          		
+	            $(".csReplyList").html(html);
+	        }
+	    });
+	}
+	function csReplyDelete(csReplyNo) {
+		var csReplyNo = csReplyNo;
+
+		$.ajax({
+			url : "${ pageContext.request.contextPath }/cs/csReply.do",
+			method : "POST",
+			dataType: 'json',
+			data : {
+				"csReplyNo" : csReplyNo
+			},
+			success : function(data){
+				console.log(data);
+				if(data.isAvailable) {
+					alert("삭제 되었습니다.");
+					location.reload();
+				}
+			},
+			error : function(xhr, status ,err){
+				console.log(xhr);
+				console.log(status);
+				console.log(err);
+			}	
+		});
 	}
 </script>
 

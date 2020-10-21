@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.kh.mate.cs.model.vo.CsImages;
+import com.kh.mate.cs.model.vo.CsReply;
 import com.kh.mate.cs.model.vo.Cs;
 
 
@@ -62,6 +63,25 @@ public class CsDAOImpl implements CsDAO {
 
 	@Override
 	public Cs selectOneCsCollection(int csNo) {
+		
 		return sqlSession.selectOne("cs.selectOneCsCollection", csNo);
+	}
+
+	@Override
+	public List<CsReply> csReplyList(int csNo) {
+		
+		return sqlSession.selectList("cs.selectReplyList", csNo);
+	}
+
+	@Override
+	public int csReplyList(CsReply csReply) {
+		
+		return sqlSession.insert("cs.csInsertReply", csReply);
+	}
+
+	@Override
+	public int csDeleteReply(int csReplyNo) {
+		
+		return sqlSession.delete("cs.csDeleteReply", csReplyNo);
 	}
 }

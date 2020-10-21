@@ -3,6 +3,7 @@ package com.kh.mate.cs.model.dao;
 import java.util.List;
 
 import com.kh.mate.cs.model.vo.CsImages;
+import com.kh.mate.cs.model.vo.CsReply;
 import com.kh.mate.cs.model.vo.Cs;
 
 
@@ -23,4 +24,11 @@ public interface CsDAO {
 	int insertCsImage(CsImages csImage);
 
 	CsImages selectCsImage(int csNo);
+
+	List<CsReply> csReplyList(int csNo);
+
+	int csReplyList(CsReply csReply);
+
+	int csDeleteReply(int csReplyNo);
+
 }

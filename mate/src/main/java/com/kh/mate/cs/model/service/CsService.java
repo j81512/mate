@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.kh.mate.cs.model.vo.Cs;
 import com.kh.mate.cs.model.vo.CsImages;
+import com.kh.mate.cs.model.vo.CsReply;
+import com.kh.mate.erp.model.vo.EmpBoardReply;
 
 public interface CsService {
 
@@ -19,6 +21,15 @@ public interface CsService {
 
 	CsImages selectOneAttachment(int csNo);
 
+	List<CsReply> csReplyList(int csNo);
+	
+	int csReply(CsReply csReply);
+	
+	int csDeleteReply(int csReplyNo);
+	
+
+
+	
 	
 
 }
