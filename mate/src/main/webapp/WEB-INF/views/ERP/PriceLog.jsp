@@ -16,47 +16,37 @@
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 </head>
-	<body>  
-		
-		<table class="table w-75 mx-auto">
+  <body>  
+	<section>
+		<div class="priceInfo">
 			<tr>
-				<th scope="col">계정명</th>
-				<th scope="col">사업명</th>
-				<th scope="col">주소</th>
-				<th scope="col">연락처</th>
-				<th scope="col">등록일</th>
-				<th scope="col">상태</th>
-				<th>
-					<button type="button" 
-							onclick="location.href='${ pageContext.request.contextPath }/ERP/EmpEnroll.do';">지점/제조사 생성
-					</button>
-				</th>
+				<th>날짜</th>
+				<th>현황</th>			
+				<th>금액</th>			
 			</tr>
+		</div>
+		
+		
+		<div class="priceInfo">
 			<c:if test="${ not empty list }">
-				<c:forEach items="${ list }" var="emp">
-				<tr>
-					<td>${ emp.empId }</td>
-					<td><a href="${ pageContext.request.contextPath }/ERP/empInfoDetail.do?empId=${ emp.empId }">${ emp.empName }</a></td>
-					<td>${ emp.empAddr2 }</td>
-					<td>${ emp.empPhone }</td>
-					<td><fmt:formatDate value="${ emp.empEnrollDate }" pattern="yyyy년MM월dd일"/></td>				
-					<td>
-						<c:if test="${ emp.status == 0}">관리자
-						</c:if>
-						<c:if test="${ emp.status == 1}">지점
-						</c:if>
-						<c:if test="${ emp.status == 2}">제조사
-						</c:if>
-					</td>		
-				</tr>
+				<c:forEach items="${ list }" var="IoLog">
+					<tr>
+						<td><fmt:formatDate value="${ IoLog.ioDate }" pattern="yyyy년MM월dd일"/></td>
+						<td>
+							<c:if test="${ IoLog.status == 1}">매입
+							</c:if>
+							<c:if test="${ IoLog.status == 2}">매출
+							</c:if>
+						</td>	
+						<td>${ IoLog. }</td>				
+					</tr>
 				</c:forEach>
-				</c:if>
-				<!-- 상품이 없을 경우 -->
-				<c:if test="${ empty list }">
-					<li>
-						<span>목록이 존재하지 않습니다.</span>
-					</li>
-				</c:if>	
-		</table>
+			</c:if>
+			<c:if test="${ empty list }">
+				<span>검색결과 없음</span>
+			</c:if>
+		</div>
+	</section>
+
 	</body>
 </html>

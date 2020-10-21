@@ -56,27 +56,55 @@ public class ErpContorller {
 	@Autowired
 	private BCryptPasswordEncoder bcryptPasswordEncoder;
 	
+	//ERP-쇼핑몰 선택
 	@RequestMapping("/ERP/menu.do")
 	public ModelAndView Menu(ModelAndView mav) {
-		
 		mav.setViewName("/ERP/menu");
 		return mav;
 	}
 	
+	//ERP선택후 메뉴5개
 	@RequestMapping("/ERP/erpMain.do")
 	public ModelAndView erpMain(ModelAndView mav) {
-		
 		mav.setViewName("/ERP/erpMain");
 		return mav;
 	}
-	
+	//상품관리
 	@RequestMapping("/ERP/ProductInfo.do")
-	public ModelAndView productInfo(ModelAndView mav) {
-		
+	public ModelAndView productInfo(ModelAndView mav) {		
 		mav.setViewName("/ERP/ProductInfo");
 		return mav;
 	}
+	//현황조회 진입부
+	@RequestMapping("/ERP/EmpDetail.do")
+	public ModelAndView EmpDetail(ModelAndView mav) {	
+		mav.setViewName("/ERP/EmpDetail");
+		return mav;
+	}
 	
+	//재고확인 진입
+	@RequestMapping("/ERP/StockLog.do")
+	public ModelAndView StockLog(ModelAndView mav) {	
+		mav.setViewName("/ERP/StockLog");
+		return mav;
+	}
+	
+	//발주확인 진입
+	@RequestMapping("/ERP/OrderLog.do")
+	public ModelAndView OrderLog(ModelAndView mav) {	
+		mav.setViewName("/ERP/OrderLog");
+		return mav;
+	}
+	
+	//매출확인 진입
+	@RequestMapping("/ERP/PriceLog.do")
+	public ModelAndView PriceLog(ModelAndView mav) {	
+		mav.setViewName("/ERP/PriceLog");
+		return mav;
+	}
+	
+	
+	//박도균 제조사/지점 상세보기
 	@RequestMapping("/ERP/empInfoDetail.do")
 	public String empInfoDetail(@RequestParam("empId") String empId, 
 								Model model) {
@@ -88,6 +116,7 @@ public class ErpContorller {
 		return "ERP/empInfoDetail";
 	}
 	
+	//박도균 지점/제조사 정보 수정
 	@RequestMapping("/ERP/infoUpdate.do")
 	public String infoUpdate(EMP emp, RedirectAttributes redirectAttr) {
 		try {
@@ -113,6 +142,7 @@ public class ErpContorller {
 		return "redirect:/ERP/empManage.do";
 	}
 	
+	//박도균 지점/제조사 정보 삭제
 	@RequestMapping("/ERP/infoDelete.do")
 	public String infoDelete(@RequestBody EMP emp, 
 							 RedirectAttributes redirectAttr,
@@ -154,7 +184,7 @@ public class ErpContorller {
 		
 	}
 
-
+	//박도균 지점/제조사 관리
 	@RequestMapping("/ERP/empManage.do")
 	public String empManage(Model model) {
 		List<EMP> list = erpService.empList();
@@ -164,7 +194,7 @@ public class ErpContorller {
 		model.addAttribute("list", list);
 		return "ERP/empManage";
 	}
-	
+	//박도균 지점/제조사 목록불러오기
 	@RequestMapping(value="/ERP/empList.do",
 					method = RequestMethod.GET)
 	public String empList(Model model) {
@@ -177,7 +207,7 @@ public class ErpContorller {
 		return "ERP/empList";
 		
 	}
-	
+	//박도균 지점/제조사 생성
 	@RequestMapping(value="/ERP/EmpEnroll.do",
 					method= RequestMethod.GET)
 	public ModelAndView EmpEnroll(ModelAndView mav) {
@@ -185,7 +215,7 @@ public class ErpContorller {
 		mav.setViewName("ERP/EmpEnroll");
 		return mav;
 	}
-	
+	//박도균 지점/제조사 생성
 	@RequestMapping(value="/ERP/EmpEnroll.do",
 					method= RequestMethod.POST)
 	public String EmpEnroll(RedirectAttributes redirectAttr,
@@ -202,7 +232,7 @@ public class ErpContorller {
 		String msg = result > 0 ? "생성 성공" : "생성 실패";
 		redirectAttr.addFlashAttribute("msg", msg);
 		
-		return "redirect:/";
+		return "redirect:/ERP/empManage.do";
 	}
 	
 	@RequestMapping("/ERP/checkIdDuplicate.do")
@@ -217,7 +247,7 @@ public class ErpContorller {
 		
 		return map;
 	}
-	
+	//박도균 제조사/지점 상세보기
 	@RequestMapping("/ERP/empInfoView.do")
 	public String empInfoView(String empId, Model model) {
 		model.addAttribute("emp", erpService.selectOneEmp(empId));
@@ -260,12 +290,9 @@ public class ErpContorller {
 		map.put("search", search);
 		
 		
-		List<Product> list = erpService.searchInfo(map);
-		
-		log.debug("list = {}",list);
-		
-		model.addAttribute("list",list);
-		
+		List<Product> list = erpService.searchInfo(map);		
+		log.debug("list = {}",list);		
+		model.addAttribute("list",list);		
 		return "/ERP/ProductInfo";
 	}
 	

@@ -58,15 +58,16 @@
  	<select id="searchProductList" resultType="product">
  		select * from product
  		<where>
- 		
  		product_name like '%' || #{search} || '%'
- 		<if test="cateArr != null and !cateArr.isEmpty">
+ 		
+ 		
+ 		<if test="cateArr != null">
  			and category in  <foreach collection="cateArr"
-			    		 item="category"
+			    		 item="cateArr"
 			    		 open="("
 			    		 close=")"
 			    		 separator=",">
-			    	#{ category }
+			    	#{ cateArr }
 			    	</foreach>
  		</if>
  		
