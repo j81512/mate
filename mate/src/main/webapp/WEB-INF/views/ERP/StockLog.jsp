@@ -24,54 +24,55 @@
 			  role="search"
 			  action="${pageContext.request.contextPath}/ERP/searchInfo.do">
 			  <div class="child">
-			  	<select name="orderemplist" id="orderemplist">
+			  	<select name="emplist" id="emplist">
 				    <option value="all">전체</option>
 				    <option value="online">온라인</option>
 				    <option value="gn">강남점</option>
 				    <option value="yn">용인점</option>
 				</select>
-			  	<select name="status" id="status">
-				    <option value="">상태</option>
-				    <option value="all">전체</option>
-				    <option value="process">처리중</option>
-				    <option value="cancel">취소</option>
-				    <option value="complete">처리완료</option>
-				</select>
-				<input type="date" />
-				<select name="productlist" id="productlist">
+			  </div>
+			  <div class="child">
+			  	<select name="productlist" id="productlist">
 				    <option value="no">상품번호</option>
 				    <option value="name">상품명</option>
 				</select>
-			    <input type="text" class="form-control" placeholder="내용을 입력해주세요">
-			  	<button type="submit" class="btn btn-default">검색</button>
 			  </div>
+			  <div class="child">
+			    <input type="text" class="form-control" placeholder="내용을 입력해주세요">
+			  </div>
+			  <button type="submit" class="btn btn-default">검색</button>
 		</form>
 	  </div>
 	</section>
 	
+	
 	<section>
 		<div class="productInfo">
 			<tr>
-				<th>발주번호</th>
+				<th>구분</th>
+				<th>보유점</th>
+				<th>상품번호</th>
 				<th>상품명</th>
-				<th>발주자</th>
-				<th>발주 날짜</th>
-				<th>발주량</th>
-				<th>상태</th>
+				<th>카테고리</th>
+				<th>브랜드</th>
+				<th>수량</th>
+				<th>업체명</th>
 			</tr>
 		</div>
 		
 		
 		<div class="productInfo">
 			<c:if test="${ not empty list }">
-				<c:forEach items="${ list }" var="RequestLog">
+				<c:forEach items="${ list }" var="stock">
 					<tr>
-						<td>${ request_log.no }</td>
+						<td>${ ioLog.status }</td>
+						<td>${ receive.empId }</td>
+						<td>${ product.productNo }</td>
 						<td>${ product.productName }</td>
-						<td>${ emp.emp_id }</td>
-						<td><fmt:formatDate value="${ request_log.request_date }" pattern="yyyy년MM월dd일"/></td>
-						<td>${ request_log.amount }</td>
-						<td>${ request_log.confirm }</td>
+						<td>${ product.category }</td>
+						<td>${ product.empId }</td>
+						<td>${ ioLog.amount }</td>
+						<td>${ product.empId }</td>
 					</tr>
 				</c:forEach>
 			</c:if>
