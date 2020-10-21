@@ -148,12 +148,15 @@ function orderProduct(empId,pNo){
 			<input type="hidden" name="pNo" value=""/>
 		</form>
 	</section>
-
+	
+	<br />
 	<!-- 종완 상품 등록 버튼  -->
-	<div class="form-group">
-		<button type="button" class="btn btn-light" onclick="history.go(-1)">뒤로 가기</button>
-		<button type="button" class="btn btn-dark" onclick="productEnroll();">상품 등록</button>
-	</div>
+	<section id="product-enroll-btn">
+		<div class="form-group">
+			<button type="button" class="btn btn-light" onclick="history.go(-1)">뒤로 가기</button>
+			<button type="button" class="btn btn-dark" onclick="productEnroll();">상품 등록</button>
+		</div>
+	</section>
 	
 <script>
 function productEnroll(){

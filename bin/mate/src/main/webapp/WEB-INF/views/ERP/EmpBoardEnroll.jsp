@@ -40,10 +40,12 @@ $("#erpBoardFrm").submit(function(){
 
 		<form action="${ pageContext.request.contextPath }/ERP/empBoardCkEnroll.do"
 			  method="POST"
-			  id="erpBoardFrm">
+			  id="erpBoardFrm"
+			  enctype="multipart/form-data">
 			   <div class="form-group">
-			   	<input type="text" name="title"  id="title_" value=""/>
-			   	<input type="text" name="empName"  id="empName" value="${loginEmp.empName}"/>
+			   	<input type="text" name="title"  id="title_" />
+			   	<input type="text" name="empId"  id="empId_" value="${loginEmp.empId }" readOnly/>
+			   	<input type="text" name="empName"  id="empName" value="${loginEmp.empName}" readOnly/>
 			   </div>
 			  <div class="form-group">
 			  	<textarea name="content" id="content_"></textarea>

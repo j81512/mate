@@ -29,10 +29,110 @@
 	margin: 10px 0px 60px;
 	border: 1px solid GREY;
 }
+#purchaseLog-table table{
+	border: 1px solid black;
+	text-align: center;
+}
+#purchaseLog-table td, #purchaseLog-table th{
+	border: 1px solid black;
+	padding: 10px;
+	text-align: center;
+}
+
+.review-modal{
+	display:none;
+	position:fixed; 
+	width:100%; height:100%;
+	top:0; left:0; 
+	background:rgba(0,0,0,0.3);
+	z-index: 1001;
+}
+
+.review-modal-section{
+	position:fixed;
+	top:50%; left:50%;
+	transform: translate(-50%,-50%);
+	background:white;
+	min-width: 50%;
+}
+
+.modal-close{
+	display:block;
+	position:absolute;
+	width:30px; height:30px;
+	border-radius:50%; 
+	border: 3px solid #000;
+	text-align:center; 
+	line-height: 30px;
+	text-decoration:none;
+	color:#000; font-size:20px; 
+	font-weight: bold;
+	right:10px; top:10px;
+}
+
+.review-modal-head{
+	padding: 3%; 
+	background-color : gold;
+	border: 1px solid #000;
+}
+.review-modal-body{
+	padding: 3%;
+	border: 1px solid #000;
+}
+.review-modal-footer{
+	padding: 1%;
+	border: 1px solid #000;
+}
+[name=score]{
+	display: none;
+}
+.modal-submit{
+	position:absolute;
+	right: 1%;
+}
+.modal-cancel{
+	position:absolute;
+	right: 8%;
+}
+.score-img{
+	height: 20px;
+	weith: 20px;
+}
+.score-img-a{
+	display: none;
+}
+.score-img:hover{
+	cursor: pointer;
+	background-color: yellow;
+}
+#review-content{
+	resize: none;
+}
 </style>
 <script>
+	
 
 	$(function(){
+
+		$(".score-img").click(function(){
+			var value = $(this).attr("data-value");
+			var $scoreImgs = $(".score-img");
+
+			$scoreImgs.each(function(i, scoreImg){
+
+				if($(scoreImg).attr("data-value") <= value){
+					if($(scoreImg).hasClass("score-img-b")) $(scoreImg).fadeOut(0);
+					if($(scoreImg).hasClass("score-img-a")) $(scoreImg).fadeIn(0);
+				}
+				else{
+					if($(scoreImg).hasClass("score-img-b")) $(scoreImg).fadeIn(0);
+					if($(scoreImg).hasClass("score-img-a")) $(scoreImg).fadeOut(0);
+				}
+			});
+			
+			$("#review-score").val(value);
+			
+		});
 		
 		$("#memberFrm .btn-delete").click(function(){
 			var $memberId = $("#memberId_");
@@ -129,6 +229,19 @@
 		
 	});
 
+function openReviewModal(no){
+	$("#review-modal-"+no).fadeIn(300);
+}
+
+function closeReviewModal(no){
+	$("#review-modal-"+no).fadeOut(300);
+	$("#review-content").val("");
+	$(".score-img-b").fadeIn(0);
+	$(".score-img-a").fadeOut(0);
+	$("#review-score").val("");
+}
+
+
 
 
 </script>
@@ -188,33 +301,80 @@
 <div id="buy" class="tab-pane fade">
 	<div class="col-md-15">
 	    <div class="form-area">  
-			<table>
-				<tr>
-					<th></th>
-					<th>날짜</th>
-					<th>상품번호</th>
-					<th>상품명</th>
-					<th>수량</th>
-					<th>상태</th>
-				</tr>
-				<c:if test="${ !empty mapList }">
+			<table id="purchaseLog-table" class="table">
+				<thead class="thead-dark">
 					<tr>
-					<c:forEach items="mapList" var="purchase" varStatus="vs">
-						<td>${ vs.count }</td>
-						<td>${ purchase.purchaseDate }</td>
-						<td>${ purchase.productNo }</td>
-						<td>${ purchase.productName }</td>
-						<td>${ purchase.amount }</td>
-						<td>${ purchase.status == 0 ? "<input type='button' value='환불/교환' /><input type='button' value='구매확정' />" : purchase.status == 1 ? "구매확정<input type='button' value='리뷰쓰기' />" : "환불/교환" }</td>
-					</c:forEach>
+						<th scope="col">#</th>
+						<th scope="col">주문번호</th>
+						<th scope="col">구매날짜</th>
+						<th scope="col">상품번호</th>
+						<th scope="col">상품명</th>
+						<th scope="col">수량</th>
+						<th scope="col">상태</th>
+						<th scope="col">리뷰</th>
 					</tr>
+				</thead>
+				<c:if test="${ !empty mapList }">
+					<tbody>
+						<tr>
+						<c:forEach items="${ mapList }" var="purchase" varStatus="vs">
+							<th scope="row">${ vs.count }</th>
+							<td>${ purchase.purchaseNo }</td>
+							<td><fmt:formatDate value="${ purchase.purchaseDate }" pattern="yyyy-MM-dd HH:mm"/></td>
+							<td>${ purchase.productNo }</td>
+							<td>${ purchase.productName }</td>
+							<td>${ purchase.amount }</td>
+							<td>${ purchase.status == 0 ? "<input type='button' value='환불/교환' /><input type='button' value='구매확정' />" : purchase.status == 1 ? "구매확정" : "환불/교환" }</td>
+							<td>
+								<c:if test="${ empty purchase.reviewNo }">
+									<input class="review-btn" type='button' value='리뷰 작성 하기' onclick="openReviewModal(${ purchase.purchaseLogNo });"/>
+								</c:if>
+								<c:if test="${ ! empty purchase.reviewNo }">
+									리뷰 작성 완료	
+								</c:if>
+							</td>
+							<div class="review-modal" id="review-modal-${ purchase.purchaseLogNo }">
+								<div class="review-modal-section">
+									<div class="review-modal-head">
+										<a href="javascript:closeReviewModal(${ purchase.purchaseLogNo });" class="modal-close">X</a>
+										<p class="review-modal-title">제목</p>
+									</div>
+									<form action="${ pageContext.request.contextPath }/product/insertReview.do">
+									<div class="review-modal-body">
+										<label for="review-content">내용</label>
+										<textarea name="comments" id="review-content" cols="97" rows="10"></textarea>
+									</div>
+									<div class="review-modal-footer">
+										평점
+										<img class="score-img-b score-img" src="../resources/images/star1.png" id="score-img-1" alt="" data-value="1" />
+										<img class="score-img-a score-img" src="../resources/images/star2.png" id="score-img-1" alt="" data-value="1" />
+										<img class="score-img-b score-img" src="../resources/images/star1.png" id="score-img-2" alt="" data-value="2" />
+										<img class="score-img-a score-img" src="../resources/images/star2.png" id="score-img-2" alt="" data-value="2" />
+										<img class="score-img-b score-img" src="../resources/images/star1.png" id="score-img-3" alt="" data-value="3" />
+										<img class="score-img-a score-img" src="../resources/images/star2.png" id="score-img-3" alt="" data-value="3" />
+										<img class="score-img-b score-img" src="../resources/images/star1.png" id="score-img-4" alt="" data-value="4" />
+										<img class="score-img-a score-img" src="../resources/images/star2.png" id="score-img-4" alt="" data-value="4" />
+										<img class="score-img-b score-img" src="../resources/images/star1.png" id="score-img-5" alt="" data-value="5" />
+										<img class="score-img-a score-img" src="../resources/images/star2.png" id="score-img-5" alt="" data-value="5" />
+										<input type="number" name="score" id="review-score" />
+										<input class="modal-cancel modal-btn" type="button" value="취소" onclick="closeReviewModal(${ purchase.purchaseLogNo });"/>
+										<input class="modal-submit modal-btn" type="submit" value="등록" />
+										<input type="hidden" name="purchaseLogNo" value="${ purchase.purchaseLogNo }" />
+									</div>
+									</form>
+								</div>
+							</div>
+						</c:forEach>
+						</tr>
+					</tbody>
 				</c:if>
 				<c:if test="${ empty mapList }">
 					<tr>
-						<td colspan="7">구매 내역이 존재하지 않습니다.</td>
+						<td colspan="8">구매 내역이 존재하지 않습니다.</td>
 					</tr>
 				</c:if>
 			</table>
+
 		</div>
 	</div>
 </div>
