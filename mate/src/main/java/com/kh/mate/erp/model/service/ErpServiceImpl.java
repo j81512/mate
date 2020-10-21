@@ -35,8 +35,8 @@ public class ErpServiceImpl implements ErpService {
 	}
 
 	@Override
-	public int infoUpdate(Map<String, Object> map) {
-		return erpDAO.infoUpdate(map);
+	public int infoUpdate(EMP emp) {
+		return erpDAO.infoUpdate(emp);
 	}
 
 	@Override

@@ -41,9 +41,7 @@
 		update
 			emp
 		<set>
-			<if test="empId != null">
 			emp_id = #{ empId },
-			</if>
 			<if test="empPwd != null">
 			emp_pwd = #{ empPwd },
 			</if>
@@ -75,7 +73,7 @@
 		from
 			emp
 		where
-			emp_id = #{ emp_id }
+			emp_id = #{ empId }
 	</delete>
 	
 	<resultMap type="emp" id="empMap">

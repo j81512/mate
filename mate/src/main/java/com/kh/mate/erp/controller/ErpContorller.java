@@ -21,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -83,43 +84,27 @@ public class ErpContorller {
 								Model model) {
 		
 		log.debug("empId ={} ", empId);
+//		log.debug("loginMember = {}", empId);
 		EMP emp = erpService.selectOneEmp(empId);
-		log.debug("emp = {}", emp);
 		model.addAttribute("emp", emp);
 		return "ERP/empInfoDetail";
 	}
 	
 	//박도균 지점/제조사 정보 수정
-	@RequestMapping("/ERP/infoUpdate.do")
-	public String infoUpdate(EMP emp, RedirectAttributes redirectAttr) {
-		try {
-			Map<String, Object>map = new HashMap<>();
-			map.put("empId", emp.getEmpId());
-			map.put("empPwd", emp.getEmpPwd());
-			map.put("empName", emp.getEmpName());
-			map.put("empAddr1", emp.getEmpAddr1());
-			map.put("empAddr2", emp.getEmpAddr2());
-			map.put("empAddr3", emp.getEmpAddr3());
-			map.put("status", emp.getStatus());	
+	@RequestMapping(value = "/ERP/infoUpdate.do",
+					method = RequestMethod.POST)
+	public String infoUpdate(EMP emp) {
+		log.debug("emp@controller = {}", emp);
 			
-			int result = erpService.infoUpdate(map);
-			log.debug("result ={}", result);
-			log.debug("map={}", map);
-			String msg = "정보수정 성공";
-			redirectAttr.addFlashAttribute("msg", msg);
+		erpService.infoUpdate(emp);
 			
-		}catch(Exception e) {
-			String msg = "정보수정 실패";
-			redirectAttr.addFlashAttribute("msg", msg);
-		}
 		return "redirect:/ERP/empManage.do";
 	}
 	
 	//박도균 지점/제조사 정보 삭제
 	@RequestMapping("/ERP/infoDelete.do")
-	public String infoDelete(@RequestBody EMP emp, 
-							 RedirectAttributes redirectAttr,
-							 SessionStatus sessionStatus) {
+	public String infoDelete(EMP emp, 
+							 RedirectAttributes redirectAttr) {
 		log.debug("emp = {}", emp);
 		try {
 			Map<String, Object> map = new HashMap<>();
@@ -131,8 +116,7 @@ public class ErpContorller {
 			log.debug("map = {}", map);
 			String msg = "삭제가 완료 되었습니다.";
 			
-			if(!sessionStatus.isComplete())
-				sessionStatus.setComplete();
+
 		}catch(Exception e) {
 			String msg = "삭제 실패";
 			redirectAttr.addFlashAttribute("msg", msg);

@@ -48,7 +48,7 @@ public interface ErpService {
 
 	int deleteReply(int boardReplyNo);
 
-	int infoUpdate(Map<String, Object> map);
+	int infoUpdate(EMP emp);
 
 	int infoDelete(Map<String, Object> map);
 
