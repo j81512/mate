@@ -42,7 +42,7 @@ window.onload = function(){
 				<label for="DR">드론</label>
 				<input type="checkbox" name="category" id="dr" value="dr"/>
 		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
-			<%-- <input type="hidden" name="category" value="${ category }" /> --%>
+			<input type="hidden" name="category" value="${ category }" />
 		</form>
 	</div>
 	

@@ -281,6 +281,8 @@
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
                       <form id="adminTab">
                      	<h3 class="heading-desc">관리자 로그인</h3>
                      	<div class="form-group">
@@ -293,6 +295,7 @@
 =======
 <<<<<<< HEAD
 >>>>>>> branch 'master' of https://github.com/j81512/mate.git
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
                       <form id="adminTab" action="${ pageContext.request.contextPath }/ERP/erpLogin.do" method="post">
                      	<h3 class="heading-desc">관리자 로그인</h3>
                      	<div class="form-group">
@@ -302,6 +305,8 @@
 	                    <div class="form-group">   
 	                        <label for="empPassword_">비밀번호</label>
 	                        <input type="password" name="empPwd"  class="input-xlarge">
+<<<<<<< HEAD
+=======
 <<<<<<< HEAD
 =======
 =======
@@ -314,6 +319,7 @@
 	                    <div class="form-group">   
 	                        <label for="empPassword_">비밀번호</label>
 	                        <input type="password" name="empPassword"  class="input-xlarge">
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
 >>>>>>> branch 'master' of https://github.com/j81512/mate.git
 >>>>>>> branch 'master' of https://github.com/j81512/mate.git
 >>>>>>> branch 'master' of https://github.com/j81512/mate.git

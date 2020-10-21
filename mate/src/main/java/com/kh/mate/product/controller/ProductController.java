@@ -89,15 +89,19 @@ public class ProductController {
 		
 		log.debug("search = {}",search);
 		
-		String[] cateArr = category.split(",");
-		map.put("category", cateArr);
+		if(!category.isEmpty()) {
+			String[] cateArr = category.split(",");
+			map.put("cateArr", cateArr);
+			log.debug("cateArr = {}",cateArr);
+			map.put("category", category);
+			log.debug("category = {}",category);
+			
+		}
 		
-		log.debug("category = {}",category);
-		log.debug("category = {}",category);
+		
 		
 		
 		map.put("search", search);
-		map.put("category", category);
 		
 		List<Product> list = productService.searchProductList(map);
 		

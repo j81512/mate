@@ -45,9 +45,10 @@
 		select p.product_no,
 			p.product_name,
 			p.category,
-			s.emp_id,
+			p.emp_id,
 			p.reg_date,
-			s.stock 
+			s.stock,
+			s.emp_id branchEmp 
 		from product p left join stock s
 		on (p.product_no = s.product_no)
 		where p.product_no = #{productNo} and
@@ -72,10 +73,6 @@
  			product_no = #{ productNo }
  	</select>
  	
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> branch 'master' of https://github.com/j81512/mate.git
  	<select id="selectProductImages" resultType="productImages">
  		select
  			*
@@ -168,43 +165,17 @@
 	<select id="findEmpid" resultType="string">
  		select emp_id from product where product_no = #{productNo}
  	</select>
-<<<<<<< HEAD
-=======
-	<insert id="productEnroll">
- 		insert into 
- 			product
- 		values
- 		(
- 		seq_product_no.nextval,
- 		 #{productName},
- 		 default,
- 		 #{category},
- 		 #{content},
- 		 #{price},
- 		 #{empId},
- 		 default
- 		)
- 		<selectKey order="AFTER" resultType="_int" keyProperty="productNo">
-			select
-				seq_product_no.currval 			
- 			from
- 				dual
- 		</selectKey>
- 	</insert>
- 
  	
- 	<insert id="productImageEnroll">
- 		insert into
- 			product_images
- 		values
- 		(
-		seq_product_image_no.nextval,
-		#{ renamedFilename },
-		#{ productNo }
+ 	<insert id="productOrder">
+ 		insert into request_log values (
+ 		seq_request_no.nextval,
+ 		#{empId},
+ 		#{stock},
+ 		default,
+ 		default,
+ 		#{productNo},
+ 		#{branchEmp}
  		)
  	</insert>
->>>>>>> branch 'master' of https://github.com/j81512/mate.git
-=======
->>>>>>> branch 'master' of https://github.com/j81512/mate.git
 
 </mapper>
