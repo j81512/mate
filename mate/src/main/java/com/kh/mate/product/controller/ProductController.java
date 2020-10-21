@@ -195,6 +195,15 @@ public class ProductController {
 		return "redirect:/product/purchaseProduct.do?memberId="+memberId;
 	}
 	
+	//결제버튼 입력 시
+	@RequestMapping("/productPayment.do")
+	public String productPayment(@RequestParam("memberId") String memberId,
+								 @RequestParam("productNo") String[] productNos,
+								 @RequestParam("amount") String[] amounts) {
+		
+		return "redirect:/";
+	}
+	
 	
 	//CH
 	@RequestMapping(value = "/productList.do",

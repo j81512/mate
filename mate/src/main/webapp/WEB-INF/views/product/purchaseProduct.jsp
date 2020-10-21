@@ -95,6 +95,8 @@
 	  <tbody>
 	  	<!-- 단일 상품 추가 우선 -->
 	  	<c:if test="${ not empty purProduct }">
+	  		<input type="hidden" name="productNo" value="${ purProduct.productNo }" />
+	  		<input type="hidden" name="amount" value="${ amount }" />
 		  	<tr>
 		  		<td>
 		  			<input type="checkbox" name="valid" class="valid" value="1" checked/>
@@ -125,6 +127,8 @@
   		
   		<!-- 장바구니 상품 추가 -->
   		<c:if test="${ not empty cartList }">
+  		<input type="hidden" name="productNo" value="${ cart.selectedProduct.productNo }" />
+  		<input type="hidden" name="amount" value="${ cart.amount }" />
 	  		<c:forEach items="${ cartList }" var="cart">
 	  		<tr>
 		  		<td>
@@ -178,6 +182,7 @@
 		</tr>
 	</table>
 	</div>
+	<input type="hidden" name="memberId" value="${ loginMember.memberId }" />
 </form>
 
 <!-- 주소API -->
