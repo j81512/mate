@@ -131,6 +131,7 @@
   		<input type="hidden" name="amount" value="${ cart.amount }" />
 	  		<c:forEach items="${ cartList }" var="cart">
 	  		<tr>
+	  			<td><input type="checkbox" class="p-chk" id="" /></td>
 		  		<td>
 		  			<input type="checkbox" name="valid" class="valid" value="1" checked/>
 		  		</td>
@@ -232,6 +233,11 @@ function execPostCode() {
        }
     }).open();
 }
+
+$(".p-chk").change(function(){
+	
+});
+
 </script>
 
 <!-- jsp에서 사용하는 function  -->
@@ -249,6 +255,7 @@ function deleteListAll(){
 
 function pp(){
 	var $frm = $("#paymentFrm");
+	
 	var $sum = $("#payment");
 
 	window.open(
