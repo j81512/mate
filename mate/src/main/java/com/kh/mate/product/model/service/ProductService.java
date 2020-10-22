@@ -40,6 +40,10 @@ public interface ProductService {
 	//jh
 	int insertReview(Map<String, Object> param);
 
+	int updatePurchaseConfirm(int purchaseLogNo);
+
+	int insertReturn(Map<String, Object> param);
+
 
 
 

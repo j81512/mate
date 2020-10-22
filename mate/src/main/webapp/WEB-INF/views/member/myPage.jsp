@@ -39,7 +39,7 @@
 	text-align: center;
 }
 
-.review-modal{
+.modal{
 	display:none;
 	position:fixed; 
 	width:100%; height:100%;
@@ -48,12 +48,14 @@
 	z-index: 1001;
 }
 
-.review-modal-section{
+.modal-section{
 	position:fixed;
 	top:50%; left:50%;
 	transform: translate(-50%,-50%);
 	background:white;
-	min-width: 50%;
+	min-width: 170px;
+	width: 50%;
+	border-radius: 25px;
 }
 
 .modal-close{
@@ -70,29 +72,28 @@
 	right:10px; top:10px;
 }
 
-.review-modal-head{
-	padding: 3%; 
+.modal-head{
+	padding: 1%; 
 	background-color : gold;
 	border: 1px solid #000;
+	min-height: 45px;
+	border-radius: 25px 25px 0px 0px;
+	
 }
-.review-modal-body{
+.modal-body{
 	padding: 3%;
-	border: 1px solid #000;
 }
-.review-modal-footer{
+.modal-footer{
 	padding: 1%;
-	border: 1px solid #000;
+	text-align: right;
 }
 [name=score]{
 	display: none;
 }
 .modal-submit{
-	position:absolute;
-	right: 1%;
+	margin-right: 3%;
 }
 .modal-cancel{
-	position:absolute;
-	right: 8%;
 }
 .score-img{
 	height: 20px;
@@ -105,8 +106,9 @@
 	cursor: pointer;
 	background-color: yellow;
 }
-#review-content{
+#review-comments, #return-content{
 	resize: none;
+	width: 100%;
 }
 </style>
 <script>
@@ -230,19 +232,88 @@
 	});
 
 function openReviewModal(no){
-	$("#review-modal-"+no).fadeIn(300);
+	$("#hiddenPurchaseLogNo-review").val(no);
+	$("#review-modal").fadeIn(300);
 }
 
-function closeReviewModal(no){
-	$("#review-modal-"+no).fadeOut(300);
+function closeReviewModal(){
+	$("#review-modal").fadeOut(300);
 	$("#review-content").val("");
 	$(".score-img-b").fadeIn(0);
 	$(".score-img-a").fadeOut(0);
 	$("#review-score").val("");
+	$("#hiddenPurchaseLogNo-review").val("");
+}
+
+
+function closeReturnModal(){
+	$("#return-modal").fadeOut(300);
+	$("#return-content").val("");
+	$("#hiddenPurchaseLogNo-return").val("");
+	$("#amount").prop("max", "");
 }
 
 
 
+$(function(){
+	$(".return-btn").click(function(){
+		var no = $(this).parent().siblings(".purchaseLogNo-td").text();
+		var amount = $(this).parent().siblings(".amount-td").text();
+		console.log(no, amount);
+		$("#hiddenPurchaseLogNo-return").val(no);
+		$("#amount").prop("max", amount);
+		$("#return-modal").fadeIn(300);
+	});
+
+	$(".confirm-btn").click(function(){
+		if(confirm("구매 확정 하시겠습니까?")==false) return;
+		var $btnTd = $(this).parent();
+		var plNo = $btnTd.siblings(".purchaseLogNo-td").val();
+		$.ajax({
+			url : "${ pageContext.request.contextPath}/product/purchaseConfirm.do",
+			data : {
+				purchaseLogNo : plNo
+			},
+			method : "POST",
+			dataType : "json",
+			success : function(data){
+				if(data > 0) {
+					$btnTd.html("<p>구매확정</p>");
+				}
+				else alert("구매확정에 실패하였습니다. 다시시도 해주세요.");
+			},
+			error : function(xhr, status, err){
+				console.log(xhr, status, err);
+			}
+		});	
+	});
+});
+
+
+$("#return-modal-submit").click(function(){
+	var formData = new FormData();
+	formData.append("purchaseLogNo", $("#hiddenPurchaseLogNo-return").val());
+	formData.append("status", $("[name=return-status]:checked").val());
+	formData.append("content", $("#return-content").val());
+	formData.append("amount", $("#hiddenPurchaseAmount-return").val());
+	formData.append("file", $("#return-file")[0].files[0]);
+
+	$.ajax({
+		url : "${pageContext.request.contextPath}/product/return.do",
+		type : "POST",
+		processData: false,
+		contentType: false,
+		data: formData,
+		success: function(data) {
+			closeReturnModal();
+			$btnTd.html("<p>환불/교환 처리중</p>");
+		},
+		error: function(xhr, status, err){
+			console.log(xhr,stauts,err);
+		}
+	});
+	
+});
 
 </script>
 <jsp:include page="/WEB-INF/views/common/headerS.jsp" />
@@ -319,12 +390,18 @@ function closeReviewModal(no){
 						<tr>
 						<c:forEach items="${ mapList }" var="purchase" varStatus="vs">
 							<th scope="row">${ vs.count }</th>
-							<td>${ purchase.purchaseNo }</td>
+							<td class="purchaseLogNo-td">${ purchase.purchaseLogNo }</td>
 							<td><fmt:formatDate value="${ purchase.purchaseDate }" pattern="yyyy-MM-dd HH:mm"/></td>
 							<td>${ purchase.productNo }</td>
 							<td>${ purchase.productName }</td>
-							<td>${ purchase.amount }</td>
-							<td>${ purchase.status == 0 ? "<input type='button' value='환불/교환' /><input type='button' value='구매확정' />" : purchase.status == 1 ? "구매확정" : "환불/교환" }</td>
+							<td class="amount-td">${ purchase.amount }</td>
+							<td>
+								${ purchase.status == 0 ? "<input type='button' class='return-btn' value='환불/교환' /><input type='button' class='confirm-btn' value='구매확정' />" 
+								 : purchase.status == 1 ? "<p>구매확정</p>" 
+								 : purchase.status == -1 ? "<p>환불/교환</p>" 
+								 : purchase.status == -2 ? "<p>환불/교환 처리 완료</p>" 
+								 : "<p>환불/교환 거절</p>" }
+							</td>
 							<td>
 								<c:if test="${ empty purchase.reviewNo }">
 									<input class="review-btn" type='button' value='리뷰 작성 하기' onclick="openReviewModal(${ purchase.purchaseLogNo });"/>
@@ -333,39 +410,7 @@ function closeReviewModal(no){
 									리뷰 작성 완료	
 								</c:if>
 							</td>
-							<div class="review-modal" id="review-modal-${ purchase.purchaseLogNo }">
-								<div class="review-modal-section">
-									<div class="review-modal-head">
-										<a href="javascript:closeReviewModal(${ purchase.purchaseLogNo });" class="modal-close">X</a>
-										<p class="review-modal-title">제목</p>
-									</div>
-									<form action="${ pageContext.request.contextPath }/product/insertReview.do">
-									<div class="review-modal-body">
-										<label for="review-content">내용</label>
-										<textarea name="comments" id="review-content" cols="97" rows="10"></textarea>
-									</div>
-									<div class="review-modal-footer">
-										평점
-										<img class="score-img-b score-img" src="../resources/images/star1.png" id="score-img-1" alt="" data-value="1" />
-										<img class="score-img-a score-img" src="../resources/images/star2.png" id="score-img-1" alt="" data-value="1" />
-										<img class="score-img-b score-img" src="../resources/images/star1.png" id="score-img-2" alt="" data-value="2" />
-										<img class="score-img-a score-img" src="../resources/images/star2.png" id="score-img-2" alt="" data-value="2" />
-										<img class="score-img-b score-img" src="../resources/images/star1.png" id="score-img-3" alt="" data-value="3" />
-										<img class="score-img-a score-img" src="../resources/images/star2.png" id="score-img-3" alt="" data-value="3" />
-										<img class="score-img-b score-img" src="../resources/images/star1.png" id="score-img-4" alt="" data-value="4" />
-										<img class="score-img-a score-img" src="../resources/images/star2.png" id="score-img-4" alt="" data-value="4" />
-										<img class="score-img-b score-img" src="../resources/images/star1.png" id="score-img-5" alt="" data-value="5" />
-										<img class="score-img-a score-img" src="../resources/images/star2.png" id="score-img-5" alt="" data-value="5" />
-										<input type="number" name="score" id="review-score" />
-										<input class="modal-cancel modal-btn" type="button" value="취소" onclick="closeReviewModal(${ purchase.purchaseLogNo });"/>
-										<input class="modal-submit modal-btn" type="submit" value="등록" />
-										<input type="hidden" name="purchaseLogNo" value="${ purchase.purchaseLogNo }" />
-									</div>
-									</form>
-								</div>
-							</div>
 						</c:forEach>
-						</tr>
 					</tbody>
 				</c:if>
 				<c:if test="${ empty mapList }">
@@ -378,5 +423,65 @@ function closeReviewModal(no){
 		</div>
 	</div>
 </div>
+</div>
+
+<!-- 환불/교환 모달 -->
+<div class="modal" id="return-modal">
+	<div class="modal-section">
+		<div class="modal-head">
+			<a href="javascript:closeReturnModal();" class="modal-close">X</a>
+			<p class="modal-title">환불/교환</p>
+		</div>
+		<div class="modal-body">
+			<input type="radio" name="return-status" id="refund" value="refund" required/>
+			<label for="refund">환불</label>
+			&nbsp;&nbsp;
+			<input type="radio" name="return-status" id="exchange" value="exchange" />
+			<label for="exchange">교환</label>
+			<br />
+			<input type="file" name="returnFile" id="return-file" />
+			수량 <input type="number" name="amount" id="amount" max="" min="1"/>
+			<textarea name="comments" id="return-content" rows="5" required></textarea>
+			
+		</div>
+		<div class="modal-footer">
+			<input class="modal-cancel modal-btn" type="button" value="취소" onclick="closeReturnModal();"/>
+			<input class="modal-submit modal-btn" type="button" value="등록" id="return-modal-submit"/>
+			<input type="hidden" name="purchaseLogNo" id="hiddenPurchaseLogNo-return"/>
+		</div>
+	</div>
+</div>
+
+<!-- 리뷰 모달 -->
+<div class="modal" id="review-modal">
+	<div class="modal-section">
+		<div class="modal-head">
+			<a href="javascript:closeReviewModal();" class="modal-close">X</a>
+			<p class="modal-title">상품에 대한 리뷰와 평점을 작성해주세요.</p>
+		</div>
+		<form action="${ pageContext.request.contextPath }/product/insertReview.do" method="POST">
+		<div class="modal-body">
+			<textarea name="comments" id="review-comments" rows="5" required></textarea>
+			<br /><br />
+			평점
+			<img class="score-img-b score-img" src="../resources/images/star1.png" id="score-img-1" alt="" data-value="1" />
+			<img class="score-img-a score-img" src="../resources/images/star2.png" id="score-img-1" alt="" data-value="1" />
+			<img class="score-img-b score-img" src="../resources/images/star1.png" id="score-img-2" alt="" data-value="2" />
+			<img class="score-img-a score-img" src="../resources/images/star2.png" id="score-img-2" alt="" data-value="2" />
+			<img class="score-img-b score-img" src="../resources/images/star1.png" id="score-img-3" alt="" data-value="3" />
+			<img class="score-img-a score-img" src="../resources/images/star2.png" id="score-img-3" alt="" data-value="3" />
+			<img class="score-img-b score-img" src="../resources/images/star1.png" id="score-img-4" alt="" data-value="4" />
+			<img class="score-img-a score-img" src="../resources/images/star2.png" id="score-img-4" alt="" data-value="4" />
+			<img class="score-img-b score-img" src="../resources/images/star1.png" id="score-img-5" alt="" data-value="5" />
+			<img class="score-img-a score-img" src="../resources/images/star2.png" id="score-img-5" alt="" data-value="5" />
+			<input type="number" name="score" id="review-score" required/>
+		</div>
+		<div class="modal-footer">
+			<input class="modal-cancel modal-btn" type="button" value="취소" onclick="closeReviewModal();"/>
+			<input class="modal-submit modal-btn" type="submit" value="등록" />
+			<input type="hidden" name="purchaseLogNo" id="hiddenPurchaseLogNo-review"/>
+		</div>
+		</form>
+	</div>
 </div>
 <jsp:include page="/WEB-INF/views/common/footerS.jsp" />
