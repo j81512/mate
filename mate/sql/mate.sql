@@ -93,13 +93,6 @@ CREATE TABLE MEMBER (
     constraint chk_member_gender check (gender in ('M','F'))
 );
 
-<<<<<<< HEAD
-insert into member values('admin', '1234', '본사관리자', 'M', '01012341234', default);
-select * from member;
-=======
-
-
->>>>>>> refs/heads/jongwan_workbranch
 --DROP TABLE Address;
 CREATE TABLE Address (
 	address_name	varchar2(128)		NOT NULL,
