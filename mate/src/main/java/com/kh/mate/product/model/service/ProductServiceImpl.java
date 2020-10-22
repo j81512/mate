@@ -1,5 +1,6 @@
 package com.kh.mate.product.model.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -133,6 +134,26 @@ public class ProductServiceImpl implements ProductService {
 			param.put("returnNo", returnNo);
 			result = productDAO.insertReturnImages(param);
 		}
+		return result;
+	}
+
+	@Override
+	public int purchaseProducts(List<Map<String, Object>> params) {
+		
+		Map<String, Object> idAndAddr = new HashMap<>();
+		idAndAddr.put("memberId", params.get(0).get("memberId"));
+		idAndAddr.put("addressName", params.get(0).get("addressName"));
+		int result = productDAO.insertPurchase(idAndAddr);
+		if(result <= 0) return result;
+		int purchaseNo = productDAO.getPurchaseNo();
+		log.debug("purchaseNo@Service = {}", purchaseNo);
+		
+		for(Map<String, Object> param : params) {
+			param.put("purchaseNo", purchaseNo);
+			result = productDAO.insertPurchaseLog(param);
+			if(result <= 0) return result;
+		}
+		
 		return result;
 	}
 	

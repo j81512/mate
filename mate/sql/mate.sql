@@ -11,7 +11,7 @@
 -- 유저 삭제 (system 계정)
 --=====================================
 --select sid,serial#,username,status from v$session where schemaname = 'MATE'; --여기서 나온 숫자를
---alter system kill session '115,825'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
+--alter system kill session '47,693'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
 --DROP USER mate CASCADE;
 --=====================================
 -- Drop 관련
@@ -97,13 +97,12 @@ CREATE TABLE MEMBER (
 CREATE TABLE Address (
 	address_name	varchar2(128)		NOT NULL,
 	member_id	varchar2(100)		NOT NULL,
-	reciever_name	varchar2(128)		NOT NULL,
+	receiver_name	varchar2(128)		NOT NULL,
 	receiver_phone	char(11)		NOT NULL,
 	addr1	varchar2(512)		NOT NULL,
 	addr2	varchar2(512)		NOT NULL,
 	addr3	varchar2(512)		NOT NULL,
 	reg_date	date	DEFAULT sysdate	NOT NULL,
-	is_check	number	DEFAULT 0	NOT NULL,
     
     constraint pk_address primary key (address_name, member_id),
     constraint fk_address_member_id foreign key (member_id)
@@ -112,8 +111,6 @@ CREATE TABLE Address (
 );
 
 --DROP TABLE EMP;
---DROP TABLE EMP CASCADE CONSTRAINTS;
-select * from cart;
 CREATE TABLE EMP (
 	emp_id	varchar2(15)		NOT NULL,
 	emp_pwd	varchar2(300)		NOT NULL,
@@ -127,19 +124,8 @@ CREATE TABLE EMP (
     
     constraint pk_emp primary key (emp_id)
 );
-select * from emp;
+
 insert into EMP values('admin', '1234', '본사관리자', '06234', '서울특별시 강남구 테헤란로14길 6', '남도빌딩', '01012341234', default, 0);
-
-
-select
-	*
-from
-    emp
-order by
-    enroll_date;
-
-
-
 
 --DROP TABLE PRODUCT;
 CREATE TABLE PRODUCT (
@@ -384,6 +370,7 @@ CREATE TABLE PURCHASE (
 	purchase_no	number		NOT NULL,
 	member_id	varchar2(100)		NOT NULL,
 	purchase_date	date	DEFAULT sysdate	NOT NULL,
+    address_name varchar2(128) NOT NULL,
     
     constraint pk_purchase primary key (purchase_no),
     constraint fk_purchase_member_id foreign key (member_id)
@@ -530,44 +517,6 @@ create sequence seq_return_no;
 create sequence seq_return_image_no;
 create sequence seq_review_no;
 
---===================================
---샘플데이터
---===================================
---상품 카테고리별로 10개씩 대표사진 3개
---회원 15명 -> 배송지 한사람당 0개 이상 마음 내키는 대로 한사함당 최대 3개만
---지점 5개
-insert into spring.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '강남점', 06234, '서울특별시 강남구 테헤란로14길 8(역삼동)', '1층', '07012341234', default, 1);
-insert into spring.EMP values ('toy2', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '역삼점', 06220, '서울특별시 강남구 역삼동 테헤란로 212', '2층', '07013246432', default, 1);
-insert into spring.EMP values ('toy3', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '부산점', 47216, '부산광역시 부산진구 연수로11번길 1(양정동)', '1층', '07085321234', default, 1);
-insert into spring.EMP values ('toy4', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '광주점', 61937, '광주광역시 서구 무진대로 904(광천동)', '1층', '07057328628', default, 1);
-insert into spring.EMP values ('toy5', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '대구점', 41931, '대구광역시 중구 달성로 22(동산동)', '1층', '07085767552', default, 1);
---제조사 10개
-insert into spring.EMP values ('wltoy', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
-insert into spring.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'toygate', 18293, '경기도 화성시 비봉면 하저자안로210번길', '5', '0313555428', default, 2);
-insert into spring.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
-insert into spring.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
-insert into spring.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
-insert into spring.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
-insert into spring.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
-insert into spring.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
-insert into spring.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
-insert into spring.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
-
---관리자 1
---고객센터 공지 2개 문의글 답변된거 4개 안된거 3개 비밀글 2개
---게시판 카테고리별로 3개씩
---(요청글은 완료된거 2개 안된거 1개)
-
-
-
-
-
-
-
-
-
-
-
 
 --======================================
 -- 트리거
@@ -671,7 +620,7 @@ begin
         :old.category, 
         :old.content,
         :old.price,
-        :old.emp_id,
+        :old.manufacturer_id,
         default
     );
 end;
@@ -703,7 +652,7 @@ create or replace trigger trg_return
     update on return
     for each row
 declare    
-    v_emp_Id emp.emp_id%type;
+    v_manufacturer_id emp.emp_id%type;
     v_purchase_log_no purchase_log.purchase_log_no%type;
     v_product_no product.product_no%type;
 begin
@@ -727,9 +676,9 @@ begin
             purchase_log_no = v_purchase_log_no;
             
         select
-            emp_id
+            manufacturer_id
         into
-            v_emp_id
+            v_manufacturer_id
         from 
             product
         where
@@ -744,7 +693,7 @@ begin
             :new.amount,
             default,
             v_product_no,
-            v_emp_id,
+            v_manufacturer_id,
             '온라인 - 반품'
         );
     end if;
@@ -841,9 +790,35 @@ begin
 end;
 /
         
+--===================================
+--샘플데이터
+--===================================
+--상품 카테고리별로 10개씩 대표사진 3개
+--회원 15명 -> 배송지 한사람당 0개 이상 마음 내키는 대로 한사함당 최대 3개만
+--지점 5개
+insert into mate.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '강남점', 06234, '서울특별시 강남구 테헤란로14길 8(역삼동)', '1층', '07012341234', default, 1);
+insert into mate.EMP values ('toy2', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '역삼점', 06220, '서울특별시 강남구 역삼동 테헤란로 212', '2층', '07013246432', default, 1);
+insert into mate.EMP values ('toy3', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '부산점', 47216, '부산광역시 부산진구 연수로11번길 1(양정동)', '1층', '07085321234', default, 1);
+insert into mate.EMP values ('toy4', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '광주점', 61937, '광주광역시 서구 무진대로 904(광천동)', '1층', '07057328628', default, 1);
+insert into mate.EMP values ('toy5', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '대구점', 41931, '대구광역시 중구 달성로 22(동산동)', '1층', '07085767552', default, 1);
+--제조사 10개
+insert into mate.EMP values ('wltoy', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
+--insert into mate.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'toygate', 18293, '경기도 화성시 비봉면 하저자안로210번길', '5', '0313555428', default, 2);
+--insert into mate.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
+--insert into mate.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
+--insert into mate.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
+--insert into mate.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
+--insert into mate.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
+--insert into mate.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
+--insert into mate.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
+--insert into mate.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', 'WLtoys', 06748, '서울특별시 서초구 양재천로21길 29(양재동)', '지동', '025718941', default, 2);
+
+--관리자 1
+--고객센터 공지 2개 문의글 답변된거 4개 안된거 3개 비밀글 2개
+--게시판 카테고리별로 3개씩
+--(요청글은 완료된거 2개 안된거 1개)  
         
-        
-        
+commit; 
         
         
         

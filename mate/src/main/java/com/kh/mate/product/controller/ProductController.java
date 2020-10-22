@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -29,9 +29,10 @@ import com.kh.mate.member.model.vo.Member;
 import com.kh.mate.product.model.service.ProductService;
 import com.kh.mate.product.model.vo.Cart;
 import com.kh.mate.product.model.vo.Product;
-import com.kh.mate.product.model.vo.ProductMainImages;
 
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping("/product")
@@ -327,5 +328,32 @@ public class ProductController {
 		}
 		
 		return result;	
+	}
+	
+	@ResponseBody
+	@PostMapping("/purchaseProducts.do")
+	public Boolean purchaseProducts(@RequestParam("jsonParam") String jsonParam) {
+		
+		JSONArray array = JSONArray.fromObject(jsonParam);
+		
+		List<Map<String, Object>> params = new ArrayList<>();
+		
+		for(int i = 0; i < array.size(); i++) {
+			JSONObject jObj = (JSONObject)array.get(i);
+			Map<String, Object> map = new HashMap<>();
+			map.put("addressName", jObj.get("addressName"));
+			map.put("productNo", jObj.get("productNo"));
+			map.put("amount", jObj.get("amount"));
+			map.put("memberId", jObj.get("memberId"));
+			
+			params.add(map);
+		}
+		
+		log.debug("params@controller = {}", params);
+		
+		int result = productService.purchaseProducts(params);
+		
+		
+		return result > 0 ? true : false;
 	}
 }
