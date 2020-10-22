@@ -38,6 +38,14 @@ public interface ProductDAO {
 	//jh
 	int insertReview(Map<String, Object> param);
 
+	int updatePurchaseConfirm(int purchaseLogNo);
+
+	int insertReturn(Map<String, Object> param);
+
+	int getReturnNo();
+
+	int insertReturnImages(Map<String, Object> param);
+
 
 
 }

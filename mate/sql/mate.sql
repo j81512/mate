@@ -784,3 +784,41 @@ begin
     end if;
 end;
 /
+
+-- 반품신청에서 관리자가 승인/거절 하게되면 주문로그의 상태 변경
+create or replace trigger trg_return_purchase_log
+    before
+    update on return
+    for each row
+begin
+    if :new.confirm = 1 then
+        update purchase_log
+        set status = -2
+        where purchase_log_no = :new.purchase_log_no;
+    end if;
+    if :new.confirm = -1 then
+        update purchase_log
+        set status = -3
+        where purchase_log_no = :new.purchase_log_no;
+    end if;
+end;
+/
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        

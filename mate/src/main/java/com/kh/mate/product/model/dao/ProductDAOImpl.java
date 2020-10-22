@@ -89,6 +89,26 @@ public class ProductDAOImpl implements ProductDAO {
 	public int insertReview(Map<String, Object> param) {
 		return session.insert("product.insertReview", param);
 	}
+
+	@Override
+	public int updatePurchaseConfirm(int purchaseLogNo) {
+		return session.update("product.updatePurchaseConfirm", purchaseLogNo);
+	}
+
+	@Override
+	public int insertReturn(Map<String, Object> param) {
+		return session.insert("product.insertReturn", param);
+	}
+
+	@Override
+	public int getReturnNo() {
+		return session.selectOne("product.selectReturnNo");
+	}
+
+	@Override
+	public int insertReturnImages(Map<String, Object> param) {
+		return session.insert("product.insertReturnImages", param);
+	}
 	
 	
 	
