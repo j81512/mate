@@ -1,21 +1,27 @@
 package com.kh.mate.product.controller;
 
+
+import static com.kh.mate.common.Utils.getRenamedFileName;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.FlashMap;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.mate.member.model.vo.Address;
@@ -260,7 +266,7 @@ public class ProductController {
 	
 	
 	//jh
-	@RequestMapping("/insertReview.do")
+	@PostMapping("/insertReview.do")
 	public String insertReview(RedirectAttributes redirectAttr,
 							 @RequestParam("purchaseLogNo") int purchaseLogNo,
 							 @RequestParam("comments") String comments,
@@ -278,7 +284,48 @@ public class ProductController {
 		else msg = "리뷰 등록에 실패하셨습니다. 다시 시도해주세요.";
 		redirectAttr.addFlashAttribute("msg", msg);
 		
-		return "redirect:/member/mypage.do";
+		return "redirect:/member/myPage.do";
 	}
 	
+	@PostMapping("/purchaseConfirm.do")
+	public int purchaseConfirm(@RequestParam("purchaseLogNo") int purchaseLogNo){
+		
+		int result = productService.updatePurchaseConfirm(purchaseLogNo);
+		
+		return result;
+	}
+	
+	@PostMapping("/return.do")
+	public int returnProduct(@RequestParam("purchaseLogNo") int purchaseLogNo,
+							 @RequestParam("status") String status,
+							 @RequestParam("content") String content,
+							 @RequestParam("amount") int amount,
+							 @RequestParam(value = "file", required = false) MultipartFile file,
+							 HttpServletRequest request) throws IllegalStateException, IOException {
+
+		Map<String, Object> param = new HashMap<>();
+		param.put("purchaseLogNo", purchaseLogNo);
+		param.put("status", status);
+		param.put("content", content);
+		param.put("amount", amount);
+		
+		File newFile = null;
+		if(!file.isEmpty() && file != null) {
+			param.put("originalFilename", file.getOriginalFilename());
+			String renamedFilename = getRenamedFileName(file.getOriginalFilename());
+			param.put("renamedFilename", renamedFilename);
+			
+			String saveDirectory = request.getServletContext().getRealPath("/resources/upload/return");
+			newFile = new File(saveDirectory, renamedFilename);
+			file.transferTo(newFile);
+		}
+		
+		int result = productService.insertReturn(param);
+		
+		if(result <= 0) {
+			newFile.delete();
+		}
+		
+		return result;	
+	}
 }

@@ -120,6 +120,65 @@
  			product_no = #{productNo}
  	</delete>
  	
+
+ 	<update id="updatePurchaseConfirm">
+ 		update
+ 			purchaseLog
+ 		set(
+ 			status = 1
+ 		)
+ 		where
+ 			purchase_log_no = #{purchaseLogNo}
+ 	</update>
+ 	
+ 	<insert id="insertReturn">
+ 		insert into
+ 			return
+ 		values(
+ 			seq_return_no.nextval,
+ 			#{ status },
+ 			#{ purchaseLogNo },
+ 			#{ content },
+ 			#{ amount },
+ 			default
+ 		)
+ 	</insert>
+ 	
+ 	<select id="selectReturnNo" resultType="_int">
+ 		select
+ 			seq_return_no.currval
+ 		from
+ 			dual
+ 	</select>
+ 	
+ 	<insert id="insertReturnImages">
+ 		insert into
+ 			return_images
+ 		values(
+ 			seq_return_images_no.nextval,
+ 			#{ originalFilename },
+ 			#{ renamedFilename },
+ 			#{ returnNo }
+ 		)
+ 	</insert>
+ 	<resultMap type="product" id="productMap">
+ 		<id column="product_no" property="productNo"/>
+ 		<result column="product_name" property="productName"/>
+ 		<result column="reg_date" property="regDate"/>
+ 		<result column="category" property="category"/>
+ 		<result column="content" property="content"/>
+ 		<result column="price" property="price"/>
+ 		<result column="emp_id" property="empId"/>
+ 		<result column="enabled" property="enabled"/>
+ 		
+ 		<collection property="productMainImages" ofType="productMainImages">
+	 		<id column="product_main_image_no" property="productMainImageNo"/>
+	 		<result column="original_filename" property="originalFilename"/>
+	 		<result column="renamed_filename" property="renamedFilename"/>
+	 		<result column="product_no" property="productNo"/>
+ 		</collection>
+ 	</resultMap>
+
  	
  	
  	<resultMap type="cart" id="cartMap">
