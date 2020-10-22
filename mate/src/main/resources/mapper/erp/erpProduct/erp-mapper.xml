@@ -13,7 +13,7 @@
 			p.category,
 			s.emp_id,
 			p.reg_date,
-			s.stock 
+			s.stock stock
 		from product p left join stock s
 		on (p.product_no = s.product_no)
 		<where>
@@ -45,7 +45,7 @@
 		select p.product_no,
 			p.product_name,
 			p.category,
-			p.emp_id,
+			p.manufacturer_id,
 			p.reg_date,
 			s.stock,
 			s.emp_id branchEmp 

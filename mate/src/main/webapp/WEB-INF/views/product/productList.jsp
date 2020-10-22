@@ -84,7 +84,7 @@ li{
 										등록일 : <fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/>									
 										</div>
 										<div class="product-brand">
-										제조사 ${ product.empId }
+										제조사 ${ product.manufacturerId }
 										</div>
 									</dd>
 							</a>
