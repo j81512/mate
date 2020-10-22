@@ -241,7 +241,7 @@ public class MemberController {
 		HashMap<String, String> map = new HashMap<>();
 		Random rnd = new Random();
 		String checkNum = "";
-		
+
 		for(int i = 0 ; i < 6 ; i++) {			
 			String ran = Integer.toString(rnd.nextInt(10));
 			checkNum += ran;

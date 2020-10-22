@@ -93,8 +93,11 @@ CREATE TABLE MEMBER (
     constraint chk_member_gender check (gender in ('M','F'))
 );
 
+<<<<<<< HEAD
 select * from member;
 
+=======
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
 --DROP TABLE Address;
 CREATE TABLE Address (
 	address_name	varchar2(128)		NOT NULL,
@@ -270,6 +273,7 @@ CREATE TABLE BOARD (
 	emp_id	varchar2(15)		NOT NULL,
 	reg_date	date	DEFAULT sysdate	NOT NULL,
 	enabled	number	DEFAULT 0	NOT NULL,
+    read_count number DEFAULT 0 NOT NULL,
     
     constraint pk_board primary key(board_no),
     constraint fk_board_emp_id foreign key (emp_id)
@@ -846,3 +850,41 @@ begin
     end if;
 end;
 /
+
+-- 반품신청에서 관리자가 승인/거절 하게되면 주문로그의 상태 변경
+create or replace trigger trg_return_purchase_log
+    before
+    update on return
+    for each row
+begin
+    if :new.confirm = 1 then
+        update purchase_log
+        set status = -2
+        where purchase_log_no = :new.purchase_log_no;
+    end if;
+    if :new.confirm = -1 then
+        update purchase_log
+        set status = -3
+        where purchase_log_no = :new.purchase_log_no;
+    end if;
+end;
+/
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        

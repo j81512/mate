@@ -117,6 +117,24 @@ public class ProductServiceImpl implements ProductService {
 	public int insertReview(Map<String, Object> param) {
 		return productDAO.insertReview(param);
 	}
+
+	@Override
+	public int updatePurchaseConfirm(int purchaseLogNo) {
+		return productDAO.updatePurchaseConfirm(purchaseLogNo);
+	}
+
+	@Override
+	public int insertReturn(Map<String, Object> param) {
+		
+		int result = productDAO.insertReturn(param);
+		if(result <= 0) return result;
+		if(param.containsKey("originalFilename")) {
+			int returnNo = productDAO.getReturnNo();
+			param.put("returnNo", returnNo);
+			result = productDAO.insertReturnImages(param);
+		}
+		return result;
+	}
 	
 	
 	
