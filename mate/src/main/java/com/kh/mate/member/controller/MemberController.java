@@ -420,9 +420,7 @@ public class MemberController {
 		return map;
 	}
 	
-<<<<<<< HEAD
 
-=======
 	//종완
 	@RequestMapping("/member/kakaopay.do")
 	public String kakaoPay(@RequestParam("memberId") String memberId,
@@ -439,5 +437,4 @@ public class MemberController {
 		return "product/kakaoPay";
 	}
 	
->>>>>>> refs/heads/jongwan_workbranch
 }
