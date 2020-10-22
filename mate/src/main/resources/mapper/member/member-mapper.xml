@@ -80,6 +80,44 @@
         order by
         	purchase_date desc
 	</select>
+	
+	<select id="selectMemberAddress" resultType="address">
+		select
+			*
+		from
+			address
+		where
+			member_id = #{memberId}
+		order by
+			reg_date desc
+	</select>
+	
+	<select id="checkAddressName" resultType="_int">
+		select 
+			count(*)
+		from 
+			address
+		where 
+			member_id = #{memberId} 
+			and 
+			address_name = #{addressName}
+	</select>
+	
+	<insert id="insertAddress">
+		insert into
+			address
+		values(
+			#{addressName},
+			#{memberId},
+			#{receiverName},
+			#{receiverPhone},
+			#{addr1},
+			#{addr2},
+			#{addr3},
+			default
+		)
+	</insert>
+	
 	<resultMap id="purchaseMap" type="map">
 		<result column="purchase_no" property="purchaseNo"/>
 		<result column="purchase_date" property="purchaseDate"/>

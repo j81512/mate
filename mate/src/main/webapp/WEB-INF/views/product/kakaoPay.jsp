@@ -55,12 +55,12 @@
                     }
                 });
                 //성공시 이동할 페이지
-                location.href='<%=request.getContextPath()%>/order/paySuccess?msg='+msg;
+                location.href='${pageContext.request.ContextPath}/order/paySuccess?msg='+msg;
             } else {
                 msg = '결제에 실패하였습니다.';
                 msg += '에러내용 : ' + rsp.error_msg;
                 //실패시 이동할 페이지
-                location.href="<%=request.getContextPath()%>/order/payFail";
+                location.href="${pageContext.request.ContextPath}/order/payFail";
                 alert(msg);
             }
         });

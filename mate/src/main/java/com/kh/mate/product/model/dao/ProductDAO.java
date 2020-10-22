@@ -50,6 +50,12 @@ public interface ProductDAO {
 
 	int insertReturnImages(Map<String, Object> param);
 
+	int insertPurchase(Map<String, Object> idAndAddr);
+
+	int getPurchaseNo();
+
+	int insertPurchaseLog(Map<String, Object> param);
+
 
 
 }

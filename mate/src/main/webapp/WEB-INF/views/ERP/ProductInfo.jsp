@@ -133,7 +133,7 @@ function orderProduct(empId,pNo){
 						<td>${ product.productNo }</td>
 						<td><a href="${ pageContext.request.contextPath }/ERP/productUpdate.do?productNo=${product.productNo}">${ product.productName }</a></td>
 						<td>${ product.category }</td>
-						<td>${ product.empId }</td>
+						<td>${ product.manufacturerId }</td>
 						<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>
 						<td>${ product.stock }</td>
 						<td><button type="button" onclick="orderProduct('${ product.empId }',${ product.productNo })">발주</button></td>
