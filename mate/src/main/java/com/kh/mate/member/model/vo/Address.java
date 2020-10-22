@@ -17,12 +17,11 @@ public class Address {
 	
 	private String addressName;
 	private String memberId;
-	private String recieverName;
-	private String recieverPhone;
+	private String receiverName;
+	private String receiverPhone;
 	private String addr1;
 	private String addr2;
 	private String addr3;
 	private Date regDate;
-	private int isCheck;
 
 }

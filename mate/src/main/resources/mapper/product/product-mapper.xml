@@ -161,6 +161,36 @@
  			#{ returnNo }
  		)
  	</insert>
+ 	
+ 	<insert id="insertPurchase">
+ 		insert into
+ 			purchase
+ 		values(
+ 			seq_purchase_no.nextval,
+ 			#{memberId},
+ 			default,
+ 			#{addressName}
+ 		)
+ 	</insert>
+ 	
+ 	<select id="getPurchaseNo" resultType="_int">
+ 		select
+ 			seq_purchase_no.currval
+ 		from
+ 			dual
+ 	</select>
+ 	
+ 	<insert id="insertPurchaseLog">
+ 		insert into
+ 			purchase_log
+ 		values(
+ 			seq_purchase_log_no.nextval,
+ 			#{purchaseNo},
+ 			#{productNo},
+ 			#{amount},
+ 			default
+ 		)
+ 	</insert>
  	<resultMap type="product" id="productMap">
  		<id column="product_no" property="productNo"/>
  		<result column="product_name" property="productName"/>
