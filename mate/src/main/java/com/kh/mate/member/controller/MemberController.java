@@ -420,5 +420,24 @@ public class MemberController {
 		return map;
 	}
 	
+<<<<<<< HEAD
 
+=======
+	//종완
+	@RequestMapping("/member/kakaopay.do")
+	public String kakaoPay(@RequestParam("memberId") String memberId,
+						   @RequestParam("sum") String sum,
+						   Model model) {
+		log.debug("memberId,sum = {}, {}",memberId, sum);
+		
+		Member member = memberService.selectOneMember(memberId);
+		log.debug("member = {}", member);
+		
+		model.addAttribute("member", member);
+		model.addAttribute("amount", sum);
+		
+		return "product/kakaoPay";
+	}
+	
+>>>>>>> refs/heads/jongwan_workbranch
 }
