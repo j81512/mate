@@ -268,6 +268,7 @@ CREATE TABLE BOARD (
 	emp_id	varchar2(15)		NOT NULL,
 	reg_date	date	DEFAULT sysdate	NOT NULL,
 	enabled	number	DEFAULT 0	NOT NULL,
+    read_count number DEFAULT 0 NOT NULL,
     
     constraint pk_board primary key(board_no),
     constraint fk_board_emp_id foreign key (emp_id)
