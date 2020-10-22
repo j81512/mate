@@ -43,7 +43,7 @@ function orderModal(){
 			      		<p>현재수량 : ${ product.stock }</p>
 			      		<p>상품번호 : ${ product.productNo }</p>
 			      		<p>지점 아이디 ${ product.branchEmp }</p>
-			      		<p>요청수량 : <input type="number" name="stock" id="order" /></p>
+			      		<p>요청수량 : <input type="number" name="stock" id="order" required="required"/></p>
 			      		<input type="hidden" name="branchEmp" value="${ product.branchEmp }"/>
 			      		<input type="hidden" name="empId" value="${ product.empId }"/>
 			      		<input type="hidden" name="productNo" value="${ product.productNo }"/>

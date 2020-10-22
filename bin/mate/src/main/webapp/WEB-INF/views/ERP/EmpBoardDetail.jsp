@@ -15,7 +15,7 @@
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 <!-- 호근 헤더 처리-->
-<title></title>
+<title>게시판</title>
 <script>
 $(document).ready(function(){
     replyList(); //페이지 로딩시 댓글 목록 출력 
@@ -37,7 +37,7 @@ $(document).ready(function(){
 	            $.each(data, function(key, value){                
 		            	html += '<div class="replyArea" style="border-bottom:1px solid darkgray; margin-bottom: 15px;">';
 		            	html += "<div class='replyInfo'>" + "작성자 :" + value.empName;
-		            	html += '<a onclick="replyUpdate('+ value.boardReplyNo +',\''+value.content+'\');" class="btn btn-primary"> 수정 </a>';
+		            	html += '<a onclick="replyUpdate('+ value.boardReplyNo +',\''+ value.content + '\');" class="btn btn-primary"> 수정 </a>';
 		            	html += '<a onclick="replyDelete('+ value.boardReplyNo +');" class="btn btn-default"> 삭제 </a> </div>';
 		            	html += '<div class="replyContent'+ value.boardReplyNo+'"> <p> 내용 : '+value.content +'</p>';
 		            	html += '</div></div>';
@@ -48,22 +48,78 @@ $(document).ready(function(){
 	    });
 	}
 
+	
+		function replyUpdate(boardReplyNo, content){
+					var boardReplyNo = boardReplyNo;
+					var content = content;	
+					var html = "";
+					console.log(boardReplyNo);
+					console.log(content);
+					html += '<div class="input-group">';
+					html += '<input type="text" class="form-control" name="replyContent_'+boardReplyNo+'" value="'+content+'"/>';
+					html += '<span class="input-group-btn"><button class="btn btn-default" type="button" onclick="replyUpdateReal('+boardReplyNo+');">수정</button> </span>';
+					html += '</div>';
+				    
+				    $('.replyContent'+ boardReplyNo ).html(html);
 
-	function replyInfo(replyNo, content){
 
-		var reply = {
-					replyNo : replyNo,
-					content : content	
-				}
-		
+		}
+
+		function replyUpdateReal(boardReplyNo){
+				console.log(boardReplyNo);
+				var updateContent = $('[name=replyContent_'+boardReplyNo+']').val();
+				console.log(updateContent);
+				$.ajax({
+					url : "${ pageContext.request.contextPath}/ERP/replyUpdateReal.do",
+					method : "POST",
+					dataType : "json",
+					data : {
+						"boardReplyNo" : boardReplyNo,
+						"content" : updateContent
+					},
+					success : function(data){
+						console.log(data);
+						if(data.isAvailable){
+							replyList(boardNo);
+						}
+					},
+					error : function(xhr, status, err){
+						console.log(xhr);
+						console.log(status);
+						console.log(err);
+					}
+				});
+		};
+
+	function replyDelete(boardReplyNo) {
+		var boardReplyNo = boardReplyNo;
+	/* 	console.log(boardReplyNo); */
+
 		$.ajax({
-
+			url : "${ pageContext.request.contextPath }/ERP/erpBoardReply.do",
+			method : "POST",
+			dataType: 'json',
+			data : {
+				"boardReplyNo" : boardReplyNo
+			},
+			success : function(data){
+				console.log(data);
+				if(data.isAvailable) {
+					alert("삭제 되었습니다.");
+					location.reload();
+				}
+			},
+			error : function(xhr, status ,err){
+				console.log(xhr);
+				console.log(status);
+				console.log(err);
+			}	
 		});
 	}
 
 </script>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp" />
-
+<div class="container">
 	<div id="board-container" class="mx-auto text-center">
 		<input type="text" class="form-control" 
 			   placeholder="번호" name="boardNo" id="boardNo" 
@@ -86,18 +142,27 @@ $(document).ready(function(){
 		
 		<div id="reply-container">
 			<form action="${ pageContext.request.contextPath }/ERP/empReplyEnroll.do" method="POST">
-				<input type="text" name="empId" value="${ loginEmp.empId != null ? '왜널인데?' : 'loginEmp.empId'}" />
-				<input type="hidden" name="boardNo" value="${ empBoard.boardNo }" />
-				<textarea name="content" cols="30" rows="10">
-				
-				</textarea>
-				<input type="submit" value="등록하기" />
+				<div class="form-group">				
+					<input type="hidden" name="empId" value="${ loginEmp.empId != null ? loginEmp.empId : '왜널인데?'}" />
+				</div>
+				<div class="form-group">
+					<input type="hidden" name="boardNo" value="${ empBoard.boardNo }" />
+				</div>
+				<div class="form-group">
+					<textarea class="form-control col-sm-10" name="content"  rows="10"></textarea>
+				</div>
+				<div class="button-group">
+					<input type="submit" class="btn btn-primary" value="등록하기" />
+				</div>
 			</form>
 		</div>
+</div>
 		
 		<!-- 댓글 목록-->
 	<div class="container">
-        <div class="replyList"></div>
+		<div class="row">
+	        <div class="replyList"></div>
+		</div>
     </div>
 
 

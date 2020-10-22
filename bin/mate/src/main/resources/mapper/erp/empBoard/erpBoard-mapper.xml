@@ -36,7 +36,20 @@
 			   #{ content }, 
 			   sysdate, 
 			   #{ boardNo },
-			    #{ empId })
-	
+			   #{ empId }
+			   )
 	</insert>
+	
+	<delete id="deleteReply">
+		delete from board_reply
+		where board_reply_no = #{ boardReplyNo } 
+	
+	</delete>
+	
+	<update id="updateReply">
+		update board_reply 
+			set
+		 content = #{ content }
+		 where board_reply_no = #{ boardReplyNo } 
+	</update>
 </mapper>

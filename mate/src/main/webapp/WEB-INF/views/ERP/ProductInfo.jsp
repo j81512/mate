@@ -126,7 +126,9 @@ function orderProduct(empId,pNo){
 		
 		<div class="productInfo">
 			<c:if test="${ not empty list }">
-				<c:forEach items="${ list }" var="product">
+				<c:if test="${ loginEmp.status == 0 }">
+					<c:forEach items="${ list }" var="product">
+					<c:if test="${ loginEmp.empId != product.empId }">
 					<tr>
 						<td>${ product.productNo }</td>
 						<td><a href="${ pageContext.request.contextPath }/ERP/productUpdate.do?productNo=${product.productNo}">${ product.productName }</a></td>
@@ -136,8 +138,28 @@ function orderProduct(empId,pNo){
 						<td>${ product.stock }</td>
 						<td><button type="button" onclick="orderProduct('${ product.empId }',${ product.productNo })">발주</button></td>
 					</tr>
+					
+					</c:if>
+				</c:forEach>		
+					</c:if>
+				<c:if test="${ loginEmp.status != 0 }">
+				<c:forEach items="${ list }" var="product">
+					<c:if test="${ loginEmp.empId == product.empId }">
+					<tr>
+						<td>${ product.productNo }</td>
+						<td><a href="${ pageContext.request.contextPath }/ERP/productUpdate.do?productNo=${product.productNo}">${ product.productName }</a></td>
+						<td>${ product.category }</td>
+						<td>${ product.empId }</td>
+						<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>
+						<td>${ product.stock }</td>
+						<td><button type="button" onclick="orderProduct('${ product.empId }',${ product.productNo })">발주</button></td>
+					</tr>
+					
+					</c:if>
 				
 				</c:forEach>
+				
+				</c:if>
 			</c:if>
 			<c:if test="${ empty list }">
 				<span>검색결과 없음</span>

@@ -2,6 +2,9 @@ package com.kh.mate.cs.model.vo;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
+import com.kh.mate.cs.model.vo.CsImages;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,4 +26,7 @@ public class Cs implements Serializable {
 	private Date regDate;
 	private int secret;
 	private int notice;
+	
+	private CsImages csImage;
+	
 }
