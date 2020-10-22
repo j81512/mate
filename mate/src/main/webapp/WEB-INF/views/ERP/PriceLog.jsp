@@ -38,7 +38,7 @@
 							<c:if test="${ IoLog.status == 2}">매출
 							</c:if>
 						</td>	
-						<td>${ IoLog. }</td>				
+						<td></td>				
 					</tr>
 				</c:forEach>
 			</c:if>

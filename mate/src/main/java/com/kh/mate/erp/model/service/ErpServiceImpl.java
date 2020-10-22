@@ -11,6 +11,9 @@ import com.kh.mate.erp.model.dao.ErpDAO;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.erp.model.vo.EmpBoardReply;
+import com.kh.mate.log.vo.IoLog;
+import com.kh.mate.log.vo.Receive;
+import com.kh.mate.log.vo.RequestLog;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -200,6 +203,26 @@ public class ErpServiceImpl implements ErpService {
 	public int updateReply(Map<String, Object> map) {
 	
 		return erpDAO.updateReply(map);
+	}
+
+	@Override
+	public List<IoLog> ioLogList() {
+		return erpDAO.ioLogList();
+	}
+
+	@Override
+	public List<Product> productList() {
+		return erpDAO.productList();
+	}
+
+	@Override
+	public List<Receive> receiveList() {
+		return erpDAO.receiveList();
+	}
+
+	@Override
+	public List<RequestLog> requestList() {
+		return erpDAO.requestList();
 	}
 
 

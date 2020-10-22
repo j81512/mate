@@ -12,6 +12,9 @@ import org.springframework.stereotype.Repository;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.erp.model.vo.EmpBoardReply;
+import com.kh.mate.log.vo.IoLog;
+import com.kh.mate.log.vo.Receive;
+import com.kh.mate.log.vo.RequestLog;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -48,10 +51,28 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.selectList("erp.searchInfo",map);
 	}
 	
-	
-  @Override
-	public List<EMP> empList() {
-		return sqlSession.selectList("emp.empList");
+	@Override
+		public List<EMP> empList() {
+			return sqlSession.selectList("emp.empList");
+		}
+	@Override
+	public List<IoLog> ioLogList() {
+		return sqlSession.selectList("emp.ioLogList");
+	}
+
+	@Override
+	public List<Product> productList() {
+		return sqlSession.selectList("emp.productList");
+	}
+
+	@Override
+	public List<Receive> receiveList() {
+		return sqlSession.selectList("emp.receiveList");
+	}
+
+	@Override
+	public List<RequestLog> requestList() {
+		return sqlSession.selectList("emp.requestList");
 	}
 
 	@Override
