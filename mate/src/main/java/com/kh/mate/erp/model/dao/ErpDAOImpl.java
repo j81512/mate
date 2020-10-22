@@ -1,9 +1,8 @@
 package com.kh.mate.erp.model.dao;
 
+import java.util.HashMap;
 import java.util.List;
-
 import java.util.Map;
-
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,7 +131,14 @@ public class ErpDAOImpl implements ErpDAO {
 
 	//호근 추가
 	@Override
-	public List<Map<String, Object>> empBoardList(Map<String, Object> map) {
+	public List<EmpBoard> empBoardList(int cPage, int numPerPage) {
+		
+		Map<String, Object> map = new HashMap<>();
+		
+		
+		
+		map.put("cPage", ((cPage-1)*numPerPage+1));
+		map.put("numPerPage", (cPage * numPerPage));
 		return sqlSession.selectList("erpBoard.empBoard", map);
 	}
 

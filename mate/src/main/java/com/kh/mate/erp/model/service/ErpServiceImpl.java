@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import com.kh.mate.erp.model.dao.ErpDAO;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
@@ -172,8 +173,8 @@ public class ErpServiceImpl implements ErpService {
 
 	//호근 emp 게시판 추가
 	@Override
-	public List<Map<String, Object>> empBoardList(Map<String, Object> map) {
-		return erpDAO.empBoardList(map);
+	public List<EmpBoard> empBoardList(int cPage,int numPerPage) {
+		return erpDAO.empBoardList(cPage,numPerPage);
 	}
 
 	@Override

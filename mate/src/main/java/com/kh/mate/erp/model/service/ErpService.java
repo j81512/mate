@@ -39,7 +39,7 @@ public interface ErpService {
 
 	int productOrder(Product product);
 
-	List<Map<String, Object>> empBoardList(Map<String, Object> map);
+	List<EmpBoard> empBoardList(int cPage, int numPerPage);
 
 	EmpBoard selectOneEmpBoard(int no, boolean hasRead);
 

@@ -68,7 +68,7 @@ function empBoardEnroll(){
 			</li>
 		</c:forEach>
 		</c:if>
-	</div>
 		</ul>
+	</div>
 	</nav>
 <jsp:include page="/WEB-INF/views/common/footerE.jsp" />

@@ -161,31 +161,27 @@ public class ErpContorller {
 		int cPage = 1;
 		try {
 			
-			cPage = Integer.parseInt(request.getParameter("cpage"));
+			cPage = Integer.parseInt(request.getParameter("cPage"));
 		}catch(NumberFormatException e) {
 			
 		}
-			
+		
+		log.debug("cPage={}",cPage);
 		List<EMP> list = erpService.empList();
 		//page map처리
-		Map<String, Object> map = new HashMap<>();
-		map.put("cPage", cPage);
-		map.put("numPerPage", numPerPage);
-		List<Map<String, Object>> empBoardList = erpService.empBoardList(map);
+		List<EmpBoard> empBoardList = erpService.empBoardList(cPage,numPerPage);
 		log.debug("list = {} ", list);
 		log.debug("empBoardList = {} ", empBoardList);
+
 		int totalContents = erpService.getTotalContent();
 		
-		log.debug("totalContents", totalContents);
-	
 		String url = request.getRequestURI();
-		log.debug("url = {}", url);
 		String pageBar = Paging.getPageBarHtml(cPage, numPerPage, totalContents, url);
 		
 		model.addAttribute("list", list);
 		//model 추가함
 		model.addAttribute("empBoardList", empBoardList);
-		//page model 추가
+		
 		model.addAttribute("pageBar", pageBar);
 		return "ERP/empList";
 		
