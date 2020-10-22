@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
+import com.kh.mate.erp.model.vo.EmpBoardImage;
 import com.kh.mate.erp.model.vo.EmpBoardReply;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
@@ -65,6 +66,14 @@ public interface ErpDAO {
 	int infoDelete(Map<String, Object> map);
 
 	int updateReply(Map<String, Object> map);
+
+	int inserEmpBoard(EmpBoard empBoard);
+
+	int inserEmpBoardImage(EmpBoardImage empBoardImage);
+
+	EmpBoardImage empBoardFileDownload(int boardImageNo);
+
+	List<Product> erpProductList();
 
 
 }

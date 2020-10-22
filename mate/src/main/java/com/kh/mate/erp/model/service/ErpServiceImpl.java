@@ -1,6 +1,5 @@
 package com.kh.mate.erp.model.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.kh.mate.erp.model.dao.ErpDAO;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
+import com.kh.mate.erp.model.vo.EmpBoardImage;
 import com.kh.mate.erp.model.vo.EmpBoardReply;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
@@ -202,7 +202,34 @@ public class ErpServiceImpl implements ErpService {
 		return erpDAO.updateReply(map);
 	}
 
+	@Override
+	public int insertEmpBoard(EmpBoard empBoard) {
+		int result = erpDAO.inserEmpBoard(empBoard);
+		if(empBoard.getEmpBoardImageList() != null) {
+			
+			for(EmpBoardImage empBoardImage : empBoard.getEmpBoardImageList()) {
+				
+				empBoardImage.setBoardNo(empBoard.getBoardNo());
+				result = erpDAO.inserEmpBoardImage(empBoardImage);
+				
+			}
+			
+		}
+		
+		return result;
+	}
 
+	@Override
+	public EmpBoardImage empBoardFileDownload(int boardImageNo) {
+		return erpDAO.empBoardFileDownload(boardImageNo);
+	}
+
+	@Override
+	public List<Product> erpProductList() {
+		return erpDAO.erpProductList();
+	}
+
+	
 	
 	
 	

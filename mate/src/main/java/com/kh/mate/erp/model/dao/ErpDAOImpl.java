@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
+import com.kh.mate.erp.model.vo.EmpBoardImage;
 import com.kh.mate.erp.model.vo.EmpBoardReply;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
@@ -158,6 +159,26 @@ public class ErpDAOImpl implements ErpDAO {
 	@Override
 	public int updateReply(Map<String, Object> map) {
 		return sqlSession.update("erpBoard.updateReply", map);
+	}
+
+	@Override
+	public int inserEmpBoard(EmpBoard empBoard) {
+		return sqlSession.insert("erpBoard.insertEmpBoard", empBoard);
+	}
+
+	@Override
+	public int inserEmpBoardImage(EmpBoardImage empBoardImage) {
+		return sqlSession.insert("erpBoard.insertEmpBoardImage", empBoardImage);
+	}
+
+	@Override
+	public EmpBoardImage empBoardFileDownload(int boardImageNo) {
+		return sqlSession.selectOne("erpBoard.empBoardFileDownload", boardImageNo);
+	}
+
+	@Override
+	public List<Product> erpProductList() {
+		return sqlSession.selectList("erpBoard.erpProductList");
 	}
 	
 	

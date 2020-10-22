@@ -104,9 +104,7 @@ public class ProductServiceImpl implements ProductService {
 	public int insertReview(Map<String, Object> param) {
 		return productDAO.insertReview(param);
 	}
-	
-	
-	
+
 
 	
 	

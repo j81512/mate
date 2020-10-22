@@ -11,14 +11,33 @@
 		order by
 			reg_date desc
 	</select>
-	<select id="selectOneEmpBoard" resultType="EmpBoard">
-		select 
-			*	
-		from 
-			board 
-		 where board_no = #{ no }
+	<select id="selectOneEmpBoard" resultMap="empBoardCollection">
+		select
+		    B.*,
+		    bi.board_image_no,
+		    bi.original_filename,
+		    bi.renamed_filename
+		from board B
+		left join board_images bi 
+		on  b.board_no =  bi.board_no
+		where b.board_no = #{ no }
 	</select>
 	
+	<resultMap type="empBoard" id="empBoardCollection">
+		<id column="board_no" property="boardNo"/>
+		<result column="title" property="title"/>
+		<result column="category" property="category"/>
+		<result column="content" property="content"/>
+		<result column="emp_id" property="empId"/>
+		<result column="reg_date" property="regDate"/>
+		<result column="read_count" property="readCount"/>
+		<collection property="empBoardImageList" ofType="EmpBoardImage">
+			<id column="board_image_no" property="boardImageNo"/>
+			<result column="original_filename" property="originalFilename"/>
+			<result column="renamed_filename" property="renamedFilename"/>
+			<result column="download_count" property="downloadCount"/>
+		</collection>
+	</resultMap>
 	<select id="selectReplyList" resultType="EmpBoardReply">
 		select 
 		    * 
@@ -52,4 +71,52 @@
 		 content = #{ content }
 		 where board_reply_no = #{ boardReplyNo } 
 	</update>
+	
+	<insert id="insertEmpBoard">
+		insert into 
+			board 
+		values(seq_board_no.nextval 
+		,#{ category }
+		,#{ title }
+		,#{ content } 
+		,#{ empId}
+		,default
+		, 0)
+		<selectKey order="AFTER" resultType="_int" keyProperty="boardNo">
+			select
+				seq_board_no.currval 			
+ 			from
+ 				dual
+ 		</selectKey>
+	</insert>
+	
+	<insert id="insertEmpBoardImage">
+		insert into
+    		board_images
+        values(
+        seq_board_image_no.nextval,
+        #{ originalFilename },
+        #{ renamedFilename },
+		#{ boardNo }
+		)
+	</insert>
+	
+	<select id="empBoardFileDownload" resultType="empBoardImage">
+		select
+			*
+		from board_images
+		where board_image_no = #{ no }
+	
+	</select>
+	
+	<select  id="erpProductList">
+		select p.product_no,
+			p.product_name,
+			p.category,
+			s.emp_id,
+			p.reg_date,
+			s.stock 
+		from product p left join stock s
+		on (p.product_no = s.product_no)
+	</select>
 </mapper>

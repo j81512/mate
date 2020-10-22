@@ -89,8 +89,7 @@ public class ProductDAOImpl implements ProductDAO {
 	public int insertReview(Map<String, Object> param) {
 		return session.insert("product.insertReview", param);
 	}
-	
-	
+
 	
 	
 	

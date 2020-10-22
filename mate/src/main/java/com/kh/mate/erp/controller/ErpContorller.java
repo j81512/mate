@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,12 +19,15 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,7 +44,9 @@ import com.kh.mate.common.Utils;
 import com.kh.mate.erp.model.service.ErpService;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
+import com.kh.mate.erp.model.vo.EmpBoardImage;
 import com.kh.mate.erp.model.vo.EmpBoardReply;
+import com.kh.mate.product.model.service.ProductService;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -49,6 +56,9 @@ import com.kh.mate.product.model.vo.ProductMainImages;
 public class ErpContorller {
 
 	private static Logger log = LoggerFactory.getLogger(ErpContorller.class);
+	//호근 파일 다운용 Resource 추가
+	@Autowired
+	private ResourceLoader resourceLoader;
 	
 	@Autowired
 	private ErpService erpService;
@@ -628,6 +638,7 @@ public class ErpContorller {
 									ModelAndView mav) {
 		log.debug("no = {}", no);
 	    EmpBoard empBoard = erpService.selectOneEmpBoard(no);
+	    log.debug("empBoard = {}", empBoard);
 		mav.addObject("empBoard", empBoard);
 //		model.addAttribute("board", boardList);
 		mav.setViewName("ERP/EmpBoardDetail");
@@ -635,23 +646,95 @@ public class ErpContorller {
 	}
 	
 	@PostMapping("/ERP/empBoardCkEnroll.do")
-	public String empBoardCKEnroll(RedirectAttributes redirectAttr, EmpBoard empBoard, EMP emp) {
+	public String empBoardCKEnroll(RedirectAttributes redirectAttr, EmpBoard empBoard, EMP emp
+									,HttpServletRequest request
+									,Model model
+									,@RequestParam("upFile") MultipartFile[] upFiles) throws IllegalStateException, IOException {
+//		log.debug("empBoard = {}", empBoard);
+//		log.debug("emp = {}", emp);
+		
+		List<EmpBoardImage> empBoardImageList = new ArrayList<>();
+		String saveDirectory = request.getServletContext().getRealPath("/resources/upload/empBoard");
+		for(MultipartFile upFile : upFiles) {
+			
+			if(upFile.isEmpty()) {
+				 continue;
+			}else {
+				String renamedFilename = Utils.getRenamedFileName(upFile.getOriginalFilename());
+				File dest = new File(saveDirectory, renamedFilename);
+				upFile.transferTo(dest);
+				EmpBoardImage empBoardImage = new EmpBoardImage();
+				empBoardImage.setOriginalFilename(upFile.getOriginalFilename());
+				empBoardImage.setRenamedFilename(renamedFilename);
+				empBoardImageList.add(empBoardImage);
+			}
+			
+			
+		}
+		log.debug("empBoardImageList = {}", empBoardImageList);
+		empBoard.setEmpBoardImageList(empBoardImageList);
+		empBoard.setEmpId(emp.getEmpId());
+		
 		log.debug("empBoard = {}", empBoard);
-		log.debug("emp = {}", emp);
-		Map<String, Object> map = new HashMap<>();
-		map.put("category", empBoard.getCategory());
-		map.put("title", empBoard.getTitle());
-		map.put("content", empBoard.getContent());
-		map.put("empId", emp.getEmpId());
-	
-		return "redirect:/ERP/EmpBoardDetail.do";
+		
+		int result = erpService.insertEmpBoard(empBoard);
+		
+		return "redirect:/ERP/EmpBoardList.do";
 	}
 	
 	// 호근 board image 추가	
 	@PostMapping("/ERP/empBoardimageFileUpload.do")
 	@ResponseBody
-	public String empBoardImage() {
+	public String empBoardImage(HttpServletRequest request, HttpServletResponse response,
+								MultipartHttpServletRequest multiFile) throws Exception {
 		
+		request.setCharacterEncoding("utf-8");
+		JsonObject json = new JsonObject();
+		PrintWriter printWriter = null;
+		OutputStream out = null;
+		MultipartFile file = multiFile.getFile("upload");
+		log.debug("file = {}", file.getOriginalFilename());
+
+		
+		if( file != null) {
+			if(file.getSize() > 0 ) {
+					if( file.getContentType().toLowerCase().startsWith("image/")) {
+						try {
+//							String fileName = file.getOriginalFilename();	 
+							String fileName = Utils.getRenamedFileName(file.getOriginalFilename());
+							byte[] bytes = file.getBytes();
+							String upPath = request.getServletContext().getRealPath("/resources/upload/empBoard");
+							File uploadFile = new File(upPath);
+							if(!uploadFile.exists()) {
+								uploadFile.mkdir();
+							}
+							out = new FileOutputStream(new File(upPath, fileName));
+							out.write(bytes);
+							
+							printWriter = response.getWriter();
+							response.setContentType("text/html");
+							String fileUrl = request.getContextPath() + "/resources/upload/empBoard/" + fileName;
+							
+							json.addProperty("uploaded", 1);
+							json.addProperty("fileName", fileName);
+							json.addProperty("url", fileUrl);
+							printWriter.println(json);
+						
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}finally {
+							if(out != null)
+								out.close();
+							if(printWriter !=  null)
+								printWriter.close();
+							
+						}
+						
+					}
+			}
+			
+		}
 		return null;
 	}
 	
@@ -693,6 +776,7 @@ public class ErpContorller {
 		map.put("isAvailable", Available);
 		return map;
 	}
+	
 	@PostMapping("/ERP/replyUpdateReal.do")
 	@ResponseBody
 	public Map<String, Object> replyUpdate(@RequestParam("boardReplyNo") int boardReplyNo, @RequestParam("content") String content, RedirectAttributes redirectAttr, Model model) {
@@ -711,4 +795,44 @@ public class ErpContorller {
 		return map;
 	}
 	
+	@RequestMapping("/ERP/fileDownload.do")
+	@ResponseBody
+	public Resource empBoardDownload(@RequestParam("no") int boardImageNo
+									,HttpServletRequest request
+									,HttpServletResponse response
+									,@RequestHeader("user-agent") String userAgent) throws UnsupportedEncodingException {
+		
+		log.debug("no = {}", boardImageNo);
+		EmpBoardImage empBoardImage = erpService.empBoardFileDownload(boardImageNo);
+		log.debug("empBoardImage = {}", empBoardImage);
+		String saveDirectory = request.getServletContext().getRealPath("/resources/upload/empBoard");
+		File downFile = new File(saveDirectory, empBoardImage.getRenamedFilename());
+		
+		Resource resource = resourceLoader.getResource("file:" + downFile);
+		boolean isMSIE = userAgent.indexOf("MSIE") != -1 
+          	  || userAgent.indexOf("Trident") != -1;
+		String originalFilename = empBoardImage.getOriginalFilename();
+		  if(isMSIE){
+		      originalFilename = URLEncoder.encode(originalFilename, "UTF-8")
+		      							 .replaceAll("\\+", "%20");
+		  }else{
+		        originalFilename = new String(originalFilename.getBytes("UTF-8"),"ISO-8859-1");
+		   }
+		  response.setContentType("application/octet-stream; charset=utf-8");
+		  response.addHeader("Content-Disposition", "empBoardImage; filename=\"" + originalFilename + "\"");
+		  return resource;
+		
+	}
+	
+	@GetMapping("/ERP/productList.do")
+	@ResponseBody
+	public Map<String, Object> productList(Model model) {
+		Map<String, Object> map = new HashMap<>();
+		List<Product> list = erpService.erpProductList();
+		map.put("productList", list);
+		log.debug("map = {}", map);
+		model.addAttribute("map", map);
+	return map;
+	}
+
 }

@@ -311,7 +311,7 @@ CREATE TABLE BOARD_INFO (
 	board_info_no	number		NOT NULL,
 	board_no	number		NOT NULL,
 	product_no	number		NOT NULL,
-	amount	number		NOT NULL,
+	amunto	number		NOT NULL,
     
     constraint pk_board_info primary key (board_info_no),
     constraint fk_board_info_board_no foreign key (board_no)
