@@ -75,5 +75,7 @@ public interface ErpDAO {
 
 	List<Product> erpProductList();
 
+	int insertRequestStock(EmpBoard empBoard);
+
 
 }

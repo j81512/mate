@@ -41,6 +41,7 @@ function empBoardEnroll(){
 			<th>작성자</th>
 			<th>카테고리</th>
 			<th>작성일</th>
+			<th>조회수</th>
 			<th>활성화 여부</th> 
 		</tr>
 		<c:if test="${ not empty empBoardList }">
@@ -51,6 +52,7 @@ function empBoardEnroll(){
 				<td>${ board.empId }</td>	
 				<td>${ board.category == 'ntc' ? "공지사항"  : board.category eq 'req' ? '요청' : board.category eq 'adv' ? '광고' : board.category eq 'def' ? '일반' : board.category eq 'evt' ? '이벤트' : ''}</td> 
 				<td><fmt:formatDate value="${ board.regDate }" pattern="yyyy-MM-dd"/></td>
+				<td><a href="${ pageContext.request.contextPath }/ERP/boardReadCount"></a></td>
 				<td>${ board.enabled }</td> 
 		</tr>
 		</c:forEach>

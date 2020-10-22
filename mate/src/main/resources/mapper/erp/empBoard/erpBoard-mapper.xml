@@ -31,6 +31,9 @@
 		<result column="emp_id" property="empId"/>
 		<result column="reg_date" property="regDate"/>
 		<result column="read_count" property="readCount"/>
+		<result column="board_info_no" property="boardInfoNo"/>
+		<result column="product_no" property="productNo"/>
+		<result column="amount" property="amount"/>
 		<collection property="empBoardImageList" ofType="EmpBoardImage">
 			<id column="board_image_no" property="boardImageNo"/>
 			<result column="original_filename" property="originalFilename"/>
@@ -109,14 +112,37 @@
 	
 	</select>
 	
-	<select  id="erpProductList">
+	<select  id="erpProductList" resultMap="empProductCollection">
 		select p.product_no,
 			p.product_name,
 			p.category,
 			s.emp_id,
 			p.reg_date,
-			s.stock 
+			s.stock,
+            (select emp_name from emp where emp_id= p.manufacturer_id) as emp_name
 		from product p left join stock s
-		on (p.product_no = s.product_no)
+				on (p.product_no = s.product_no)
 	</select>
+	
+	<resultMap type="product" id="empProductCollection">
+		<id column="product_no" property="productNo"/>
+		<result column="product_name" property="productName"/>
+		<result column="category" property="category"/>
+		<result column="emp_id" property="empId"/>
+		<result column="reg_date" property="regDate"/>
+		<result column="stock" property="stock"/>
+		<result column="emp_name" property="empName"/>
+	</resultMap>
+	
+	<insert id="insertRequestStock">
+		insert into
+			board_info
+			values(
+			    seq_board_info_no.nextval,
+			    #{ boardNo },
+			    #{ productNo},
+			    #{ amount}
+			)
+	</insert>
+
 </mapper>

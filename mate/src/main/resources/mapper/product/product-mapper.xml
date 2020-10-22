@@ -18,7 +18,7 @@
     		on 
     	C.product_no = P.product_no
     where
-    	member_id = #{memberId}
+    	member_id = #{ memberId }
 	</select>
  
  	<select id="selectProductListAll" resultType="product">

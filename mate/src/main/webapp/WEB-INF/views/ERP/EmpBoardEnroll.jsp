@@ -88,9 +88,15 @@
 	resize: none;
 	width: 100%;
 }
+.changeColor {
+background-color: #bff0ff;
+}
+
 </style>
 <script>
+
 $(function(){
+
 	CKEDITOR.replace("content",{
 		filebrowserUploadUrl : "${ pageContext.request.contextPath }/ERP/empBoardimageFileUpload.do"
 	});
@@ -125,7 +131,7 @@ $(function(){
 					method:"get",
 					dataType: "json",
 					success: function(data){
-						console.log(data);
+						/* console.log(data); */
 						displayProductList(data);
 					},
 					error: function(xhr, status, err){
@@ -139,24 +145,43 @@ $(function(){
 				$('.productLayer').hide();
 			}
 		});
+
+	$("#reqButton").click(function(){
+		console.log("reqButton");
+		var $frm = $("#requestStockFrm");
+		var $confirm = confirm("재고 요청을 하시겠습니까?");
+		if($confirm == true){
+			$frm.submit();		
+		}else{
+			alert("취소되었습니다.");
+			closeReviewModal();
+		}	
 		
+	});
+		
+				
 });
 
-function displayProductList(data){
-	console.log(data);
-	var $productList = $("#productList");
-	var html = "<table class='table'>"
-		+"<tr>"
-		+"<td>번호</td>"
-		+"<td>음식점</td>"
-		+"<td>음식이름</td>"
-		+"<td>가격</td>"
-		+"<td>유형</td>"
-		+"<td>맛</td>"
-		+"</tr>";		
 
-	html += "</table>";
+function displayProductList(data){
+  console.log(data.productList);
+	var $productList = $("#productList");
+	var html = '<select class="form-control" name="productNo" id="productNo_">';		
+	   
+	var p = data.productList;
+	if( p.length > 0 ){
+		for(var i in p){
+			/* console.log(p); */
+			var m = p[i];
+			html += "<option value="+ m.productNo+">" + m.productName+ "</option>";
+					
+		} 
+	}
+	html += "</select>"
+	html += '<input type="number" name="amount" placeholder="상품 수량을 입력하세요" />';
 	$productList.html(html);
+
+	
 }
 
 function closeReviewModal(){
@@ -164,16 +189,13 @@ function closeReviewModal(){
 
 }
 
+
 function revoke(){
 	var reCofrim = confirm("정말로 취소하시겠습니까?");
 	if(reCofrim)
 		history.go(-1);
 }
 
-$("#erpBoardFrm").submit(function(){
-
-	return false;
-});
 
 $('#category_').change(function() {
 	var state = $('#category_ option:selected').val();
@@ -184,6 +206,9 @@ $('#category_').change(function() {
 		$('.productLayer').hide();
 	}
 });
+
+	
+	
 </script>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp" />
 
@@ -207,6 +232,8 @@ $('#category_').change(function() {
 				  <option value="evt">이벤트</option>
 				</select>
 			   </div>
+			   <div class="product" id="productList">
+			   </div>
 			  <div class="custom-file">
 			  	<input type="file" class="custom-file-input" name="upFile" id="upFile1">
      			<label class="custom-file-label" for="upFile1">파일을 선택하세요</label>
@@ -225,32 +252,6 @@ $('#category_').change(function() {
 			 	<input type="button"  value="취소" onclick="revoke();"/>
 			 </div>
 		</form>
-<!-- 카테고리 요청 선택시 뜨는 모달 창 -->
-<div class="review-modal" id="review-modal">
-	<div class="review-modal-section">
-		<div class="review-modal-head">
-			<a href="javascript:closeReviewModal();" class="modal-close">X</a>
-			<p class="review-modal-title">상품에 대한 리뷰와 평점을 작성해주세요.</p>
-		</div>
-		
-		<form action="${ pageContext.request.contextPath }/ERP/requestStock.do">
-		
-			<div class="review-modal-body">
-				<input type="hidden" name="productNo" />
-				<input type="text" name="product" />
-				<input type="number" name="product" />
-			</div>
-			<div class="product" id="productList">
-				
-			</div>
-			<div class="review-modal-footer">
-				<input class="modal-submit modal-btn" type="submit" value="발주 신청" />
-				<input class="modal-cancel modal-btn" type="button" value="취소" onclick="closeReviewModal();"/>
-				<input type="hidden" name="purchaseLogNo" id="hiddenPurchaseLogNo"/>
-			</div>
-		
-		</form>
-	</div>
-</div>
+
  <!--호근 푸터 처리  -->
 <jsp:include page="/WEB-INF/views/common/footerE.jsp" />

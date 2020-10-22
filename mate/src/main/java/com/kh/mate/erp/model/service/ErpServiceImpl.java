@@ -205,6 +205,8 @@ public class ErpServiceImpl implements ErpService {
 	@Override
 	public int insertEmpBoard(EmpBoard empBoard) {
 		int result = erpDAO.inserEmpBoard(empBoard);
+		
+
 		if(empBoard.getEmpBoardImageList() != null) {
 			
 			for(EmpBoardImage empBoardImage : empBoard.getEmpBoardImageList()) {
@@ -213,9 +215,16 @@ public class ErpServiceImpl implements ErpService {
 				result = erpDAO.inserEmpBoardImage(empBoardImage);
 				
 			}
-			
+		
 		}
 		
+		if(empBoard.getCategory().equals("req")) {
+			log.debug("호출은 되냐?");
+			empBoard.setBoardNo(empBoard.getBoardNo());
+			result = erpDAO.insertRequestStock(empBoard);
+	
+			
+		}
 		return result;
 	}
 

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -46,7 +47,6 @@ import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.erp.model.vo.EmpBoardImage;
 import com.kh.mate.erp.model.vo.EmpBoardReply;
-import com.kh.mate.product.model.service.ProductService;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -635,8 +635,21 @@ public class ErpContorller {
 	
 	@RequestMapping("/ERP/EmpBoardDetail.do")
 	public ModelAndView empBoardDetail(@RequestParam("no") int no,
-									ModelAndView mav) {
+									ModelAndView mav
+									,HttpServletRequest request) {
 		log.debug("no = {}", no);
+		//조회수 관련 처리 시작
+		Cookie[] cookies = request.getCookies();
+		String boardCookieVal = "";
+		boolean hasRead = false;
+		
+		if(cookies != null) {
+			for(Cookie c : cookies) {
+				String name = c.getName();
+				String value = c.getValue();
+			}
+		}
+		
 	    EmpBoard empBoard = erpService.selectOneEmpBoard(no);
 	    log.debug("empBoard = {}", empBoard);
 		mav.addObject("empBoard", empBoard);
@@ -832,7 +845,9 @@ public class ErpContorller {
 		map.put("productList", list);
 		log.debug("map = {}", map);
 		model.addAttribute("map", map);
-	return map;
+		return map;
 	}
+	
+	
 
 }

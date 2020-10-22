@@ -180,12 +180,14 @@ public class ErpDAOImpl implements ErpDAO {
 	public List<Product> erpProductList() {
 		return sqlSession.selectList("erpBoard.erpProductList");
 	}
-	
-	
-	
-	
-	
-  
 
+	@Override
+	public int insertRequestStock(EmpBoard empBoard) {
+		return sqlSession.insert("erpBoard.insertRequestStock", empBoard);
+	}
+
+
+	
+	
 	
 }
