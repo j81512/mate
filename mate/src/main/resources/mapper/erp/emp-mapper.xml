@@ -99,5 +99,34 @@
 			enroll_date
 	</select>
 	
+	<select id="ioLogList" resultType="IoLog">
+		select
+			*
+		from
+			IoLog	
+	</select>
+	
+	<select id="productList" resultType="Product">
+		select
+			*
+		from
+			Product
+			
+	</select>
+	
+	<select id="receiveList" resultType="ReceiveLog">
+		select
+			*
+		from
+			ReceiveLog
+			
+	</select>
+	
+	<select id="requestLogList" resultType="RequestLog">
+		select
+			*
+		from
+			RequestLog
+	</select>
 
 </mapper>

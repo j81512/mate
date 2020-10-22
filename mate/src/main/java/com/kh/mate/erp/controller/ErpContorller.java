@@ -41,6 +41,9 @@ import com.kh.mate.erp.model.service.ErpService;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.erp.model.vo.EmpBoardReply;
+import com.kh.mate.log.vo.IoLog;
+import com.kh.mate.log.vo.Receive;
+import com.kh.mate.log.vo.RequestLog;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -85,23 +88,55 @@ public class ErpContorller {
 	
 	//재고확인 진입
 	@RequestMapping("/ERP/StockLog.do")
-	public ModelAndView StockLog(ModelAndView mav) {	
-		mav.setViewName("/ERP/StockLog");
-		return mav;
+	public String StockLog(Model model) {	
+		List<IoLog> list = erpService.ioLogList();
+		List<Product> list2 = erpService.productList();
+		List<Receive> list3 = erpService.receiveList();
+		
+		log.debug("list = {} ", list);
+		log.debug("list2 = {} ", list2);
+		log.debug("list3 = {} ", list3);
+		
+		model.addAttribute("list", list);
+		model.addAttribute("list2", list2);
+		model.addAttribute("list3", list3);
+		
+		return "ERP/StockLog";
 	}
 	
 	//발주확인 진입
 	@RequestMapping("/ERP/OrderLog.do")
-	public ModelAndView OrderLog(ModelAndView mav) {	
-		mav.setViewName("/ERP/OrderLog");
-		return mav;
+	public String OrderLog(Model model) {	
+		List<RequestLog> list = erpService.requestList();
+		List<Product> list2 = erpService.productList();
+		List<EMP> list3 = erpService.empList();
+		
+		model.addAttribute("list", list);
+		model.addAttribute("list2", list2);
+		model.addAttribute("list3", list3);
+		return "ERP/OrderLog";
 	}
 	
 	//매출확인 진입
 	@RequestMapping("/ERP/PriceLog.do")
-	public ModelAndView PriceLog(ModelAndView mav) {	
-		mav.setViewName("/ERP/PriceLog");
-		return mav;
+	public String PriceLog(Model model) {	
+		List<IoLog> list = erpService.ioLogList();
+		
+		model.addAttribute("list", list);
+		return "ERP/PriceLog";
+	}
+	
+	//입출고 확인 진입
+	@RequestMapping("/ERP/ReceiveLog.do")
+	public String ReceiveLog(Model model) {	
+		List<IoLog> list = erpService.ioLogList();
+		List<Product> list2 = erpService.productList();
+		List<EMP> list3 = erpService.empList();
+		
+		model.addAttribute("list", list);
+		model.addAttribute("list2", list2);
+		model.addAttribute("list3", list3);
+		return "ERP/ReceiveLog";
 	}
 	
 	
