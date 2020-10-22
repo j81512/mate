@@ -4,21 +4,24 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="product">
 
-	<select id="selectProductListMap" resultMap="productMap">
 	
-	</select>
-	
-	<select id="selectCartList" resultMap="cartMap">
-	select
-    	*
-	from
-    	cart C 
-    		inner join 
-    	product p 
-    		on 
-    	C.product_no = P.product_no
-    where
-    	member_id = #{memberId}
+	<select id="selectCartList" resultType="cart">
+		select
+	    	C.member_id member_id,
+            C.product_no product_no,
+            C.amount amount,
+            p.product_name product_name,
+            p.reg_date reg_date,
+            p.category category,
+            p.price price
+		from
+	    	cart C 
+	    		inner join 
+	    	product p 
+	    		on 
+	    	C.product_no = P.product_no
+	    where
+	    	member_id = #{ memberId }
 	</select>
  
  	<select id="selectProductListAll" resultType="product">
@@ -31,14 +34,7 @@
  	
  	<select id="selectProductOne" resultType="product">
  		select
- 			P.*,
-            ( 
-            select 
-            	count(*)
-            from 
-                product_main_images PMI
-            where 
-                P.product_no = PMI.product_no ) image_count
+ 			P.*
  		from
  			product P
  		where
@@ -81,6 +77,17 @@
  			where category = #{category}
  	</select>
  	
+ 	<select id="selectAddressList" resultType="address">
+ 		select
+ 			*
+ 		from
+ 			address
+ 		where
+ 			member_id = #{memberId}
+ 		order by 
+ 			reg_date desc
+ 	</select>
+ 	
  	
  	<insert id="insertCart">
  		insert into
@@ -91,7 +98,6 @@
  		#{productNo},
  		#{amount}
  		)
- 	
  	</insert>
  	
  	<insert id="insertReview">
@@ -105,24 +111,15 @@
  			default
  		)
  	</insert>
+
+ 	<delete id="deleteFromCart">
+ 		delete from
+ 			cart
+ 		where
+ 			member_id = #{memberId} and
+ 			product_no = #{productNo}
+ 	</delete>
  	
- 	<resultMap type="product" id="productMap">
- 		<id column="product_no" property="productNo"/>
- 		<result column="product_name" property="productName"/>
- 		<result column="reg_date" property="regDate"/>
- 		<result column="category" property="category"/>
- 		<result column="content" property="content"/>
- 		<result column="price" property="price"/>
- 		<result column="emp_id" property="empId"/>
- 		<result column="enabled" property="enabled"/>
- 		
- 		<collection property="productMainImages" ofType="productMainImages">
-	 		<id column="product_main_image_no" property="productMainImageNo"/>
-	 		<result column="original_filename" property="originalFilename"/>
-	 		<result column="renamed_filename" property="renamedFilename"/>
-	 		<result column="product_no" property="productNo"/>
- 		</collection>
- 	</resultMap>
  	
  	
  	<resultMap type="cart" id="cartMap">

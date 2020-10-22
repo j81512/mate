@@ -6,7 +6,13 @@
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>    
 <jsp:include page="/WEB-INF/views/common/headerS.jsp"></jsp:include>
 
-<table class="table">
+<c:if test="${ not empty msg }">
+	<script>
+		alert("${msg}");
+	</script>
+</c:if>
+
+<table class="table table-hover">
   <thead>
     <tr>
       <th scope="col">#</th>
@@ -16,14 +22,18 @@
       <th scope="col">가격</th>
       <th scope="col">수량</th>
       <th scope="col">가격</th>
+      <th scope="col">삭제</th>
     </tr>
   </thead>
   <tbody>
     <c:if test="${ not empty cart }">
-    <c:forEach items="${cart}" var="c">
+    <c:forEach items="${cart}" var="c" varStatus="vs">
     	<tr>
-    		<th scope="row">1</th>
-    		<td>상품 이미지 조인 한번 더 필요함</td>
+    		<th scope="row">${vs.count }</th>
+    		<td>
+    			<img src="${ pageContext.request.contextPath }/resources/upload/mainimages/${ c.selectedProduct.pmiList.get(0).renamedFilename }" 
+    				 alt="상품이미지" width="50px"/>
+    		</td>
     		<td>${ c.selectedProduct.productName }</td>
     		<td>
 	    		<c:if test="${ c.selectedProduct.category eq 'fg' }">
@@ -46,13 +56,31 @@
     		<td>
     			<fmt:formatNumber value="${c.amount * c.selectedProduct.price}" pattern="#,###" />원
     		</td>
+    		
+    		<td>
+    			<div class="btn btn-group">
+    				<button type="button" class="btn btn-danger" onclick="deletFromCart(${c.productNo});">삭제</button>
+    			</div>
+    		</td>
     	</tr>
     </c:forEach>
     </c:if>
   </tbody>
-  <div class="sum">
-  합계금액 : <c:forEach items="${cart}" var="sum"><fmt:formatNumber value="${ sum.amount * sum.selectedProduct.price }" pattern="#,###"/>원</c:forEach>
-  </div>
+<caption> 합계금액 : <c:forEach items="${cart}" var="sum"><fmt:formatNumber value="${ sum.amount * sum.selectedProduct.price }" pattern="#,###"/>원</c:forEach></caption>
+	<form action="">
+		<button type="">구매 하기</button>	
+		<button type="">뒤로 가기</button>	
+		<button type="">구매하기</button>	
+	</form>
+
 </table>
+
+<script>
+function deletFromCart(no) {
+
+	location.href = "${ pageContext.request.contextPath }/product/deleteFromCart.do?productNo="+no;
+	
+}
+</script>
 
 <jsp:include page="/WEB-INF/views/common/footerS.jsp"></jsp:include>

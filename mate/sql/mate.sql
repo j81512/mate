@@ -11,7 +11,7 @@
 -- 유저 삭제 (system 계정)
 --=====================================
 --select sid,serial#,username,status from v$session where schemaname = 'MATE'; --여기서 나온 숫자를
---alter system kill session '91,3539'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
+--alter system kill session '115,825'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
 --DROP USER mate CASCADE;
 --=====================================
 -- Drop 관련
@@ -93,8 +93,13 @@ CREATE TABLE MEMBER (
     constraint chk_member_gender check (gender in ('M','F'))
 );
 
+<<<<<<< HEAD
 insert into member values('admin', '1234', '본사관리자', 'M', '01012341234', default);
 select * from member;
+=======
+
+
+>>>>>>> refs/heads/jongwan_workbranch
 --DROP TABLE Address;
 CREATE TABLE Address (
 	address_name	varchar2(128)		NOT NULL,
@@ -115,7 +120,7 @@ CREATE TABLE Address (
 
 --DROP TABLE EMP;
 --DROP TABLE EMP CASCADE CONSTRAINTS;
-
+select * from cart;
 CREATE TABLE EMP (
 	emp_id	varchar2(15)		NOT NULL,
 	emp_pwd	varchar2(300)		NOT NULL,
@@ -139,6 +144,7 @@ from
     emp
 order by
     enroll_date;
+
 
 
 
