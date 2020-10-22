@@ -52,10 +52,23 @@ function empBoardEnroll(){
 				<td>${ board.empId }</td>	
 				<td>${ board.category == 'ntc' ? "공지사항"  : board.category eq 'req' ? '요청' : board.category eq 'adv' ? '광고' : board.category eq 'def' ? '일반' : board.category eq 'evt' ? '이벤트' : ''}</td> 
 				<td><fmt:formatDate value="${ board.regDate }" pattern="yyyy-MM-dd"/></td>
-				<td><a href="${ pageContext.request.contextPath }/ERP/boardReadCount"></a></td>
+				<td>${ board.readCount }</td>
 				<td>${ board.enabled }</td> 
 		</tr>
 		</c:forEach>
 		</c:if>
 	</table>
+	<nav aria-label="..." style="text-align: center;">
+	<div class="pageBar">
+		<ul class="pagination">
+		<c:if test="${not empty pageBar }">
+		<c:forEach items="${ pageBar }" var="p">
+			<li>
+			  	${ p }
+			</li>
+		</c:forEach>
+		</c:if>
+	</div>
+		</ul>
+	</nav>
 <jsp:include page="/WEB-INF/views/common/footerE.jsp" />

@@ -41,6 +41,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.JsonObject;
+import com.kh.mate.common.Paging;
 import com.kh.mate.common.Utils;
 import com.kh.mate.erp.model.service.ErpService;
 import com.kh.mate.erp.model.vo.EMP;
@@ -152,17 +153,40 @@ public class ErpContorller {
 	}
 	
 
-	@RequestMapping("/ERP/EmpBoardList.do")
-	public String empBoardList(Model model) {
+	@RequestMapping(value="/ERP/EmpBoardList.do", method=RequestMethod.GET)
+	public String empBoardList(Model model, HttpServletRequest request, HttpServletResponse response) {
 //		호근 empList.do가 게시판 가르킴  수정하겠음
+		//paging bar 추가
+		int numPerPage = 10;
+		int cPage = 1;
+		try {
+			
+			cPage = Integer.parseInt(request.getParameter("cpage"));
+		}catch(NumberFormatException e) {
+			
+		}
+			
 		List<EMP> list = erpService.empList();
-		List<Map<String, Object>> empBoardList = erpService.empBoardList();
+		//page map처리
+		Map<String, Object> map = new HashMap<>();
+		map.put("cPage", cPage);
+		map.put("numPerPage", numPerPage);
+		List<Map<String, Object>> empBoardList = erpService.empBoardList(map);
 		log.debug("list = {} ", list);
 		log.debug("empBoardList = {} ", empBoardList);
+		int totalContents = erpService.getTotalContent();
+		
+		log.debug("totalContents", totalContents);
+	
+		String url = request.getRequestURI();
+		log.debug("url = {}", url);
+		String pageBar = Paging.getPageBarHtml(cPage, numPerPage, totalContents, url);
 		
 		model.addAttribute("list", list);
 		//model 추가함
 		model.addAttribute("empBoardList", empBoardList);
+		//page model 추가
+		model.addAttribute("pageBar", pageBar);
 		return "ERP/empList";
 		
 	}
@@ -636,7 +660,8 @@ public class ErpContorller {
 	@RequestMapping("/ERP/EmpBoardDetail.do")
 	public ModelAndView empBoardDetail(@RequestParam("no") int no,
 									ModelAndView mav
-									,HttpServletRequest request) {
+									,HttpServletRequest request
+									,HttpServletResponse response) {
 		log.debug("no = {}", no);
 		//조회수 관련 처리 시작
 		Cookie[] cookies = request.getCookies();
@@ -645,12 +670,32 @@ public class ErpContorller {
 		
 		if(cookies != null) {
 			for(Cookie c : cookies) {
+				log.debug("cookies={}", cookies.toString());
 				String name = c.getName();
 				String value = c.getValue();
+				log.debug("name={}", name);
+				log.debug("value ={}", value.toString());
+				
+				if("erpBoardCookie".equals(name)) {
+					boardCookieVal = value;
+					log.debug("boardCookie = {}", boardCookieVal);
+				}
+				
+				if(value.contains("[" + no + "]")) {
+					hasRead = true;
+					break;
+				}
 			}
 		}
 		
-	    EmpBoard empBoard = erpService.selectOneEmpBoard(no);
+		if(hasRead == false) {
+			Cookie erpBoardCookie = new Cookie("erpBoardCookie", boardCookieVal + "[" + no + "]");
+			erpBoardCookie.setMaxAge(365*24*60*60);
+			erpBoardCookie.setPath(request.getContextPath()+"/ERP/EmpBoardDetail.do");
+			response.addCookie(erpBoardCookie);
+		}
+		
+	    EmpBoard empBoard = erpService.selectOneEmpBoard(no, hasRead);
 	    log.debug("empBoard = {}", empBoard);
 		mav.addObject("empBoard", empBoard);
 //		model.addAttribute("board", boardList);

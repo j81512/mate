@@ -4,12 +4,16 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="erpBoard">
 	<select id="empBoard" resultType="EmpBoard">
-		select
-			*
-		from
-			board
-		order by
-			reg_date desc
+		SELECT * 
+		FROM (
+			SELECT ROWNUM as rnum, B.* 
+				FROM (
+						SELECT * 
+						FROM board
+						ORDER BY reg_date DESC 
+						) B
+				)
+		WHERE rnum BETWEEN #{ cPage } AND #{ numPerPage }
 	</select>
 	<select id="selectOneEmpBoard" resultMap="empBoardCollection">
 		select
@@ -144,5 +148,17 @@
 			    #{ amount}
 			)
 	</insert>
-
+	
+	<update id="increaseReadCount">
+		update board 
+			set read_count = read_count + 1
+			where board_no = #{ no } 
+		
+	</update>
+	
+	<select id="getTotalContent" resultType="int">
+	   <![CDATA[
+		select count(*) total_contents from board
+		  ]]>
+	</select>
 </mapper>

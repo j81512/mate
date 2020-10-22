@@ -50,7 +50,7 @@ public interface ErpDAO {
 
 	int productOrder(Product product);
 	
-	List<Map<String, Object>> empBoardList();
+	List<Map<String, Object>> empBoardList(Map<String, Object> map);
 	
 	EmpBoard selectOneEmpBoard(int no);
 
@@ -76,6 +76,11 @@ public interface ErpDAO {
 	List<Product> erpProductList();
 
 	int insertRequestStock(EmpBoard empBoard);
+
+	int increaseReadCount(int no);
+
+	int getTotalContent();
+
 
 
 }

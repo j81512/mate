@@ -39,9 +39,9 @@ public interface ErpService {
 
 	int productOrder(Product product);
 
-	List<Map<String, Object>> empBoardList();
+	List<Map<String, Object>> empBoardList(Map<String, Object> map);
 
-	EmpBoard selectOneEmpBoard(int no);
+	EmpBoard selectOneEmpBoard(int no, boolean hasRead);
 
 	List<EmpBoardReply> replyList(int boardNo);
 
@@ -60,6 +60,9 @@ public interface ErpService {
 	EmpBoardImage empBoardFileDownload(int boardImageNo);
 
 	List<Product> erpProductList();
+
+	int getTotalContent();
+
 
 
 

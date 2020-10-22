@@ -132,8 +132,8 @@ public class ErpDAOImpl implements ErpDAO {
 
 	//호근 추가
 	@Override
-	public List<Map<String, Object>> empBoardList() {
-		return sqlSession.selectList("erpBoard.empBoard");
+	public List<Map<String, Object>> empBoardList(Map<String, Object> map) {
+		return sqlSession.selectList("erpBoard.empBoard", map);
 	}
 
 	@Override
@@ -186,7 +186,18 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.insert("erpBoard.insertRequestStock", empBoard);
 	}
 
+	@Override
+	public int increaseReadCount(int no) {
+		return sqlSession.update("erpBoard.increaseReadCount", no);
+	}
 
+	@Override
+	public int getTotalContent() {
+			int totalContenst = 0;
+		return (Integer)sqlSession.selectOne("erpBoard.getTotalContent");
+	}
+
+	
 	
 	
 	

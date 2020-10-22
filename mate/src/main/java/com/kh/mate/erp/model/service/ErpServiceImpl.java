@@ -172,12 +172,17 @@ public class ErpServiceImpl implements ErpService {
 
 	//호근 emp 게시판 추가
 	@Override
-	public List<Map<String, Object>> empBoardList() {
-		return erpDAO.empBoardList();
+	public List<Map<String, Object>> empBoardList(Map<String, Object> map) {
+		return erpDAO.empBoardList(map);
 	}
 
 	@Override
-	public EmpBoard selectOneEmpBoard(int no) {
+	public EmpBoard selectOneEmpBoard(int no, boolean hasRead) {
+		int result = 0;
+		if(hasRead == false) {
+			result = erpDAO.increaseReadCount(no);
+		}
+		
 		return erpDAO.selectOneEmpBoard(no);
 	}
 
@@ -238,8 +243,12 @@ public class ErpServiceImpl implements ErpService {
 		return erpDAO.erpProductList();
 	}
 
-	
-	
-	
+	@Override
+	public int getTotalContent() {
+		
+		int totalContents = erpDAO.getTotalContent();
+		return totalContents;
+	}
+
 	
 }
