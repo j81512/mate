@@ -790,6 +790,22 @@ begin
 end;
 /
 
+-- 상품 발주시 재고테이블 insert
+create or replace trigger trg_stock
+    before
+    insert on request_log
+    for each row
+begin
+    insert into
+        stock
+    values(
+        :new.product_no,
+        :new.emp_id,
+        0
+    );
+end;
+/
+
  --===================================
 --샘플데이터
 --===================================
