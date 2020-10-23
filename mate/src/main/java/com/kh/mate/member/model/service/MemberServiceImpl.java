@@ -56,6 +56,16 @@ public class MemberServiceImpl implements MemberService {
 		return memberDAO.insertAddress(param);
 	}
 
+	@Override
+	public int successPurchase(int purchaseNo) {
+		return memberDAO.successPurchase(purchaseNo);
+	}
+
+	@Override
+	public int failPurchase(int purchaseNo) {
+		return memberDAO.failPurchase(purchaseNo);
+	}
+
 	
 	
 }

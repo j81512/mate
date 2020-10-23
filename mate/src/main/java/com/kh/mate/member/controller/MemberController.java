@@ -425,18 +425,41 @@ public class MemberController {
 	@RequestMapping("/member/kakaopay.do")
 	public String kakaoPay(@RequestParam("memberId") String memberId,
 						   @RequestParam("sum") String sum,
+						   @RequestParam("purchaseNo") int purchaseNo,
 						   Model model) {
-		log.debug("memberId,sum = {}, {}",memberId, sum);
+		log.debug("memberId,sum = {}, {}, {}",memberId, sum);
+		log.debug("purchaseNo = {}", purchaseNo);
 		
 		Member member = memberService.selectOneMember(memberId);
 		log.debug("member = {}", member);
 		
 		model.addAttribute("member", member);
-		model.addAttribute("amount", sum);
+		model.addAttribute("sum", sum);
+		model.addAttribute("purchaseNo", purchaseNo);
 		
 		return "product/kakaoPay";
 	}
 	
+	@RequestMapping("/member/paySuccess.do")
+	public String paySuccess(@RequestParam("purchaseNo") int purchaseNo,
+			                 RedirectAttributes rAttr){
+		
+		int result = memberService.successPurchase(purchaseNo);
+		
+		return "redirect:/member/myPage.do";
+	}
+	
+	@RequestMapping("/member/payFail.do")
+	public String payFail(@RequestParam("purchaseNo") int purchaseNo,
+						  @RequestParam("memberId") String memberId,
+            			  RedirectAttributes rAttr){
+		
+		int result = memberService.failPurchase(purchaseNo);
+		
+		rAttr.addFlashAttribute("msg", "결제실패하였습니다. 다시 결제해주세요.");
+		
+		return "redirect:/product/selectCart.do?memberId=" + memberId;
+	}
 	
 	//준혁
 	@ResponseBody

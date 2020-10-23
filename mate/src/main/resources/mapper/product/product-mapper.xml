@@ -187,6 +187,7 @@
  			#{purchaseNo},
  			#{productNo},
  			#{amount},
+ 			default,
  			default
  		)
  	</insert>
