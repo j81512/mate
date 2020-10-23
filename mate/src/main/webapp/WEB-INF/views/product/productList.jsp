@@ -41,13 +41,13 @@ li{
 		    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
 			<br />
 			<p>카테고리 선택</p>
-				<label for="PM">프라모델</label>
+				<label for="pm">프라모델</label>
 				<input type="checkbox" name="category" id="pm" value="pm"/>
-				<label for="FG">피규어</label>
+				<label for="fg">피규어</label>
 				<input type="checkbox" name="category" id="fg" value="fg"/>
-				<label for="RC">RC카</label>
+				<label for="rc">RC카</label>
 				<input type="checkbox" name="category" id="rc" value="rc"/>
-				<label for="DR">드론</label>
+				<label for="dr">드론</label>
 				<input type="checkbox" name="category" id="dr" value="dr"/>
 		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
 			<input type="hidden" name="category" value="${ category }" />
@@ -119,7 +119,7 @@ li{
 </div>
 <div style="display: block; text-align: center;">
 	<c:if test="${ page.startPage != 1 }">
-		<a href="#"onclick="pageing('${ paging.startPage - 1}','${ paging.cntPerPage }')">>&lt;</a>
+		<a href="#"onclick="pageing('${ paging.startPage - 1}','${ paging.cntPerPage }')">&lt;</a>
 	</c:if>
 	<c:forEach begin="${paging.startPage }" end="${paging.endPage }" var="p">
 			<c:choose>
