@@ -383,13 +383,20 @@ public class ErpContorller {
 	}
 	
 	@RequestMapping("/ERP/productOrder.do")
-	public String productOrder(Product product) {
+	public String productOrder(Product product,
+							   RedirectAttributes redirectAttr) {
 		
 		log.debug("product = {}",product);
 		
 		int result = erpService.productOrder(product);
 		
-		return "/ERP/ProductInfo";
+		if(result > 0) {
+			redirectAttr.addFlashAttribute("msg", "발주 요청 완료");
+		}else {
+			redirectAttr.addFlashAttribute("msg", "발주 요청 실패");
+		}
+		
+		return "redirect:/ERP/ProductInfo.do";
 	}
 	
 	
@@ -667,6 +674,65 @@ public class ErpContorller {
 		}
 		
 		return "ERP/ProductInfo";
+	}
+	
+	//발주 요청 가져오기
+	@RequestMapping("/ERP/ProductRequestList.do")
+	public String productRequestList(HttpSession session, Model model) {
+		
+		//로그인 되어있는 아이디 -> 제조사 아이디
+		EMP loginEmp = (EMP)session.getAttribute("loginEmp");
+		
+		//Request_log, product 함께 전송 필요
+		List<RequestLog> listMap = erpService.selectRequestList(loginEmp.getEmpId());
+		
+		model.addAttribute("list", listMap);
+		
+		return "ERP/requestList";
+	}
+		
+	//발주 승인 
+	@RequestMapping("/ERP/appRequest.do")
+	public String appRequest(@RequestParam("requestNo") int requestNo,
+							RedirectAttributes redirectAttr) {
+		
+		int result = erpService.updateRequestToApp(requestNo);
+		if(result > 0) {
+			redirectAttr.addFlashAttribute("msg", "발주 완료");
+		}else {
+			redirectAttr.addFlashAttribute("msg", "발주 실패");
+		}
+		
+		return "redirect:/ERP/ProductRequestList.do";
+	}
+		
+	//발주 거부
+	@RequestMapping("/ERP/refRequest.do")
+	public String refRequest(@RequestParam("requestNo") int requestNo,
+							RedirectAttributes redirectAttr) {
+	
+		int result = erpService.updateRequestToRef(requestNo);
+		if(result > 0) {
+			redirectAttr.addFlashAttribute("msg", "발주요청이 거절되었습니다.");
+		}else {
+			redirectAttr.addFlashAttribute("msg", "요청 처리에 실패하였습니다. 다시 시도하여주세요.");
+		}
+		return "redirect:/ERP/ProductRequestList.do";
+	}
+	
+		//입고 페이지 우회
+	@RequestMapping("/ERP/ProductReceive.do")
+	public String productReceiveList(HttpSession session, Model model) {
+		//로그인 되어있는 아이디 -> 지점아이디
+		EMP loginEmp = (EMP)session.getAttribute("loginEmp");
+		
+		//Request_log, product 함께 전송 필요
+		//List<RequestLog> listMap = erpService.selectRequestList(loginEmp.getEmpId());
+		List<Receive> list = erpService.selectReceiveList(loginEmp.getEmpId());
+		log.debug("list = {}", list);
+		
+		model.addAttribute("list", list);
+		return "ERP/receiveList";
 	}
 	
 	// 호근 관리자 로그인 및 로그인 세션 추가 

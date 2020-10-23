@@ -95,5 +95,13 @@ public interface ErpDAO {
 
 	List<RequestLog> requestList();
 
+	List<RequestLog> selectRequsestList(String empId);
+
+	int updateRequestToApp(int requestNo);
+
+	int updateRequestToRef(int requestNo);
+
+	List<Receive> selectReceiveList(String empId);
+
 
 }
