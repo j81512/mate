@@ -21,6 +21,18 @@ li{
 	display: inline-block;
 }
 </style>
+<script>
+ function pageing(now,cnt){
+	var $nowPage = $('[name = nowPage]');
+	var $cntPerPage = $('[name = cntPerPage]');
+	var $search = $('[name = search]');
+	
+	$nowPage.val(now);
+	$cntPerPage.val(cnt);
+	$search.submit();
+
+	 }
+</script>
 <div class="product-container">
 	<!-- ajax처리 -->
 	 <div class="product-search">
@@ -39,6 +51,8 @@ li{
 				<input type="checkbox" name="category" id="dr" value="dr"/>
 		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
 			<input type="hidden" name="category" value="${ category }" />
+			<input type="hidden" name="nowPage" value="1" />
+			<input type="hidden" name="cntPerPage" value="8" />
 		</form>
 	</div> 
 	
@@ -103,6 +117,24 @@ li{
 		</ul>
 	</div>
 </div>
-	
+<div style="display: block; text-align: center;">
+	<c:if test="${ page.startPage != 1 }">
+		<a href="#"onclick="pageing('${ paging.startPage - 1}','${ paging.cntPerPage }')">>&lt;</a>
+	</c:if>
+	<c:forEach begin="${paging.startPage }" end="${paging.endPage }" var="p">
+			<c:choose>
+				<c:when test="${p == paging.nowPage }">
+					<b>${p }</b>
+				</c:when>
+				<c:when test="${p != paging.nowPage }">
+					<a href="#"onclick="pageing('${ p }','${ paging.cntPerPage }')">${p+1 }</a>
+				</c:when>
+			</c:choose>
+		</c:forEach>
+		<c:if test="${paging.endPage != paging.lastPage}">
+			<a href="#" onclick="pageing('${ paging.endPage+1 }','${ paging.cntPerPage }')">&gt;</a>
+		</c:if>
+
+</div>
 
 <jsp:include page="/WEB-INF/views/common/footerS.jsp"></jsp:include>

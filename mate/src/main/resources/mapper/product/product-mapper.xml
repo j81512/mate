@@ -4,6 +4,10 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="product">
 
+	<select id="countProduct" resultType="_int">
+	select COUNT(*) from product
+	</select>
+	
 	<select id="selectCartList" resultType="cart">
 		select
 	    	C.member_id member_id,
@@ -24,10 +28,9 @@
 	</select>
  
  	<select id="selectProductListAll" resultType="product">
- 		select
- 			*
- 		from
- 			product
+		select * from ( select ROWNUM RN, A.*
+        from (select *from product) A)
+        WHERE RN BETWEEN #{start} and #{end}
  	
  	</select>
  	
@@ -51,7 +54,8 @@
  	
  	
  	<select id="searchProductList" resultType="product">
- 		select * from product
+ 		select * from ( select ROWNUM RN, A.*
+        from (select * from product
  		<where>
  		
  		<if test="cateArr != null">
@@ -68,7 +72,8 @@
  			or content like '%' || #{search} || '%')
  		</if>
  		
- 		</where>
+ 		</where>) A)
+        WHERE RN BETWEEN #{page.start} and #{page.end}
  	</select>
  	
  	<select id="productCategory" resultType="product">

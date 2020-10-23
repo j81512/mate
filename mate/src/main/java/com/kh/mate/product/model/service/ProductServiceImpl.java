@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.mate.common.paging.PagingVo;
 import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.product.model.dao.ProductDAO;
 import com.kh.mate.product.model.vo.Cart;
@@ -23,9 +24,18 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private ProductDAO productDAO;
 	//ch
+	
 	@Override
-	public List<Product> selectProductListAll() {
-		List<Product> list = productDAO.selectProductListAll();
+	public int countProduct() {
+		return productDAO.countProduct();
+	}
+	
+
+
+	@Override
+	public List<Product> selectProductListAll(PagingVo page) {
+		
+		List<Product> list = productDAO.selectProductListAll(page);
 		
 		if(list != null) {
 			for(Product p : list) {
@@ -35,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
 		}
 		return list;
 	}
-	
+
 	@Override
 	public List<Product> searchProductList(Map<String, Object> map) {
 		

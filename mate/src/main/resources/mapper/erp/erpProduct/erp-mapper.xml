@@ -51,8 +51,13 @@
 			s.emp_id branchEmp 
 		from product p left join stock s
 		on (p.product_no = s.product_no)
-		where p.product_no = #{productNo} and
-			s.emp_id = #{eId}
+		<where>
+			p.product_no = #{productNo} 
+			<if test="eId != null and !eId.isempty">
+				and s.emp_id = #{eId}
+			
+			</if>
+		</where>
 	</select>
 	
 	<select id="selectProductOne" resultType="product">

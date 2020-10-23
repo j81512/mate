@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.kh.mate.common.paging.PagingVo;
 import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.member.model.vo.Member;
 import com.kh.mate.product.model.service.ProductService;
@@ -149,18 +150,51 @@ public class ProductController {
 	//CH
 	@RequestMapping(value = "/productList.do",
 					method = RequestMethod.GET)
-	public String productList(Model model) {
+	public String productList(Model model,PagingVo page,String nowPage, String cntPerPage) {
 		
-		List<Product> list = productService.selectProductListAll();
+		int total = productService.countProduct(); 
+		
+		if(nowPage == null && cntPerPage == null) {
+			nowPage = "1";
+			cntPerPage="5";
+		} else if (nowPage == null) {
+			nowPage = "1";
+		} else if (cntPerPage == null) { 
+			cntPerPage = "5";
+		}
+
+		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
+		
+		List<Product> list = productService.selectProductListAll(page);
 		log.debug("list = {}", list);
+		model.addAttribute("page",page);
 		model.addAttribute("list", list);
 		return "product/productList";
 	}
 	
 	@RequestMapping("/searchProduct.do")
-	public String searchProduct(String search, String category,Model model ) {
+	public String searchProduct(String search, String category, PagingVo page,String nowPage, String cntPerPage ,Model model ) {
 		
 		Map<String,Object> map = new HashMap<String, Object>();
+		
+		int total = productService.countProduct(); 
+		log.debug("nowPage = {}",nowPage);
+		log.debug("cntPerPage = {}",cntPerPage);
+		log.debug("total = {}",total);
+		
+		if(nowPage == null && cntPerPage == null) {
+			nowPage = "1";
+			cntPerPage="5";
+		} else if (nowPage == null) {
+			nowPage = "1";
+		} else if (cntPerPage == null) { 
+			cntPerPage = "5";
+		}
+		
+		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
+		log.debug("page = {}",page);
+		
+		map.put("page", page);
 		
 		log.debug("search = {}",search);
 		
@@ -172,14 +206,12 @@ public class ProductController {
 			log.debug("category = {}",category);
 			
 		}
-		
-		
-		
-		
+
 		map.put("search", search);
 		
 		List<Product> list = productService.searchProductList(map);
 		
+		model.addAttribute("page",page);
 		model.addAttribute("list",list);
 		
 		return "product/productList";

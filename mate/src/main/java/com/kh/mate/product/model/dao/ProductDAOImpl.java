@@ -7,6 +7,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.kh.mate.common.paging.PagingVo;
 import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.product.model.vo.Cart;
 import com.kh.mate.product.model.vo.Product;
@@ -21,9 +22,16 @@ public class ProductDAOImpl implements ProductDAO {
 
 	//ch
 	@Override
-	public List<Product> selectProductListAll() {
-		return session.selectList("product.selectProductListAll");
+	public int countProduct() {
+		return session.selectOne("product.countProduct");
 	}
+	
+	
+	@Override
+	public List<Product> selectProductListAll(PagingVo page) {
+		return session.selectList("product.selectProductListAll",page);
+	}
+
 
 	@Override
 	public List<ProductMainImages> selectProductMainImages(int productNo) {

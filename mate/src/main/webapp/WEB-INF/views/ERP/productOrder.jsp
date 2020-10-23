@@ -40,7 +40,7 @@ function orderModal(){
 			      
 			      	
 			      		<p>제조사 : ${ product.manufacturerId }</p>
-			      		<p>현재수량 : ${ product.stock }</p>
+			      		<p>현재수량 : ${ product.stock eq 0 ? '재고가 없습니다' : product.stock }</p>
 			      		<p>상품번호 : ${ product.productNo }</p>
 			      		<p>지점 아이디 ${ product.branchEmp }</p>
 			      		<p>요청수량 : <input type="number" name="stock" id="order" required="required"/></p>
