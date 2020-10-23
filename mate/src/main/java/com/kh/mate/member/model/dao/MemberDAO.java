@@ -24,4 +24,8 @@ public interface MemberDAO {
 
 	int insertAddress(Map<String, Object> param);
 
+	int successPurchase(int purchaseNo);
+
+	int failPurchase(int purchaseNo);
+
 }

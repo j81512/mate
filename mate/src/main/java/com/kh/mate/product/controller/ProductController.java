@@ -58,7 +58,7 @@ public class ProductController {
 		return "product/productDetail";
 	}
 	
-	@RequestMapping("/saveCart.do")
+	@PostMapping("/saveCart.do")
 	public String saveCart (@RequestParam("amount") String amount,
 							@RequestParam("productNo") String productNo,
 							@RequestParam("memberId") String memberId,
@@ -92,24 +92,7 @@ public class ProductController {
 		
 		List<Cart> cart = productService.selectCartList(memberId);
 		log.debug("cart = {}", cart);
-//		Map<String, Object> temp = new HashMap<>();
-//		for(int i = 0; i < cart.size(); i++) {
-//			temp.put(String.valueOf(i), cart.get(i));
-//		}
-//		log.debug("temp = {}", temp);
-//		
-//		Cart c = (Cart)temp.get("0");
-//		log.debug("c = {}", c);
-//		String productNo = String.valueOf(temp.get("productNo"));
-//		log.debug("productNo = {}",productNo);
-		
-//		List<ProductMainImages> pmi = new ArrayList<>();
-//		if(cart != null) {
-//			pmi = productService.selectProductMainImages(String.valueOf(c.getProductNo()));
-//			log.debug("pmi = {}", pmi);
-//		}
-//		
-//		model.addAttribute("pmi", pmi);
+
 		model.addAttribute("cart", cart);
 		return "product/cartView";
 	}
@@ -131,87 +114,36 @@ public class ProductController {
 		}else {
 			model.addAttribute("msg", "상품 제거에 실패하였습니다. 다시 시도하여주세요.");
 		}
-		return "product/cartView";
-	}
-	
-	
-	//구매 페이지 단순 우회
-	@RequestMapping("/purchaseProduct.do")
-	public String purchaseProductOne(@RequestParam("memberId") String memberId,
-									Model model) {
-		//로그인 아이디로 입력된 배송지 정보만 전달
-		List<Address> memAddr = productService.selectAddressList(memberId);
-		Address[] addrArr = new Address[memAddr.size()];
-		if(!memAddr.isEmpty()) {
-			//최근 입력된 배송지 정보 저장
-			for(int i=0; i<memAddr.size(); i++) {
-				addrArr[i] = memAddr.get(i);
-			}
-			// 전송준비
-			log.debug("addrArr = {}", addrArr);
-			model.addAttribute("recentAddr", addrArr[0]);
-		}
-		return "product/purchaseProduct";
+		return "redirect:/product/selectCart.do?memberId=" + memberId;
 	}
 	
 	
 	//단일 상품 구매 페이지 상품 전달
-	@RequestMapping(value = "/purchaseProduct.do",
-					method = RequestMethod.POST)
-	public String purchaseProductOne(@RequestParam("productNo") String productNo,
-								  @RequestParam("memberId") String memberId,
-								  @RequestParam("amount") String amount,
-								  Model model) {
-		//0. 로그인 아이디로 입력된 배송지정보 받아오기
-		List<Address> memAddr = productService.selectAddressList(memberId);
-		Address[] addrArr = new Address[memAddr.size()];
-		//0.1 배송지 정보 유무 여부로 분기 처리 
-		if(!memAddr.isEmpty()) {
-			//0.2 최근 입력된 배송지 정보 저장
-			for(int i=0; i<memAddr.size(); i++) {
-				addrArr[i] = memAddr.get(i);
-			}
-			//0.3 전송준비
-			log.debug("addrArr = {}", addrArr);
-			model.addAttribute("recentAddr", addrArr[0]);
+	@PostMapping("/purchaseProduct.do")
+	public String purchaseProduct (@RequestParam("amount") String amount,
+							@RequestParam("productNo") String productNo,
+							@RequestParam("memberId") String memberId,
+							HttpServletRequest request,
+							Model model,
+							RedirectAttributes redirectAttribute){
+		
+		log.debug("amount = {}",amount);
+		log.debug("productNo={}",productNo);
+		Map<String, Object> param = new HashMap<>();
+		param.put("amount", amount);
+		param.put("productNo", productNo);
+		param.put("memberId", memberId);
+		
+		int result = productService.insertCart(param);
+		log.debug("result = {}", result);
+		
+		if(result > 0) {
+			redirectAttribute.addFlashAttribute("msg", "결제를 진행해 주세요.");
+		}else {
+			redirectAttribute.addFlashAttribute("msg", "결제오류...");
 		}
 		
-		//1. 로그인 아이디로 입력된 장바구니 정보 받아오기
-		List<Cart> cartList = productService.selectCartList(memberId);
-		//1.1 장바구니 입력 유무로 분기 처리
-		if(!cartList.isEmpty()) {
-			//1.2 장바구니 입력된 상품정보가 있다면 전송 준비
-			model.addAttribute("cartList", cartList);
-		}
-		
-			//2.2 단일 상품 구매건에 대해서도 추가
-			Product purProduct = productService.selectProductOne(productNo);
-			model.addAttribute("purProduct", purProduct);
-			model.addAttribute("amount", amount);
-		
-		return "product/purchaseProduct";
-	}
-	
-	
-	//상품 구매목록 전체 삭제 버튼 클릭 시
-	@RequestMapping("deleteCartAll.do")
-	public String deleteCartAll(@RequestParam("memberId")String memberId,
-								RedirectAttributes redirectAttr) {
-		
-		//장바구니 목록 전체 삭제 후
-		log.debug("memberId={}",memberId);
-		
-		//비어있는 구매 목록 화면으로 리 다이렉트
-		return "redirect:/product/purchaseProduct.do?memberId="+memberId;
-	}
-	
-	//결제버튼 입력 시
-	@RequestMapping("/productPayment.do")
-	public String productPayment(@RequestParam("memberId") String memberId,
-								 @RequestParam("productNo") String[] productNos,
-								 @RequestParam("amount") String[] amounts) {
-		
-		return "redirect:/";
+		return "redirect:/product/selectCart.do?memberId=" + memberId;
 	}
 	
 	
@@ -364,7 +296,7 @@ public class ProductController {
 	
 	@ResponseBody
 	@PostMapping("/purchaseProducts.do")
-	public Boolean purchaseProducts(@RequestParam("jsonParam") String jsonParam) {
+	public Map<String, Object> purchaseProducts(@RequestParam("jsonParam") String jsonParam) {
 		
 		JSONArray array = JSONArray.fromObject(jsonParam);
 		
@@ -385,7 +317,10 @@ public class ProductController {
 		
 		int result = productService.purchaseProducts(params);
 		
+		Map<String, Object> map = new HashMap<>();
+		map.put("result", result);
+		map.put("purchaseNo", params.get(0).get("purchaseNo"));
 		
-		return result > 0 ? true : false;
+		return map;
 	}
 }

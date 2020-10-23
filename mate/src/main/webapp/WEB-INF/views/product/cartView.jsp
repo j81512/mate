@@ -244,13 +244,33 @@ $("#purchase-btn").click(function(){
 		data : {jsonParam : jsonParam},
 		dataType : "json",
 		success : function(data){
-			console.log(data);
+			if(data.result > 0){
+				//카카오페이
+				openKakao(data.purchaseNo);
+				location.href = '${pageContext.request.contextPath}/member/myPage.do';
+			}
+			else{
+				alert("상품구매에 오류가 발생하였습니다. 다시 진행해주세요.");
+				history.go(0);
+			}
 		},
 		error : function(xhr, status, err){
 			console.log(xhr, status, err);
 		}
 	});
 });
+
+function openKakao(purchaseNo){
+	var popupX = (document.body.offsetWidth / 2) - (200 / 2);
+	//&nbsp;만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+	var popupY= (window.screen.height / 2) - (300 / 2);
+	//&nbsp;만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
+	
+	var sum = $("#cart-sum").text();
+	sum = removeCommas(sum);
+	
+	window.open("${pageContext.request.contextPath}/member/kakaopay.do?memberId=${loginMember.memberId}&sum="+sum+"&purchaseNo="+purchaseNo, 'kakaoPay', 'status=no, height=533, width=421, left='+ popupX + ', top='+ popupY);
+}
 </script>
 
 
