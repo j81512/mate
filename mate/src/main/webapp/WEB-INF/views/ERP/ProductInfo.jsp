@@ -153,7 +153,7 @@ function orderProduct(empId,pNo,requestId){
 						<td>${ product.category }</td>
 						<td>${ product.empId }</td>
 						<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>
-						<td>${ product.stock }</td>
+						<td>${ product.stock eq 0 ? '재고가 없습니다' : product.stock}</td>
 						<td><button type="button" onclick="orderProduct('${ loginEmp.empId }',${ product.productNo },'${ product.empId }')">발주</button></td>
 					</tr>
 					

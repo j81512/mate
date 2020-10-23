@@ -13,7 +13,7 @@
 			p.category,
 			s.emp_id,
 			p.reg_date,
-			s.stock stock
+			nvl(s.stock,0) stock
 		from product p left join stock s
 		on (p.product_no = s.product_no)
 		<where>
