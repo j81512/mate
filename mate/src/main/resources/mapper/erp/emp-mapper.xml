@@ -114,7 +114,7 @@
 			
 	</select>
 	
-	<select id="receiveList" resultType="ReceiveLog">
+	<select id="receiveList" resultType="Receive">
 		select
 			*
 		from
