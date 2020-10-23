@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
+import com.kh.mate.erp.model.vo.EmpBoardImage;
 import com.kh.mate.erp.model.vo.EmpBoardReply;
 import com.kh.mate.log.vo.IoLog;
 import com.kh.mate.log.vo.Receive;
@@ -41,9 +42,7 @@ public interface ErpService {
 
 	int productOrder(Product product);
 
-	List<Map<String, Object>> empBoardList();
-
-	EmpBoard selectOneEmpBoard(int no);
+	EmpBoard selectOneEmpBoard(int no, boolean hasRead);
 
 	List<EmpBoardReply> replyList(int boardNo);
 
@@ -57,6 +56,16 @@ public interface ErpService {
 
 	int updateReply(Map<String, Object> map);
 
+	int insertEmpBoard(EmpBoard empBoard);
+
+	EmpBoardImage empBoardFileDownload(int boardImageNo);
+
+	List<Product> erpProductList();
+
+	List<EmpBoard> searchBoard(String searchType, String searchKeyword, int cPage, int numPerPage);
+
+	int getSearchContents(Map<String, String> map);
+
 	List<IoLog> ioLogList();
 
 	List<Product> productList();
@@ -64,11 +73,6 @@ public interface ErpService {
 	List<Receive> receiveList();
 
 	List<RequestLog> requestList();
-
-
-
-
-
 
 
 }

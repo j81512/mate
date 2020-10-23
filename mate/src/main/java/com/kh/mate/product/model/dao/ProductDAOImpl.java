@@ -87,7 +87,6 @@ public class ProductDAOImpl implements ProductDAO {
 		return session.insert("product.insertReview", param);
 	}
 
-
 	@Override
 	public int updatePurchaseConfirm(int purchaseLogNo) {
 		return session.update("product.updatePurchaseConfirm", purchaseLogNo);
@@ -134,10 +133,6 @@ public class ProductDAOImpl implements ProductDAO {
 	}
 	
 
-	
-	
-	
-	
 	
 	
 }

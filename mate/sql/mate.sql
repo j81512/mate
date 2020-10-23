@@ -5,7 +5,7 @@
 --identified by mate
 --default tablespace users;
 --grant RESOURCE,CONNECT to mate;
-----------------------------------------------------------------
+--------------------------------------------------------------
 --grant create any job to mate;
 --=====================================
 -- 유저 삭제 (system 계정)
@@ -140,7 +140,7 @@ CREATE TABLE PRODUCT (
 	enabled	number	DEFAULT 0	NOT NULL,
     
     constraint pk_product primary key (product_no),
-    constraint fk_product_emp_id foreign key (manufacturer_id)
+    constraint fk_product_emp_id foreign key(manufacturer_id)
                                          references emp (emp_id)
                                          on delete cascade
 );
@@ -293,7 +293,7 @@ CREATE TABLE BOARD_IMAGES (
                                                     on delete cascade
 );
 
---DROP TABLE BOARD_INFO;
+DROP TABLE BOARD_INFO;
 CREATE TABLE BOARD_INFO (
 	board_info_no	number		NOT NULL,
 	board_no	number		NOT NULL,

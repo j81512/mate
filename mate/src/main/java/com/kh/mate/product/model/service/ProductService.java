@@ -47,7 +47,4 @@ public interface ProductService {
 	int purchaseProducts(List<Map<String, Object>> params);
 
 
-
-
-
 }

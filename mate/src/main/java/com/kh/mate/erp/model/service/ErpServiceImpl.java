@@ -1,15 +1,16 @@
 package com.kh.mate.erp.model.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import com.kh.mate.erp.model.dao.ErpDAO;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
+import com.kh.mate.erp.model.vo.EmpBoardImage;
 import com.kh.mate.erp.model.vo.EmpBoardReply;
 import com.kh.mate.log.vo.IoLog;
 import com.kh.mate.log.vo.Receive;
@@ -174,13 +175,14 @@ public class ErpServiceImpl implements ErpService {
 	}
 
 	//호근 emp 게시판 추가
-	@Override
-	public List<Map<String, Object>> empBoardList() {
-		return erpDAO.empBoardList();
-	}
 
 	@Override
-	public EmpBoard selectOneEmpBoard(int no) {
+	public EmpBoard selectOneEmpBoard(int no, boolean hasRead) {
+		int result = 0;
+		if(hasRead == false) {
+			result = erpDAO.increaseReadCount(no);
+		}
+		
 		return erpDAO.selectOneEmpBoard(no);
 	}
 
@@ -206,6 +208,30 @@ public class ErpServiceImpl implements ErpService {
 	}
 
 	@Override
+	public int insertEmpBoard(EmpBoard empBoard) {
+		int result = erpDAO.inserEmpBoard(empBoard);
+
+		if(empBoard.getEmpBoardImageList() != null) {
+			
+			for(EmpBoardImage empBoardImage : empBoard.getEmpBoardImageList()) {
+				
+				empBoardImage.setBoardNo(empBoard.getBoardNo());
+				result = erpDAO.inserEmpBoardImage(empBoardImage);
+				
+			}
+		
+		}
+		
+		if(empBoard.getCategory().equals("req")) {
+			log.debug("호출은 되냐?");
+			empBoard.setBoardNo(empBoard.getBoardNo());
+			result = erpDAO.insertRequestStock(empBoard);
+	
+			
+		}
+		return result;
+	}
+	
 	public List<IoLog> ioLogList() {
 		return erpDAO.ioLogList();
 	}
@@ -226,7 +252,29 @@ public class ErpServiceImpl implements ErpService {
 	}
 
 
-	
-	
+	@Override
+	public EmpBoardImage empBoardFileDownload(int boardImageNo) {
+		return erpDAO.empBoardFileDownload(boardImageNo);
+	}
+
+	@Override
+	public List<Product> erpProductList() {
+		return erpDAO.erpProductList();
+	}
+
+
+	@Override
+	public List<EmpBoard> searchBoard(String searchType, String searchKeyword, int cPage, int numPerPage) {
+		return erpDAO.searchBoard(searchType, searchKeyword,cPage,numPerPage);
+	}
+
+	@Override
+	public int getSearchContents(Map<String, String> map) {
+		
+		int totalContents = erpDAO.getSearchContents(map);
+		
+		return totalContents;
+	}
+
 	
 }
