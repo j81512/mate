@@ -130,17 +130,6 @@ public class ErpDAOImpl implements ErpDAO {
 	}
 
 	//호근 추가
-	@Override
-	public List<EmpBoard> empBoardList(int cPage, int numPerPage) {
-		
-		Map<String, Object> map = new HashMap<>();
-		
-		
-		
-		map.put("cPage", ((cPage-1)*numPerPage+1));
-		map.put("numPerPage", (cPage * numPerPage));
-		return sqlSession.selectList("erpBoard.empBoard", map);
-	}
 
 	@Override
 	public EmpBoard selectOneEmpBoard(int no) {
@@ -197,10 +186,22 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.update("erpBoard.increaseReadCount", no);
 	}
 
+
 	@Override
-	public int getTotalContent() {
-			int totalContenst = 0;
-		return (Integer)sqlSession.selectOne("erpBoard.getTotalContent");
+	public List<EmpBoard> searchBoard(String searchType, String searchKeyword, int cPage, int numPerPage) {
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("cPage", ((cPage-1)*numPerPage+1));
+		map.put("numPerPage", (cPage * numPerPage));
+		map.put("searchType", searchType);
+		map.put("searchKeyword", searchKeyword);
+		
+		return sqlSession.selectList("erpBoard.searchBoard", map);
+	}
+
+	@Override
+	public int getSearchContents(Map<String, String> map) {
+		return sqlSession.selectOne("erpBoard.searchContents", map);
 	}
 
 	

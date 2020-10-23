@@ -15,7 +15,12 @@
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 <!-- 호근 헤더 처리-->
-<title></title>
+<title>게시판 목록</title>
+<style>
+ 	div#search-title {display:inline-block;}
+    div#search-content{display:none;} 
+    div#search-category{display:none;}
+</style>
 <script>
 $(function(){
 	$("tr[data-no]").click(function(){
@@ -23,11 +28,23 @@ $(function(){
 		console.log(no);
 		location.href = "${ pageContext.request.contextPath }/ERP/EmpBoardDetail.do?no=" + no;
 		});
+
+	$("#searchType").change(function(){
+		console.log($(this).val());
+		
+		var type = $(this).val();
+		console.log(type);
+		$(".search-type").hide().filter("#search-"+type).css("display","inline-block");
+		
+		
+	});
+   		
 });
 
-function empBoardEnroll(){
-	location.href = "${pageContext.request.contextPath}/ERP/EmpBoardEnroll.do";
-}
+		function empBoardEnroll(){
+			location.href = "${pageContext.request.contextPath}/ERP/EmpBoardEnroll.do";
+		}
+
 
 </script>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp" />
@@ -58,6 +75,7 @@ function empBoardEnroll(){
 		</c:forEach>
 		</c:if>
 	</table>
+	<!-- 페이징 바 -->
 	<nav aria-label="..." style="text-align: center;">
 	<div class="pageBar">
 		<ul class="pagination">
@@ -71,4 +89,40 @@ function empBoardEnroll(){
 		</ul>
 	</div>
 	</nav>
+	<!-- 게시글 검색 -->
+		<div class="form-group row justify-content-center">
+			<div class="w100" style="padding-right:10px">
+				<select class="form-control form-control-sm" name="searchType" id="searchType">
+					<option value="title">제목</option>
+					<option value="content">본문</option>
+					<option value="category">카테고리</option>
+				</select>
+			</div>
+		  <div id="search-title" class="search-type">
+	            <form action="${ pageContext.request.contextPath}/ERP/EmpBoardList.do" method="get">
+	                <input type="hidden" name="searchType" value="title"/>
+	                <input type="text" name="searchKeyword"  size="25" placeholder="검색할 제목 입력하세요." value="${ searchType eq 'title' ? searchKeyword : ''}" />
+	                <button type="submit"  class="btn btn-sm btn-primary">검색</button>			
+	            </form>	
+	        </div>
+	        <div id="search-content" class="search-type">
+	            <form action="${ pageContext.request.contextPath}/ERP/EmpBoardList.do" method="get">
+	                <input type="hidden" name="searchType" value="content"/>
+	                <input type="text" name="searchKeyword" size="25" placeholder="검색할 내용을 입력하세요." value="${ searchType eq 'content' ? searchKeyword : ''}"/>
+	                <button type="submit"  class="btn btn-sm btn-primary">검색</button>			
+	            </form>	
+	        </div>
+			<div id="search-category" class="search-type">
+            <form action="${ pageContext.request.contextPath}/ERP/EmpBoardList.do" method="get">      
+                <input type="hidden" name="searchType" value="category" />
+                <input type="radio"  name="searchKeyword" value="ntc" ${ searchKeyword eq 'ntc' ? "checked" : ""}> 공지사항 
+                <input type="radio"  name="searchKeyword" value="req" ${ searchKeyword eq 'req' ? "checked" : ""}> 요청 
+                <input type="radio"  name="searchKeyword" value="adv" ${ searchKeyword eq 'adv' ? "checked" : ""}> 광고 
+                <input type="radio"  name="searchKeyword" value="def" ${ searchKeyword eq 'def' ? "checked" : ""}> 일반 
+                <input type="radio"  name="searchKeyword" value="evt" ${ searchKeyword eq 'evt' ? "checked" : ""}> 이벤트 
+                <button type="submit" class="btn btn-sm btn-primary">검색</button>
+            </form>
+        	</div>
+		</div>
+
 <jsp:include page="/WEB-INF/views/common/footerE.jsp" />

@@ -50,7 +50,6 @@ public interface ErpDAO {
 
 	int productOrder(Product product);
 	
-	List<EmpBoard> empBoardList(int cPage, int numPerPage);
 	
 	EmpBoard selectOneEmpBoard(int no);
 
@@ -79,7 +78,9 @@ public interface ErpDAO {
 
 	int increaseReadCount(int no);
 
-	int getTotalContent();
+	List<EmpBoard> searchBoard(String searchType, String searchKeyword, int cPage, int numPerPage);
+
+	int getSearchContents(Map<String, String> map);
 
 
 

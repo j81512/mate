@@ -39,8 +39,6 @@ public interface ErpService {
 
 	int productOrder(Product product);
 
-	List<EmpBoard> empBoardList(int cPage, int numPerPage);
-
 	EmpBoard selectOneEmpBoard(int no, boolean hasRead);
 
 	List<EmpBoardReply> replyList(int boardNo);
@@ -61,7 +59,9 @@ public interface ErpService {
 
 	List<Product> erpProductList();
 
-	int getTotalContent();
+	List<EmpBoard> searchBoard(String searchType, String searchKeyword, int cPage, int numPerPage);
+
+	int getSearchContents(Map<String, String> map);
 
 
 

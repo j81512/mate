@@ -5,7 +5,7 @@
 --identified by mate
 --default tablespace users;
 --grant RESOURCE,CONNECT to mate;
-----------------------------------------------------------------
+--------------------------------------------------------------
 --grant create any job to mate;
 --=====================================
 -- 유저 삭제 (system 계정)

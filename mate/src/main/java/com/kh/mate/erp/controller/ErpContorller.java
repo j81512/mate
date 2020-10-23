@@ -154,7 +154,8 @@ public class ErpContorller {
 	
 
 	@RequestMapping(value="/ERP/EmpBoardList.do", method=RequestMethod.GET)
-	public String empBoardList(Model model, HttpServletRequest request, HttpServletResponse response) {
+	public String empBoardList(Model model, HttpServletRequest request, HttpServletResponse response
+							   ,@RequestParam(required=false) String searchType, @RequestParam(required=false) String searchKeyword) {
 //		호근 empList.do가 게시판 가르킴  수정하겠음
 		//paging bar 추가
 		int numPerPage = 10;
@@ -169,19 +170,23 @@ public class ErpContorller {
 		log.debug("cPage={}",cPage);
 		List<EMP> list = erpService.empList();
 		//page map처리
-		List<EmpBoard> empBoardList = erpService.empBoardList(cPage,numPerPage);
 		log.debug("list = {} ", list);
-		log.debug("empBoardList = {} ", empBoardList);
-
-		int totalContents = erpService.getTotalContent();
+		Map<String, String> map = new HashMap<>();
+		map.put("searchType", searchType);
+		map.put("searchKeyword", searchKeyword);
 		
+		log.debug("map = {}", map);
+		List<EmpBoard> empBoardList = erpService.searchBoard(searchType,searchKeyword,cPage, numPerPage);
+		int totalContents = erpService.getSearchContents(map);
+	
 		String url = request.getRequestURI();
 		String pageBar = Paging.getPageBarHtml(cPage, numPerPage, totalContents, url);
 		
 		model.addAttribute("list", list);
 		//model 추가함
 		model.addAttribute("empBoardList", empBoardList);
-		
+		model.addAttribute("searchType",searchType);
+		model.addAttribute("searchKeyword",searchKeyword);
 		model.addAttribute("pageBar", pageBar);
 		return "ERP/empList";
 		
@@ -889,6 +894,4 @@ public class ErpContorller {
 		return map;
 	}
 	
-	
-
 }

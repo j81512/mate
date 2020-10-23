@@ -172,10 +172,6 @@ public class ErpServiceImpl implements ErpService {
 	}
 
 	//호근 emp 게시판 추가
-	@Override
-	public List<EmpBoard> empBoardList(int cPage,int numPerPage) {
-		return erpDAO.empBoardList(cPage,numPerPage);
-	}
 
 	@Override
 	public EmpBoard selectOneEmpBoard(int no, boolean hasRead) {
@@ -244,10 +240,17 @@ public class ErpServiceImpl implements ErpService {
 		return erpDAO.erpProductList();
 	}
 
+
 	@Override
-	public int getTotalContent() {
+	public List<EmpBoard> searchBoard(String searchType, String searchKeyword, int cPage, int numPerPage) {
+		return erpDAO.searchBoard(searchType, searchKeyword,cPage,numPerPage);
+	}
+
+	@Override
+	public int getSearchContents(Map<String, String> map) {
 		
-		int totalContents = erpDAO.getTotalContent();
+		int totalContents = erpDAO.getSearchContents(map);
+		
 		return totalContents;
 	}
 

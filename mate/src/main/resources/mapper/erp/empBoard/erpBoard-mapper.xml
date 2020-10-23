@@ -3,18 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="erpBoard">
-	<select id="empBoard" resultType="EmpBoard">
-		SELECT * 
-		FROM (
-			SELECT ROWNUM as rnum, B.* 
-				FROM (
-						SELECT * 
-						FROM board
-						ORDER BY reg_date DESC 
-						) B
-				)
-		WHERE rnum BETWEEN #{ cPage } AND #{ numPerPage }
-	</select>
+
 	<select id="selectOneEmpBoard" resultMap="empBoardCollection">
 		select
 		    B.*,
@@ -160,5 +149,34 @@
 	   <![CDATA[
 		select count(*) total_contents from board
 		  ]]>
+	</select>
+	
+	<select id="searchBoard" resultType="EmpBoard">
+		SELECT * 
+		FROM (
+			SELECT ROWNUM as rnum, B.* 
+				FROM (
+						SELECT * 
+						FROM board			
+						<where>
+							<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
+								and ${ searchType }  like '%' || #{ searchKeyword } || '%'
+							</if>
+						</where>
+						ORDER BY reg_date DESC 
+						) B
+				)
+			 where rnum BETWEEN #{ cPage } AND #{ numPerPage }
+	</select>
+	
+	<select id="searchContents" resultType="_Int">
+		<![CDATA[
+			select count(*) total_contents from board
+		 ]]>
+		  <where>
+			<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
+				and  ${ searchType } like '%' || #{ searchKeyword } || '%'
+			</if>
+		</where>
 	</select>
 </mapper>
