@@ -11,7 +11,7 @@
 -- 유저 삭제 (system 계정)
 --=====================================
 --select sid,serial#,username,status from v$session where schemaname = 'MATE'; --여기서 나온 숫자를
---alter system kill session '47,693'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
+--alter system kill session '93,1109'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
 --DROP USER mate CASCADE;
 --=====================================
 -- Drop 관련
@@ -125,8 +125,6 @@ CREATE TABLE EMP (
     
     constraint pk_emp primary key (emp_id)
 );
-
-insert into EMP values('admin', '1234', '본사관리자', '06234', '서울특별시 강남구 테헤란로14길 6', '남도빌딩', '01012341234', default, 0);
 
 --DROP TABLE PRODUCT;
 CREATE TABLE PRODUCT (
@@ -293,7 +291,7 @@ CREATE TABLE BOARD_IMAGES (
                                                     on delete cascade
 );
 
-DROP TABLE BOARD_INFO;
+--DROP TABLE BOARD_INFO;
 CREATE TABLE BOARD_INFO (
 	board_info_no	number		NOT NULL,
 	board_no	number		NOT NULL,
@@ -386,6 +384,7 @@ CREATE TABLE PURCHASE_LOG (
 	product_no	number		NOT NULL,
 	amount	number		NOT NULL,
     status number DEFAULT 0 NOT NULL,
+    purchased number DEFAULT 0 NOT NULL,
     
     constraint pk_purchase_log primary key (purchase_log_no),
     constraint fk_purchase_log_purchase_no foreign key (purchase_no)
@@ -626,23 +625,42 @@ begin
 end;
 /
 
--- 주문 로그에 insert시 입출고 로그에 출고로 insert 되는 트리거
+-- 주문 로그에 결제 컬럼 update시 입출고 로그에 출고로 insert 되고 cart에 삭제하는 트리거
 create or replace trigger trg_purchase_log
     before
-    insert on purchase_log
+    update on purchase_log
     for each row
+declare    
+    v_member_id member.member_id%type;
 begin
-    insert into
-        io_log
-    values(
-        seq_io_no.nextval,
-        'O',
-        :new.amount,
-        default,
-        :new.product_no,
-        'admin',
-        '온라인 - 구매'
-    );
+    if :new.purchased = 1 then
+        insert into
+            io_log
+        values(
+            seq_io_no.nextval,
+            'O',
+            :new.amount,
+            default,
+            :new.product_no,
+            'admin',
+            '온라인 - 구매'
+        );
+        
+        select
+            member_id
+        into
+            v_member_id
+        from
+            purchase
+        where
+            purchase_no = :new.purchase_no;
+        
+        delete from
+            cart
+        where 
+            member_id = v_member_id
+            and product_no = :new.product_no;
+    end if;
 end;
 /
 

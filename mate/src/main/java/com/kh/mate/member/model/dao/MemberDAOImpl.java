@@ -55,6 +55,16 @@ public class MemberDAOImpl implements MemberDAO {
 		return sqlSession.insert("member.insertAddress", param);
 	}
 
+	@Override
+	public int successPurchase(int purchaseNo) {
+		return sqlSession.update("member.successPurchase", purchaseNo);
+	}
+
+	@Override
+	public int failPurchase(int purchaseNo) {
+		return sqlSession.delete("member.failPurchase", purchaseNo);
+	}
+
 	
 	
 	

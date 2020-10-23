@@ -68,7 +68,9 @@
 		    (select product_name from product where product_no = pl.product_no) product_name,
 		    pl.amount amount,
 		    pl.status status,
-            R.review_no review_no
+		    pl.purchased purchased,
+            R.review_no review_no,
+            (select price from product where product_no = pl.product_no) price
 		from
 			purchase_log PL
 				join purchase P
@@ -118,13 +120,31 @@
 		)
 	</insert>
 	
+	<update id="successPurchase">
+		update
+			purchase_log
+		set
+			purchased = 1
+		where
+			purchase_no = #{purchaseNo}
+	</update>
+	
+	<delete id="failPurchase">
+		delete from
+			purchase
+		where
+			purchase_no = #{purchaseNo}
+	</delete>
+	
 	<resultMap id="purchaseMap" type="map">
 		<result column="purchase_no" property="purchaseNo"/>
 		<result column="purchase_date" property="purchaseDate"/>
 		<result column="member_id" property="memberId"/>
+		<result column="price" property="price"/>
 		<result column="purchase_log_no" property="purchaseLogNo"/>
 		<result column="product_no" property="productNo"/>
 		<result column="product_name" property="productName"/>
+		<result column="purchased" property="purchased"/>
 		<result column="amount" property="amount"/>
 		<result column="status" property="status"/>
 		<result column="review_no" property="reviewNo"/>

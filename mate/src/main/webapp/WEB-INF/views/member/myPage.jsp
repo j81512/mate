@@ -315,6 +315,17 @@ $("#return-modal-submit").click(function(){
 	
 });
 
+
+function openKakao(purchaseNo, sum){
+	var popupX = (document.body.offsetWidth / 2) - (200 / 2);
+	//&nbsp;만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+	var popupY= (window.screen.height / 2) - (300 / 2);
+	//&nbsp;만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
+	
+	window.open("${pageContext.request.contextPath}/member/kakaopay.do?memberId=${loginMember.memberId}&sum="+sum+"&purchaseNo="+purchaseNo, 'kakaoPay', 'status=no, height=533, width=421, left='+ popupX + ', top='+ popupY);
+}
+
+
 </script>
 <jsp:include page="/WEB-INF/views/common/headerS.jsp" />
 <!-- 수정  -->
@@ -383,12 +394,13 @@ $("#return-modal-submit").click(function(){
 						<th scope="col">수량</th>
 						<th scope="col">상태</th>
 						<th scope="col">리뷰</th>
+						<th scope="col">결제여부</th>
 					</tr>
 				</thead>
 				<c:if test="${ !empty mapList }">
 					<tbody>
-						<tr>
 						<c:forEach items="${ mapList }" var="purchase" varStatus="vs">
+						<tr>
 							<th scope="row">${ vs.count }</th>
 							<td class="purchaseLogNo-td">${ purchase.purchaseLogNo }</td>
 							<td><fmt:formatDate value="${ purchase.purchaseDate }" pattern="yyyy-MM-dd HH:mm"/></td>
@@ -410,6 +422,15 @@ $("#return-modal-submit").click(function(){
 									리뷰 작성 완료	
 								</c:if>
 							</td>
+							<td>
+								<c:if test="${ purchase.purchased == 0 }">
+									<input type='button' value='결제하기' onclick='openKakao(${purchase.purchaseNo}, ${purchase.pirce*purchase.amount});' />
+								</c:if>
+								<c:if test="${ purchase.purchased != 0 }">
+									결제완료
+								</c:if>
+							</td>
+						</tr>
 						</c:forEach>
 					</tbody>
 				</c:if>
