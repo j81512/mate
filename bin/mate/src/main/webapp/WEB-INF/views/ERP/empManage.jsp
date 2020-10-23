@@ -36,11 +36,13 @@
 				<c:forEach items="${ list }" var="emp">
 				<tr>
 					<td>${ emp.empId }</td>
-					<td><a href="${ pageContext.request.contextPath }/ERP/empInfoDetail.do">${ emp.empName }</a></td>
+					<td><a href="${ pageContext.request.contextPath }/ERP/empInfoDetail.do?empId=${ emp.empId }">${ emp.empName }</a></td>
 					<td>${ emp.empAddr2 }</td>
 					<td>${ emp.empPhone }</td>
 					<td><fmt:formatDate value="${ emp.empEnrollDate }" pattern="yyyy년MM월dd일"/></td>				
 					<td>
+						<c:if test="${ emp.status == 0}">관리자
+						</c:if>
 						<c:if test="${ emp.status == 1}">지점
 						</c:if>
 						<c:if test="${ emp.status == 2}">제조사

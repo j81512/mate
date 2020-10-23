@@ -11,13 +11,13 @@
 -- 유저 삭제 (system 계정)
 --=====================================
 --select sid,serial#,username,status from v$session where schemaname = 'MATE'; --여기서 나온 숫자를
---alter system kill session '115,767'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
+--alter system kill session '91,3539'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
 --DROP USER mate CASCADE;
 --=====================================
 -- Drop 관련
 --=====================================
 --DROP TABLE MEMBER;
---DROP TABLE  EMP;
+--DROP TABLE  EMP cascade constraints;
 --DROP TABLE PRODUCT;
 --DROP TABLE Address;
 --DROP TABLE PRODUCT_IMAGES;
@@ -93,11 +93,12 @@ CREATE TABLE MEMBER (
     constraint chk_member_gender check (gender in ('M','F'))
 );
 
-
+insert into member values('admin', '1234', '본사관리자', 'M', '01012341234', default);
+select * from member;
 --DROP TABLE Address;
 CREATE TABLE Address (
 	address_name	varchar2(128)		NOT NULL,
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	reciever_name	varchar2(128)		NOT NULL,
 	receiver_phone	char(11)		NOT NULL,
 	addr1	varchar2(512)		NOT NULL,
@@ -128,6 +129,9 @@ CREATE TABLE EMP (
     
     constraint pk_emp primary key (emp_id)
 );
+select * from emp;
+insert into EMP values('admin', '1234', '본사관리자', '06234', '서울특별시 강남구 테헤란로14길 6', '남도빌딩', '01012341234', default, 0);
+
 
 select
 	*
@@ -137,6 +141,7 @@ order by
     enroll_date;
 
 insert into spring.EMP values ('test', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '테스터1호', 16941, '경기 용인시 수지구 상현로 2 (상현동)', '4321', '01012341234', default, 2);
+
 --DROP TABLE PRODUCT;
 CREATE TABLE PRODUCT (
 	product_no	number	NOT NULL	,
@@ -145,11 +150,11 @@ CREATE TABLE PRODUCT (
 	category	varchar2(128)		NOT NULL,
 	content	varchar2(4000)		NOT NULL,
 	price	number		NOT NULL,
-    emp_id varchar2(15) NOT NULL,
+    manufacturer_id varchar2(15) NOT NULL,
 	enabled	number	DEFAULT 0	NOT NULL,
     
     constraint pk_product primary key (product_no),
-    constraint fk_product_emp_id foreign key (emp_id)
+    constraint fk_product_emp_id foreign key (manufacturer_id)
                                          references emp (emp_id)
                                          on delete cascade
 );
@@ -322,7 +327,7 @@ CREATE TABLE CS (
 	cs_no	number		NOT NULL,
 	title	varchar2(128)		NOT NULL,
 	content	varchar2(3000)		NOT NULL,
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	reg_date	date	DEFAULT sysdate	NOT NULL,
 	secret	number	DEFAULT 0	NOT NULL,
 	notice	number	DEFAULT 0	NOT NULL,
@@ -361,7 +366,7 @@ CREATE TABLE CS_REPLY (
 
 --DROP TABLE CART;
 CREATE TABLE CART (
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	product_no	number		NOT NULL,
 	amount	number	DEFAULT 0	NOT NULL,
     
@@ -377,7 +382,7 @@ CREATE TABLE CART (
 --DROP TABLE PURCHASE;
 CREATE TABLE PURCHASE (
 	purchase_no	number		NOT NULL,
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	purchase_date	date	DEFAULT sysdate	NOT NULL,
     
     constraint pk_purchase primary key (purchase_no),
@@ -458,7 +463,7 @@ CREATE TABLE DELETE_CS (
 	cs_no	number		NOT NULL,
 	title	varchar2(128)		NOT NULL,
 	content	varchar2(3000)		NOT NULL,
-	member_id	varchar2(15)		NOT NULL,
+	member_id	varchar2(100)		NOT NULL,
 	reg_date	date	NOT NULL,
 	secret	number	NOT NULL,
 	notice	number	NOT NULL,

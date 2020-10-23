@@ -17,7 +17,7 @@ import lombok.ToString;
 public class Product {
 
 	private int productNo;
-	private String empId; //제조사
+	private String manufacturerId; //제조사
 	private String productName;
 	private int stock;
 	private Date regDate;
@@ -32,8 +32,9 @@ public class Product {
 	private List<String> productImagesName;
 	private List<ProductImages> productImages;
 	private List<ProductMainImages> pmiList;
+	private String amount;
 	
 	private String empName;//지점명(임시)
 	private String branchEmp; //지점ID(임시)
-	
+	private String empId;
 }

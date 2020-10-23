@@ -1,12 +1,15 @@
 package com.kh.mate.product.model.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.product.model.dao.ProductDAO;
+import com.kh.mate.product.model.vo.Cart;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -84,18 +87,29 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Map<String, Object>> selectProductListMap() {
-		return productDAO.selectProductListMap();
-	}
-
-	@Override
 	public int insertCart(Map<String, Object> param) {
 		return productDAO.insertCart(param);
 	}
 
 	@Override
-	public List<Map<String, Object>> selectCartList(String memberId) {
-		return productDAO.selectCartList(memberId);
+	public List<Cart> selectCartList(String memberId) {
+		
+		List<Cart> cartList = productDAO.selectCartList(memberId);
+		for(Cart c : cartList) {
+			c.setSelectedProduct(productDAO.selectProductOne(String.valueOf(c.getProductNo())));
+			c.getSelectedProduct().setPmiList(productDAO.selectProductMainImages(c.getProductNo()));
+		}
+		return cartList;
+	}
+
+	@Override
+	public int deleteFromCart(Map<String, Object> param) {
+		return productDAO.deleteFromCart(param);
+	}
+
+	@Override
+	public List<Address> selectAddressList(String memberId) {
+		return productDAO.selectAddressList(memberId);
 	}
 
 	
@@ -105,6 +119,44 @@ public class ProductServiceImpl implements ProductService {
 		return productDAO.insertReview(param);
 	}
 
+	@Override
+	public int updatePurchaseConfirm(int purchaseLogNo) {
+		return productDAO.updatePurchaseConfirm(purchaseLogNo);
+	}
+
+	@Override
+	public int insertReturn(Map<String, Object> param) {
+		
+		int result = productDAO.insertReturn(param);
+		if(result <= 0) return result;
+		if(param.containsKey("originalFilename")) {
+			int returnNo = productDAO.getReturnNo();
+			param.put("returnNo", returnNo);
+			result = productDAO.insertReturnImages(param);
+		}
+		return result;
+	}
+
+	@Override
+	public int purchaseProducts(List<Map<String, Object>> params) {
+		
+		Map<String, Object> idAndAddr = new HashMap<>();
+		idAndAddr.put("memberId", params.get(0).get("memberId"));
+		idAndAddr.put("addressName", params.get(0).get("addressName"));
+		int result = productDAO.insertPurchase(idAndAddr);
+		if(result <= 0) return result;
+		int purchaseNo = productDAO.getPurchaseNo();
+		log.debug("purchaseNo@Service = {}", purchaseNo);
+		
+		for(Map<String, Object> param : params) {
+			param.put("purchaseNo", purchaseNo);
+			result = productDAO.insertPurchaseLog(param);
+			if(result <= 0) return result;
+		}
+		
+		return result;
+	}
+	
 
 	
 	

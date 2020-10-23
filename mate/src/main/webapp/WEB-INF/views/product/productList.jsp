@@ -9,6 +9,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>    
 <jsp:include page="/WEB-INF/views/common/headerS.jsp"></jsp:include>
+
 <style>
 table, tr, th, td {
 	border: 1px solid black;
@@ -20,14 +21,9 @@ li{
 	display: inline-block;
 }
 </style>
-<script>
-window.onload = function(){
-
-};
-</script>
 <div class="product-container">
 	<!-- ajax처리 -->
-	<div class="product-search">
+	 <div class="product-search">
 		<form class="form-inline"
 				action="${pageContext.request.contextPath}/product/searchProduct.do">
 		    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
@@ -42,9 +38,9 @@ window.onload = function(){
 				<label for="DR">드론</label>
 				<input type="checkbox" name="category" id="dr" value="dr"/>
 		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
-			<%-- <input type="hidden" name="category" value="${ category }" /> --%>
+			<input type="hidden" name="category" value="${ category }" />
 		</form>
-	</div>
+	</div> 
 	
 	<div class="product-list">
 		<ul>
@@ -88,7 +84,7 @@ window.onload = function(){
 										등록일 : <fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/>									
 										</div>
 										<div class="product-brand">
-										제조사 ${ product.empId }
+										제조사 ${ product.manufacturerId }
 										</div>
 									</dd>
 							</a>

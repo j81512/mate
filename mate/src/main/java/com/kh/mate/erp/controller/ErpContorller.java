@@ -26,6 +26,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -48,6 +49,9 @@ import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.erp.model.vo.EmpBoardImage;
 import com.kh.mate.erp.model.vo.EmpBoardReply;
+import com.kh.mate.log.vo.IoLog;
+import com.kh.mate.log.vo.Receive;
+import com.kh.mate.log.vo.RequestLog;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -67,26 +71,85 @@ public class ErpContorller {
 	@Autowired
 	private BCryptPasswordEncoder bcryptPasswordEncoder;
 	
+	//ERP-쇼핑몰 선택
 	@RequestMapping("/ERP/menu.do")
 	public ModelAndView Menu(ModelAndView mav) {
-		
 		mav.setViewName("/ERP/menu");
 		return mav;
 	}
 	
+	//ERP선택후 메뉴5개
 	@RequestMapping("/ERP/erpMain.do")
 	public ModelAndView erpMain(ModelAndView mav) {
-		
 		mav.setViewName("/ERP/erpMain");
 		return mav;
 	}
-	
+	//상품관리
 	@RequestMapping("/ERP/ProductInfo.do")
-	public ModelAndView productInfo(ModelAndView mav) {
-		
+	public ModelAndView productInfo(ModelAndView mav) {		
 		mav.setViewName("/ERP/ProductInfo");
 		return mav;
 	}
+	//현황조회 진입부
+	@RequestMapping("/ERP/EmpDetail.do")
+	public ModelAndView EmpDetail(ModelAndView mav) {	
+		mav.setViewName("/ERP/EmpDetail");
+		return mav;
+	}
+	
+	//재고확인 진입
+	@RequestMapping("/ERP/StockLog.do")
+	public String StockLog(Model model) {	
+		List<IoLog> list = erpService.ioLogList();
+		List<Product> list2 = erpService.productList();
+		List<Receive> list3 = erpService.receiveList();
+		
+		log.debug("list = {} ", list);
+		log.debug("list2 = {} ", list2);
+		log.debug("list3 = {} ", list3);
+		
+		model.addAttribute("list", list);
+		model.addAttribute("list2", list2);
+		model.addAttribute("list3", list3);
+		
+		return "ERP/StockLog";
+	}
+	
+	//발주확인 진입
+	@RequestMapping("/ERP/OrderLog.do")
+	public String OrderLog(Model model) {	
+		List<RequestLog> list = erpService.requestList();
+		List<Product> list2 = erpService.productList();
+		List<EMP> list3 = erpService.empList();
+		
+		model.addAttribute("list", list);
+		model.addAttribute("list2", list2);
+		model.addAttribute("list3", list3);
+		return "ERP/OrderLog";
+	}
+	
+	//매출확인 진입
+	@RequestMapping("/ERP/PriceLog.do")
+	public String PriceLog(Model model) {	
+		List<IoLog> list = erpService.ioLogList();
+		
+		model.addAttribute("list", list);
+		return "ERP/PriceLog";
+	}
+	
+	//입출고 확인 진입
+	@RequestMapping("/ERP/ReceiveLog.do")
+	public String ReceiveLog(Model model) {	
+		List<IoLog> list = erpService.ioLogList();
+		List<Product> list2 = erpService.productList();
+		List<EMP> list3 = erpService.empList();
+		
+		model.addAttribute("list", list);
+		model.addAttribute("list2", list2);
+		model.addAttribute("list3", list3);
+		return "ERP/ReceiveLog";
+	}
+	
 	
 	//박도균 제조사/지점 상세보기
 	@RequestMapping("/ERP/empInfoDetail.do")
@@ -94,43 +157,27 @@ public class ErpContorller {
 								Model model) {
 		
 		log.debug("empId ={} ", empId);
+//		log.debug("loginMember = {}", empId);
 		EMP emp = erpService.selectOneEmp(empId);
-		log.debug("emp = {}", emp);
 		model.addAttribute("emp", emp);
 		return "ERP/empInfoDetail";
 	}
 	
 	//박도균 지점/제조사 정보 수정
-	@RequestMapping("/ERP/infoUpdate.do")
-	public String infoUpdate(EMP emp, RedirectAttributes redirectAttr) {
-		try {
-			Map<String, Object>map = new HashMap<>();
-			map.put("empId", emp.getEmpId());
-			map.put("empPwd", emp.getEmpPwd());
-			map.put("empName", emp.getEmpName());
-			map.put("empAddr1", emp.getEmpAddr1());
-			map.put("empAddr2", emp.getEmpAddr2());
-			map.put("empAddr3", emp.getEmpAddr3());
-			map.put("status", emp.getStatus());	
+	@RequestMapping(value = "/ERP/infoUpdate.do",
+					method = RequestMethod.POST)
+	public String infoUpdate(EMP emp) {
+		log.debug("emp@controller = {}", emp);
 			
-			int result = erpService.infoUpdate(map);
-			log.debug("result ={}", result);
-			log.debug("map={}", map);
-			String msg = "정보수정 성공";
-			redirectAttr.addFlashAttribute("msg", msg);
+		erpService.infoUpdate(emp);
 			
-		}catch(Exception e) {
-			String msg = "정보수정 실패";
-			redirectAttr.addFlashAttribute("msg", msg);
-		}
 		return "redirect:/ERP/empManage.do";
 	}
 	
 	//박도균 지점/제조사 정보 삭제
 	@RequestMapping("/ERP/infoDelete.do")
-	public String infoDelete(@RequestBody EMP emp, 
-							 RedirectAttributes redirectAttr,
-							 SessionStatus sessionStatus) {
+	public String infoDelete(EMP emp, 
+							 RedirectAttributes redirectAttr) {
 		log.debug("emp = {}", emp);
 		try {
 			Map<String, Object> map = new HashMap<>();
@@ -142,8 +189,7 @@ public class ErpContorller {
 			log.debug("map = {}", map);
 			String msg = "삭제가 완료 되었습니다.";
 			
-			if(!sessionStatus.isComplete())
-				sessionStatus.setComplete();
+
 		}catch(Exception e) {
 			String msg = "삭제 실패";
 			redirectAttr.addFlashAttribute("msg", msg);
@@ -298,12 +344,9 @@ public class ErpContorller {
 		map.put("search", search);
 		
 		
-		List<Product> list = erpService.searchInfo(map);
-		
-		log.debug("list = {}",list);
-		
-		model.addAttribute("list",list);
-		
+		List<Product> list = erpService.searchInfo(map);		
+		log.debug("list = {}",list);		
+		model.addAttribute("list",list);		
 		return "/ERP/ProductInfo";
 	}
 	

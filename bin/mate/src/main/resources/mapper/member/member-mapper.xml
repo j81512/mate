@@ -35,8 +35,6 @@
  		update
  			member
  		<set>
-<<<<<<< HEAD
-<<<<<<< HEAD
  			<if test="memberId != null">
  				member_id = #{ memberId },
  			</if>
@@ -50,28 +48,6 @@
  				gender = #{ gender },
  			</if>
  			<if test="phone != null">
-=======
- 			<if test="memberId != null and memberId != ''">
-=======
- 			<if test="memberId != null">
->>>>>>> branch 'master' of https://github.com/j81512/mate.git
- 				member_id = #{ memberId },
- 			</if>
- 			<if test="memberPWD != null">
- 				member_pwd = #{ memberPWD },
- 			</if>
- 			<if test="memberName != null">
- 				member_name = #{ memberName },
- 			</if>
- 			<if test="gender != null">
- 				gender = #{ gender },
- 			</if>
-<<<<<<< HEAD
- 			<if test="phone != null and phone != ''">
->>>>>>> branch 'master' of https://github.com/j81512/mate.git
-=======
- 			<if test="phone != null">
->>>>>>> branch 'master' of https://github.com/j81512/mate.git
  				phone = #{ phone }
  			</if>
  		</set>
@@ -81,4 +57,38 @@
 	<delete id="deleteMember">
 		delete from member where member_id = #{ memberId }
 	</delete>
+	
+	<select id="selectAllPurchase" resultMap="purchaseMap">
+		select
+		    p.purchase_no purchase_no,
+		    p.purchase_date purchase_date,
+		    p.member_id member_id,
+		    pl.purchase_log_no purchase_log_no,
+		    pl.product_no product_no,
+		    (select product_name from product where product_no = pl.product_no) product_name,
+		    pl.amount amount,
+		    pl.status status,
+            R.review_no review_no
+		from
+			purchase_log PL
+				join purchase P
+                    on P.purchase_no = PL.purchase_no
+                left join review R
+                    on PL.purchase_log_no = R.purchase_log_no
+        where
+            member_id = #{ memberId }
+        order by
+        	purchase_date desc
+	</select>
+	<resultMap id="purchaseMap" type="map">
+		<result column="purchase_no" property="purchaseNo"/>
+		<result column="purchase_date" property="purchaseDate"/>
+		<result column="member_id" property="memberId"/>
+		<result column="purchase_log_no" property="purchaseLogNo"/>
+		<result column="product_no" property="productNo"/>
+		<result column="product_name" property="productName"/>
+		<result column="amount" property="amount"/>
+		<result column="status" property="status"/>
+		<result column="review_no" property="reviewNo"/>
+	</resultMap>
 </mapper>

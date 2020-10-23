@@ -7,6 +7,8 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.kh.mate.member.model.vo.Address;
+import com.kh.mate.product.model.vo.Cart;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -69,17 +71,12 @@ public class ProductDAOImpl implements ProductDAO {
 	}
 
 	@Override
-	public List<Map<String, Object>> selectProductListMap() {
-		return session.selectList("product.selectProductListMap");
-	}
-
-	@Override
 	public int insertCart(Map<String, Object> param) {
 		return session.insert("product.insertCart", param);
 	}
 
 	@Override
-	public List<Map<String, Object>> selectCartList(String memberId) {
+	public List<Cart> selectCartList(String memberId) {
 		return session.selectList("product.selectCartList", memberId);
 	}
 
@@ -90,8 +87,52 @@ public class ProductDAOImpl implements ProductDAO {
 		return session.insert("product.insertReview", param);
 	}
 
+	@Override
+	public int updatePurchaseConfirm(int purchaseLogNo) {
+		return session.update("product.updatePurchaseConfirm", purchaseLogNo);
+	}
+
+	@Override
+	public int insertReturn(Map<String, Object> param) {
+		return session.insert("product.insertReturn", param);
+	}
+
+	@Override
+	public int getReturnNo() {
+		return session.selectOne("product.selectReturnNo");
+	}
+
+	@Override
+	public int insertReturnImages(Map<String, Object> param) {
+		return session.insert("product.insertReturnImages", param);
+	}
+
+	@Override
+	public int deleteFromCart(Map<String, Object> param) {
+		return session.delete("product.deleteFromCart", param);
+	}
+
+	@Override
+	public List<Address> selectAddressList(String memberId) {
+		return session.selectList("product.selectAddressList", memberId);
+	}
+
+	@Override
+	public int insertPurchase(Map<String, Object> idAndAddr) {
+		return session.insert("product.insertPurchase", idAndAddr);
+	}
+
+	@Override
+	public int getPurchaseNo() {
+		return session.selectOne("product.getPurchaseNo");
+	}
+
+	@Override
+	public int insertPurchaseLog(Map<String, Object> param) {
+		return session.insert("product.insertPurchaseLog", param);
+	}
 	
-	
+
 	
 	
 }

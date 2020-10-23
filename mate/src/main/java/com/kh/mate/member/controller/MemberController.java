@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.kh.mate.kakao.KakaoRESTAPI;
 import com.kh.mate.member.model.service.MemberService;
+import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.member.model.vo.Member;
 import com.kh.mate.naver.NaverLoginBO;
 
@@ -100,7 +101,6 @@ public class MemberController {
 		log.debug("oauthOperations = {}", oauthOperations);
 		log.debug("googleurl = {}", googleurl);
 		mav.addObject("googleUrl", googleurl);
-		
 		
 		
 		mav.setViewName("member/login");
@@ -241,7 +241,7 @@ public class MemberController {
 		HashMap<String, String> map = new HashMap<>();
 		Random rnd = new Random();
 		String checkNum = "";
-		
+
 		for(int i = 0 ; i < 6 ; i++) {			
 			String ran = Integer.toString(rnd.nextInt(10));
 			checkNum += ran;
@@ -421,4 +421,73 @@ public class MemberController {
 	}
 	
 
+	//종완
+	@RequestMapping("/member/kakaopay.do")
+	public String kakaoPay(@RequestParam("memberId") String memberId,
+						   @RequestParam("sum") String sum,
+						   Model model) {
+		log.debug("memberId,sum = {}, {}",memberId, sum);
+		
+		Member member = memberService.selectOneMember(memberId);
+		log.debug("member = {}", member);
+		
+		model.addAttribute("member", member);
+		model.addAttribute("amount", sum);
+		
+		return "product/kakaoPay";
+	}
+	
+	
+	//준혁
+	@ResponseBody
+	@RequestMapping("/member/selectMemberAddress.do")
+	public List<Address> selectMemberAddress(@RequestParam("memberId") String memberId){
+		
+		List<Address> list = memberService.selectMemberAddress(memberId);
+		log.debug("list@Controller = {}", list);
+		return list;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/member/checkAddressName.do")
+	public Map<String, Object> checkAddressName(@RequestParam("addressName") String addressName,
+												@RequestParam("memberId") String memberId){
+		
+		Map<String, Object> param = new HashMap<>();
+		param.put("addressName", addressName);
+		param.put("memberId", memberId);
+		int cnt = memberService.checkAddressName(param);
+		
+		if(cnt > 0) {
+			param.put("isAvailable", false);
+		}
+		else {
+			param.put("isAvailable", true);
+		}
+		return param;
+	}
+	
+	@ResponseBody
+	@PostMapping("/member/addressEnroll.do")
+	public Boolean addressEnroll(@RequestParam("memberId") String memberId,
+								@RequestParam("addressName") String addressName,
+								@RequestParam("receiverName") String receiverName,
+								@RequestParam("receiverPhone") String receiverPhone,
+								@RequestParam("addr1") String addr1,
+								@RequestParam("addr2") String addr2,
+								@RequestParam("addr3") String addr3){
+		
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", memberId);
+		param.put("addressName", addressName);
+		param.put("receiverName", receiverName);
+		param.put("receiverPhone", receiverPhone);
+		param.put("addr1", addr1);
+		param.put("addr2", addr2);
+		param.put("addr3", addr3);
+		
+		int result = memberService.insertAddress(param);
+		
+		return result > 0 ? true : false;
+	}
 }

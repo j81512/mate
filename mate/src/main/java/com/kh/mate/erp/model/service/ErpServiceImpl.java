@@ -12,6 +12,9 @@ import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.erp.model.vo.EmpBoardImage;
 import com.kh.mate.erp.model.vo.EmpBoardReply;
+import com.kh.mate.log.vo.IoLog;
+import com.kh.mate.log.vo.Receive;
+import com.kh.mate.log.vo.RequestLog;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -36,8 +39,8 @@ public class ErpServiceImpl implements ErpService {
 	}
 
 	@Override
-	public int infoUpdate(Map<String, Object> map) {
-		return erpDAO.infoUpdate(map);
+	public int infoUpdate(EMP emp) {
+		return erpDAO.infoUpdate(emp);
 	}
 
 	@Override
@@ -207,7 +210,6 @@ public class ErpServiceImpl implements ErpService {
 	@Override
 	public int insertEmpBoard(EmpBoard empBoard) {
 		int result = erpDAO.inserEmpBoard(empBoard);
-		
 
 		if(empBoard.getEmpBoardImageList() != null) {
 			
@@ -229,6 +231,26 @@ public class ErpServiceImpl implements ErpService {
 		}
 		return result;
 	}
+	
+	public List<IoLog> ioLogList() {
+		return erpDAO.ioLogList();
+	}
+
+	@Override
+	public List<Product> productList() {
+		return erpDAO.productList();
+	}
+
+	@Override
+	public List<Receive> receiveList() {
+		return erpDAO.receiveList();
+	}
+
+	@Override
+	public List<RequestLog> requestList() {
+		return erpDAO.requestList();
+	}
+
 
 	@Override
 	public EmpBoardImage empBoardFileDownload(int boardImageNo) {
