@@ -4,7 +4,6 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="product">
 
-
 	<select id="countProduct" resultType="_int">
 	select COUNT(*) from product
 	</select>
@@ -162,6 +161,36 @@
  			#{ originalFilename },
  			#{ renamedFilename },
  			#{ returnNo }
+ 		)
+ 	</insert>
+ 	
+ 	<insert id="insertPurchase">
+ 		insert into
+ 			purchase
+ 		values(
+ 			seq_purchase_no.nextval,
+ 			#{memberId},
+ 			default,
+ 			#{addressName}
+ 		)
+ 	</insert>
+ 	
+ 	<select id="getPurchaseNo" resultType="_int">
+ 		select
+ 			seq_purchase_no.currval
+ 		from
+ 			dual
+ 	</select>
+ 	
+ 	<insert id="insertPurchaseLog">
+ 		insert into
+ 			purchase_log
+ 		values(
+ 			seq_purchase_log_no.nextval,
+ 			#{purchaseNo},
+ 			#{productNo},
+ 			#{amount},
+ 			default
  		)
  	</insert>
  	<resultMap type="product" id="productMap">

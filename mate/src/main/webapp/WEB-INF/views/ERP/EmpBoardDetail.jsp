@@ -117,6 +117,11 @@ $(document).ready(function(){
 		});
 	}
 
+	function fileDownload(no){
+		location.href= "${ pageContext.request.contextPath}/ERP/fileDownload.do?no=" + no;
+	};
+
+	
 </script>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp" />
 <div class="container">
@@ -132,8 +137,16 @@ $(document).ready(function(){
 			   value="${empBoard.title }" required>
 		<input type="text" class="form-control" 
 			   name="memberId" 
-			   value="${ empBoard.empId }" readonly required>
-		
+		   value="${ empBoard.empId }" readonly required>
+		 <div class="form-group">
+			<c:forEach items="${ empBoard.empBoardImageList }" var="empBoard">	
+				<button type="button" 
+						class="btn btn-outline-success btn-block"
+						onclick="fileDownload(${ empBoard.boardImageNo });">
+				 	첨부파일 - ${ empBoard.originalFilename != null ? empBoard.originalFilename : "파일명" }
+				</button>
+			</c:forEach>
+		 </div>
 	    <textarea class="form-control" name="content" 
 	    		  placeholder="내용" required>
 	    		  ${ empBoard.content != null  ? empBoard.content : '내용'}

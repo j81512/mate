@@ -7,7 +7,11 @@ import java.util.Map;
 
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
+import com.kh.mate.erp.model.vo.EmpBoardImage;
 import com.kh.mate.erp.model.vo.EmpBoardReply;
+import com.kh.mate.log.vo.IoLog;
+import com.kh.mate.log.vo.Receive;
+import com.kh.mate.log.vo.RequestLog;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -49,7 +53,6 @@ public interface ErpDAO {
 
 	int productOrder(Product product);
 	
-	List<Map<String, Object>> empBoardList();
 	
 	EmpBoard selectOneEmpBoard(int no);
 
@@ -65,6 +68,32 @@ public interface ErpDAO {
 	int infoDelete(Map<String, Object> map);
 
 	int updateReply(Map<String, Object> map);
+
+
+	int inserEmpBoard(EmpBoard empBoard);
+
+	int inserEmpBoardImage(EmpBoardImage empBoardImage);
+
+	EmpBoardImage empBoardFileDownload(int boardImageNo);
+
+	List<Product> erpProductList();
+
+	int insertRequestStock(EmpBoard empBoard);
+
+	int increaseReadCount(int no);
+
+	List<EmpBoard> searchBoard(String searchType, String searchKeyword, int cPage, int numPerPage);
+
+	int getSearchContents(Map<String, String> map);
+
+
+	List<IoLog> ioLogList();
+
+	List<Product> productList();
+
+	List<Receive> receiveList();
+
+	List<RequestLog> requestList();
 
 
 }

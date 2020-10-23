@@ -21,6 +21,8 @@ public interface ProductDAO {
 	
 	List<Product> productCategory(String category);
 	
+	int countProduct();
+	
 	//jw
 	int productEnroll(Product product);
 
@@ -51,7 +53,12 @@ public interface ProductDAO {
 
 	int insertReturnImages(Map<String, Object> param);
 
-	int countProduct();
+
+	int insertPurchase(Map<String, Object> idAndAddr);
+
+	int getPurchaseNo();
+
+	int insertPurchaseLog(Map<String, Object> param);
 
 
 

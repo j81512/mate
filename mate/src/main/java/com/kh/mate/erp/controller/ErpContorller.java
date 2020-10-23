@@ -5,11 +5,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -17,6 +20,8 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +29,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,11 +42,16 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.JsonObject;
+import com.kh.mate.common.Paging;
 import com.kh.mate.common.Utils;
 import com.kh.mate.erp.model.service.ErpService;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
+import com.kh.mate.erp.model.vo.EmpBoardImage;
 import com.kh.mate.erp.model.vo.EmpBoardReply;
+import com.kh.mate.log.vo.IoLog;
+import com.kh.mate.log.vo.Receive;
+import com.kh.mate.log.vo.RequestLog;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -50,6 +61,9 @@ import com.kh.mate.product.model.vo.ProductMainImages;
 public class ErpContorller {
 
 	private static Logger log = LoggerFactory.getLogger(ErpContorller.class);
+	//호근 파일 다운용 Resource 추가
+	@Autowired
+	private ResourceLoader resourceLoader;
 	
 	@Autowired
 	private ErpService erpService;
@@ -85,23 +99,55 @@ public class ErpContorller {
 	
 	//재고확인 진입
 	@RequestMapping("/ERP/StockLog.do")
-	public ModelAndView StockLog(ModelAndView mav) {	
-		mav.setViewName("/ERP/StockLog");
-		return mav;
+	public String StockLog(Model model) {	
+		List<IoLog> list = erpService.ioLogList();
+		List<Product> list2 = erpService.productList();
+		List<Receive> list3 = erpService.receiveList();
+		
+		log.debug("list = {} ", list);
+		log.debug("list2 = {} ", list2);
+		log.debug("list3 = {} ", list3);
+		
+		model.addAttribute("list", list);
+		model.addAttribute("list2", list2);
+		model.addAttribute("list3", list3);
+		
+		return "ERP/StockLog";
 	}
 	
 	//발주확인 진입
 	@RequestMapping("/ERP/OrderLog.do")
-	public ModelAndView OrderLog(ModelAndView mav) {	
-		mav.setViewName("/ERP/OrderLog");
-		return mav;
+	public String OrderLog(Model model) {	
+		List<RequestLog> list = erpService.requestList();
+		List<Product> list2 = erpService.productList();
+		List<EMP> list3 = erpService.empList();
+		
+		model.addAttribute("list", list);
+		model.addAttribute("list2", list2);
+		model.addAttribute("list3", list3);
+		return "ERP/OrderLog";
 	}
 	
 	//매출확인 진입
 	@RequestMapping("/ERP/PriceLog.do")
-	public ModelAndView PriceLog(ModelAndView mav) {	
-		mav.setViewName("/ERP/PriceLog");
-		return mav;
+	public String PriceLog(Model model) {	
+		List<IoLog> list = erpService.ioLogList();
+		
+		model.addAttribute("list", list);
+		return "ERP/PriceLog";
+	}
+	
+	//입출고 확인 진입
+	@RequestMapping("/ERP/ReceiveLog.do")
+	public String ReceiveLog(Model model) {	
+		List<IoLog> list = erpService.ioLogList();
+		List<Product> list2 = erpService.productList();
+		List<EMP> list3 = erpService.empList();
+		
+		model.addAttribute("list", list);
+		model.addAttribute("list2", list2);
+		model.addAttribute("list3", list3);
+		return "ERP/ReceiveLog";
 	}
 	
 	
@@ -153,17 +199,41 @@ public class ErpContorller {
 	}
 	
 
-	@RequestMapping("/ERP/EmpBoardList.do")
-	public String empBoardList(Model model) {
+	@RequestMapping(value="/ERP/EmpBoardList.do", method=RequestMethod.GET)
+	public String empBoardList(Model model, HttpServletRequest request, HttpServletResponse response
+							   ,@RequestParam(required=false) String searchType, @RequestParam(required=false) String searchKeyword) {
 //		호근 empList.do가 게시판 가르킴  수정하겠음
+		//paging bar 추가
+		int numPerPage = 10;
+		int cPage = 1;
+		try {
+			
+			cPage = Integer.parseInt(request.getParameter("cPage"));
+		}catch(NumberFormatException e) {
+			
+		}
+		
+		log.debug("cPage={}",cPage);
 		List<EMP> list = erpService.empList();
-		List<Map<String, Object>> empBoardList = erpService.empBoardList();
+		//page map처리
 		log.debug("list = {} ", list);
-		log.debug("empBoardList = {} ", empBoardList);
+		Map<String, String> map = new HashMap<>();
+		map.put("searchType", searchType);
+		map.put("searchKeyword", searchKeyword);
+		
+		log.debug("map = {}", map);
+		List<EmpBoard> empBoardList = erpService.searchBoard(searchType,searchKeyword,cPage, numPerPage);
+		int totalContents = erpService.getSearchContents(map);
+	
+		String url = request.getRequestURI();
+		String pageBar = Paging.getPageBarHtml(cPage, numPerPage, totalContents, url);
 		
 		model.addAttribute("list", list);
 		//model 추가함
 		model.addAttribute("empBoardList", empBoardList);
+		model.addAttribute("searchType",searchType);
+		model.addAttribute("searchKeyword",searchKeyword);
+		model.addAttribute("pageBar", pageBar);
 		return "ERP/empList";
 		
 	}
@@ -641,9 +711,44 @@ public class ErpContorller {
 	
 	@RequestMapping("/ERP/EmpBoardDetail.do")
 	public ModelAndView empBoardDetail(@RequestParam("no") int no,
-									ModelAndView mav) {
+									ModelAndView mav
+									,HttpServletRequest request
+									,HttpServletResponse response) {
 		log.debug("no = {}", no);
-	    EmpBoard empBoard = erpService.selectOneEmpBoard(no);
+		//조회수 관련 처리 시작
+		Cookie[] cookies = request.getCookies();
+		String boardCookieVal = "";
+		boolean hasRead = false;
+		
+		if(cookies != null) {
+			for(Cookie c : cookies) {
+				log.debug("cookies={}", cookies.toString());
+				String name = c.getName();
+				String value = c.getValue();
+				log.debug("name={}", name);
+				log.debug("value ={}", value.toString());
+				
+				if("erpBoardCookie".equals(name)) {
+					boardCookieVal = value;
+					log.debug("boardCookie = {}", boardCookieVal);
+				}
+				
+				if(value.contains("[" + no + "]")) {
+					hasRead = true;
+					break;
+				}
+			}
+		}
+		
+		if(hasRead == false) {
+			Cookie erpBoardCookie = new Cookie("erpBoardCookie", boardCookieVal + "[" + no + "]");
+			erpBoardCookie.setMaxAge(365*24*60*60);
+			erpBoardCookie.setPath(request.getContextPath()+"/ERP/EmpBoardDetail.do");
+			response.addCookie(erpBoardCookie);
+		}
+		
+	    EmpBoard empBoard = erpService.selectOneEmpBoard(no, hasRead);
+	    log.debug("empBoard = {}", empBoard);
 		mav.addObject("empBoard", empBoard);
 //		model.addAttribute("board", boardList);
 		mav.setViewName("ERP/EmpBoardDetail");
@@ -651,17 +756,95 @@ public class ErpContorller {
 	}
 	
 	@PostMapping("/ERP/empBoardCkEnroll.do")
-	public String empBoardCKEnroll(RedirectAttributes redirectAttr, EmpBoard empBoard, EMP emp) {
+	public String empBoardCKEnroll(RedirectAttributes redirectAttr, EmpBoard empBoard, EMP emp
+									,HttpServletRequest request
+									,Model model
+									,@RequestParam("upFile") MultipartFile[] upFiles) throws IllegalStateException, IOException {
+//		log.debug("empBoard = {}", empBoard);
+//		log.debug("emp = {}", emp);
 		
+		List<EmpBoardImage> empBoardImageList = new ArrayList<>();
+		String saveDirectory = request.getServletContext().getRealPath("/resources/upload/empBoard");
+		for(MultipartFile upFile : upFiles) {
+			
+			if(upFile.isEmpty()) {
+				 continue;
+			}else {
+				String renamedFilename = Utils.getRenamedFileName(upFile.getOriginalFilename());
+				File dest = new File(saveDirectory, renamedFilename);
+				upFile.transferTo(dest);
+				EmpBoardImage empBoardImage = new EmpBoardImage();
+				empBoardImage.setOriginalFilename(upFile.getOriginalFilename());
+				empBoardImage.setRenamedFilename(renamedFilename);
+				empBoardImageList.add(empBoardImage);
+			}
+			
+			
+		}
+		log.debug("empBoardImageList = {}", empBoardImageList);
+		empBoard.setEmpBoardImageList(empBoardImageList);
+		empBoard.setEmpId(emp.getEmpId());
 		
-		return "redirect:/";
+		log.debug("empBoard = {}", empBoard);
+		
+		int result = erpService.insertEmpBoard(empBoard);
+		
+		return "redirect:/ERP/EmpBoardList.do";
 	}
 	
 	// 호근 board image 추가	
 	@PostMapping("/ERP/empBoardimageFileUpload.do")
 	@ResponseBody
-	public String empBoardImage() {
+	public String empBoardImage(HttpServletRequest request, HttpServletResponse response,
+								MultipartHttpServletRequest multiFile) throws Exception {
 		
+		request.setCharacterEncoding("utf-8");
+		JsonObject json = new JsonObject();
+		PrintWriter printWriter = null;
+		OutputStream out = null;
+		MultipartFile file = multiFile.getFile("upload");
+		log.debug("file = {}", file.getOriginalFilename());
+
+		
+		if( file != null) {
+			if(file.getSize() > 0 ) {
+					if( file.getContentType().toLowerCase().startsWith("image/")) {
+						try {
+//							String fileName = file.getOriginalFilename();	 
+							String fileName = Utils.getRenamedFileName(file.getOriginalFilename());
+							byte[] bytes = file.getBytes();
+							String upPath = request.getServletContext().getRealPath("/resources/upload/empBoard");
+							File uploadFile = new File(upPath);
+							if(!uploadFile.exists()) {
+								uploadFile.mkdir();
+							}
+							out = new FileOutputStream(new File(upPath, fileName));
+							out.write(bytes);
+							
+							printWriter = response.getWriter();
+							response.setContentType("text/html");
+							String fileUrl = request.getContextPath() + "/resources/upload/empBoard/" + fileName;
+							
+							json.addProperty("uploaded", 1);
+							json.addProperty("fileName", fileName);
+							json.addProperty("url", fileUrl);
+							printWriter.println(json);
+						
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}finally {
+							if(out != null)
+								out.close();
+							if(printWriter !=  null)
+								printWriter.close();
+							
+						}
+						
+					}
+			}
+			
+		}
 		return null;
 	}
 	
@@ -703,6 +886,7 @@ public class ErpContorller {
 		map.put("isAvailable", Available);
 		return map;
 	}
+	
 	@PostMapping("/ERP/replyUpdateReal.do")
 	@ResponseBody
 	public Map<String, Object> replyUpdate(@RequestParam("boardReplyNo") int boardReplyNo, @RequestParam("content") String content, RedirectAttributes redirectAttr, Model model) {
@@ -718,6 +902,46 @@ public class ErpContorller {
 		boolean Available= (result > 0) ?  true : false;
 		log.debug("isValiable= {}", Available);
 		map.put("isAvailable", Available);
+		return map;
+	}
+	
+	@RequestMapping("/ERP/fileDownload.do")
+	@ResponseBody
+	public Resource empBoardDownload(@RequestParam("no") int boardImageNo
+									,HttpServletRequest request
+									,HttpServletResponse response
+									,@RequestHeader("user-agent") String userAgent) throws UnsupportedEncodingException {
+		
+		log.debug("no = {}", boardImageNo);
+		EmpBoardImage empBoardImage = erpService.empBoardFileDownload(boardImageNo);
+		log.debug("empBoardImage = {}", empBoardImage);
+		String saveDirectory = request.getServletContext().getRealPath("/resources/upload/empBoard");
+		File downFile = new File(saveDirectory, empBoardImage.getRenamedFilename());
+		
+		Resource resource = resourceLoader.getResource("file:" + downFile);
+		boolean isMSIE = userAgent.indexOf("MSIE") != -1 
+          	  || userAgent.indexOf("Trident") != -1;
+		String originalFilename = empBoardImage.getOriginalFilename();
+		  if(isMSIE){
+		      originalFilename = URLEncoder.encode(originalFilename, "UTF-8")
+		      							 .replaceAll("\\+", "%20");
+		  }else{
+		        originalFilename = new String(originalFilename.getBytes("UTF-8"),"ISO-8859-1");
+		   }
+		  response.setContentType("application/octet-stream; charset=utf-8");
+		  response.addHeader("Content-Disposition", "empBoardImage; filename=\"" + originalFilename + "\"");
+		  return resource;
+		
+	}
+	
+	@GetMapping("/ERP/productList.do")
+	@ResponseBody
+	public Map<String, Object> productList(Model model) {
+		Map<String, Object> map = new HashMap<>();
+		List<Product> list = erpService.erpProductList();
+		map.put("productList", list);
+		log.debug("map = {}", map);
+		model.addAttribute("map", map);
 		return map;
 	}
 	

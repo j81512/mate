@@ -2,6 +2,7 @@ package com.kh.mate.erp.model.vo;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,5 +24,11 @@ public class EmpBoard implements Serializable{
 	private String empId;
 	private Date regDate;
 	private int enabled;
-
+	private List<EmpBoardImage> empBoardImageList;
+	private int readCount;
+	
+	//boardInfo 추가
+	private int boardInfoNo;
+	private int productNo;
+	private int amount;
 }

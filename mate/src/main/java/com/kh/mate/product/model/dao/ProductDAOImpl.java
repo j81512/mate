@@ -95,7 +95,6 @@ public class ProductDAOImpl implements ProductDAO {
 		return session.insert("product.insertReview", param);
 	}
 
-
 	@Override
 	public int updatePurchaseConfirm(int purchaseLogNo) {
 		return session.update("product.updatePurchaseConfirm", purchaseLogNo);
@@ -125,12 +124,23 @@ public class ProductDAOImpl implements ProductDAO {
 	public List<Address> selectAddressList(String memberId) {
 		return session.selectList("product.selectAddressList", memberId);
 	}
+
+	@Override
+	public int insertPurchase(Map<String, Object> idAndAddr) {
+		return session.insert("product.insertPurchase", idAndAddr);
+	}
+
+	@Override
+	public int getPurchaseNo() {
+		return session.selectOne("product.getPurchaseNo");
+	}
+
+	@Override
+	public int insertPurchaseLog(Map<String, Object> param) {
+		return session.insert("product.insertPurchaseLog", param);
+	}
 	
 
-	
-	
-	
-	
 	
 	
 }
