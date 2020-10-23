@@ -282,18 +282,26 @@ public class ErpContorller {
 	
 	//김찬희 erp발주
 	@RequestMapping("/ERP/orderERP.do")
-	public String orderProduct(String eId, String pNo, Model model) {
+	public String orderProduct(String eId, String pNo,String requestId, Model model) {
 		
 		log.debug("productNo = {}", pNo);
 		log.debug("empId = {}", eId);
+		log.debug("requestId = {}", requestId);
 		
 		int productNo = Integer.parseInt(pNo);
 		
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("eId", eId);
 		map.put("productNo", productNo);
+		Product product;
+		if(requestId != null && !requestId.isEmpty()) {
+			map.put("eId", eId);
+			product = erpService.orderProduct(map);
+		}else {
+			
+			product = erpService.orderProduct(map);
+			product.setBranchEmp(eId);
+		}
 		
-		Product product = erpService.orderProduct(map);
 		
 		
 		log.debug("product = {}",product);

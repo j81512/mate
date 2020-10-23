@@ -5,13 +5,11 @@ import static com.kh.mate.common.Utils.getRenamedFileName;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +22,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.kh.mate.common.paging.PagingVo;
 import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.member.model.vo.Member;
 import com.kh.mate.product.model.service.ProductService;
 import com.kh.mate.product.model.vo.Cart;
 import com.kh.mate.product.model.vo.Product;
-import com.kh.mate.product.model.vo.ProductMainImages;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -216,9 +214,24 @@ public class ProductController {
 	//CH
 	@RequestMapping(value = "/productList.do",
 					method = RequestMethod.GET)
-	public String productList(Model model) {
+	public String productList(Model model,PagingVo page,String nowPage, String cntPerPage) {
 		
-		List<Product> list = productService.selectProductListAll();
+		int total = productService.countProduct(); 
+		
+		if(nowPage == null && cntPerPage == null) {
+			nowPage = "1";
+			cntPerPage="5";
+		} else if (nowPage == null) {
+			nowPage = "1";
+		} else if (cntPerPage == null) { 
+			cntPerPage = "5";
+		}
+
+		page.setTotal(total);
+		page.setNowPage(Integer.parseInt(nowPage));
+		page.setCntPerPage(Integer.parseInt(cntPerPage));
+		
+		List<Product> list = productService.selectProductListAll(page);
 		log.debug("list = {}", list);
 		model.addAttribute("list", list);
 		return "product/productList";
