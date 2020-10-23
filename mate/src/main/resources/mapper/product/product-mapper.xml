@@ -54,7 +54,8 @@
  	
  	
  	<select id="searchProductList" resultType="product">
- 		select * from product
+ 		select * from ( select ROWNUM RN, A.*
+        from (select * from product
  		<where>
  		
  		<if test="cateArr != null">
@@ -71,7 +72,8 @@
  			or content like '%' || #{search} || '%')
  		</if>
  		
- 		</where>
+ 		</where>) A)
+        WHERE RN BETWEEN #{page.start} and #{page.end}
  	</select>
  	
  	<select id="productCategory" resultType="product">

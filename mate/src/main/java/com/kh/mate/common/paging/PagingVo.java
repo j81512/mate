@@ -10,8 +10,8 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+//@NoArgsConstructor
+//@AllArgsConstructor
 @ToString
 public class PagingVo {
 	
@@ -24,6 +24,7 @@ public class PagingVo {
 	private int start;
 	private int end;
 	private int cntPage = 5;
+	
 	
 	public void calcLastPage(int total, int cntPerPage) {
 		setLastPage((int)Math.ceil((double)total/(double)cntPerPage));
@@ -41,6 +42,18 @@ public class PagingVo {
 	public void calcStartEnd(int nowPage, int cntPerPage) {
 		setEnd(nowPage * cntPerPage);
 		setStart(getEnd() - cntPerPage + 1);
+	}
+	public PagingVo() {
+		super();
+	}
+	
+	public PagingVo(int total, int nowPage, int cntPerPage) {
+		setNowPage(nowPage);
+		setCntPerPage(cntPerPage);
+		setTotal(total);
+		calcLastPage(getTotal(), getCntPerPage());
+		calcStartEndPage(getNowPage(), cntPage);
+		calcStartEnd(getNowPage(), getCntPerPage());
 	}
 
 }
