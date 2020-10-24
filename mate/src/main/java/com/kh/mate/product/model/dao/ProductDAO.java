@@ -60,6 +60,8 @@ public interface ProductDAO {
 
 	int insertPurchaseLog(Map<String, Object> param);
 
+	int updatePurchaseReturn(Map<String, Object> param);
+
 
 
 }
