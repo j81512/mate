@@ -95,9 +95,6 @@ public class ErpDAOImpl implements ErpDAO {
 
   
   //김종완
-	
-
-
 
 	@Override
 	public int productEnroll(Product product) {
@@ -150,7 +147,40 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.delete("erp.productImagesDelete", productNo);
 	}
 
+	@Override
+	public List<RequestLog> selectRequsestList(String empId) {
+		return sqlSession.selectList("erp.selectRequsestList", empId);
+	}
+	
+	@Override
+	public int updateRequestToApp(int requestNo) {
+		return sqlSession.update("erp.updateRequestToApp", requestNo);
+	}
+
+	@Override
+	public int updateRequestToRef(int requestNo) {
+		return sqlSession.update("erp.updateRequestToRef", requestNo);
+	}
+	
+	@Override
+	public List<Receive> selectReceiveList(String empId) {
+		return sqlSession.selectList("erp.selectReceiveList", empId);
+	}
+	
+	@Override
+	public int updateReceiveToApp(int receiveNo) {
+		return sqlSession.update("erp.updateReceiveToApp", receiveNo);
+	}
+	
+	@Override
+	public int updateReceiveToRef(int receiveNo) {
+		return sqlSession.update("erp.updateReceiveToRef", receiveNo);
+	}
+	
 	//호근 추가
+
+
+	
 
 	@Override
 	public EmpBoard selectOneEmpBoard(int no) {

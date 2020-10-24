@@ -256,6 +256,7 @@ function closeReturnModal(){
 
 
 $(function(){
+
 	$(".return-btn").click(function(){
 		var no = $(this).parent().siblings(".purchaseLogNo-td").text();
 		var amount = $(this).parent().siblings(".amount-td").text();
@@ -268,7 +269,8 @@ $(function(){
 	$(".confirm-btn").click(function(){
 		if(confirm("구매 확정 하시겠습니까?")==false) return;
 		var $btnTd = $(this).parent();
-		var plNo = $btnTd.siblings(".purchaseLogNo-td").val();
+		var plNo = Number($btnTd.siblings(".purchaseLogNo-td").text());
+		
 		$.ajax({
 			url : "${ pageContext.request.contextPath}/product/purchaseConfirm.do",
 			data : {
@@ -277,8 +279,9 @@ $(function(){
 			method : "POST",
 			dataType : "json",
 			success : function(data){
-				if(data > 0) {
-					$btnTd.html("<p>구매확정</p>");
+				if(data.result > 0) {
+					console.log("구매확정됨");
+					location.reload();
 				}
 				else alert("구매확정에 실패하였습니다. 다시시도 해주세요.");
 			},
@@ -289,30 +292,37 @@ $(function(){
 	});
 });
 
+$(function(){
+	$("#return-modal-submit").click(function(){
+		console.log("return-modal-submit");
+		var data = new FormData();
+		data.append('file', $("#return-file")[0].files[0]);
+		data.append('purchaseLogNo', Number($("#hiddenPurchaseLogNo-return").val()));
+		data.append('status', $("[name=return-status]:checked").val());
+		data.append('content', $("#return-content").val());
+		data.append('amount', Number($("#amount").val()));
 
-$("#return-modal-submit").click(function(){
-	var formData = new FormData();
-	formData.append("purchaseLogNo", $("#hiddenPurchaseLogNo-return").val());
-	formData.append("status", $("[name=return-status]:checked").val());
-	formData.append("content", $("#return-content").val());
-	formData.append("amount", $("#hiddenPurchaseAmount-return").val());
-	formData.append("file", $("#return-file")[0].files[0]);
-
-	$.ajax({
-		url : "${pageContext.request.contextPath}/product/return.do",
-		type : "POST",
-		processData: false,
-		contentType: false,
-		data: formData,
-		success: function(data) {
-			closeReturnModal();
-			$btnTd.html("<p>환불/교환 처리중</p>");
-		},
-		error: function(xhr, status, err){
-			console.log(xhr,stauts,err);
-		}
+		console.log(data);
+		
+		$.ajax({
+			url : "${pageContext.request.contextPath}/product/return.do",
+			type : "POST",
+			processData : false,
+	        contentType : false,
+			data: data,
+			dataType: 'json',
+			success: function(data) {
+				console.log("ㅇㅇ");
+				closeReturnModal();
+				location.reload();
+			},
+			error: function(xhr, status, err){
+				console.log(xhr,status,err);
+			}
+		});
+		
 	});
-	
+		
 });
 
 
@@ -332,8 +342,8 @@ function openKakao(purchaseNo, sum){
 <div class="row">
 	<div class="col-sm-6">
 	  <ul class="nav nav-pills" >
-	    <li class="" style="width:50%"><a class="btn btn-lg btn-default" data-toggle="tab" href="#buy">구매내역</a></li> 
-	    <li class=" " style="width:48%"><a class=" btn btn-lg btn-default" data-toggle="tab" href="#menu1">정보수정</a></li>
+	    <li class="" style="width:50%"><a class="btn btn-lg btn-default nav-link active" data-toggle="tab" href="#buy" aria-selected="true">구매내역</a></li> 
+	    <li class=" " style="width:48%"><a class=" btn btn-lg btn-default nav-link" data-toggle="tab" href="#menu1" aria-selected="false">정보수정</a></li>
 	  </ul>
 	</div>
 </div>
@@ -380,7 +390,7 @@ function openKakao(purchaseNo, sum){
 	</div>
 </div>
 <!-- 구매 내역  -->
-<div id="buy" class="tab-pane fade">
+<div id="buy" class="tab-pane fade active show in">
 	<div class="col-md-15">
 	    <div class="form-area">  
 			<table id="purchaseLog-table" class="table">
@@ -410,7 +420,7 @@ function openKakao(purchaseNo, sum){
 							<td>
 								${ purchase.status == 0 ? "<input type='button' class='return-btn' value='환불/교환' /><input type='button' class='confirm-btn' value='구매확정' />" 
 								 : purchase.status == 1 ? "<p>구매확정</p>" 
-								 : purchase.status == -1 ? "<p>환불/교환</p>" 
+								 : purchase.status == -1 ? "<p>환불/교환 처리중</p>" 
 								 : purchase.status == -2 ? "<p>환불/교환 처리 완료</p>" 
 								 : "<p>환불/교환 거절</p>" }
 							</td>
@@ -436,7 +446,7 @@ function openKakao(purchaseNo, sum){
 				</c:if>
 				<c:if test="${ empty mapList }">
 					<tr>
-						<td colspan="8">구매 내역이 존재하지 않습니다.</td>
+						<td colspan="9">구매 내역이 존재하지 않습니다.</td>
 					</tr>
 				</c:if>
 			</table>
@@ -454,14 +464,14 @@ function openKakao(purchaseNo, sum){
 			<p class="modal-title">환불/교환</p>
 		</div>
 		<div class="modal-body">
-			<input type="radio" name="return-status" id="refund" value="refund" required/>
+			<input type="radio" name="return-status" id="refund" value="R" required/>
 			<label for="refund">환불</label>
 			&nbsp;&nbsp;
-			<input type="radio" name="return-status" id="exchange" value="exchange" />
+			<input type="radio" name="return-status" id="exchange" value="E" />
 			<label for="exchange">교환</label>
 			<br />
 			<input type="file" name="returnFile" id="return-file" />
-			수량 <input type="number" name="amount" id="amount" max="" min="1"/>
+			수량 : <input type="number" name="amount" id="amount" max="" min="1"/>
 			<textarea name="comments" id="return-content" rows="5" required></textarea>
 			
 		</div>

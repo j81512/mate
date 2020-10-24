@@ -23,4 +23,8 @@ public class RequestLog {
 	private int productNo;
 	private String empId;
 	
+	private String productName;
+	private String category;
+	private int price;
+	
 }

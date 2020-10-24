@@ -124,13 +124,20 @@
  			product_no = #{productNo}
  	</delete>
  	
-
- 	<update id="updatePurchaseConfirm">
+	<update id="updatePurchaseReturn" parameterType="_int">
  		update
- 			purchaseLog
- 		set(
+ 			purchase_log
+ 		set
+ 			status = -1
+ 		where
+ 			purchase_log_no = #{purchaseLogNo}
+ 	</update>
+
+ 	<update id="updatePurchaseConfirm" parameterType="_int">
+ 		update
+ 			purchase_log
+ 		set
  			status = 1
- 		)
  		where
  			purchase_log_no = #{purchaseLogNo}
  	</update>
@@ -159,7 +166,7 @@
  		insert into
  			return_images
  		values(
- 			seq_return_images_no.nextval,
+ 			seq_return_image_no.nextval,
  			#{ originalFilename },
  			#{ renamedFilename },
  			#{ returnNo }

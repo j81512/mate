@@ -76,5 +76,16 @@ public interface ErpService {
 
 	EmpBoard selectEmpStock(Map<String, Object> map);
 
+	List<RequestLog> selectRequestList(String empId);
+
+	int updateRequestToApp(int requestNo);
+
+	int updateRequestToRef(int requestNo);
+
+	List<Receive> selectReceiveList(String empId);
+
+	int updateReceiveToApp(int receiveNo);
+
+	int updateReceiveToref(int receiveNo);
 
 }
