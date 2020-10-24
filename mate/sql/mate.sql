@@ -664,7 +664,7 @@ begin
 end;
 /
 
--- 반품 수락시 입출고 로그에 입고로 insert 되는 트리거
+-- 환불 수락시 입출고 로그에 입고로 insert 되는 트리거
 create or replace trigger trg_return
     before
     update on return
@@ -674,7 +674,7 @@ declare
     v_purchase_log_no purchase_log.purchase_log_no%type;
     v_product_no product.product_no%type;
 begin
-    if :new.confirm = 1 then
+    if :new.confirm = 1 and :new.status = 'R' then
         select
             purchase_log_no
         into
@@ -702,6 +702,57 @@ begin
         where
             product_no = v_product_no;
             
+        insert into
+            io_log
+        values(
+            seq_io_no.nextval,
+            'I',
+            :new.amount,
+            default,
+            v_product_no,
+            v_manufacturer_id,
+            '온라인 - 환불'
+        );
+    end if;
+    if :new.confirm = 1 and :new.status = 'E' then
+        select
+            purchase_log_no
+        into
+            v_purchase_log_no
+        from
+            return
+        where
+            purchase_log_no = :new.purchase_log_no;
+    
+        select 
+            product_no
+        into
+            v_product_no
+        from 
+            purchase_log
+        where
+            purchase_log_no = v_purchase_log_no;
+            
+        select
+            manufacturer_id
+        into
+            v_manufacturer_id
+        from 
+            product
+        where
+            product_no = v_product_no;
+            
+        insert into
+            io_log
+        values(
+            seq_io_no.nextval,
+            'O',
+            :new.amount,
+            default,
+            v_product_no,
+            v_manufacturer_id,
+            '온라인 - 교환'
+        );
             
         insert into
             io_log
@@ -712,7 +763,7 @@ begin
             default,
             v_product_no,
             v_manufacturer_id,
-            '온라인 - 반품'
+            '불량품 교환'
         );
     end if;
 end;

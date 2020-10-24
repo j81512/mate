@@ -446,7 +446,7 @@ function openKakao(purchaseNo, sum){
 				</c:if>
 				<c:if test="${ empty mapList }">
 					<tr>
-						<td colspan="8">구매 내역이 존재하지 않습니다.</td>
+						<td colspan="9">구매 내역이 존재하지 않습니다.</td>
 					</tr>
 				</c:if>
 			</table>
