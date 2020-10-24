@@ -34,13 +34,27 @@
 			  <span class="glyphicon glyphicon-gift" aria-hidden="true"></span>상품 관리
 			</button>
     	</li>
-    	<li>
-	    	<button type="button" 
-	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/ProductReceive.do';">
-			  <span class="glyphicon glyphicon-save" aria-hidden="true"></span>입고 관리
-			</button>
-    	</li>
+    	
+    	<!-- 로그인된 관리자 상태가 지점일 경우 -->
+    	<c:if test="${loginEmp.status eq 1 }">
+	    	<li>
+		    	<button type="button" 
+		    			class="btn btn-default btn-lg"
+		    			onclick="location.href='${ pageContext.request.contextPath }/ERP/ProductReceive.do';">
+				  <span class="glyphicon glyphicon-save" aria-hidden="true"></span>입고 관리
+				</button>
+	    	</li>
+    	</c:if>
+    	<!-- 로그인된 관리자 상태가 제조사일 경우 -->
+    	<c:if test="${loginEmp.status eq 2 }">
+	    	<li>
+		    	<button type="button" 
+		    			class="btn btn-default btn-lg"
+		    			onclick="location.href='${ pageContext.request.contextPath }/ERP/ProductRequestList.do';">
+				  <span class="glyphicon glyphicon-save" aria-hidden="true"></span>발주 관리
+				</button>
+	    	</li>
+    	</c:if>
     </div>
     <div>
     	<li>

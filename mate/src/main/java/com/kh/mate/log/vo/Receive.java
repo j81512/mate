@@ -22,4 +22,9 @@ public class Receive {
 	private int confirm;
 	private int productNo;
 	private String empId;
+	
+	private String productName;
+	private String category;
+	private int price;
+	private int stock;
 }

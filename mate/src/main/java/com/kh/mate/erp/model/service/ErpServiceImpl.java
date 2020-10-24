@@ -174,7 +174,41 @@ public class ErpServiceImpl implements ErpService {
 		return result;
 	}
 
+	@Override
+	public List<RequestLog> selectRequestList(String empId) {
+		List<RequestLog> requestLogList = erpDAO.selectRequsestList(empId);
+		return requestLogList;
+	}
+	
+	@Override
+	public int updateRequestToApp(int requestNo) {
+		return erpDAO.updateRequestToApp(requestNo);
+	}
+	
+	@Override
+	public int updateRequestToRef(int requestNo) {
+		return erpDAO.updateRequestToRef(requestNo);
+	}
+
+	@Override
+	public List<Receive> selectReceiveList(String empId) {
+		return erpDAO.selectReceiveList(empId);
+	}
+	
+	@Override
+	public int updateReceiveToApp(int receiveNo) {
+		return erpDAO.updateReceiveToApp(receiveNo);
+	}
+
+	@Override
+	public int updateReceiveToref(int receiveNo) {
+		return erpDAO.updateReceiveToRef(receiveNo);
+	}
+	
 	//호근 emp 게시판 추가
+
+
+	
 
 	@Override
 	public EmpBoard selectOneEmpBoard(int no, boolean hasRead) {
