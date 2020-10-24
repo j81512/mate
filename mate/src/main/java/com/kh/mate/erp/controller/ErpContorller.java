@@ -720,7 +720,7 @@ public class ErpContorller {
 		return "redirect:/ERP/ProductRequestList.do";
 	}
 	
-		//입고 페이지 우회
+	//입고 페이지 우회
 	@RequestMapping("/ERP/ProductReceive.do")
 	public String productReceiveList(HttpSession session, Model model) {
 		//로그인 되어있는 아이디 -> 지점아이디
@@ -733,6 +733,38 @@ public class ErpContorller {
 		
 		model.addAttribute("list", list);
 		return "ERP/receiveList";
+	}
+	
+	//입고 승인 처리
+	@RequestMapping("/ERP/appReceive.do")
+	public String appReceive(@RequestParam("receiveNo") int receiveNo,
+							 RedirectAttributes redirectAttr) {
+		
+		//해당 입고 목록 update처리
+		int result = erpService.updateReceiveToApp(receiveNo);
+		if(result > 0) {
+			redirectAttr.addFlashAttribute("msg", "해당 상품 입고처리가 완료되었습니다.");
+		}else {
+			redirectAttr.addFlashAttribute("msg", "요청 처리에 실패하였습니다. 다시 시도하여주세요.");
+		}
+		
+		return "redirect:/ERP/ProductReceive.do";
+	}
+	
+	//입고 거절 처리
+	@RequestMapping("/ERP/refReceive.do")
+	public String refReceive(@RequestParam("receiveNo") int receiveNo,
+							 RedirectAttributes redirectAttr) {
+		
+		//해당 입고 목록 update처리
+		int result = erpService.updateReceiveToref(receiveNo);
+		if(result > 0) {
+			redirectAttr.addFlashAttribute("msg", "해당 상품 입고처리가 거절되었습니다.");
+		}else {
+			redirectAttr.addFlashAttribute("msg", "요청 처리에 실패하였습니다. 다시 시도하여주세요.");
+		}
+		
+		return "redirect:/ERP/ProductReceive.do";
 	}
 	
 	// 호근 관리자 로그인 및 로그인 세션 추가 

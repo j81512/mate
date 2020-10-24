@@ -82,5 +82,9 @@ public interface ErpService {
 
 	List<Receive> selectReceiveList(String empId);
 
+	int updateReceiveToApp(int receiveNo);
+
+	int updateReceiveToref(int receiveNo);
+
 
 }

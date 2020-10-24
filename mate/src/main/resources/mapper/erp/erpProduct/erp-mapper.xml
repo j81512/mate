@@ -135,7 +135,9 @@
 		on
  			R.product_no = P.product_no
 		where 
-			emp_id = #{empId}
+			emp_id = #{empId} and
+			r.confirm not in 1 
+			
  	</select>
  	
 	<insert id="productEnroll">
@@ -252,5 +254,22 @@
  		where 
  			request_no = #{requestNo}
  	</update>
+ 	
+ 	<update id="updateReceiveToApp">
+ 		update
+ 			receive
+ 		set
+ 			confirm = 1
+ 		where
+ 			receive_no = #{receiveNo}
+ 	</update>
 
+	<update id="updateReceiveToRef">
+		update
+			receive
+		set
+			confirm = -1
+		where
+			receive_no = {receiveNo}
+	</update>
 </mapper>

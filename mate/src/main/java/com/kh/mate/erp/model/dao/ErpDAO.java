@@ -103,5 +103,9 @@ public interface ErpDAO {
 
 	List<Receive> selectReceiveList(String empId);
 
+	int updateReceiveToApp(int receiveNo);
+
+	int updateReceiveToRef(int receiveNo);
+
 
 }

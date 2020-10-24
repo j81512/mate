@@ -28,6 +28,7 @@
       <th scope="col">제조사</th>
       <th scope="col">재고</th>
       <th scope="col">발주량</th>
+      <th scope="col">승인 여부</th>
       <th scope="col">입고 승인</th>
       <th scope="col">입고 거부</th>
     </tr>
@@ -45,11 +46,12 @@
 	  		<td>${rec.manufacturerId }</td>
 	  		<td>${rec.stock }</td>
 	  		<td>${rec.amount }</td>
+	  		<td>${rec.confirm eq 0 ? '승인 대기' : '승인 거부' }</td>
 	  		<td>
-				<button type="button">입고 승인</button>
+				<button type="button" onclick="appReceive(${rec.receiveNo});">입고 승인</button>
 			</td>
 	  		<td>
-	  			<button type="button">입고 거부</button>
+	  			<button type="button" onclick="refReceive(${rec.receiveNo});">입고 거부</button>
 	  		</td>
 	  	</tr>
 	  </c:forEach>
@@ -65,6 +67,26 @@
   </tbody>
 
 </table>
+
+<script>
+function appReceive(no){
+	var confirm_val = confirm("해당 상품을 입고처리 하시겠습니까?");
+
+	if(confirm_val){
+		location.href="${pageContext.request.contextPath}/ERP/appReceive.do?receiveNo="+no;
+	}
+	
+}
+function refReceive(no){
+	var confirm_val = confirm("해당 상품 입고처리를 거절하시겠습니까?");
+
+	if(confirm_val){
+		location.href="${pageContext.request.contextPath}/ERP/refReceive.do?receiveNo="+no;
+	}
+	
+}
+
+</script>
 
 
 <jsp:include page="/WEB-INF/views/common/footerE.jsp"/>
