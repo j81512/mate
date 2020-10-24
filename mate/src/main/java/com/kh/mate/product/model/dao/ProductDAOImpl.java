@@ -139,6 +139,12 @@ public class ProductDAOImpl implements ProductDAO {
 	public int insertPurchaseLog(Map<String, Object> param) {
 		return session.insert("product.insertPurchaseLog", param);
 	}
+
+
+	@Override
+	public int updatePurchaseReturn(Map<String, Object> param) {
+		return session.update("product.updatePurchaseReturn", param);
+	}
 	
 
 	

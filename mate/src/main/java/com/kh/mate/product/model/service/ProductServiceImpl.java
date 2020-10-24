@@ -137,7 +137,9 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public int insertReturn(Map<String, Object> param) {
 		
-		int result = productDAO.insertReturn(param);
+		int result = productDAO.updatePurchaseReturn(param);
+		if(result <= 0) return result;
+		result = productDAO.insertReturn(param);
 		if(result <= 0) return result;
 		if(param.containsKey("originalFilename")) {
 			int returnNo = productDAO.getReturnNo();

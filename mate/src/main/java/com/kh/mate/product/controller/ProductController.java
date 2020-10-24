@@ -252,14 +252,20 @@ public class ProductController {
 		return "redirect:/member/myPage.do";
 	}
 	
+	@ResponseBody
 	@PostMapping("/purchaseConfirm.do")
-	public int purchaseConfirm(@RequestParam("purchaseLogNo") int purchaseLogNo){
+	public Map<String, Object> purchaseConfirm(@RequestParam("purchaseLogNo") int purchaseLogNo){
+		
+		Map<String, Object> map = new HashMap<>();
 		
 		int result = productService.updatePurchaseConfirm(purchaseLogNo);
 		
-		return result;
+		map.put("result", result);
+		
+		return map;
 	}
 	
+	@ResponseBody
 	@PostMapping("/return.do")
 	public int returnProduct(@RequestParam("purchaseLogNo") int purchaseLogNo,
 							 @RequestParam("status") String status,
@@ -273,9 +279,9 @@ public class ProductController {
 		param.put("status", status);
 		param.put("content", content);
 		param.put("amount", amount);
-		
+		log.debug("file@Controller = {}",file);
 		File newFile = null;
-		if(!file.isEmpty() && file != null) {
+		if(file != null && !file.isEmpty()) {
 			param.put("originalFilename", file.getOriginalFilename());
 			String renamedFilename = getRenamedFileName(file.getOriginalFilename());
 			param.put("renamedFilename", renamedFilename);
