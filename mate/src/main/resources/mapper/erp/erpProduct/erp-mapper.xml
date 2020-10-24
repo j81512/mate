@@ -149,7 +149,7 @@
  		 #{category},
  		 #{content},
  		 #{price},
- 		 #{empId},
+ 		 #{manufacturerId},
  		 default
  		)
  		<selectKey order="AFTER" resultType="_int" keyProperty="productNo">
