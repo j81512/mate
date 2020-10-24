@@ -74,5 +74,7 @@ public interface ErpService {
 
 	List<RequestLog> requestList();
 
+	EmpBoard selectEmpStock(Map<String, Object> map);
+
 
 }

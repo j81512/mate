@@ -28,7 +28,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -213,15 +212,15 @@ public class ErpContorller {
 			
 		}
 		
-		log.debug("cPage={}",cPage);
+//		log.debug("cPage={}",cPage);
 		List<EMP> list = erpService.empList();
 		//page map처리
-		log.debug("list = {} ", list);
+//		log.debug("list = {} ", list);
 		Map<String, String> map = new HashMap<>();
 		map.put("searchType", searchType);
 		map.put("searchKeyword", searchKeyword);
 		
-		log.debug("map = {}", map);
+//		log.debug("map = {}", map);
 		List<EmpBoard> empBoardList = erpService.searchBoard(searchType,searchKeyword,cPage, numPerPage);
 		int totalContents = erpService.getSearchContents(map);
 	
@@ -710,7 +709,8 @@ public class ErpContorller {
 	}
 	
 	@RequestMapping("/ERP/EmpBoardDetail.do")
-	public ModelAndView empBoardDetail(@RequestParam("no") int no,
+	public ModelAndView empBoardDetail(@ModelAttribute("loginEmp") EMP loginEmp,
+									@RequestParam("no") int no,
 									ModelAndView mav
 									,HttpServletRequest request
 									,HttpServletResponse response) {
@@ -748,6 +748,18 @@ public class ErpContorller {
 		}
 		
 	    EmpBoard empBoard = erpService.selectOneEmpBoard(no, hasRead);
+	    log.debug("emp = {}", loginEmp);
+	    log.debug("empBoard = {}", empBoard);
+	    // 게시판 상세보기에서 요청글 일때 제조사 지점 재고 출렷
+	    if(loginEmp != null && empBoard.getCategory().equals("req")){
+	    	Map<String, Object> map = new HashMap<>();
+	    	map.put("productNo", empBoard.getProductNo());
+	    	map.put("empId", loginEmp.getEmpId());
+	    	EmpBoard loginEmpStock = erpService.selectEmpStock(map);
+	    	log.debug("loginEmpStock = {}", loginEmpStock);	
+	    	mav.addObject("loginEmpStock", loginEmpStock);
+	    }
+	    
 	    log.debug("empBoard = {}", empBoard);
 		mav.addObject("empBoard", empBoard);
 //		model.addAttribute("board", boardList);

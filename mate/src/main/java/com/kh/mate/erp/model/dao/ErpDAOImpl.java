@@ -225,6 +225,11 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.selectOne("erpBoard.searchContents", map);
 	}
 
+	@Override
+	public EmpBoard selectEmpStock(Map<String, Object> map) {
+		return sqlSession.selectOne("erpBoard.selectEmpStock", map);
+	}
+
 	
 	
 	

@@ -276,5 +276,10 @@ public class ErpServiceImpl implements ErpService {
 		return totalContents;
 	}
 
+	@Override
+	public EmpBoard selectEmpStock(Map<String, Object> map) {
+		return erpDAO.selectEmpStock(map);
+	}
+
 	
 }

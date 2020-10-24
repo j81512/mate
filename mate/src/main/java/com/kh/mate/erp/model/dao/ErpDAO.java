@@ -95,5 +95,7 @@ public interface ErpDAO {
 
 	List<RequestLog> requestList();
 
+	EmpBoard selectEmpStock(Map<String, Object> map);
+
 
 }

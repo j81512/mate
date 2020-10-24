@@ -31,4 +31,9 @@ public class EmpBoard implements Serializable{
 	private int boardInfoNo;
 	private int productNo;
 	private int amount;
+	
+	//상품명 지점명  추가
+	private String productName;
+	private String empName;
+	private int stock;
 }
