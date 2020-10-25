@@ -44,6 +44,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.google.gson.JsonObject;
 import com.kh.mate.common.Paging;
 import com.kh.mate.common.Utils;
+import com.kh.mate.common.paging.PagingVo;
 import com.kh.mate.erp.model.service.ErpService;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
@@ -52,6 +53,7 @@ import com.kh.mate.erp.model.vo.EmpBoardReply;
 import com.kh.mate.log.vo.IoLog;
 import com.kh.mate.log.vo.Receive;
 import com.kh.mate.log.vo.RequestLog;
+import com.kh.mate.product.model.service.ProductService;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -311,8 +313,23 @@ public class ErpContorller {
 
 	//김찬희 ERP 상품검색
 	@RequestMapping("/ERP/searchInfo.do")
-	public String searchInfo(String category, String search, String select,String upper, String lower, Model model) {
+	public String searchInfo(HttpServletRequest request ,String category,
+			String search, PagingVo page, String nowPage, String cntPerPage, 
+			String select,String upper, String lower, Model model) throws Exception {
+		HttpSession session = request.getSession();
+		int total = erpService.countProduct();
+		EMP emp = (EMP)session.getAttribute("loginEmp");
 		
+		if(nowPage == null && cntPerPage == null) {
+			nowPage = "1";
+			cntPerPage="8";
+		} else if (nowPage == null) {
+			nowPage = "1";
+		} else if (cntPerPage == null) { 
+			cntPerPage = "8";
+		}
+
+		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
 		log.debug(category);
 		log.debug(search);
 		log.debug("upper = {}", upper);
@@ -321,6 +338,8 @@ public class ErpContorller {
 		log.debug("select = {}", select);
 		
 		Map<String,Object> map = new HashMap<String, Object>();
+		
+		map.put("emp", emp);
 		
 		if(!upper.isEmpty() && upper != null) {
 			int uNum = Integer.parseInt(upper);
@@ -338,14 +357,34 @@ public class ErpContorller {
 			map.put("sNum", sNum);
 		}
 		
-		
+		map.put("page", page);
 		map.put("category", category);
 		map.put("select", select);
 		map.put("search", search);
 		
 		
-		List<Product> list = erpService.searchInfo(map);		
-		log.debug("list = {}",list);		
+		List<Product> list = erpService.searchInfo(map);
+		List<Product> pList = erpService.selectAll();
+//		List<Integer> nList = new ArrayList<>(); 
+//		
+//		for(Product pro : list) {
+//			nList.add(pro.getProductNo());
+//		}
+//		for(Product pro : pList) {
+//			if(!nList.contains(pro.getProductNo()))
+//				list.add(pro);
+//		}
+		
+		
+		log.debug("size = {}",list.size());
+		if(list.size() < 8 && Integer.parseInt(nowPage) == 1) {
+			page.setEndPage(1);
+		}
+		
+		log.debug("list = {}",list);
+//		log.debug("test = {}",pliList);
+		model.addAttribute("page",page);		
+		model.addAttribute("map",map);		
 		model.addAttribute("list",list);		
 		return "/ERP/ProductInfo";
 	}

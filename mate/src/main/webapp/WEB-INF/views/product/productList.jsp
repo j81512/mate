@@ -21,18 +21,6 @@ li{
 	display: inline-block;
 }
 </style>
-<script>
- function pageing(now,cnt){
-	var $nowPage = $('[name = nowPage]');
-	var $cntPerPage = $('[name = cntPerPage]');
-	var $search = $('[name = search]');
-	
-	$nowPage.val(now);
-	$cntPerPage.val(cnt);
-	$search.submit();
-
-	 }
-</script>
 <div class="product-container">
 	<!-- ajax처리 -->
 	 <div class="product-search">
@@ -51,8 +39,6 @@ li{
 				<input type="checkbox" name="category" id="dr" value="dr"/>
 		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
 			<input type="hidden" name="category" value="${ category }" />
-	<!-- 		<input type="hidden" name="nowPage" value="1" />
-			<input type="hidden" name="cntPerPage" value="8" /> -->
 		</form>
 	</div> 
 	
@@ -127,7 +113,6 @@ li{
 					<b>${p }</b>
 				</c:when>
 				<c:when test="${p != page.nowPage }">
-					<%-- <a href="${pageContext.request.contextPath}/product/searchProduct.do?" onclick="pageing('${ p }','${ page.cntPerPage }')">${p }</a> --%>
 					<a href="${pageContext.request.contextPath}/product/searchProduct.do?nowPage=${p }&cntPerPage=${page.cntPerPage}&search=${ search }&category=${ sCategory }">${p }</a>
 				</c:when>
 			</c:choose>
