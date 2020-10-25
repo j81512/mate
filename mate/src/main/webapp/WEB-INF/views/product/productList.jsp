@@ -51,8 +51,8 @@ li{
 				<input type="checkbox" name="category" id="dr" value="dr"/>
 		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
 			<input type="hidden" name="category" value="${ category }" />
-			<input type="hidden" name="nowPage" value="1" />
-			<input type="hidden" name="cntPerPage" value="8" />
+	<!-- 		<input type="hidden" name="nowPage" value="1" />
+			<input type="hidden" name="cntPerPage" value="8" /> -->
 		</form>
 	</div> 
 	
@@ -119,20 +119,21 @@ li{
 </div>
 <div style="display: block; text-align: center;">
 	<c:if test="${ page.startPage != 1 }">
-		<a href="#"onclick="pageing('${ paging.startPage - 1}','${ paging.cntPerPage }')">&lt;</a>
+		<a href="#"onclick="pageing('${ page.startPage - 1}','${ page.cntPerPage }')">&lt;</a>
 	</c:if>
-	<c:forEach begin="${paging.startPage }" end="${paging.endPage }" var="p">
+	<c:forEach begin="${page.startPage }" end="${page.endPage}" var="p">
 			<c:choose>
-				<c:when test="${p == paging.nowPage }">
+				<c:when test="${p == page.nowPage }">
 					<b>${p }</b>
 				</c:when>
-				<c:when test="${p != paging.nowPage }">
-					<a href="#"onclick="pageing('${ p }','${ paging.cntPerPage }')">${p+1 }</a>
+				<c:when test="${p != page.nowPage }">
+					<%-- <a href="${pageContext.request.contextPath}/product/searchProduct.do?" onclick="pageing('${ p }','${ page.cntPerPage }')">${p }</a> --%>
+					<a href="${pageContext.request.contextPath}/product/searchProduct.do?nowPage=${p }&cntPerPage=${page.cntPerPage}&search=${ search }&category=${ sCategory }">${p }</a>
 				</c:when>
 			</c:choose>
 		</c:forEach>
-		<c:if test="${paging.endPage != paging.lastPage}">
-			<a href="#" onclick="pageing('${ paging.endPage+1 }','${ paging.cntPerPage }')">&gt;</a>
+		<c:if test="${page.endPage != page.lastPage}">
+			<a href="#" onclick="pageing('${ page.endPage+1 }','${ page.cntPerPage }')">&gt;</a>
 		</c:if>
 
 </div>

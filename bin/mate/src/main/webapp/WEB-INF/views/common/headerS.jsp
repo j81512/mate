@@ -58,6 +58,7 @@ function category(ct){
             <li><a href="${ pageContext.request.contextPath }/member/myPage.do">MyPage</a></li>
             <li><a href="${pageContext.request.contextPath}/cs/cs.do">C/S</a></li>
             <li><a href="${ pageContext.request.contextPath }/company/location.do">Location</a></li>
+            <li><a href="${ pageContext.request.contextPath }/product/selectCart.do?memberId=${ loginMember.memberId }">장바구니</a></li>
             <!-- 1. 추가 : 판매 상품 보기 -> toy -->
             <li class="nav-item dropdown">
 		        <a class="nav-link dropdown-toggle" href="#"
