@@ -56,7 +56,7 @@ import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
 
-@SessionAttributes({"loginEmp"})
+@SessionAttributes({"loginEmp", "loginMember"})
 @Controller
 public class ErpContorller {
 
@@ -788,6 +788,7 @@ public class ErpContorller {
 				&& (loginEmp.getEmpPwd().equals(empPwd))
 				&& (loginEmp.getStatus() == status )) {
 			model.addAttribute("loginEmp", loginEmp);
+			if(loginEmp.getEmpId().equals("admin")) model.addAttribute("loginMember", loginEmp);
 	
 		}
 
