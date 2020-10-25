@@ -212,4 +212,11 @@
 		where emp_id = #{ empId }
 		and product_no = #{ productNo }
 	</select>
+	
+	<delete id="empBoardDelete">
+		delete from board
+		where board_no = #{ boardNo }
+		
+	
+	</delete>
 </mapper>

@@ -179,8 +179,8 @@ $(document).ready(function(){
 		</c:if>
 		
 		<c:if test="${ empBoard.empId eq loginEmp.empId }" >		
-			<button class="btn btn-default" type="button" onclick="">수정</button>
-			<button class="btn btn-default" type="button" onclick="">삭제</button>
+			<button class="btn btn-default" type="button" onclick="return goEmpBoardUpdate('${ empBoard.boardNo}')">수정</button>
+			<button class="btn btn-default" type="button"  onclick="return delBoard('${ empBoard.boardNo}');">삭제</button>
 		</c:if>
 		<!--댓글 폼 -->
 		<div id="reply-container">
@@ -208,6 +208,51 @@ $(document).ready(function(){
 		</div>
     </div>
 
+<script>
 
+function goEmpBoardList(){                
+    location.href = "${ pageContext.request.contextPath }/ERP/EmpBoardList.do";
+}
+	function delBoard(boardNo){
+		console.log(boardNo);
+		var $boardNo = boardNo;
+
+		$.ajax({
+			url : "${ pageContext.request.contextPath}/ERP/boardDelete.do",
+			method:"POST",
+			dataType : "json",
+			data : {
+				"boardNo" : $boardNo},
+			cache   : false,
+            async   : true,
+			success : function(data) {
+				console.log(data);
+				var result = data.result;
+				if(result == "1"){                
+	                alert("게시글 삭제를 성공하였습니다.");                
+	                goEmpBoardList();                
+	            } else {                
+	                alert("게시글 삭제를 실패하였습니다.");    
+	                return;
+	            }
+					
+			},
+			error : function(xhr, status, err){
+				console.log(xhr);
+				console.log(status);
+				console.log(err);
+			}
+			
+		});
+
+	}
+
+ function goEmpBoardUpdate(boardNo){
+        
+        var boardNo =  boardNo;
+        console.log(boardNo);
+        location.href = "${ pageContext.request.contextPath}${ pageContext.request.contextPath}/ERP/empBoardUpdate.do?boardNo="+ boardNo;
+   }
+</script>
 		
 <jsp:include page="/WEB-INF/views/common/footerE.jsp" />

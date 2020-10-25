@@ -260,6 +260,11 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.selectOne("erpBoard.selectEmpStock", map);
 	}
 
+	@Override
+	public int empBoardDelete(int boardNo) {
+		return sqlSession.delete("erpBoard.empBoardDelete", boardNo);
+	}
+
 	
 	
 	

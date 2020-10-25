@@ -88,4 +88,6 @@ public interface ErpService {
 
 	int updateReceiveToref(int receiveNo);
 
+	int empBoardDelete(int boardNo);
+
 }

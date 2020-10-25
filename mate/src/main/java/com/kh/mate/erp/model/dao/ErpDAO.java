@@ -109,4 +109,6 @@ public interface ErpDAO {
 
 	int updateReceiveToRef(int receiveNo);
 
+	int empBoardDelete(int boardNo);
+
 }

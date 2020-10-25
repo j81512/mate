@@ -315,5 +315,11 @@ public class ErpServiceImpl implements ErpService {
 		return erpDAO.selectEmpStock(map);
 	}
 
+	@Override
+	public int empBoardDelete(int boardNo) {
+		return erpDAO.empBoardDelete(boardNo);
+	}
+	
+	
 	
 }

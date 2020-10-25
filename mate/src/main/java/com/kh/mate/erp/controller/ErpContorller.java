@@ -1055,4 +1055,18 @@ public class ErpContorller {
 		return map;
 	}
 	
+	@PostMapping("/ERP/boardDelete.do")
+	@ResponseBody
+	public Map<String, Object> empBoardDelete(@RequestParam("boardNo") int boardNo) {
+		log.debug("boardNo = {}", boardNo);
+		Map<String, Object> map = new HashMap<>();
+		int result = erpService.empBoardDelete(boardNo);
+		
+		if(result > 0 ) {
+			map.put("result", result);
+		}
+		
+		return map;
+	}
+	
 }
