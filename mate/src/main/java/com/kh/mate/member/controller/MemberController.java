@@ -49,7 +49,7 @@ import net.nurigo.java_sdk.exceptions.CoolsmsException;
 
 @Slf4j
 @Controller
-@SessionAttributes({"loginMember"})
+@SessionAttributes({"loginMember", "loginEmp"})
 public class MemberController {
 
 	private NaverLoginBO naverLoginBO;
@@ -292,6 +292,7 @@ public class MemberController {
 		if(	loginMember != null && (loginMember.getMemberPWD().equals(password))
 				&& (loginMember.getMemberId().equals(userId))) {
 			model.addAttribute("loginMember", loginMember);
+			if(loginMember.getMemberId().equals("admin")) model.addAttribute("loginEmp", loginMember);
 			String next = (String)session.getAttribute("next");
 			if( next != null) 
 				location = next;

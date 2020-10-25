@@ -9,112 +9,217 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-<!-- bootstrap css -->
-<link rel="stylesheet"
-	href="${ pageContext.request.contextPath }/resources/css/headerS.css" />
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-<!-- 김찬희 카테고리 작업 스크립트 -->
-<script>
-function category(ct){
-	console.log(ct);
-	var $searchCategory = $('[name=searchCategory]');
-	var $category = $('[name=category]');
-	$category.val(ct);
-	console.log($category.val())
-	$searchCategory.submit();
-	
+<style>
+@font-face {
+    font-family: 'CookieRunOTF-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/CookieRunOTF-Bold00.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
 }
+.font-cookie{
+	font-family: 'CookieRunOTF-Bold';
+}
+@font-face {
+	font-family: 'UhBeeSe_hyun';
+	src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_five@.2.0/UhBeeSe_hyun.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+.font-uhbee{
+	font-family: 'UhBeeSe_hyun';
+}
+nav {
+    position: relative;
+    padding: 50px 10px 10px 10px;
+    min-width: 300px;
+    min-height: 200px;
+}
+.nav-brand{
+	position: absolute;
+	left: 50%;
+	right: 50%;
+	width: 100%;
+	transform:translate(-50%, 0);
+	text-align: center;
+}
+
+footer{
+	position: absolute;
+	display: block;
+	background-color: white;
+	bottom: 0;
+	width: 100%;
+	height: 10%;
+}
+footer p{
+	margin:0;
+}
+html{
+	overflow-y: scroll;
+}
+.color-hotPink{
+	color: rgb(238,80,78);
+}
+.color-emerald{
+	color: rgb(61,171,139);
+}
+.color-coralBlue{
+	color: rgb(9,72,178);
+}
+#brand{
+	font-size: 400%;
+	border: 4px solid white;
+	border-radius: 20%;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+#brand:hover{
+	color: rgb(238,80,78);
+	text-decoration: none;
+}
+.nav-list-img{
+	height: 50px;
+	width: 50px;
+}
+.nav-list{
+	display: inline-block;
+	text-align: left;
+	margin-left: 1%;
+	margin-top: 1%;
+	width: 150px;
+	border-radius: 100%;
+}
+.nav-list:hover{
+	background-color: rgba(255,255,255,0.3);
+	text-align: center;
+}
+.nav-list-text{
+	vertical-align: bottom;
+	color: white;
+	margin-left:2px;
+	text-decoration: underline;
+}
+#back-img{
+	position:absolute;
+	width: 30px;
+	height: 30px;
+	margin: 30px;
+}
+#back-img:hover{
+	width: 35px;
+	margin-left: 20px;
+	cursor: pointer;
+}
+.nav-list-div{
+	width: 100%;
+	height: 100%;
+	text-align: left;
+	position: absolute;
+}
+#loginMember-span{
+	position: absolute;
+	top: 20%;
+	left: 80%;
+	color: white;
+}
+
+body{
+	background-image: url("/mate/resources/images/background.png");
+	background-size: cover;
+}
+.container{
+	border: 1px solid white;
+	background-color: white;
+	border-radius: 10%;
+	min-height: 500px;
+	padding: 30px;
+	margin-left: auto;
+	margin-right: auto;
+ 	box-sizing: border-box;
+  	max-width: 70%;
+  	text-align: center;
+}
+
+</style>
+<script>
+$(function(){
+	$("#back-img").click(function(){
+		window.history.go(-1);
+	});	
+
+	if(${! empty msg}){
+		alert('${msg}');
+	}
+
+});
 </script>
-<!-- 김찬희 카테고리작업 스크립트끝 -->
 </head>
 <body>
 <header>
-<div class="container-fluid">
-    <!-- Second navbar for categories -->
-    <nav class="navbar navbar-default">
-      <div class="container">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1">
-          <span class="sr-only"><img src="${ pageContext.request.contextPath }/resources/images/play.png"  width="50px" class="menuImg"/></span>
-          </button>
-          <a class="navbar-brand" href="${ pageContext.request.contextPath }">Mate</a>
-        </div>
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="navbar-collapse-1">
-          <ul class="nav navbar-nav navbar-right">
-              <a class="btn btn-default btn-outline btn-circle"  data-toggle="collapse" href="#nav-collapse1" aria-expanded="false" aria-controls="nav-collapse1">
-              	<img src="${ pageContext.request.contextPath }/resources/images/play.png" width="50px" class="menuImg"/> 
-             </a>
-          </ul>
-          <ul class="collapse nav navbar-nav nav-collapse" id="nav-collapse1">
-              <!-- 도균이 erp확인용  -->
-               <li class="nav-item">
-			        <a class="nav-link" href="${ pageContext.request.contextPath }/ERP/menu.do">ERP확인용</a>
-			   </li>
-
-            <li><a href="${ pageContext.request.contextPath }/member/myPage.do">MyPage</a></li>
-            <li><a href="${pageContext.request.contextPath}/cs/cs.do">C/S</a></li>
-            <li><a href="${ pageContext.request.contextPath }/company/location.do">Location</a></li>
-            <li><a href="${ pageContext.request.contextPath }/product/selectCart.do?memberId=${ loginMember.memberId }">장바구니</a></li>
-            <!-- 1. 추가 : 판매 상품 보기 -> toy -->
-            <li class="nav-item dropdown">
-		        <a class="nav-link dropdown-toggle" href="#"
-		           id="products" role="button"
-		           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		          	Toy
-		        </a>
-	        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-	        <!-- 종완 수정 - 주소추가 -->
-	          <a class="dropdown-item" href="${ pageContext.request.contextPath }/product/productList.do">전체 상품 보기</a>
-	          <div class="dropdown-divider"></div>
-	           <!-- 김찬희 헤더 카테고리검색 추가함 -->
-	          <a class="dropdown-item" onclick="category('PM')">프라모델</a>
-	          <a class="dropdown-item" onclick="category('FG')">피규어</a>
-	          <a class="dropdown-item" onclick="category('RC')">RC카</a>
-	         <a class="dropdown-item" onclick="category('DR')">드론</a>
-	        </div>
-	      </li>
-	      <!-- 로그인 -->
-			<!-- otherwise쓰면 오류떠서 when으로 수정 -->
-			<!-- emp session 추가 -->
-	   <c:choose>
-			<c:when test="${ empty loginMember && empty loginEmp }">
-				<li class="nav-item">
-		        	<a class="nav-link" href="${ pageContext.request.contextPath}/member/memberLogin.do">로그인</a>
-		      	<!-- 장바구니 불리 -->
-				<li class="nav-item">
-		        	<a class="nav-link" href="#"><img src="${ pageContext.request.contextPath }/resources/images/cart.png" width="80px" class="loginImg"/></a>
-		      	</li>
-			</c:when>
-			<c:when test="${ not empty loginMember }">
-				${ loginMember.memberName }님, 반갑습니다.	
-				<button class="btn btn-outline-success my-2 my-sm-0"
-	               type="button"
-	               onclick="location.href='${ pageContext.request.contextPath}/member/logout.do'">로그아웃</button>
-			</c:when>
-			<c:when test="${not empty loginEmp }" >
-				${ loginEmp.empName }님, 반갑습니다.	
-				<button class="btn btn-outline-success my-2 my-sm-0"
-		               type="button"
-		               onclick="location.href='${ pageContext.request.contextPath}/ERP/logout.do'">로그아웃</button>
-			</c:when>
-		   </c:choose> 
-          </ul>
-        </div><!-- /.navbar-collapse -->
-      </div><!-- /.container -->
-    </nav><!-- /.navbar -->
-</div><!-- /.container-fluid -->
- <!-- 김찬희 작업 -->
-<form action="${ pageContext.request.contextPath }/product/productCategory.do"
-		name="searchCategory">
-	<input type="hidden" name="category" value=""/>
-</form>
-<!-- 김찬희 작업끝 -->
-
+	 <nav>
+		<div class="nav">
+			<div class="nav-brand" >
+				<a id="brand" class="color-hotPink font-uhbee" href="${ pageContext.request.contextPath }">&nbsp;메이트&nbsp;</a>
+				<br />
+				<div class="nav-list-div">
+		       		<a class="nav-list " href="${ pageContext.request.contextPath }/product/productList.do">
+			       		<img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/toy.png" alt="" />
+			       		<span class="nav-list-text font-cookie">Toy</span>
+		       		</a>
+		       		<br />
+ 				    <c:if test='${ empty loginMember || loginMember.memberId ne "admin" }'>
+						<a class="nav-list " href="${ pageContext.request.contextPath }/product/selectCart.do?memberId=${ loginMember.memberId }">
+				       		<img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/cart.png" alt="" />
+				       		<span class="nav-list-text font-cookie">Cart</span>
+			       		</a>
+		       		</c:if>
+		       		<c:if test='${ ! empty loginMember && loginMember.memberId eq "admin" }'>
+		       			<a class="nav-list " href="${ pageContext.request.contextPath }/product/returnPage.do">
+				       		<img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/cart.png" alt="" />
+				       		<span class="nav-list-text font-cookie">return</span>
+			       		</a>
+		       		</c:if>
+		       		<br />
+		       		<a class="nav-list " href="${ pageContext.request.contextPath }/company/location.do">
+			       		<img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/location.png" alt="" />
+			       		<span class="nav-list-text font-cookie">Location</span>
+		       		</a>
+		       		<br />
+		       		<a class="nav-list " href="${ pageContext.request.contextPath }/cs/cs.do">
+			       		<img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/cs.png" alt="" />
+			       		<span class="nav-list-text font-cookie">C/S</span>
+		       		</a>
+		       		<br />
+		       		<c:if test='${ empty loginMember || loginMember.memberId ne "admin" }'>
+		       			<a class="nav-list " href="${ pageContext.request.contextPath }/member/myPage.do">
+    					    <img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/mypage.png" alt="" />
+		       				<span class="nav-list-text font-cookie">MyPage</span>
+		       			</a>
+		       		</c:if>
+		       		<c:if test='${ ! empty loginMember && loginMember.memberId eq "admin" }'>
+		       			<a class="nav-list " href="${ pageContext.request.contextPath }/member/memberManage.do">
+ 							<img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/mypage.png" alt="" />
+		       				<span class="nav-list-text font-cookie">Manage</span>
+		       			</a>
+		       		</c:if>
+		       		<br />
+	       			<c:if test="${ empty loginMember }">
+	       				<a class="nav-list " href="${ pageContext.request.contextPath}/member/memberLogin.do"><img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/login.png" alt="" /><span class="nav-list-text font-cookie">Login</span></a>
+	       			</c:if>
+	       			<c:if test="${! empty loginMember }">
+	       				<a class="nav-list " href="${ pageContext.request.contextPath}/member/logout.do"><img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/logout.png" alt="" /><span class="nav-list-text font-cookie">Logout</span></a>
+	       			</c:if>  	
+       			</div>
+			</div>
+       	</div>
+       	<img src="${ pageContext.request.contextPath }/resources/images/back.png" id="back-img" alt="" />
+       	<c:if test="${! empty loginMember }">
+			<span class="font-cookie" id="loginMember-span"><b class="font-uhbee color-hotPink">${ loginMember.memberName }</b> 님, 반갑습니다.</span>
+		</c:if>
+	</nav>
 </header>
-
+<br />
 <section id="content-sec">
+
 
