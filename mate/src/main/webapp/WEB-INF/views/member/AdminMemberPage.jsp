@@ -4,9 +4,6 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-
-</body>
-</html>
+<title>회원관리</title>
+<jsp:include page="/WEB-INF/views/common/headerE.jsp" />
+<jsp:include page="/WEB-INF/views/common/footerE.jsp" />

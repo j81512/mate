@@ -251,7 +251,7 @@ function goEmpBoardList(){
         
         var boardNo =  boardNo;
         console.log(boardNo);
-        location.href = "${ pageContext.request.contextPath}${ pageContext.request.contextPath}/ERP/empBoardUpdate.do?boardNo="+ boardNo;
+        location.href = "${ pageContext.request.contextPath}/ERP/empBoardUpdate.do?boardNo="+ boardNo;
    }
 </script>
 		
