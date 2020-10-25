@@ -323,22 +323,24 @@ public class ErpContorller {
 		List<Product> pList = erpService.selectAll();
 		List<Integer> cList = erpService.productCompare(emp);
 		
+		
+		
 		//누락상품검사
 		for(Product pro : pList) {
 			
 //			log.debug("cTest = {}", cList.contains(pro.getProductNo()));
 //			log.debug("pro.no = {}",pro.getProductNo());
 			
-			if(!cList.contains(pro.getProductNo())) {
+			if(!cList.contains(pro.getProductNo()) && emp.getStatus() != 0) {
 				map.put("pro", pro);
 				int result = erpService.mStockInsert(map);
-//				log.debug("cTest = {}",pro);
+				log.debug("cTest = {}",pro);
 				
 			}
 		}
 		
 		
-		int total = erpService.countProduct();
+		int total = erpService.countProduct(emp);
 		if(nowPage == null && cntPerPage == null) {
 			nowPage = "1";
 			cntPerPage="8";

@@ -107,7 +107,7 @@ public interface ErpDAO {
 
 	int updateReceiveToRef(int receiveNo);
 
-	int countProduct();
+	int countProduct(EMP emp);
 
 	List<Product> selectAll();
 

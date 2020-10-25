@@ -281,6 +281,11 @@
 	    select COUNT(*)
 		from product p left join stock s
 		on (p.product_no = s.product_no)
+		<where>
+			<if test="status != 0">
+				emp_id = #{empId} or emp_id is null
+			</if>
+		</where>
 	</select>
 	<select id="selectAll" resultMap="productMap">
 	select * from product

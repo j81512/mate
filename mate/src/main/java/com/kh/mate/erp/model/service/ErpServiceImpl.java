@@ -311,8 +311,8 @@ public class ErpServiceImpl implements ErpService {
 	}
 	//김찬희 페이징작업
 	@Override
-	public int countProduct() {
-		return erpDAO.countProduct();
+	public int countProduct(EMP emp) {
+		return erpDAO.countProduct(emp);
 	}
 
 	//누락상품검사

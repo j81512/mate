@@ -86,7 +86,7 @@ public interface ErpService {
 
 	int updateReceiveToref(int receiveNo);
 
-	int countProduct();
+	int countProduct(EMP emp);
 
 	List<Product> selectAll();
 
