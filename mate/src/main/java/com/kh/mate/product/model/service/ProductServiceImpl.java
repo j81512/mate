@@ -168,6 +168,36 @@ public class ProductServiceImpl implements ProductService {
 		
 		return result;
 	}
+
+
+
+	@Override
+	public List<Map<String, Object>> selectAllReturns() {
+		return productDAO.selectAllReturns();
+	}
+
+
+
+	@Override
+	public Map<String, Object> returnDetail(String returnNo) {
+		
+		Map<String, Object> map = new HashMap<>();
+		
+		String content = productDAO.getReturnContent(returnNo);
+		map.put("content", content);
+		
+		List<Map<String, Object>> imageList = productDAO.getReturnImage(returnNo);
+		map.put("imageList", imageList);
+		
+		return map;
+	}
+
+
+
+	@Override
+	public int updateReturn(Map<String, Object> param) {
+		return productDAO.updateReturn(param);
+	}
 	
 
 	

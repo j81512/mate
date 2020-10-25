@@ -70,7 +70,8 @@
 		    pl.status status,
 		    pl.purchased purchased,
             R.review_no review_no,
-            (select price from product where product_no = pl.product_no) price
+            (select price from product where product_no = pl.product_no) price,
+            (select confirm from return where purchase_log_no = PL.purchase_log_no) confirm
 		from
 			purchase_log PL
 				join purchase P
@@ -148,5 +149,6 @@
 		<result column="amount" property="amount"/>
 		<result column="status" property="status"/>
 		<result column="review_no" property="reviewNo"/>
+		<result column="confirm" property="confirm"/>
 	</resultMap>
 </mapper>

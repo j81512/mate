@@ -670,19 +670,9 @@ create or replace trigger trg_return
     update on return
     for each row
 declare    
-    v_manufacturer_id emp.emp_id%type;
-    v_purchase_log_no purchase_log.purchase_log_no%type;
     v_product_no product.product_no%type;
 begin
     if :new.confirm = 1 and :new.status = 'R' then
-        select
-            purchase_log_no
-        into
-            v_purchase_log_no
-        from
-            return
-        where
-            purchase_log_no = :new.purchase_log_no;
     
         select 
             product_no
@@ -691,16 +681,7 @@ begin
         from 
             purchase_log
         where
-            purchase_log_no = v_purchase_log_no;
-            
-        select
-            manufacturer_id
-        into
-            v_manufacturer_id
-        from 
-            product
-        where
-            product_no = v_product_no;
+            purchase_log_no = :new.purchase_log_no;
             
         insert into
             io_log
@@ -710,19 +691,12 @@ begin
             :new.amount,
             default,
             v_product_no,
-            v_manufacturer_id,
+            'admin',
             '온라인 - 환불'
         );
     end if;
+    
     if :new.confirm = 1 and :new.status = 'E' then
-        select
-            purchase_log_no
-        into
-            v_purchase_log_no
-        from
-            return
-        where
-            purchase_log_no = :new.purchase_log_no;
     
         select 
             product_no
@@ -731,16 +705,7 @@ begin
         from 
             purchase_log
         where
-            purchase_log_no = v_purchase_log_no;
-            
-        select
-            manufacturer_id
-        into
-            v_manufacturer_id
-        from 
-            product
-        where
-            product_no = v_product_no;
+            purchase_log_no = :new.purchase_log_no;
             
         insert into
             io_log
@@ -750,7 +715,7 @@ begin
             :new.amount,
             default,
             v_product_no,
-            v_manufacturer_id,
+            'admin',
             '온라인 - 교환'
         );
             
@@ -762,7 +727,7 @@ begin
             :new.amount,
             default,
             v_product_no,
-            v_manufacturer_id,
+            'admin',
             '불량품 교환'
         );
     end if;
