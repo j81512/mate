@@ -285,5 +285,19 @@
 	<select id="selectAll" resultMap="productMap">
 	select * from product
 	</select>
+	<select id="productCompare" resultType="_int">
+	 	select p.product_no
+		from product p left join stock s
+		on (p.product_no = s.product_no)
+		<where>
+			<if test="status != 0">
+			s.emp_id = #{empId} or emp_id is null
+			</if>
+		</where>
+	</select>
+	<insert id="mStockInsert">
+		 insert into stock VALUES(#{ pro.productNo },#{emp.empId},default)
+	</insert>
+	
 	
 </mapper>

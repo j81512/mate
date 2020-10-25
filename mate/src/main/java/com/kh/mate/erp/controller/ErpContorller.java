@@ -317,9 +317,28 @@ public class ErpContorller {
 			String search, PagingVo page, String nowPage, String cntPerPage, 
 			String select,String upper, String lower, Model model) throws Exception {
 		HttpSession session = request.getSession();
-		int total = erpService.countProduct();
 		EMP emp = (EMP)session.getAttribute("loginEmp");
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("emp", emp);
+		List<Product> pList = erpService.selectAll();
+		List<Integer> cList = erpService.productCompare(emp);
 		
+		//누락상품검사
+		for(Product pro : pList) {
+			
+//			log.debug("cTest = {}", cList.contains(pro.getProductNo()));
+//			log.debug("pro.no = {}",pro.getProductNo());
+			
+			if(!cList.contains(pro.getProductNo())) {
+				map.put("pro", pro);
+				int result = erpService.mStockInsert(map);
+//				log.debug("cTest = {}",pro);
+				
+			}
+		}
+		
+		
+		int total = erpService.countProduct();
 		if(nowPage == null && cntPerPage == null) {
 			nowPage = "1";
 			cntPerPage="8";
@@ -330,16 +349,7 @@ public class ErpContorller {
 		}
 
 		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
-		log.debug(category);
-		log.debug(search);
-		log.debug("upper = {}", upper);
-		log.debug("lower = {}", lower);
-		
-		log.debug("select = {}", select);
-		
-		Map<String,Object> map = new HashMap<String, Object>();
-		
-		map.put("emp", emp);
+
 		
 		if(!upper.isEmpty() && upper != null) {
 			int uNum = Integer.parseInt(upper);
@@ -364,17 +374,7 @@ public class ErpContorller {
 		
 		
 		List<Product> list = erpService.searchInfo(map);
-		List<Product> pList = erpService.selectAll();
-//		List<Integer> nList = new ArrayList<>(); 
-//		
-//		for(Product pro : list) {
-//			nList.add(pro.getProductNo());
-//		}
-//		for(Product pro : pList) {
-//			if(!nList.contains(pro.getProductNo()))
-//				list.add(pro);
-//		}
-		
+
 		
 		log.debug("size = {}",list.size());
 		if(list.size() < 8 && Integer.parseInt(nowPage) == 1) {
@@ -382,7 +382,6 @@ public class ErpContorller {
 		}
 		
 		log.debug("list = {}",list);
-//		log.debug("test = {}",pliList);
 		model.addAttribute("page",page);		
 		model.addAttribute("map",map);		
 		model.addAttribute("list",list);		

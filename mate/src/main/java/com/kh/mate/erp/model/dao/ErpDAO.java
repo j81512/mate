@@ -111,5 +111,9 @@ public interface ErpDAO {
 
 	List<Product> selectAll();
 
+	List<Integer> productCompare(EMP emp);
+
+	int mStockInsert(Map<String, Object> map);
+
 
 }

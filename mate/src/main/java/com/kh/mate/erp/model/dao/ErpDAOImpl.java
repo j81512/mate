@@ -266,6 +266,21 @@ public class ErpDAOImpl implements ErpDAO {
 	public List<Product> selectAll() {
 		return sqlSession.selectList("erp.selectAll");
 	}
+
+	@Override
+	public List<Integer> productCompare(EMP emp) {
+		return sqlSession.selectList("erp.productCompare",emp);
+	}
+
+	//누락재고상품추가
+	@Override
+	public int mStockInsert(Map<String, Object> map) {
+		return sqlSession.insert("erp.mStockInsert",map);
+	}
+
+	
+	
+	
 	
 	
 

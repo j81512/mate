@@ -320,6 +320,22 @@ public class ErpServiceImpl implements ErpService {
 	public List<Product> selectAll() {
 		return erpDAO.selectAll();
 	}
+
+	@Override
+	public List<Integer> productCompare(EMP emp) {
+		return erpDAO.productCompare(emp);
+	}
+
+	//누락재고상품 추가
+	@Override
+	public int mStockInsert(Map<String, Object> map) {
+		return erpDAO.mStockInsert(map);
+	}
+
+
+	
+
+	
 	
 
 	
