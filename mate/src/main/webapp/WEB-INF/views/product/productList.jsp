@@ -61,51 +61,24 @@ li{
 			<li>
 				<!-- 상품이 있을 경우 -->
 				<c:if test="${ not empty list }">
-						<c:forEach items="${ list }" var="product">
-						<dl>
-								<a href="${ pageContext.request.contextPath }/product/productDetail.do?productNo=${ product.productNo }"  >
-									<dt>
-										<c:if test="${ not empty product.pmiList }" >
-											<c:forEach items="${ product.pmiList }" var="pmi" varStatus="vs">
-											<div class="img-container" >
-												<img src="${ pageContext.request.contextPath }/resources/upload/mainimages/${pmi.renamedFilename}"
-													 alt="img" 
-													 width="250px"
-													 id="imgTag"/>
-											</div>
-											</c:forEach>
-										</c:if>
-										<!-- <img id="Thums"
-											 alt="Thumnail" 
-											 width="250px" /> -->
-										<c:if test="${ empty product.pmiList }">
-											<script>
-											console.log("empty");
-											</script>	
-										</c:if>	 
-									</dt>
-									<dd>
-										<div class="product-name">
-										상품명 : ${ product.productName }
-										</div>
-										<div class="product-price">
-										상품 가격 : ${ product.price } 
-										</div>
-										<div class="product-rank">
-										별점 : /10
-										</div>
-										<div class="product-date">
-										등록일 : <fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/>									
-										</div>
-										<div class="product-brand">
-										제조사 ${ product.manufacturerId }
-										</div>
-									</dd>
-							</a>
-							
-						</dl>
-							
+					<c:forEach items="${ list }" var="product">
+					<div class="card">
+						<div class="top-section">
+							<img src="대표이미지" alt="대표이미지" id="mainImg1"/>
+						</div>
+						<div class="nav">
+							<c:forEach items="${list.pmiList }" var="Thumbs" varStatus="vs">
+								<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${Thumbs.renamedFilename}" alt="thums${vs.count}" id="thumbs${vs.count}"/>
 							</c:forEach>
+						</div>
+						<div class="productName">
+						${product.productName}
+						</div>
+						<div class="price">
+						${product.pridce}원
+						</div>
+					</div>
+					</c:forEach>
 				</c:if>
 				<!-- 상품이 없을 경우 -->
 				<c:if test="${ empty list }">
