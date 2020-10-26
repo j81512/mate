@@ -155,7 +155,7 @@
 	<div class="row">
 		<div class="col-md-3 col-md-offset-4">
 		 <ul class="nav nav-tabs">
-             <li class="active"><a href="#member" data-toggle="tab">일반 회원</a></li>
+             <li><a href="#member" data-toggle="tab">일반 회원</a></li>
              <li><a href="#adminTab" data-toggle="tab">관리자 회원</a></li>
          </ul>
           <div id="myTabContent" class="tab-content">
@@ -285,9 +285,10 @@
 					</div>
 				</div>
 					<!-- 관리자용 로그인 화면 -->
-	
-				  <div class="tab-pane fade" id="adminTab">
-                      <form id="adminTab" action="${ pageContext.request.contextPath }/ERP/erpLogin.do" method="post">
+				  <div class="tab-pane fade in active" id="adminTab">
+				  <div class="form">
+				
+                      <form id="admin" action="${ pageContext.request.contextPath }/ERP/erpLogin.do" method="post">
                      	<h3 class="heading-desc">관리자 로그인</h3>
                      	<div class="form-group">
 	                        <label for="empId_">아이디</label>
@@ -309,6 +310,7 @@
                           <button type="submit" class="btn btn-primary">로그인</button>
                         </div>
                       </form>
+				  </div>
 				</div>
 			</div>
 		</div>

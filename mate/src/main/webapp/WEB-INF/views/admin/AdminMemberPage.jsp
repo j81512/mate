@@ -21,6 +21,16 @@
     div#search-category{display:none;}
 </style>
 <title>회원관리</title>
+<script>
+$(function(){
+	$("tr[data-no]").click(function(){
+		var memberId = $(this).attr("data-no");
+		console.log(memberId);
+		location.href = "${ pageContext.request.contextPath }/Member/AdminMemberDelete.do?no=" + memberId;
+	});
+
+});
+</script>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp" />
 <div class="container">
 	<div id="board-container" class="mx-auto text-center">
