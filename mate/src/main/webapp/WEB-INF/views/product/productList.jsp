@@ -11,14 +11,55 @@
 <jsp:include page="/WEB-INF/views/common/headerS.jsp"></jsp:include>
 
 <style>
-table, tr, th, td {
-	border: 1px solid black;
-}
-
-li{
-	margin 0;
-	list-style: none;
+ul li{
 	display: inline-block;
+	margin: 10px;
+}
+.card{
+	width: 360px;
+	background : #f1f1f1;
+	top: 50%;
+	left: 50%;
+	position:absolute;
+	transform: translate(-50%, -50%);
+}
+.top-section{
+	height: 310px;
+	overflow: hidden;
+	background: #fff;
+	position: absolute;
+}
+#mainImg{
+	weight: 360px;
+	height: 240px;
+}
+.nav{
+	text-align: center;
+}
+.imgNav img{
+	width: 80px;
+	height: 50px;
+	border: 1px solid #ddd;
+	margin: 8px 2px;
+	transition: 0.3s;
+}
+.imgNav img:hover{
+	border-color: #6ab04c;
+}
+.price{
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	color: #6ab04c;
+	font-size: 24px;
+}
+.product-info{
+	padding: 25px;
+}
+.name{
+	text-transform: uppercase;
+	font-size: 24px;
+	color: #333;
 }
 </style>
 <script>
@@ -58,30 +99,51 @@ li{
 	
 	<div class="product-list">
 		<ul>
-			<li>
 				<!-- 상품이 있을 경우 -->
 				<c:if test="${ not empty list }">
 					<c:forEach items="${ list }" var="product">
+					<li>
 					<div class="card">
 						<div class="top-section">
 							<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${product.pmiList[0].renamedFilename}" 
-								 alt="대표이미지" id="mainImg1"
+								 alt="대표이미지" id="mainImg"
 								 width="200px"/>
 						</div>
-						<div class="nav">
+						<div class="imgNav">
 							<c:forEach items="${product.pmiList }" var="Thumbs" varStatus="vs">
 								<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${Thumbs.renamedFilename}" 
 									 alt="thums${vs.count}" id="thumbs${vs.count}"
 									 width="50px"/>
 							</c:forEach>
 						</div>
-						<div class="productName">
-						${product.productName}
-						</div>
 						<div class="price">
-						${product.price}원
+						가격 : ${product.price}원
+						</div>
+						<div class="product-info">
+							<div class="productName">
+							상품명 : ${product.productName}
+							</div>
+							<div class="category">
+							카테고리 : 
+								<c:if test="${ product.category eq 'fg' }">
+					    		피규어
+					    		</c:if>
+					    		<c:if test="${ product.category eq 'pm' }">
+					    		프라모델
+					    		</c:if>
+					    		<c:if test="${ product.category eq 'rc' }">
+					    		RC카
+					    		</c:if>
+					    		<c:if test="${ product.category eq 'dr' }">
+					    		드론
+					    		</c:if>
+							</div>
+							<div class="manufac">
+							제조사 : ${product.manufacturerId}
+							</div>
 						</div>
 					</div>
+					</li>
 					</c:forEach>
 				</c:if>
 				<!-- 상품이 없을 경우 -->
@@ -90,7 +152,6 @@ li{
 						<span>상품이 존재하지 않습니다.</span>
 					</li>
 				</c:if>
-			</li>
 		</ul>
 	</div>
 </div>
