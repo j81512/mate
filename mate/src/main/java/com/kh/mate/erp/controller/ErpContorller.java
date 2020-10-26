@@ -458,7 +458,8 @@ public class ErpContorller {
 					method = RequestMethod.POST)
 	public String productEnroll(Product product,
 								@RequestParam("upFile") MultipartFile[] upFiles,
-								HttpServletRequest request) throws IllegalStateException, IOException {
+								HttpServletRequest request,
+								RedirectAttributes redirectAttr) throws IllegalStateException, IOException {
 		
 		//Content내 저장 폴더 명 변경
 		String content = product.getContent();
@@ -524,11 +525,13 @@ public class ErpContorller {
 		if(result > 0) {
 			Utils.fileCopy(folder1, folder2);
 			Utils.fileDelete(folder1.toString());
+			redirectAttr.addFlashAttribute("msg", "상품 추가 완료");
 		}else {
 			Utils.fileDelete(folder1.toString());
+			redirectAttr.addFlashAttribute("msg", "상품 추가 실패");
 		}
 		
-		return "redirect:/";
+		return "redirect:/ERP/ProductInfo.do";
 	}
 	
 	//뒤로가기 클릭 시 파일 삭제
@@ -687,6 +690,7 @@ public class ErpContorller {
 		return "redirect:/";
 	}
 	
+	//상품 삭제
 	@RequestMapping(value = "/ERP/productDelete.do",
 					method = RequestMethod.POST)
 	public String productDelete(@RequestParam("productNo") String productNo,
@@ -712,7 +716,6 @@ public class ErpContorller {
 			}
 			log.debug("flag,result = {}, {}",flag,result);
 		}
-		
 		return "ERP/ProductInfo";
 	}
 	
