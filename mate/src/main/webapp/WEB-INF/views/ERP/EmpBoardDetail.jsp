@@ -143,11 +143,32 @@ $(document).ready(function(){
 		location.href= "${ pageContext.request.contextPath}/ERP/fileDownload.do?no=" + no;
 	};
 
-	function(productNo, amount){
-		var productNo = productNo;
-		var amount = amount;
-		console.log(productNo);
-		console.log(amount);
+	function StockTranslate(productNo, amount, empId){
+		var tranEmpId = '${ loginEmp.empId}';
+		
+		var stock = {
+			productNo : productNo,
+			amount : amount,
+			empId : empId,
+			transEmpId : tranEmpId 
+		};
+
+		console.log(stock);
+		
+		$.ajax({
+
+			 url : "${ pageContext.request.contextPath}/ERP/StockTranslate",
+			 method : "POST",
+			 dataType : "json",
+			 data : stock,
+			 success : function(data){
+					console.log(data);
+			},
+			error : function(xhr, err, status){
+					console.log(xhr, err, status);
+			}
+
+		});
 		
 	}
 	
@@ -182,7 +203,7 @@ $(document).ready(function(){
 				<a href="#" class="btn btn-custom" role="button">${ loginEmpStock.empName }</a>
 				<a href="#" class="btn btn-custom" role="button">${ loginEmpStock.productName }</a>
 				<a href="#" class="btn btn-custom" role="button">재고 수  : ${ loginEmpStock.stock }</a>
-				<button type="button" class="btn btn-warning" onclick="StockTranslate('${ empBoard.productNo},${ empBoard.amount ');"> 보내기 </button>
+				<button type="button" class="btn btn-warning" onclick="StockTranslate('${ empBoard.productNo }' ,'${ empBoard.amount}', '${empBoard.empId }');"> 보내기 </button>
 		</c:if>
 		
 		<c:if test="${ empBoard.empId eq loginEmp.empId }" >		

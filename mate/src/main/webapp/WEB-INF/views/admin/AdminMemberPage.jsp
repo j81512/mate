@@ -16,9 +16,9 @@
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 <style>
- 	div#search-title {display:inline-block;}
-    div#search-content{display:none;} 
-    div#search-category{display:none;}
+ 	div#search-member_id {display:inline-block;}
+    div#search-member_name{display:none;} 
+    div#search-gender{display:none;}
 </style>
 <title>회원관리</title>
 <script>
@@ -29,6 +29,16 @@ $(function(){
 		location.href = "${ pageContext.request.contextPath }/Member/AdminMemberDelete.do?no=" + memberId;
 	});
 
+	$("#searchType").change(function(){
+		console.log($(this).val());
+		
+		var type = $(this).val();
+		console.log(type);
+		$(".search-type").hide().filter("#search-"+type).css("display","inline-block");
+		
+		
+	});
+   		
 });
 </script>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp" />
@@ -38,26 +48,26 @@ $(function(){
 	<div class="form-group row justify-content-center">
 			<div class="w100" style="padding-right:10px">
 				<select class="form-control form-control-sm" name="searchType" id="searchType">
-					<option value="memberId">아이디</option>
-					<option value="memberName">이름</option>
+					<option value="member_id">아이디</option>
+					<option value="member_name">이름</option>
 					<option value="gender">성별</option>
 				</select>
 			</div>
-		  <div id="search-title" class="search-type">
+		  <div id="search-member_id" class="search-type">
 	            <form action="${ pageContext.request.contextPath}/Member/MemberList.do" method="get">
-	                <input type="hidden" name="searchType" value="memberId"/>
+	                <input type="hidden" name="searchType" value="member_id"/>
 	                <input type="text" name="searchKeyword"  size="25" placeholder="검색할 아이디를 입력하세요." value="${ searchType eq 'title' ? searchKeyword : ''}" />
 	                <button type="submit"  class="btn btn-sm btn-primary">검색</button>			
 	            </form>	
 	        </div>
-	        <div id="search-content" class="search-type">
+	        <div id="search-member_name" class="search-type">
 	            <form action="${ pageContext.request.contextPath}/Member/MemberList.do" method="get">
-	                <input type="hidden" name="searchType" value="memberName"/>
+	                <input type="hidden" name="searchType" value="member_name"/>
 	                <input type="text" name="searchKeyword" size="25" placeholder="검색할 이름을 입력하세요." value="${ searchType eq 'content' ? searchKeyword : ''}"/>
 	                <button type="submit"  class="btn btn-sm btn-primary">검색</button>			
 	            </form>	
 	        </div>
-			<div id="search-category" class="search-type">
+			<div id="search-gender" class="search-type">
             <form action="${ pageContext.request.contextPath}/Member/MemberList.do" method="get">      
                 <input type="hidden" name="searchType" value="gender" />
                 <input type="radio"  name="searchKeyword" value="M" ${ searchKeyword eq 'M' ? "checked" : ""}> 남자 

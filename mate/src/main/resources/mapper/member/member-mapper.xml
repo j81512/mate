@@ -152,7 +152,7 @@
 		<result column="confirm" property="confirm"/>
 	</resultMap>
 	
-	<select id="searchMember" resultType="member">
+	<select id="searchMember" resultType="Member">
 			SELECT * 
 			FROM (
 			SELECT ROWNUM as rnum, M.*

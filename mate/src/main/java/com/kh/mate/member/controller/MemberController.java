@@ -550,6 +550,6 @@ public class MemberController {
 		model.addAttribute("searchKeyword",searchKeyword);
 		model.addAttribute("pageBar", pageBar);
 		
-		return "member/AdminMemberPage";
+		return "admin/AdminMemberPage";
 	}
 }
