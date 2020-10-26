@@ -25,8 +25,26 @@
 			#{ secret },
 			#{ notice }		
 		)
+		
+		<selectKey order="AFTER" resultType="_int" keyProperty="csNo">
+			select
+				seq_cs_no.currval
+			from
+				dual
+		</selectKey>
 	</insert>
-
+	
+	<insert id="insertCsImage">
+		insert into
+			cs_images
+		values(
+			seq_cs_image_no.nextval,
+			#{ originalFilename },
+			#{ renamedFilename },
+			#{ csNo }
+		)
+	</insert>
+	
 	<delete id="deleteCs">
         delete from 
         	CS 
@@ -34,4 +52,21 @@
      		cs_no = #{ csNo } 
     </delete>
 
+	<select id="selectOneCsCollection" resultType="cs">
+		select
+			*
+		from
+			cs
+		where
+			cs_no = #{ csNo }
+	</select>
+	
+	<select id="selectCsImage" resultType="csImages">
+		select
+			*
+		from
+			cs_images
+		where
+			cs_no = #{ csNo }
+	</select>
 </mapper>

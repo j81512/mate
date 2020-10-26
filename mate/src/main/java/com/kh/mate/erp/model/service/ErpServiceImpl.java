@@ -309,6 +309,34 @@ public class ErpServiceImpl implements ErpService {
 		
 		return totalContents;
 	}
+	//김찬희 페이징작업
+	@Override
+	public int countProduct(EMP emp) {
+		return erpDAO.countProduct(emp);
+	}
+
+	//누락상품검사
+	@Override
+	public List<Product> selectAll() {
+		return erpDAO.selectAll();
+	}
+
+	@Override
+	public List<Integer> productCompare(EMP emp) {
+		return erpDAO.productCompare(emp);
+	}
+
+	//누락재고상품 추가
+	@Override
+	public int mStockInsert(Map<String, Object> map) {
+		return erpDAO.mStockInsert(map);
+	}
+
+
+	
+
+	
+	
 
 	@Override
 	public EmpBoard selectEmpStock(Map<String, Object> map) {

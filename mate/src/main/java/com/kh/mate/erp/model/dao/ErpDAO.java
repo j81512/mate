@@ -109,6 +109,7 @@ public interface ErpDAO {
 
 	int updateReceiveToRef(int receiveNo);
 
+
 	int empBoardDelete(int boardNo);
 
 	List<EmpBoardImage> selectBoardImage(int boardNo);
@@ -118,5 +119,13 @@ public interface ErpDAO {
 	int empBoardFileDelete(int boardNo);
 
 	int empBoardFileUpdate(EmpBoardImage updateImages);
+
+	int countProduct(EMP emp);
+
+	List<Product> selectAll();
+
+	List<Integer> productCompare(EMP emp);
+
+	int mStockInsert(Map<String, Object> map);
 
 }

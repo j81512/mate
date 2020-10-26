@@ -43,6 +43,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.google.gson.JsonObject;
 import com.kh.mate.common.Paging;
 import com.kh.mate.common.Utils;
+import com.kh.mate.common.paging.PagingVo;
 import com.kh.mate.erp.model.service.ErpService;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
@@ -51,11 +52,12 @@ import com.kh.mate.erp.model.vo.EmpBoardReply;
 import com.kh.mate.log.vo.IoLog;
 import com.kh.mate.log.vo.Receive;
 import com.kh.mate.log.vo.RequestLog;
+import com.kh.mate.product.model.service.ProductService;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
 
-@SessionAttributes({"loginEmp"})
+@SessionAttributes({"loginEmp", "loginMember"})
 @Controller
 public class ErpContorller {
 
@@ -310,16 +312,45 @@ public class ErpContorller {
 
 	//김찬희 ERP 상품검색
 	@RequestMapping("/ERP/searchInfo.do")
-	public String searchInfo(String category, String search, String select,String upper, String lower, Model model) {
-		
-		log.debug(category);
-		log.debug(search);
-		log.debug("upper = {}", upper);
-		log.debug("lower = {}", lower);
-		
-		log.debug("select = {}", select);
-		
+	public String searchInfo(HttpServletRequest request ,String category,
+			String search, PagingVo page, String nowPage, String cntPerPage, 
+			String select,String upper, String lower, Model model) throws Exception {
+		HttpSession session = request.getSession();
+		EMP emp = (EMP)session.getAttribute("loginEmp");
 		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("emp", emp);
+		List<Product> pList = erpService.selectAll();
+		List<Integer> cList = erpService.productCompare(emp);
+		
+		
+		
+		//누락상품검사
+		for(Product pro : pList) {
+			
+//			log.debug("cTest = {}", cList.contains(pro.getProductNo()));
+//			log.debug("pro.no = {}",pro.getProductNo());
+			
+			if(!cList.contains(pro.getProductNo()) && emp.getStatus() != 0) {
+				map.put("pro", pro);
+				int result = erpService.mStockInsert(map);
+				log.debug("cTest = {}",pro);
+				
+			}
+		}
+		
+		
+		int total = erpService.countProduct(emp);
+		if(nowPage == null && cntPerPage == null) {
+			nowPage = "1";
+			cntPerPage="8";
+		} else if (nowPage == null) {
+			nowPage = "1";
+		} else if (cntPerPage == null) { 
+			cntPerPage = "8";
+		}
+
+		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
+
 		
 		if(!upper.isEmpty() && upper != null) {
 			int uNum = Integer.parseInt(upper);
@@ -337,14 +368,23 @@ public class ErpContorller {
 			map.put("sNum", sNum);
 		}
 		
-		
+		map.put("page", page);
 		map.put("category", category);
 		map.put("select", select);
 		map.put("search", search);
 		
 		
-		List<Product> list = erpService.searchInfo(map);		
-		log.debug("list = {}",list);		
+		List<Product> list = erpService.searchInfo(map);
+
+		
+		log.debug("size = {}",list.size());
+		if(list.size() < 8 && Integer.parseInt(nowPage) == 1) {
+			page.setEndPage(1);
+		}
+		
+		log.debug("list = {}",list);
+		model.addAttribute("page",page);		
+		model.addAttribute("map",map);		
 		model.addAttribute("list",list);		
 		return "/ERP/ProductInfo";
 	}
@@ -787,6 +827,7 @@ public class ErpContorller {
 				&& (loginEmp.getEmpPwd().equals(empPwd))
 				&& (loginEmp.getStatus() == status )) {
 			model.addAttribute("loginEmp", loginEmp);
+			if(loginEmp.getEmpId().equals("admin")) model.addAttribute("loginMember", loginEmp);
 	
 		}
 

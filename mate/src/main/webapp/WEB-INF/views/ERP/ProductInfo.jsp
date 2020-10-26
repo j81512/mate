@@ -128,9 +128,7 @@ function orderProduct(empId,pNo,requestId){
 		
 		<div class="productInfo">
 			<c:if test="${ not empty list }">
-				<c:if test="${ loginEmp.status == 0 }">
 					<c:forEach items="${ list }" var="product">
-					<c:if test="${ loginEmp.empId != product.empId }">
 					<tr>
 						<td>${ product.productNo }</td>
 						<td><a href="${ pageContext.request.contextPath }/ERP/productUpdate.do?productNo=${product.productNo}">${ product.productName }</a></td>
@@ -140,28 +138,7 @@ function orderProduct(empId,pNo,requestId){
 						<td>${ product.stock eq 0 ? '재고가 없습니다' : product.stock }</td>
 						<td><button type="button" onclick="orderProduct('${ loginEmp.empId }',${ product.productNo },${ product.empId })">발주</button></td>
 					</tr>
-					
-					</c:if>
 				</c:forEach>		
-					</c:if>
-				<c:if test="${ loginEmp.status != 0 }">
-				<c:forEach items="${ list }" var="product">
-					<c:if test="${ loginEmp.empId == product.empId || product.stock == 0}">
-					<tr>
-						<td>${ product.productNo }</td>
-						<td><a href="${ pageContext.request.contextPath }/ERP/productUpdate.do?productNo=${product.productNo}">${ product.productName }</a></td>
-						<td>${ product.category }</td>
-						<td>${ product.empId }</td>
-						<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>
-						<td>${ product.stock eq 0 ? '재고가 없습니다' : product.stock}</td>
-						<td><button type="button" onclick="orderProduct('${ loginEmp.empId }',${ product.productNo },'${ product.empId }')">발주</button></td>
-					</tr>
-					
-					</c:if>
-				
-				</c:forEach>
-				
-				</c:if>
 			</c:if>
 			<c:if test="${ empty list }">
 				<span>검색결과 없음</span>
@@ -182,6 +159,30 @@ function orderProduct(empId,pNo,requestId){
 			<button type="button" class="btn btn-dark" onclick="productEnroll();">상품 등록</button>
 		</div>
 	</section>
+	
+	<!-- 김찬희 페이징 -->
+	<div style="display: block; text-align: center;">
+	<c:if test="${ page.startPage != 1 }">
+		<a href="#"onclick="pageing('${ page.startPage - 1}','${ page.cntPerPage }')">&lt;</a>
+	</c:if>
+	<c:forEach begin="${page.startPage }" end="${page.endPage}" var="p">
+			<c:choose>
+				<c:when test="${p == page.nowPage }">
+					<b>${p }</b>
+				</c:when>
+				<c:when test="${p != page.nowPage }">
+					<a href="${pageContext.request.contextPath}/ERP/searchInfo.do?nowPage=${p }&cntPerPage=
+					${page.cntPerPage}&search=${ map.search }&category=${ map.category }&
+					select=${ map.select}&upper=${ upper }&lower=${ lower }">${p }</a>
+				</c:when>
+			</c:choose>
+		</c:forEach>
+		<c:if test="${page.endPage != page.lastPage}">
+			<a href="#" onclick="pageing('${ page.endPage+1 }','${ page.cntPerPage }')">&gt;</a>
+		</c:if>
+
+</div>
+	
 	
 <script>
 function productEnroll(){

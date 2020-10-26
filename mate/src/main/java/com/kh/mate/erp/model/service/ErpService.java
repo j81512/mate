@@ -88,6 +88,7 @@ public interface ErpService {
 
 	int updateReceiveToref(int receiveNo);
 
+
 	int empBoardDelete(int boardNo);
 
 	EmpBoard selectOneEmpBoard(int boardNo);
@@ -95,5 +96,14 @@ public interface ErpService {
 	List<EmpBoardImage> selectBoardImage(int boardNo);
 
 	int empBoardUpdate(EmpBoard empBoard);
+
+	int countProduct(EMP emp);
+
+	List<Product> selectAll();
+
+	List<Integer> productCompare(EMP emp);
+
+	int mStockInsert(Map<String, Object> map);
+
 
 }

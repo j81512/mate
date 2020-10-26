@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.kh.mate.common.paging.PagingVo;
-import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.member.model.vo.Member;
 import com.kh.mate.product.model.service.ProductService;
 import com.kh.mate.product.model.vo.Cart;
@@ -154,19 +154,24 @@ public class ProductController {
 		
 		int total = productService.countProduct(); 
 		
+		log.debug("nowPage = {}", nowPage);
+		log.debug("cntPerPage = {}", cntPerPage);
+		
 		if(nowPage == null && cntPerPage == null) {
 			nowPage = "1";
-			cntPerPage="5";
+			cntPerPage="8";
 		} else if (nowPage == null) {
 			nowPage = "1";
 		} else if (cntPerPage == null) { 
-			cntPerPage = "5";
+			cntPerPage = "8";
 		}
 
+//		page = new PagingVo(total, nowPage, cntPerPage);
 		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
 		
 		List<Product> list = productService.selectProductListAll(page);
 		log.debug("list = {}", list);
+		log.debug("page = {}",page);
 		model.addAttribute("page",page);
 		model.addAttribute("list", list);
 		return "product/productList";
@@ -184,15 +189,15 @@ public class ProductController {
 		
 		if(nowPage == null && cntPerPage == null) {
 			nowPage = "1";
-			cntPerPage="5";
+			cntPerPage="8";
 		} else if (nowPage == null) {
 			nowPage = "1";
 		} else if (cntPerPage == null) { 
-			cntPerPage = "5";
+			cntPerPage = "8";
 		}
 		
 		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
-		log.debug("page = {}",page);
+		
 		
 		map.put("page", page);
 		
@@ -210,7 +215,14 @@ public class ProductController {
 		map.put("search", search);
 		
 		List<Product> list = productService.searchProductList(map);
+		if(list.size() != 8 && Integer.parseInt(nowPage) == 1) {
+			page.setEndPage(1);
+		}
+		log.debug("listSize = {}" , list.size());
 		
+		log.debug("page = {}",page);
+		model.addAttribute("search",search);
+		model.addAttribute("sCategory",category);
 		model.addAttribute("page",page);
 		model.addAttribute("list",list);
 		
@@ -328,5 +340,42 @@ public class ProductController {
 		map.put("purchaseNo", params.get(0).get("purchaseNo"));
 		
 		return map;
+	}
+	
+	@GetMapping("/returnPage.do")
+	public String returnPage(Model model) {
+		
+		List<Map<String, Object>> mapList = productService.selectAllReturns();
+		model.addAttribute("mapList", mapList);
+		
+		return "admin/return";
+	}
+	
+	@ResponseBody
+	@GetMapping("/returnDetail.do")
+	public Map<String, Object> returnDetail(@RequestParam("returnNo") String returnNo){
+		Map<String, Object> map = productService.returnDetail(returnNo);
+		
+		log.debug("map@controller = {}", map);
+		
+		return map;
+	}
+	
+	@PostMapping("/returnSubmit.do")
+	public String returnSubmit(@RequestParam("returnNo") int returnNo,
+							   @RequestParam("confirm") int confirm,
+							   RedirectAttributes rAttr) {
+		
+		log.debug("returnNo = {}, confirm = {}", returnNo, confirm);
+		
+		Map<String, Object> param = new HashMap<>();
+		param.put("returnNo", returnNo);
+		param.put("confirm", confirm);
+		
+		int result = productService.updateReturn(param);
+		String msg = result > 0 ? "처리 성공" : "처리 실패";
+		rAttr.addFlashAttribute("msg", msg);
+		
+		return "redirect:/product/returnPage.do";
 	}
 }
