@@ -62,14 +62,18 @@ public class CsController {
 	@RequestMapping("/cs.do")
 	@ResponseBody
 	public ModelAndView boardList(ModelAndView mav,
-								  @RequestParam(required=false, name="memberId") String memberId) {
+								  @RequestParam(required=false, name="memberId") String memberId,
+								  @RequestParam(required=false, name="secret") String secret) {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		log.debug("memberId = {}", memberId);
 		map.put("memberId",memberId);
+		map.put("secret", secret);
 		List<Cs> list = csService.selectCsList(map);
 		
 		log.debug("list = {}", list);
+		
+		mav.addObject("memberId", memberId);
 		
 		mav.addObject("list", list);
 		mav.setViewName("cs/cs");

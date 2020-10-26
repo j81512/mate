@@ -26,7 +26,8 @@ $(function(){
 	    	var memberId = $(this).val();
 	    	var $frm = $("#csMyListFrm");
 		if(this.checked){
-				$frm.submit();	
+				$frm.submit();
+				$("input:checkbox[id='csMyListFrm']").prop("checked", true);
 		}
 				
 	
@@ -39,8 +40,10 @@ $(function(){
     	  action="${pageContext.request.contextPath}/cs/cs.do" 
     	  class="form-inline" 
     	  method="get"> 
-    	<input type="checkbox" name="memberId" id="csMyListFrm" value="${ loginMember.memberId != null ? loginMember.memberId : '' }" checked/>
-    <label for="csMyListFrm"><span>내글만보기</span></label>
+    	<input type="checkbox" name="memberId" id="csMyListFrm" value="${ loginMember.memberId != null ? loginMember.memberId : '' }" ${ loginMember.memberId eq memberId ? 'checked' : '' }/>
+	    <label for="csMyListFrm"><span>내글만보기</span></label>
+    	<input type="checkbox" name="secret" id="secret" value="" />
+	    <label for="secret"><span>비밀글 보기</span></label>
     </form>
 	<form id="csDeleteFrm" 
 	  	  action="${ pageContext.request.contextPath }/cs/deleteCs.do" 
