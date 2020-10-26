@@ -820,11 +820,11 @@ public class ErpContorller {
 		
 		if(cookies != null) {
 			for(Cookie c : cookies) {
-				log.debug("cookies={}", cookies.toString());
+//				log.debug("cookies={}", cookies.toString());
 				String name = c.getName();
 				String value = c.getValue();
-				log.debug("name={}", name);
-				log.debug("value ={}", value.toString());
+//				log.debug("name={}", name);
+//				log.debug("value ={}", value.toString());
 				
 				if("erpBoardCookie".equals(name)) {
 					boardCookieVal = value;
@@ -1069,4 +1069,70 @@ public class ErpContorller {
 		return map;
 	}
 	
+	@RequestMapping(value = "/ERP/empBoardUpdate.do",
+					method = RequestMethod.GET)
+	public String empBoardUpdate(@RequestParam("boardNo") int boardNo,
+						  Model model) {
+	
+		EmpBoard empBoard = erpService.selectOneEmpBoard(boardNo);
+		
+		List<EmpBoardImage> list = erpService.selectBoardImage(boardNo);
+		log.debug("empBoard = {}", empBoard);
+		log.debug("list = {}", list);
+		
+		model.addAttribute("empBoard", empBoard);
+		model.addAttribute("list", list);
+		
+		return "ERP/EmpBoardUpdate";
+	}
+	
+	@PostMapping("/ERP/empBoardCkUpdate.do")
+	public String empCKBoardUpdate(EmpBoard empBoard, 
+									@RequestParam("upFile") MultipartFile[] upFiles, 
+									@RequestParam("fileChange") int fileChange,
+									HttpServletRequest request) throws IllegalStateException, IOException {
+			
+		log.debug("empBoard= {}", empBoard);
+		if(fileChange > 0) {
+			List<EmpBoardImage> imageList 
+				= erpService.selectBoardImage(empBoard.getBoardNo());
+			String mainDirectory = request.getServletContext()
+										  .getRealPath("/resources/upload/empBoard/");
+			
+				//저장된 파일 삭제
+				for(EmpBoardImage image : imageList) {
+					boolean result = new File(mainDirectory, image.getRenamedFilename()).delete();
+					log.debug("result = {}", result);
+				}
+			
+			//새로 넘어온 파일 저장
+			List<EmpBoardImage> updateImgList = new ArrayList<>();
+			
+				for(MultipartFile upFile : upFiles) {
+					String renamedFilename = Utils.getRenamedFileName(upFile.getOriginalFilename());
+					
+					File dest = new File(mainDirectory, renamedFilename);
+					upFile.transferTo(dest);
+					
+					EmpBoardImage newMainImgs = new EmpBoardImage();
+					newMainImgs.setOriginalFilename(upFile.getOriginalFilename());
+					newMainImgs.setRenamedFilename(renamedFilename);
+					newMainImgs.setBoardNo(empBoard.getBoardNo());
+					updateImgList.add(newMainImgs);
+			
+				}
+				
+			empBoard.setEmpBoardImageList(updateImgList);
+			
+		}
+		
+		String tempDir = request.getServletContext().getRealPath("/resources/upload/empBoard");
+		File folder1 = new File(tempDir);
+		
+	
+		int result = erpService.empBoardUpdate(empBoard);
+		
+
+		return "redirect:/ERP/EmpBoardList.do";
+	}
 }

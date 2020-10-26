@@ -265,6 +265,26 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.delete("erpBoard.empBoardDelete", boardNo);
 	}
 
+	@Override
+	public List<EmpBoardImage> selectBoardImage(int boardNo) {
+		return sqlSession.selectList("erpBoard.selectOneBoardImage", boardNo);
+	}
+
+	@Override
+	public int empBoardUpdate(EmpBoard empBoard) {
+		return sqlSession.update("erpBoard.empBoardUpdate", empBoard);
+	}
+
+	@Override
+	public int empBoardFileDelete(int boardNo) {
+		return sqlSession.delete("erpBoard.empBoardFileDelete", boardNo);
+	}
+
+	@Override
+	public int empBoardFileUpdate(EmpBoardImage updateImages) {
+		return sqlSession.update("erpBoard.empBoardFileUpdate", updateImages);
+	}
+
 	
 	
 	

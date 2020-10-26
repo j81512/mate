@@ -59,18 +59,25 @@ $(function(){
 			<th>카테고리</th>
 			<th>작성일</th>
 			<th>조회수</th>
-			<th>활성화 여부</th> 
 		</tr>
 		<c:if test="${ not empty empBoardList }">
 		<c:forEach items="${ empBoardList }" var="board">
 		<tr data-no="${ board.boardNo }">
 				<td>${ board.boardNo }</td> 
-				<td>${ board.title }</td>
-				<td>${ board.empName }</td>	
-				<td>${ board.category == 'ntc' ? "공지사항"  : board.category eq 'req' ? '요청' : board.category eq 'adv' ? '광고' : board.category eq 'def' ? '일반' : board.category eq 'evt' ? '이벤트' : ''}</td> 
-				<td><fmt:formatDate value="${ board.regDate }" pattern="yyyy-MM-dd"/></td>
-				<td>${ board.readCount }</td>
-				<td>${ board.enabled }</td> 
+				<c:if test="${ board.enabled == 0 }">
+					<td id="title"> ${ board.title }</td>
+						<td>${ board.empName }</td>	
+						<td>${ board.category == 'ntc' ? "공지사항"  : board.category eq 'req' ? '요청' : board.category eq 'adv' ? '광고' : board.category eq 'def' ? '일반' : board.category eq 'evt' ? '이벤트' : ''}</td> 
+						<td><fmt:formatDate value="${ board.regDate }" pattern="yyyy-MM-dd"/></td>
+						<td>${ board.readCount }</td>
+				</c:if>
+				<c:if test="${ board.enabled > 0 }">
+					<td><del>${ board.title }</del></td>	
+					<td><del>${ board.empName }</del></td>	
+					<td><del>${ board.category == 'ntc' ? "공지사항"  : board.category eq 'req' ? '요청' : board.category eq 'adv' ? '광고' : board.category eq 'def' ? '일반' : board.category eq 'evt' ? '이벤트' : ''}</del></td> 
+					<td><del><fmt:formatDate value="${ board.regDate }" pattern="yyyy-MM-dd"/></del></td>
+					<td><del>${ board.readCount }</del></td>
+				</c:if>
 		</tr>
 		</c:forEach>
 		</c:if>

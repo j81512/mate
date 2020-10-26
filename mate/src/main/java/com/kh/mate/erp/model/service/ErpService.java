@@ -90,4 +90,10 @@ public interface ErpService {
 
 	int empBoardDelete(int boardNo);
 
+	EmpBoard selectOneEmpBoard(int boardNo);
+
+	List<EmpBoardImage> selectBoardImage(int boardNo);
+
+	int empBoardUpdate(EmpBoard empBoard);
+
 }

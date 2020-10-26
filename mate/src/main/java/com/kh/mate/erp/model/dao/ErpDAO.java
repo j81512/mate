@@ -111,4 +111,12 @@ public interface ErpDAO {
 
 	int empBoardDelete(int boardNo);
 
+	List<EmpBoardImage> selectBoardImage(int boardNo);
+
+	int empBoardUpdate(EmpBoard empBoard);
+
+	int empBoardFileDelete(int boardNo);
+
+	int empBoardFileUpdate(EmpBoardImage updateImages);
+
 }

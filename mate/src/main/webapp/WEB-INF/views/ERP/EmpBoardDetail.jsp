@@ -247,12 +247,12 @@ function goEmpBoardList(){
 
 	}
 
- function goEmpBoardUpdate(boardNo){
-        
-        var boardNo =  boardNo;
-        console.log(boardNo);
-        location.href = "${ pageContext.request.contextPath}/ERP/empBoardUpdate.do?boardNo="+ boardNo;
-   }
+		 function goEmpBoardUpdate(boardNo){
+		        
+		        var boardNo =  boardNo;
+		        console.log(boardNo);
+		        location.href = "${ pageContext.request.contextPath}/ERP/empBoardUpdate.do?boardNo="+ boardNo;
+		   }
 </script>
 		
 <jsp:include page="/WEB-INF/views/common/footerE.jsp" />

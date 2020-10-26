@@ -53,7 +53,7 @@
 		$("#phone-send").click(function(){
 			var $phone = $("#phone").val();
 		    var popUrl ="${ pageContext.request.contextPath }/member/pCheck.do";
-		    var popOption = "width=650px, height=550px, resizable=no, location=no, top=300px, left=300px;"
+		    var popOption = "width=650px, height=550px, resizable=no, location=no, top=300px, left=300px;";
 			console.log($phone);
 			$.ajax({
 				url:"${ pageContext.request.contextPath}/member/phoneSend.do",
@@ -65,7 +65,8 @@
 				success: function(data){
 						console.log(data);
 						var $num = data;		
-						window.open(popUrl + "/" +  $num ,"휴대폰 인증 ",popOption); 		
+						phoneCheckNum(data);
+						window.open(popUrl + "/" +  $num ,"휴대폰 인증 ",popOption);		
 				},
 				error: function(xhr, status, err){
 						console.log(xhr);
@@ -138,6 +139,14 @@
 	        cookieValue = cookieData.substring(start, end);
 	    }
 	    return unescape(cookieValue);
+	}
+
+	function phoneCheckNum(num){
+		console.log(" 여기 호출되냐?");
+		var num = num;
+		console.log(num);
+	
+		
 	}
 </script>
 
@@ -254,7 +263,7 @@
 						<input type="tel" class="form-control" 
 						placeholder="(-없이)01012345678" name="phone" id="phone" maxlength="11" required>
 						<div class="form-check form-check-inline">
-						<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg"id="phone-send">문자인증</button>
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg"id="phone-send" onclick="return phoneCheckNum('${ receiver}');">문자인증</button>
 						</div>
 					</div>
 					<div class="form-group">

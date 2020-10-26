@@ -216,7 +216,43 @@
 	<delete id="empBoardDelete">
 		delete from board
 		where board_no = #{ boardNo }
-		
-	
 	</delete>
+	
+	<select id="selectOneBoardImage" resultType="EmpBoardImage">
+ 		select
+ 			*
+ 		from
+ 			board_images
+ 		where
+ 			board_no = #{ boardNo }
+ 	</select>
+ 	
+ 	<update id="empBoardUpdate">
+ 		update
+ 			board
+	 	<trim prefix="SET" prefixOverrides=",">
+			<if test='category != null and category != ""'>
+				, category = #{ category }
+			</if>
+			<if test='title != null and title != ""'>
+				,title	= #{ title }
+	   	  	</if>
+			<if test='content != null and content != ""'>
+				,content	= #{ content }
+	   	  	</if>
+		</trim>
+	 			where board_no = #{boardNo}
+ 	</update>
+	
+	<delete id="empBoardFileDelete">
+		delete from board_images where board_no = #{ boardNo }
+	</delete>
+	
+	<update id="empBoardFileUpdate">
+		update board_images 
+			set original_filename = #{ originalFilename },
+				 renamed_filename = #{ renamedFilename }
+		where board_no = #{ boardNo }
+
+	</update> 	
 </mapper>
