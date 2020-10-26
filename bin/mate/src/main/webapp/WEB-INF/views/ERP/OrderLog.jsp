@@ -63,14 +63,21 @@
 		
 		
 		<div class="productInfo">
-			<tr>
-				<td>${ request_log.no }</td>
-				<td>${ product.productName }</td>
-				<td>${ emp.emp_id }</td>
-				<td><fmt:formatDate value="${ request_log.request_date }" pattern="yyyy년MM월dd일"/></td>
-				<td>${ request_log.amount }</td>
-				<td>${ request_log.confirm }</td>
-			</tr>
+			<c:if test="${ not empty list }">
+				<c:forEach items="${ list }" var="RequestLog">
+					<tr>
+						<td>${ request_log.no }</td>
+						<td>${ product.productName }</td>
+						<td>${ emp.emp_id }</td>
+						<td><fmt:formatDate value="${ request_log.request_date }" pattern="yyyy년MM월dd일"/></td>
+						<td>${ request_log.amount }</td>
+						<td>${ request_log.confirm }</td>
+					</tr>
+				</c:forEach>
+			</c:if>
+			<c:if test="${ empty list }">
+				<span>검색결과 없음</span>
+			</c:if>
 		</div>
 	</section>
 

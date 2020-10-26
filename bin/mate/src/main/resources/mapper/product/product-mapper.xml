@@ -4,41 +4,39 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="product">
 
-	<select id="selectProductListMap" resultMap="productMap">
-	
+	<select id="countProduct" resultType="_int">
+	select COUNT(*) from product
 	</select>
 	
-	<select id="selectCartList" resultMap="cartMap">
-	select
-    	*
-	from
-    	cart C 
-    		inner join 
-    	product p 
-    		on 
-    	C.product_no = P.product_no
-    where
-    	member_id = #{memberId}
+	<select id="selectCartList" resultType="cart">
+		select
+	    	C.member_id member_id,
+            C.product_no product_no,
+            C.amount amount,
+            p.product_name product_name,
+            p.reg_date reg_date,
+            p.category category,
+            p.price price
+		from
+	    	cart C 
+	    		inner join 
+	    	product p 
+	    		on 
+	    	C.product_no = P.product_no
+	    where
+	    	member_id = #{ memberId }
 	</select>
  
  	<select id="selectProductListAll" resultType="product">
- 		select
- 			*
- 		from
- 			product
+		select * from ( select ROWNUM RN, A.*
+        from (select *from product) A)
+        WHERE RN BETWEEN #{start} and #{end}
  	
  	</select>
  	
  	<select id="selectProductOne" resultType="product">
  		select
- 			P.*,
-            ( 
-            select 
-            	count(*)
-            from 
-                product_main_images PMI
-            where 
-                P.product_no = PMI.product_no ) image_count
+ 			P.*
  		from
  			product P
  		where
@@ -56,13 +54,12 @@
  	
  	
  	<select id="searchProductList" resultType="product">
- 		select * from product
+ 		select * from ( select ROWNUM RN, A.*
+        from (select * from product
  		<where>
- 		product_name like '%' || #{search} || '%'
- 		
  		
  		<if test="cateArr != null">
- 			and category in  <foreach collection="cateArr"
+ 			category in  <foreach collection="cateArr"
 			    		 item="cateArr"
 			    		 open="("
 			    		 close=")"
@@ -70,13 +67,29 @@
 			    	#{ cateArr }
 			    	</foreach>
  		</if>
+ 		<if test="search != null and !search.isempty">
+	 		and (product_name like '%' || #{search} || '%'
+ 			or content like '%' || #{search} || '%')
+ 		</if>
  		
- 		</where>
+ 		</where>) A)
+        WHERE RN BETWEEN #{page.start} and #{page.end}
  	</select>
  	
  	<select id="productCategory" resultType="product">
  		select * from product
  			where category = #{category}
+ 	</select>
+ 	
+ 	<select id="selectAddressList" resultType="address">
+ 		select
+ 			*
+ 		from
+ 			address
+ 		where
+ 			member_id = #{memberId}
+ 		order by 
+ 			reg_date desc
  	</select>
  	
  	
@@ -89,7 +102,6 @@
  		#{productNo},
  		#{amount}
  		)
- 	
  	</insert>
  	
  	<insert id="insertReview">
@@ -103,7 +115,94 @@
  			default
  		)
  	</insert>
+
+ 	<delete id="deleteFromCart">
+ 		delete from
+ 			cart
+ 		where
+ 			member_id = #{memberId} and
+ 			product_no = #{productNo}
+ 	</delete>
  	
+	<update id="updatePurchaseReturn" parameterType="_int">
+ 		update
+ 			purchase_log
+ 		set
+ 			status = -1
+ 		where
+ 			purchase_log_no = #{purchaseLogNo}
+ 	</update>
+
+ 	<update id="updatePurchaseConfirm" parameterType="_int">
+ 		update
+ 			purchase_log
+ 		set
+ 			status = 1
+ 		where
+ 			purchase_log_no = #{purchaseLogNo}
+ 	</update>
+ 	
+ 	<insert id="insertReturn">
+ 		insert into
+ 			return
+ 		values(
+ 			seq_return_no.nextval,
+ 			#{ status },
+ 			#{ purchaseLogNo },
+ 			#{ content },
+ 			#{ amount },
+ 			default
+ 		)
+ 	</insert>
+ 	
+ 	<select id="selectReturnNo" resultType="_int">
+ 		select
+ 			seq_return_no.currval
+ 		from
+ 			dual
+ 	</select>
+ 	
+ 	<insert id="insertReturnImages">
+ 		insert into
+ 			return_images
+ 		values(
+ 			seq_return_image_no.nextval,
+ 			#{ originalFilename },
+ 			#{ renamedFilename },
+ 			#{ returnNo }
+ 		)
+ 	</insert>
+ 	
+ 	<insert id="insertPurchase">
+ 		insert into
+ 			purchase
+ 		values(
+ 			seq_purchase_no.nextval,
+ 			#{memberId},
+ 			default,
+ 			#{addressName}
+ 		)
+ 	</insert>
+ 	
+ 	<select id="getPurchaseNo" resultType="_int">
+ 		select
+ 			seq_purchase_no.currval
+ 		from
+ 			dual
+ 	</select>
+ 	
+ 	<insert id="insertPurchaseLog">
+ 		insert into
+ 			purchase_log
+ 		values(
+ 			seq_purchase_log_no.nextval,
+ 			#{purchaseNo},
+ 			#{productNo},
+ 			#{amount},
+ 			default,
+ 			default
+ 		)
+ 	</insert>
  	<resultMap type="product" id="productMap">
  		<id column="product_no" property="productNo"/>
  		<result column="product_name" property="productName"/>
@@ -121,6 +220,7 @@
 	 		<result column="product_no" property="productNo"/>
  		</collection>
  	</resultMap>
+
  	
  	
  	<resultMap type="cart" id="cartMap">

@@ -254,6 +254,35 @@ public class ErpDAOImpl implements ErpDAO {
 	public int getSearchContents(Map<String, String> map) {
 		return sqlSession.selectOne("erpBoard.searchContents", map);
 	}
+	
+	//김찬희 페이징작업
+	@Override
+	public int countProduct(EMP emp) {
+		return sqlSession.selectOne("erp.countProduct",emp);
+	}
+	//누락상품검사
+	
+	@Override
+	public List<Product> selectAll() {
+		return sqlSession.selectList("erp.selectAll");
+	}
+
+	@Override
+	public List<Integer> productCompare(EMP emp) {
+		return sqlSession.selectList("erp.productCompare",emp);
+	}
+
+	//누락재고상품추가
+	@Override
+	public int mStockInsert(Map<String, Object> map) {
+		return sqlSession.insert("erp.mStockInsert",map);
+	}
+
+	
+	
+	
+	
+	
 
 	
 	

@@ -121,30 +121,35 @@ div#form-container label.custom-file-label{text-align:left;}
   			<!-- 가격 -->
   <div class="form-group">
 	<label for="price">가격</label>
-	<input type="range" id="priceRange" class="custom-range" min="0" max="30000000" step="1000"/>
-	<input type="text" name="price" id="priceValue" value="" required/> 원
+	<input type="number" name="price" id="priceValue" value="" required/> 원
   </div>
   
   <!-- 제조사  -->
-  <c:if test="${ not empty list }">
+  <!-- 로그인된 회원이 제조사 회원일 경우  -->
+  <c:if test="${loginEmp.status eq 2 }">
+  	<div class="form-group">
+  		<label for="manufacturerId">제조사 : </label>
+  		<input type="text" name="manufacturerId" id="manufacturerId" value="${loginEmp.empId }" disabled/>
+  		<input type="hidden" name="manufacturerId" value="${loginEmp.empId }"/>
+  	</div>
+  </c:if>
+  <!-- 로그인된 회원이 전체 관리자일 경우 -->
+  <c:if test="${loginEmp.status eq 0 }">
   	<label for="empId">제조사 :</label>
-  	<select name="empId" id="empId" required>
+  	<select name="manufacturerId" id="empId" required>
   	<option value="" disabled selected>제조사를 선택해 주세요</option>
 	  	<c:forEach items="${ list }" var="emp" varStatus="vs">
-			<option value="${ emp.status eq 2 ? emp.empId : '' }">${ emp.status eq 2 ? emp.empName : '' }</option>
+	  		<c:if test="${emp.status eq 2 }">
+			<option value="${emp.empId}">${emp.empName}</option>
+	  		</c:if>
 	  	</c:forEach>
   	</select>
   </c:if>
   
   
-  <div class="form-group col">
-    <div class="col-sm-10">
-      <button type="submit" class="btn btn-primary">등록</button>
-    </div>
-    <div class="col-sm-10">
-      <button type="button" class="btn btn-danger" onclick="return goBackWithDel();">취소</button>
-    </div>
-  </div>
+  <button type="button" class="btn btn-primary" onclick="submitFrm();">등록</button>
+  <button type="button" class="btn btn-danger" onclick="goBackWithDel();">취소</button>
+  
 </form>
 </div>
 </body>
@@ -156,6 +161,15 @@ function goBackWithDel(){
 	$enrollFrm.attr("method", "get");
 	$enrollFrm.submit();
 	history.go(-1);
+
+	
+}
+
+function submitFrm(){
+	var $enrollFrm = $("#productEnrollFrm");
+	//필요한 정규표현식 검사 진행 후
+	
+	$enrollFrm.submit();
 
 	
 }
