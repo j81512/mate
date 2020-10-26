@@ -524,6 +524,8 @@ create sequence seq_review_no;
 --회원 15명 -> 배송지 한사람당 0개 이상 마음 내키는 대로 한사함당 최대 3개만
 
 insert into MEMBER values
+('honggd','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','홍길동','M','01012341234',default);
+insert into MEMBER values
 ('sinsa','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','신사임당','F','01098765432',default);
 insert into MEMBER values
 ('leesin','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','이순신','M','01023456789',default);
@@ -997,6 +999,7 @@ end;
 --상품 카테고리별로 10개씩 대표사진 3개
 --회원 15명 -> 배송지 한사람당 0개 이상 마음 내키는 대로 한사함당 최대 3개만
 --지점 5개
+<<<<<<< HEAD
 --insert into mate.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '강남점', 06234, '서울특별시 강남구 테헤란로14길 8(역삼동)', '1층', '07012341234', default, 1);
 --insert into mate.EMP values ('toy2', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '역삼점', 06220, '서울특별시 강남구 역삼동 테헤란로 212', '2층', '07013246432', default, 1);
 --insert into mate.EMP values ('toy3', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '부산점', 47216, '부산광역시 부산진구 연수로11번길 1(양정동)', '1층', '07085321234', default, 1);
@@ -1043,6 +1046,57 @@ end;
 --
 ----(요청글은 완료된거 2개 안된거 1개)       
 --commit; 
+=======
+insert into mate.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '강남점', 06234, '서울특별시 강남구 테헤란로14길 8(역삼동)', '1층', '07012341234', default, 1);
+insert into mate.EMP values ('toy2', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '역삼점', 06220, '서울특별시 강남구 역삼동 테헤란로 212', '2층', '07013246432', default, 1);
+insert into mate.EMP values ('toy3', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '부산점', 47216, '부산광역시 부산진구 연수로11번길 1(양정동)', '1층', '07085321234', default, 1);
+insert into mate.EMP values ('toy4', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '광주점', 61937, '광주광역시 서구 무진대로 904(광천동)', '1층', '07057328628', default, 1);
+insert into mate.EMP values ('toy5', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '대구점', 41931, '대구광역시 중구 달성로 22(동산동)', '1층', '07085767552', default, 1);
+--제조사 10개
+insert into mate.EMP values
+('alter',1234, '알터',01693,'서울특별시 노원구 상계2동 603-8', '1층', '0265653535', default,2);
+insert into mate.EMP values
+('bookia',1234, '고토부키아',04044,'서울특별시 마포구 서교동 신촌로6길 17', '6층', '0317133010', default,2);
+insert into mate.EMP values
+('wave',1234, '웨이브',02830,'서울특별시 성북구 동소문동6가 동소문로15길 8', '4층', '029048899', default,2);
+insert into mate.EMP values
+('smiles',1234, '굿스마일즈',05116,'서울특별시 광진구 구의3동 광나루로56길 85', '1층', '024347799', default,2);
+insert into mate.EMP values
+('megahouse',1234, '메가하우스',06014,'서울특별시 강남구 청담동 선릉로158길 3', '4층', '027974466', default,2);
+insert into mate.EMP values
+('okidsid',1234, '오키드시드',04039,'서교동 370-24 KR 서울특별시 마포구 홍익로 5안길 50', '2층', '0315597851', default,2);
+insert into mate.EMP values
+('kidoyo',1234, '카이도요',05253,'서울특별시 강동구 암사동 472-21', '1층', '025845959', default,2);
+insert into mate.EMP values
+('die',1234, '반다이',05028,'KR 서울특별시 광진구 자양동 224-9', ' 건흥빌딩 건프라샵 사이드7 2층', '029987585', default,2);
+insert into mate.EMP values
+('nami',1234, '코나미',03120,'서울특별시 종로구 창신1동 종로52길 44', '2층', '029978426', default,2);
+insert into mate.EMP values
+('gigafalse',1234, '기가펄스',01136,'서울특별시 강북구 번동 430-1', '4층', '0706659745', default,2);
+insert into mate.EMP values
+('claze',1234, '클레이즈',07782,'서울특별시 강서구 화곡2동 855-13', '1 층 아카데미 과학', '024496566', default,2);
+insert into mate.EMP values
+('bird',1234, '그리폰',06734,'서울특별시 서초구 서초동 서운로 18', '영진빌딩 16층', '027033321', default,2);
+insert into mate.EMP values
+('sega',1234, 'SEGA',06168,'서울특별시 강남구 삼성동 157-18', '하남빌딩 13층', '024439933', default,2);
+insert into mate.EMP values
+('freeing',1234, 'FREEing',04377,'서울특별시 용산구 한강로3가 한강대로23길 55', '9층', '0226482345', default,2);
+
+--관리자 1
+insert into EMP values
+('admin', '1234', '본사관리자', '06234', '서울특별시 강남구 테헤란로14길 6', '남도빌딩', '01012341234', default, 0);
+insert into member values
+('admin', '1234', '본사관리자', 'M', '01012341234', default);
+--고객센터 공지 2개 문의글 답변된거 4개 안된거 3개 비밀글 2개
+
+--게시판 카테고리별로 3개씩
+
+--(요청글은 완료된거 2개 안된거 1개)  
+INSERT into board VALUES(seq_board_no.nextval,'req','강남점 프라모델요청','강남점 새로나온 프라모델 어제부터 손님들이 찾으십니다 요청합니다','toy1',default,1,default);
+INSERT into board VALUES(seq_board_no.nextval,'req','역삼점 홍보용깃발 요청','역삼점 홍보용깃발 요청드립니다.','toy2',default,1,default);
+INSERT into board VALUES(seq_board_no.nextval,'req','부산점 신규 RC카요청 ','부산점 신규RC카 요청합니다.','toy3',default,default,default);
+commit; 
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
         
         
         

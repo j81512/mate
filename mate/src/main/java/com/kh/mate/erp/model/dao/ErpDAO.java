@@ -107,5 +107,13 @@ public interface ErpDAO {
 
 	int updateReceiveToRef(int receiveNo);
 
+	int countProduct(EMP emp);
+
+	List<Product> selectAll();
+
+	List<Integer> productCompare(EMP emp);
+
+	int mStockInsert(Map<String, Object> map);
+
 
 }

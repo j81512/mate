@@ -30,12 +30,12 @@ public class PagingVo {
 		setLastPage((int)Math.ceil((double)total/(double)cntPerPage));
 	}
 	public void calcStartEndPage(int nowPage, int cntPage) {
-		setEndPage(((int)Math.ceil((double)nowPage / (double)cntPage))*cntPage);
-		if(getLastPage() < getEndPage()) {
+		setEndPage(((int)Math.ceil((double)nowPage / (double)cntPage)) * cntPage);
+		if (getLastPage() < getEndPage()) {
 			setEndPage(getLastPage());
 		}
 		setStartPage(getEndPage() - cntPage + 1);
-		if(getStartPage() < 1) {
+		if (getStartPage() < 1) {
 			setStartPage(1);
 		}
 	}

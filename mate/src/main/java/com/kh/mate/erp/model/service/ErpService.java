@@ -86,5 +86,15 @@ public interface ErpService {
 
 	int updateReceiveToref(int receiveNo);
 
+	int countProduct(EMP emp);
+
+	List<Product> selectAll();
+
+	List<Integer> productCompare(EMP emp);
+
+	int mStockInsert(Map<String, Object> map);
+
+
+
 
 }
