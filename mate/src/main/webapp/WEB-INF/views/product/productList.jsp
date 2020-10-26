@@ -11,29 +11,25 @@
 <jsp:include page="/WEB-INF/views/common/headerS.jsp"></jsp:include>
 
 <style>
-ul li{
-	display: inline-block;
-	margin: 10px;
-}
 .card{
 	width: 360px;
 	background : #f1f1f1;
 	top: 50%;
 	left: 50%;
-	position:absolute;
 	transform: translate(-50%, -50%);
+	display:inline-block;
 }
 .top-section{
 	height: 310px;
 	overflow: hidden;
 	background: #fff;
-	position: absolute;
+	position: relative;
 }
 #mainImg{
 	weight: 360px;
 	height: 240px;
 }
-.nav{
+.imgNav{
 	text-align: center;
 }
 .imgNav img{
@@ -41,6 +37,7 @@ ul li{
 	height: 50px;
 	border: 1px solid #ddd;
 	margin: 8px 2px;
+	cursor:pointer;
 	transition: 0.3s;
 }
 .imgNav img:hover{
@@ -98,11 +95,9 @@ ul li{
 	</div> 
 	
 	<div class="product-list">
-		<ul>
 				<!-- 상품이 있을 경우 -->
 				<c:if test="${ not empty list }">
 					<c:forEach items="${ list }" var="product">
-					<li>
 					<div class="card">
 						<div class="top-section">
 							<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${product.pmiList[0].renamedFilename}" 
@@ -113,6 +108,7 @@ ul li{
 							<c:forEach items="${product.pmiList }" var="Thumbs" varStatus="vs">
 								<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${Thumbs.renamedFilename}" 
 									 alt="thums${vs.count}" id="thumbs${vs.count}"
+									 onclick="change_img(this);"
 									 width="50px"/>
 							</c:forEach>
 						</div>
@@ -143,16 +139,12 @@ ul li{
 							</div>
 						</div>
 					</div>
-					</li>
 					</c:forEach>
 				</c:if>
 				<!-- 상품이 없을 경우 -->
 				<c:if test="${ empty list }">
-					<li>
 						<span>상품이 존재하지 않습니다.</span>
-					</li>
 				</c:if>
-		</ul>
 	</div>
 </div>
 <div style="display: block; text-align: center;">
@@ -175,4 +167,12 @@ ul li{
 
 </div>
 
+<script type="text/javascript">
+	var container = document.getElemetById("mainImg");
+	function change_img(img){
+		container.src = img.src;
+
+	}
+
+</script>
 <jsp:include page="/WEB-INF/views/common/footerS.jsp"></jsp:include>
