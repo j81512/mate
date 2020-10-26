@@ -522,82 +522,83 @@ create sequence seq_review_no;
 --상품 카테고리별로 10개씩 대표사진 3개
 
 --회원 15명 -> 배송지 한사람당 0개 이상 마음 내키는 대로 한사함당 최대 3개만
+
 insert into MEMBER values
-('honggd','홍길동','M','01012341234',default);
+('honggd','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','홍길동','M','01012341234',default);
 insert into MEMBER values
-('sinsa','신사임당','F','01098765432',default);
+('sinsa','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','신사임당','F','01098765432',default);
 insert into MEMBER values
-('leesin','이순신','M','01023456789',default);
+('leesin','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','이순신','M','01023456789',default);
 insert into MEMBER values
-('sukb','한석봉','M','01065439876',default);
+('sukb','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','한석봉','M','01065439876',default);
 insert into MEMBER values
-('mrhang','황희','M','01034567815',default);
+('mrhang','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','황희','M','01034567815',default);
 insert into MEMBER values
-('Eliza','앨리자베스','F','01065127895',default);
+('Eliza','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','앨리자베스','F','01065127895',default);
 insert into MEMBER values
-('nobel','노벨','M','01063216321',default);
+('nobel','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','노벨','M','01063216321',default);
 insert into MEMBER values
-('keanu','키아누리브스','M','01042657854',default);
+('keanu','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','키아누리브스','M','01042657854',default);
 insert into MEMBER values
-('nolan','크리스토퍼놀란','M','01085456585',default);
+('nolan','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','크리스토퍼놀란','M','01085456585',default);
 insert into MEMBER values
-('matt','맷데이먼','M','01064216321',default);
+('matt','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','맷데이먼','M','01064216321',default);
 insert into MEMBER values
-('smith','윌스미스','M','01056215475',default);
+('smith','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','윌스미스','M','01056215475',default);
 insert into MEMBER values
-('watson','엠마왓슨','F','01021452145',default);
+('watson','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','엠마왓슨','F','01021452145',default);
 insert into MEMBER values
-('cruise','톰크루즈','M','01095153575',default);
+('cruise','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','톰크루즈','M','01095153575',default);
 insert into MEMBER values
-('nicole','니콜키드먼','F','01032568754',default);
+('nicole','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','니콜키드먼','F','01032568754',default);
 insert into MEMBER values
-('james','제임스카메론','M','01056278954',default);
+('james','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','제임스카메론','M','01056278954',default);
 insert into MEMBER values
-('suzy','수지','F','01021598756',default);
+('suzy','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','수지','F','01021598756',default);
 
 
 
 
 --지점 5개
-insert into spring.EMP values 
+insert into EMP values 
 ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '강남점', 06234, '서울특별시 강남구 테헤란로14길 8(역삼동)', '1층', '07012341234', default, 1);
-insert into spring.EMP values 
+insert into EMP values 
 ('toy2', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '역삼점', 06220, '서울특별시 강남구 역삼동 테헤란로 212', '2층', '07013246432', default, 1);
-insert into spring.EMP values 
+insert into EMP values 
 ('toy3', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '부산점', 47216, '부산광역시 부산진구 연수로11번길 1(양정동)', '1층', '07085321234', default, 1);
-insert into spring.EMP values 
+insert into EMP values 
 ('toy4', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '광주점', 61937, '광주광역시 서구 무진대로 904(광천동)', '1층', '07057328628', default, 1);
-insert into spring.EMP values 
+insert into EMP values 
 ('toy5', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '대구점', 41931, '대구광역시 중구 달성로 22(동산동)', '1층', '07085767552', default, 1);
 
 --제조사 10개
-insert into spring.EMP values
+insert into EMP values
 ('alter',1234, '알터',01693,'서울특별시 노원구 상계2동 603-8', '1층', '0265653535', default,2);
-insert into spring.EMP values
+insert into EMP values
 ('bookia',1234, '고토부키아',04044,'서울특별시 마포구 서교동 신촌로6길 17', '6층', '0317133010', default,2);
-insert into spring.EMP values
+insert into EMP values
 ('wave',1234, '웨이브',02830,'서울특별시 성북구 동소문동6가 동소문로15길 8', '4층', '029048899', default,2);
-insert into spring.EMP values
+insert into EMP values
 ('smiles',1234, '굿스마일즈',05116,'서울특별시 광진구 구의3동 광나루로56길 85', '1층', '024347799', default,2);
-insert into spring.EMP values
+insert into EMP values
 ('megahouse',1234, '메가하우스',06014,'서울특별시 강남구 청담동 선릉로158길 3', '4층', '027974466', default,2);
-insert into spring.EMP values
+insert into EMP values
 ('okidsid',1234, '오키드시드',04039,'서교동 370-24 KR 서울특별시 마포구 홍익로 5안길 50', '2층', '0315597851', default,2);
-insert into spring.EMP values
+insert into EMP values
 ('kidoyo',1234, '카이도요',05253,'서울특별시 강동구 암사동 472-21', '1층', '025845959', default,2);
-insert into spring.EMP values
+insert into EMP values
 ('die',1234, '반다이',05028,'KR 서울특별시 광진구 자양동 224-9', ' 건흥빌딩 건프라샵 사이드7 2층', '029987585', default,2);
-insert into spring.EMP values
+insert into EMP values
 ('nami',1234, '코나미',03120,'서울특별시 종로구 창신1동 종로52길 44', '2층', '029978426', default,2);
-insert into spring.EMP values
+insert into EMP values
 ('gigafalse',1234, '기가펄스',01136,'서울특별시 강북구 번동 430-1', '4층', '0706659745', default,2);
-insert into spring.EMP values
+insert into EMP values
 ('claze',1234, '클레이즈',07782,'서울특별시 강서구 화곡2동 855-13', '1 층 아카데미 과학', '024496566', default,2);
-insert into spring.EMP values
+insert into EMP values
 ('bird',1234, '그리폰',06734,'서울특별시 서초구 서초동 서운로 18', '영진빌딩 16층', '027033321', default,2);
-insert into spring.EMP values
+insert into EMP values
 ('sega',1234, 'SEGA',06168,'서울특별시 강남구 삼성동 157-18', '하남빌딩 13층', '024439933', default,2);
-insert into spring.EMP values
+insert into EMP values
 ('freeing',1234, 'FREEing',04377,'서울특별시 용산구 한강로3가 한강대로23길 55', '9층', '0226482345', default,2);
 
 --관리자 1
@@ -632,17 +633,17 @@ insert into CS_REPLY values
 
 --안된거 3개 
 insert into CS values
-('9', '문의글입니다','내용입니다','',default,0,0);
+('9', '문의글입니다','내용입니다','watson',default,0,0);
 insert into CS values
-('10', '문의글입니다','내용입니다','',default,0,0);
+('10', '문의글입니다','내용입니다','suzy',default,0,0);
 insert into CS values
-('11', '문의글입니다','내용입니다','',default,0,0);
+('11', '문의글입니다','내용입니다','leesin',default,0,0);
 
 --비밀글 2개
 insert into CS values
-('3', '비밀문의글1입니다','내용입니다','작성자아이디',default,1,0);
+('3', '비밀문의글1입니다','내용입니다','james',default,1,0);
 insert into CS values
-('4', '비밀문의글2입니다','내용입니다','작성자아이디',default,1,0);
+('4', '비밀문의글2입니다','내용입니다','nicole',default,1,0);
 
 --게시판 카테고리별로 3개씩
 insert into BOARD values
