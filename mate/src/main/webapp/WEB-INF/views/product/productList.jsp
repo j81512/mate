@@ -101,7 +101,7 @@
 					<div class="card">
 						<div class="top-section">
 							<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${product.pmiList[0].renamedFilename}" 
-								 alt="대표이미지" id="mainImg"
+								 alt="대표이미지" id="mainImg${vs.count}"
 								 width="200px"/>
 						</div>
 						<div class="imgNav">
@@ -168,9 +168,9 @@
 </div>
 
 <script type="text/javascript">
-	var container = document.getElemetById("mainImg");
-	function change_img(img){
-		container.src = img.src;
+	var container = document.getElementById("mainImg");
+	function change_img(image){
+		container.src = image.src;
 
 	}
 
