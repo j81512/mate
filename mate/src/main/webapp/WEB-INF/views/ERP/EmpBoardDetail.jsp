@@ -157,12 +157,17 @@ $(document).ready(function(){
 		
 		$.ajax({
 
-			 url : "${ pageContext.request.contextPath}/ERP/StockTranslate",
+			 url : "${ pageContext.request.contextPath }/ERP/StockTranslate",
 			 method : "POST",
 			 dataType : "json",
 			 data : stock,
 			 success : function(data){
 					console.log(data);
+					console.log(data);
+					var result = data.result;
+					if(result == "1"){                
+		                alert(" 수량을 전송 했습니다.");                             
+		            } 
 			},
 			error : function(xhr, err, status){
 					console.log(xhr, err, status);
@@ -257,8 +262,7 @@ function goEmpBoardList(){
 				console.log(data);
 				var result = data.result;
 				if(result == "1"){                
-	                alert("게시글 삭제를 성공하였습니다.");                
-	                goEmpBoardList();                
+	                alert("게시글 삭제를 성공하였습니다.");                             
 	            } else {                
 	                alert("게시글 삭제를 실패하였습니다.");    
 	                return;

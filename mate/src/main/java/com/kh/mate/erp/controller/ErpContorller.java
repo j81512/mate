@@ -1176,4 +1176,12 @@ public class ErpContorller {
 
 		return "redirect:/ERP/EmpBoardList.do";
 	}
+	
+	@PostMapping("/ERP/StockTranslate")
+	public Map<String, Object> stockTranslate(){
+		Map<String, Object> map = new HashMap<>();
+		
+		return map;
+	}
+	
 }
