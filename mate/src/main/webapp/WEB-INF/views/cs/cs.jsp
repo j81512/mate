@@ -20,7 +20,7 @@ tr[data-no]{
 <script>
 
 $(function(){
-	$('input[type=checkbox]').change(function() {
+	$("input:checkbox[id='csMyListFrm']").change(function() {
 	    	console.log($(this).val());
 	    	var checked = $(this);
 	    	var memberId = $(this).val();
@@ -28,6 +28,8 @@ $(function(){
 		if(this.checked){
 				$frm.submit();
 				$("input:checkbox[id='csMyListFrm']").prop("checked", true);
+		}else{
+			location.href="${ pageContext.request.contextPath}/cs/cs.do";
 		}
 				
 	
