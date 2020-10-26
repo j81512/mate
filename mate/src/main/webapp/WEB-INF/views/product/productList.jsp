@@ -70,6 +70,9 @@
 	$search.submit();
 
 	 }
+
+ 
+
 </script>
 <div class="product-container">
 	<!-- ajax처리 -->
@@ -101,7 +104,7 @@
 					<div class="card">
 						<div class="top-section">
 							<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${product.pmiList[0].renamedFilename}" 
-								 alt="대표이미지" id="mainImg${vs.count}"
+								 alt="대표이미지" class="mainImg"
 								 width="200px"/>
 						</div>
 						<div class="imgNav">
@@ -166,13 +169,11 @@
 		</c:if>
 
 </div>
-
-<script type="text/javascript">
-	var container = document.getElementById("mainImg");
-	function change_img(image){
-		container.src = image.src;
-
-	}
-
+<script>
+ 	function change_img(image){
+ 	 	console.log(image.src);
+ 	 	console.log(image.parentNode.parentNode.page.firstChild);
+ 	}
 </script>
+
 <jsp:include page="/WEB-INF/views/common/footerS.jsp"></jsp:include>
