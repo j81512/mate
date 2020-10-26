@@ -50,6 +50,12 @@ public interface ProductService {
 
 	int purchaseProducts(List<Map<String, Object>> params);
 
+	List<Map<String, Object>> selectAllReturns();
+
+	Map<String, Object> returnDetail(String returnNo);
+
+	int updateReturn(Map<String, Object> param);
+
 
 
 
