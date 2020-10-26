@@ -64,18 +64,22 @@ li{
 					<c:forEach items="${ list }" var="product">
 					<div class="card">
 						<div class="top-section">
-							<img src="대표이미지" alt="대표이미지" id="mainImg1"/>
+							<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${product.pmiList[0].renamedFilename}" 
+								 alt="대표이미지" id="mainImg1"
+								 width="200px"/>
 						</div>
 						<div class="nav">
-							<c:forEach items="${list.pmiList }" var="Thumbs" varStatus="vs">
-								<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${Thumbs.renamedFilename}" alt="thums${vs.count}" id="thumbs${vs.count}"/>
+							<c:forEach items="${product.pmiList }" var="Thumbs" varStatus="vs">
+								<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${Thumbs.renamedFilename}" 
+									 alt="thums${vs.count}" id="thumbs${vs.count}"
+									 width="50px"/>
 							</c:forEach>
 						</div>
 						<div class="productName">
 						${product.productName}
 						</div>
 						<div class="price">
-						${product.pridce}원
+						${product.price}원
 						</div>
 					</div>
 					</c:forEach>
