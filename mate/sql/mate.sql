@@ -524,8 +524,6 @@ create sequence seq_review_no;
 --회원 15명 -> 배송지 한사람당 0개 이상 마음 내키는 대로 한사함당 최대 3개만
 
 insert into MEMBER values
-('honggd','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','홍길동','M','01012341234',default);
-insert into MEMBER values
 ('sinsa','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','신사임당','F','01098765432',default);
 insert into MEMBER values
 ('leesin','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','이순신','M','01023456789',default);
@@ -561,15 +559,15 @@ insert into MEMBER values
 
 --지점 5개
 insert into EMP values 
-('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '강남점', 06234, '서울특별시 강남구 테헤란로14길 8(역삼동)', '1층', '07012341234', default, 1);
+('matetoy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '강남점', 06234, '서울특별시 강남구 테헤란로14길 8(역삼동)', '1층', '07012341234', default, 1);
 insert into EMP values 
-('toy2', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '역삼점', 06220, '서울특별시 강남구 역삼동 테헤란로 212', '2층', '07013246432', default, 1);
+('matetoy2', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '역삼점', 06220, '서울특별시 강남구 역삼동 테헤란로 212', '2층', '07013246432', default, 1);
 insert into EMP values 
-('toy3', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '부산점', 47216, '부산광역시 부산진구 연수로11번길 1(양정동)', '1층', '07085321234', default, 1);
+('matetoy3', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '부산점', 47216, '부산광역시 부산진구 연수로11번길 1(양정동)', '1층', '07085321234', default, 1);
 insert into EMP values 
-('toy4', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '광주점', 61937, '광주광역시 서구 무진대로 904(광천동)', '1층', '07057328628', default, 1);
+('matetoy4', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '광주점', 61937, '광주광역시 서구 무진대로 904(광천동)', '1층', '07057328628', default, 1);
 insert into EMP values 
-('toy5', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '대구점', 41931, '대구광역시 중구 달성로 22(동산동)', '1층', '07085767552', default, 1);
+('matetoy5', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '대구점', 41931, '대구광역시 중구 달성로 22(동산동)', '1층', '07085767552', default, 1);
 
 --제조사 10개
 insert into EMP values
@@ -615,21 +613,21 @@ insert into CS values
 
 --문의글 답변된거 4개 
 insert into CS values
-('5', '문의글입니다','내용입니다','',default,0,0);
+('5','문의글입니다','내용입니다','sukb',default,0,0);
 insert into CS_REPLY values
-('1', '답변내용입니다',default,'5');
+('1','답변내용입니다',default,'5');
 insert into CS values
-('6', '문의글입니다','내용입니다','',default,0,0);
+('6','문의글입니다','내용입니다','Eliza',default,0,0);
 insert into CS_REPLY values
-('1', '답변내용입니다',default,'6');
+('1','답변내용입니다',default,'6');
 insert into CS values
-('7', '문의글입니다','내용입니다','',default,0,0);
+('7','문의글입니다','내용입니다','smith',default,0,0);
 insert into CS_REPLY values
-('1', '답변내용입니다',default,'7');
+('1','답변내용입니다',default,'7');
 insert into CS values
-('8', '문의글입니다','내용입니다','',default,0,0);
+('8','문의글입니다','내용입니다','cruise',default,0,0);
 insert into CS_REPLY values
-('1', '답변내용입니다',default,'8');
+('1','답변내용입니다',default,'8');
 
 --안된거 3개 
 insert into CS values
@@ -646,6 +644,7 @@ insert into CS values
 ('4', '비밀문의글2입니다','내용입니다','nicole',default,1,0);
 
 --게시판 카테고리별로 3개씩
+--카테고리명 프라모델 :pl , 피규어 :pg , RC카 :rc , 드론 :dr 
 insert into BOARD values
 ('게시글번호','카테고리','제목','내용','작성자아이디',default,default,default);
 
@@ -653,7 +652,7 @@ insert into BOARD values
 --(요청글은 완료된거 2개 안된거 1개)
 
 
-
+commit;
 
 
 
