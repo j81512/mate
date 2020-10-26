@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-
+<script src="${ pageContext.request.contextPath }/resources/ckeditor/ckeditor.js"></script>
 <!-- bootstrap js: jquery load 이후에 작성할것.-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
@@ -198,10 +198,9 @@ $(document).ready(function(){
 				</button>
 			</c:forEach>
 		 </div>
-	    <textarea class="form-control" name="content" 
-	    		  placeholder="내용"  readonly>
+	    <div class="row" name="content" >
 	    		  ${ empBoard.content != null  ? empBoard.content : '내용'}
-	    		  </textarea>
+	    		  </div>
 		</div>
 		<!-- 요청 상품에 재고가 있을 때만  -->
 		<c:if test="${loginEmpStock.empId eq loginEmp.empId && empBoard.category eq 'req' }">
