@@ -64,7 +64,8 @@ $(function(){
 		<th>첨부파일</th>	
 	</tr>
 	 <c:forEach items="${ list }" var="cs">
-	<tr data-no="${ cs.csNo }">
+		<tr data-no="${ cs.csNo }">
+		<c:if test="${ cs.secret == 0 }">
 		<td>${ cs.csNo }</td>
 		<td>${ cs.title }</td>
 		<td>${ cs.memberId }</td>
@@ -77,6 +78,7 @@ $(function(){
 		<td>
 		<button type="button" class="btn btn-outline-secondary" onclick="updateDev(${ dev.no });">수정</button>
 		</td>
+		</c:if>
 	</tr>
 	</c:forEach>
 	</table>
