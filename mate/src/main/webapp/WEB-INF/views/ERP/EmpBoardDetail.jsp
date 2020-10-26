@@ -143,6 +143,13 @@ $(document).ready(function(){
 		location.href= "${ pageContext.request.contextPath}/ERP/fileDownload.do?no=" + no;
 	};
 
+	function(productNo, amount){
+		var productNo = productNo;
+		var amount = amount;
+		console.log(productNo);
+		console.log(amount);
+		
+	}
 	
 </script>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp" />
@@ -175,7 +182,7 @@ $(document).ready(function(){
 				<a href="#" class="btn btn-custom" role="button">${ loginEmpStock.empName }</a>
 				<a href="#" class="btn btn-custom" role="button">${ loginEmpStock.productName }</a>
 				<a href="#" class="btn btn-custom" role="button">재고 수  : ${ loginEmpStock.stock }</a>
-				<button type="button" class="btn btn-warning"> 보내기 </button>
+				<button type="button" class="btn btn-warning" onclick="StockTranslate('${ empBoard.productNo},${ empBoard.amount ');"> 보내기 </button>
 		</c:if>
 		
 		<c:if test="${ empBoard.empId eq loginEmp.empId }" >		
