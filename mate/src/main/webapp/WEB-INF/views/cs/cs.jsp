@@ -16,24 +16,37 @@ tr[data-no]{
 	cursor: pointer;
 }
 </style>
+	
+<script>
 
-
+$(function(){
+	$('input[type=checkbox]').change(function() {
+	    	console.log($(this).val());
+	    	var checked = $(this);
+	    	var memberId = $(this).val();
+	    	var $frm = $("#csMyListFrm");
+		if(this.checked){
+				$frm.submit();	
+		}
+				
+	
+	});
+	
+});
+</script>
+<section id="cs-container" class="container">
 	<form id="csMyListFrm" 
     	  action="${pageContext.request.contextPath}/cs/cs.do" 
     	  class="form-inline" 
     	  method="get"> 
-    <input type="checkbox" id="csMyListFrm" type="submit" />
+    <input type="checkbox" name="memberId" id="csMyListFrm" value="${ loginMember.memberId != null ? loginMember.memberId : '' }" checked/>
     <label for="csMyListFrm"><span>내글만보기</span></label>
     </form>
-		<form id="csDeleteFrm" 
+	<form id="csDeleteFrm" 
 	  	  action="${ pageContext.request.contextPath }/cs/deleteCs.do" 
 	  	  method="POST">
 	<input type="hidden" name="csNo" />
 	</form>
-	
-	
-	
-<section id="cs-container" class="container">
 	<input type="button" value="글쓰기" id="btn-add" class="btn btn-outline-success" onclick="goInsertCs();"/>
 
 
@@ -50,7 +63,7 @@ tr[data-no]{
 		<td>${ cs.csNo }</td>
 		<td>${ cs.title }</td>
 		<td>${ cs.memberId }</td>
-		<td><fmt:formatDate value="${ cs.regDate }" pattern="yy/MM/dd HH:mm:ss"/></td>
+		<td><fmt:formatDate value="${ cs.regDate }" pattern="yy/MM/dd"/></td>
 		<td>
 			<c:if test="${ ! empty cs.csImage }">
 				<img src="${ pageContext.request.contextPath }/resources/images/file.png" style="width : 16px;"/>

@@ -20,9 +20,9 @@ public class CsDAOImpl implements CsDAO {
 	private SqlSessionTemplate sqlSession;
 	
 	@Override
-	public List<Cs> selectCsList() {
+	public List<Cs> selectCsList(Map<String, Object> map) {
 		
-		return sqlSession.selectList("cs.selectCsList");
+		return sqlSession.selectList("cs.selectCsList", map);
 	}
 	
 	@Override

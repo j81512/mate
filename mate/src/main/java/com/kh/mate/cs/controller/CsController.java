@@ -60,9 +60,14 @@ public class CsController {
 	private ResourceLoader resourceLoader;
 	
 	@RequestMapping("/cs.do")
-	public ModelAndView boardList(ModelAndView mav) {
+	@ResponseBody
+	public ModelAndView boardList(ModelAndView mav,
+								  @RequestParam(required=false, name="memberId") String memberId) {
 		
-		List<Cs> list = csService.selectCsList();
+		Map<String, Object> map = new HashMap<String, Object>();
+		log.debug("memberId = {}", memberId);
+		map.put("memberId",memberId);
+		List<Cs> list = csService.selectCsList(map);
 		
 		log.debug("list = {}", list);
 		
