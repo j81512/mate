@@ -7,6 +7,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.kh.mate.common.paging.PagingVo;
 import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.product.model.vo.Cart;
 import com.kh.mate.product.model.vo.Product;
@@ -21,9 +22,16 @@ public class ProductDAOImpl implements ProductDAO {
 
 	//ch
 	@Override
-	public List<Product> selectProductListAll() {
-		return session.selectList("product.selectProductListAll");
+	public int countProduct() {
+		return session.selectOne("product.countProduct");
 	}
+	
+	
+	@Override
+	public List<Product> selectProductListAll(PagingVo page) {
+		return session.selectList("product.selectProductListAll",page);
+	}
+
 
 	@Override
 	public List<ProductMainImages> selectProductMainImages(int productNo) {
@@ -87,7 +95,6 @@ public class ProductDAOImpl implements ProductDAO {
 		return session.insert("product.insertReview", param);
 	}
 
-
 	@Override
 	public int updatePurchaseConfirm(int purchaseLogNo) {
 		return session.update("product.updatePurchaseConfirm", purchaseLogNo);
@@ -117,12 +124,53 @@ public class ProductDAOImpl implements ProductDAO {
 	public List<Address> selectAddressList(String memberId) {
 		return session.selectList("product.selectAddressList", memberId);
 	}
+
+	@Override
+	public int insertPurchase(Map<String, Object> idAndAddr) {
+		return session.insert("product.insertPurchase", idAndAddr);
+	}
+
+	@Override
+	public int getPurchaseNo() {
+		return session.selectOne("product.getPurchaseNo");
+	}
+
+	@Override
+	public int insertPurchaseLog(Map<String, Object> param) {
+		return session.insert("product.insertPurchaseLog", param);
+	}
+
+
+	@Override
+	public int updatePurchaseReturn(Map<String, Object> param) {
+		return session.update("product.updatePurchaseReturn", param);
+	}
+
+
+	@Override
+	public List<Map<String, Object>> selectAllReturns() {
+		return session.selectList("product.selectAllReturns");
+	}
+
+
+	@Override
+	public String getReturnContent(String returnNo) {
+		return session.selectOne("product.getReturnContent", returnNo);
+	}
+
+
+	@Override
+	public List<Map<String, Object>> getReturnImage(String returnNo) {
+		return session.selectList("product.getReturnImage", returnNo);
+	}
+
+
+	@Override
+	public int updateReturn(Map<String, Object> param) {
+		return session.update("product.updateReturn", param);
+	}
 	
 
-	
-	
-	
-	
 	
 	
 }

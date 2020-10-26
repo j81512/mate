@@ -3,6 +3,7 @@ package com.kh.mate.product.model.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.kh.mate.common.paging.PagingVo;
 import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.product.model.vo.Cart;
 import com.kh.mate.product.model.vo.Product;
@@ -12,13 +13,15 @@ import com.kh.mate.product.model.vo.ProductMainImages;
 public interface ProductDAO {
 
 	//ch
-	List<Product> selectProductListAll();
+	List<Product> selectProductListAll(PagingVo page);
 
 	List<ProductMainImages> selectProductMainImages(int productNo);
 
 	List<Product> searchProductList(Map<String, Object> map);
 	
 	List<Product> productCategory(String category);
+	
+	int countProduct();
 	
 	//jw
 	int productEnroll(Product product);
@@ -49,6 +52,23 @@ public interface ProductDAO {
 	int getReturnNo();
 
 	int insertReturnImages(Map<String, Object> param);
+
+
+	int insertPurchase(Map<String, Object> idAndAddr);
+
+	int getPurchaseNo();
+
+	int insertPurchaseLog(Map<String, Object> param);
+
+	int updatePurchaseReturn(Map<String, Object> param);
+
+	List<Map<String, Object>> selectAllReturns();
+
+	String getReturnContent(String returnNo);
+
+	List<Map<String, Object>> getReturnImage(String returnNo);
+
+	int updateReturn(Map<String, Object> param);
 
 
 

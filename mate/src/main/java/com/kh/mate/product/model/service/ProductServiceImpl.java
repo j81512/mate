@@ -1,11 +1,13 @@
 package com.kh.mate.product.model.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.mate.common.paging.PagingVo;
 import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.product.model.dao.ProductDAO;
 import com.kh.mate.product.model.vo.Cart;
@@ -22,9 +24,18 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private ProductDAO productDAO;
 	//ch
+	
 	@Override
-	public List<Product> selectProductListAll() {
-		List<Product> list = productDAO.selectProductListAll();
+	public int countProduct() {
+		return productDAO.countProduct();
+	}
+	
+
+
+	@Override
+	public List<Product> selectProductListAll(PagingVo page) {
+		
+		List<Product> list = productDAO.selectProductListAll(page);
 		
 		if(list != null) {
 			for(Product p : list) {
@@ -34,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
 		}
 		return list;
 	}
-	
+
 	@Override
 	public List<Product> searchProductList(Map<String, Object> map) {
 		
@@ -126,7 +137,9 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public int insertReturn(Map<String, Object> param) {
 		
-		int result = productDAO.insertReturn(param);
+		int result = productDAO.updatePurchaseReturn(param);
+		if(result <= 0) return result;
+		result = productDAO.insertReturn(param);
 		if(result <= 0) return result;
 		if(param.containsKey("originalFilename")) {
 			int returnNo = productDAO.getReturnNo();
@@ -135,8 +148,56 @@ public class ProductServiceImpl implements ProductService {
 		}
 		return result;
 	}
-	
-	
+
+	@Override
+	public int purchaseProducts(List<Map<String, Object>> params) {
+		
+		Map<String, Object> idAndAddr = new HashMap<>();
+		idAndAddr.put("memberId", params.get(0).get("memberId"));
+		idAndAddr.put("addressName", params.get(0).get("addressName"));
+		int result = productDAO.insertPurchase(idAndAddr);
+		if(result <= 0) return result;
+		int purchaseNo = productDAO.getPurchaseNo();
+		log.debug("purchaseNo@Service = {}", purchaseNo);
+		
+		for(Map<String, Object> param : params) {
+			param.put("purchaseNo", purchaseNo);
+			result = productDAO.insertPurchaseLog(param);
+			if(result <= 0) return result;
+		}
+		
+		return result;
+	}
+
+
+
+	@Override
+	public List<Map<String, Object>> selectAllReturns() {
+		return productDAO.selectAllReturns();
+	}
+
+
+
+	@Override
+	public Map<String, Object> returnDetail(String returnNo) {
+		
+		Map<String, Object> map = new HashMap<>();
+		
+		String content = productDAO.getReturnContent(returnNo);
+		map.put("content", content);
+		
+		List<Map<String, Object>> imageList = productDAO.getReturnImage(returnNo);
+		map.put("imageList", imageList);
+		
+		return map;
+	}
+
+
+
+	@Override
+	public int updateReturn(Map<String, Object> param) {
+		return productDAO.updateReturn(param);
+	}
 	
 
 	

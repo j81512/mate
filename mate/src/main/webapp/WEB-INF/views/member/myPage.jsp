@@ -256,6 +256,7 @@ function closeReturnModal(){
 
 
 $(function(){
+
 	$(".return-btn").click(function(){
 		var no = $(this).parent().siblings(".purchaseLogNo-td").text();
 		var amount = $(this).parent().siblings(".amount-td").text();
@@ -268,7 +269,8 @@ $(function(){
 	$(".confirm-btn").click(function(){
 		if(confirm("구매 확정 하시겠습니까?")==false) return;
 		var $btnTd = $(this).parent();
-		var plNo = $btnTd.siblings(".purchaseLogNo-td").val();
+		var plNo = Number($btnTd.siblings(".purchaseLogNo-td").text());
+		
 		$.ajax({
 			url : "${ pageContext.request.contextPath}/product/purchaseConfirm.do",
 			data : {
@@ -277,8 +279,9 @@ $(function(){
 			method : "POST",
 			dataType : "json",
 			success : function(data){
-				if(data > 0) {
-					$btnTd.html("<p>구매확정</p>");
+				if(data.result > 0) {
+					console.log("구매확정됨");
+					location.reload();
 				}
 				else alert("구매확정에 실패하였습니다. 다시시도 해주세요.");
 			},
@@ -289,31 +292,49 @@ $(function(){
 	});
 });
 
+$(function(){
+	$("#return-modal-submit").click(function(){
+		console.log("return-modal-submit");
+		var data = new FormData();
+		data.append('file', $("#return-file")[0].files[0]);
+		data.append('purchaseLogNo', Number($("#hiddenPurchaseLogNo-return").val()));
+		data.append('status', $("[name=return-status]:checked").val());
+		data.append('content', $("#return-content").val());
+		data.append('amount', Number($("#amount").val()));
 
-$("#return-modal-submit").click(function(){
-	var formData = new FormData();
-	formData.append("purchaseLogNo", $("#hiddenPurchaseLogNo-return").val());
-	formData.append("status", $("[name=return-status]:checked").val());
-	formData.append("content", $("#return-content").val());
-	formData.append("amount", $("#hiddenPurchaseAmount-return").val());
-	formData.append("file", $("#return-file")[0].files[0]);
-
-	$.ajax({
-		url : "${pageContext.request.contextPath}/product/return.do",
-		type : "POST",
-		processData: false,
-		contentType: false,
-		data: formData,
-		success: function(data) {
-			closeReturnModal();
-			$btnTd.html("<p>환불/교환 처리중</p>");
-		},
-		error: function(xhr, status, err){
-			console.log(xhr,stauts,err);
-		}
+		console.log(data);
+		
+		$.ajax({
+			url : "${pageContext.request.contextPath}/product/return.do",
+			type : "POST",
+			processData : false,
+	        contentType : false,
+			data: data,
+			dataType: 'json',
+			success: function(data) {
+				console.log("ㅇㅇ");
+				closeReturnModal();
+				location.reload();
+			},
+			error: function(xhr, status, err){
+				console.log(xhr,status,err);
+			}
+		});
+		
 	});
-	
+		
 });
+
+
+function openKakao(purchaseNo, sum){
+	var popupX = (document.body.offsetWidth / 2) - (200 / 2);
+	//&nbsp;만들 팝업창 좌우 크기의 1/2 만큼 보정값으로 빼주었음
+	var popupY= (window.screen.height / 2) - (300 / 2);
+	//&nbsp;만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
+	
+	window.open("${pageContext.request.contextPath}/member/kakaopay.do?memberId=${loginMember.memberId}&sum="+sum+"&purchaseNo="+purchaseNo, 'kakaoPay', 'status=no, height=533, width=421, left='+ popupX + ', top='+ popupY);
+}
+
 
 </script>
 <jsp:include page="/WEB-INF/views/common/headerS.jsp" />
@@ -321,108 +342,118 @@ $("#return-modal-submit").click(function(){
 <div class="row">
 	<div class="col-sm-6">
 	  <ul class="nav nav-pills" >
-	    <li class="" style="width:50%"><a class="btn btn-lg btn-default" data-toggle="tab" href="#buy">구매내역</a></li> 
-	    <li class=" " style="width:48%"><a class=" btn btn-lg btn-default" data-toggle="tab" href="#menu1">정보수정</a></li>
+	    <li class="" style="width:50%"><a class="btn btn-lg btn-default nav-link active" data-toggle="tab" href="#buy" aria-selected="true">구매내역</a></li> 
+	    <li class=" " style="width:48%"><a class=" btn btn-lg btn-default nav-link" data-toggle="tab" href="#menu1" aria-selected="false">정보수정</a></li>
 	  </ul>
 	</div>
 </div>
 <br />
 <div class="tab-content">
-<div id="menu1" class="tab-pane fade">
-	<div class="col-md-15">
-	    <div class="form-area">  
-			<form action="${ pageContext.request.contextPath}/member/memberUpdate.do" method="post" id="memberFrm">
-				<div class="form-group">
-				 	<label class="control-label " for="memberId_">아이디:</label>
-					<input type="text" class="form-control" placeholder="아이디 (4글자이상)"name="memberId" id="memberId_" readonly value="${ loginMember.memberId }" required> 
-				</div>
-				<div class="form-group">
-				  	<label class="control-label" for="memberPCK">비밀번호:</label>
-					<input type="hidden" class="form-control" name="memberPCK" id="memberPCK_"  value="${ loginMember.memberPWD}" required> 
-					<input type="password" class="form-control" name="memberPWD" id="memberPWD_"  value="" required> 
-					<span class="guide ok" style="color:blue;">비밀 번호가 일치 합니다.</span> 
-					<span class="guide error" style="color:red;">비밀 번호가 일치하지 않습니다.</span>
-					<input type="hidden" id="idValid" value="0"/> 
-				</div>
-				<div class="form-group">
-				  	<label class="control-label" for="memberName_">이름:</label>
-					<input type="text" class="form-control" placeholder="이름" name="memberName" id="memberName_" value="${ loginMember.memberName}" required> 
-				</div>
-				<div class="form-group">
-				  	<label class="control-label " for="phone_">전화번호:</label>
-					<input type="tel" class="form-control" placeholder="전화번호 (예:01012345678)" name="phone"  id="phone_" value="${ loginMember.phone }" id="phone" maxlength="11"required> 
-				</div>
-				<div class="form-check form-check-inline">
-				  <label class="control-label " for="gender">성별:</label>
-					<input type="radio" class="form-check-input" name="gender" id="gender0" value="M" ${ loginMember.gender eq  "M" ? "checked" :"" }>
-					<label  class="form-check-label" for="gender0">남</label>&nbsp;
-					<input type="radio" class="form-check-input" name="gender" id="gender1" value="F" ${ loginMember.gender eq  "F" ? "checked" :"" } >
-					<label  class="form-check-label" for="gender1">여</label>
-				</div>
-				<div class="buttons-group">
-					<button type="submit" class="btn btn-success btn-update" id="memberUpdate">정보수정</button>
-					<button type="submit" class="btn btn-danger btn-delete" id="memberDelete">회원탈퇴</button>
-					<button type="button" class="btn btn-warning" onclick="location.href='${pageContext.request.contextPath }'">닫기</button>
-				</div>
-			</form>
+	<div id="menu1" class="tab-pane fade">
+		<div class="col-md-15">
+		    <div class="form-area">  
+				<form action="${ pageContext.request.contextPath}/member/memberUpdate.do" method="post" id="memberFrm">
+					<div class="form-group">
+					 	<label class="control-label " for="memberId_">아이디:</label>
+						<input type="text" class="form-control" placeholder="아이디 (4글자이상)"name="memberId" id="memberId_" readonly value="${ loginMember.memberId }" required> 
+					</div>
+					<div class="form-group">
+					  	<label class="control-label" for="memberPCK">비밀번호:</label>
+						<input type="hidden" class="form-control" name="memberPCK" id="memberPCK_"  value="${ loginMember.memberPWD}" required> 
+						<input type="password" class="form-control" name="memberPWD" id="memberPWD_"  value="" required> 
+						<span class="guide ok" style="color:blue;">비밀 번호가 일치 합니다.</span> 
+						<span class="guide error" style="color:red;">비밀 번호가 일치하지 않습니다.</span>
+						<input type="hidden" id="idValid" value="0"/> 
+					</div>
+					<div class="form-group">
+					  	<label class="control-label" for="memberName_">이름:</label>
+						<input type="text" class="form-control" placeholder="이름" name="memberName" id="memberName_" value="${ loginMember.memberName}" required> 
+					</div>
+					<div class="form-group">
+					  	<label class="control-label " for="phone_">전화번호:</label>
+						<input type="tel" class="form-control" placeholder="전화번호 (예:01012345678)" name="phone"  id="phone_" value="${ loginMember.phone }" id="phone" maxlength="11"required> 
+					</div>
+					<div class="form-check form-check-inline">
+					  <label class="control-label " for="gender">성별:</label>
+						<input type="radio" class="form-check-input" name="gender" id="gender0" value="M" ${ loginMember.gender eq  "M" ? "checked" :"" }>
+						<label  class="form-check-label" for="gender0">남</label>&nbsp;
+						<input type="radio" class="form-check-input" name="gender" id="gender1" value="F" ${ loginMember.gender eq  "F" ? "checked" :"" } >
+						<label  class="form-check-label" for="gender1">여</label>
+					</div>
+					<div class="buttons-group">
+						<button type="submit" class="btn btn-success btn-update" id="memberUpdate">정보수정</button>
+						<button type="submit" class="btn btn-danger btn-delete" id="memberDelete">회원탈퇴</button>
+						<button type="button" class="btn btn-warning" onclick="location.href='${pageContext.request.contextPath }'">닫기</button>
+					</div>
+				</form>
+			</div>
 		</div>
 	</div>
-</div>
-<!-- 구매 내역  -->
-<div id="buy" class="tab-pane fade">
-	<div class="col-md-15">
-	    <div class="form-area">  
-			<table id="purchaseLog-table" class="table">
-				<thead class="thead-dark">
-					<tr>
-						<th scope="col">#</th>
-						<th scope="col">주문번호</th>
-						<th scope="col">구매날짜</th>
-						<th scope="col">상품번호</th>
-						<th scope="col">상품명</th>
-						<th scope="col">수량</th>
-						<th scope="col">상태</th>
-						<th scope="col">리뷰</th>
-					</tr>
-				</thead>
-				<c:if test="${ !empty mapList }">
-					<tbody>
+	<!-- 구매 내역  -->
+	<div id="buy" class="tab-pane fade active show in">
+		<div class="col-md-15">
+		    <div class="form-area">  
+				<table id="purchaseLog-table" class="table">
+					<thead class="thead-dark">
 						<tr>
-						<c:forEach items="${ mapList }" var="purchase" varStatus="vs">
-							<th scope="row">${ vs.count }</th>
-							<td class="purchaseLogNo-td">${ purchase.purchaseLogNo }</td>
-							<td><fmt:formatDate value="${ purchase.purchaseDate }" pattern="yyyy-MM-dd HH:mm"/></td>
-							<td>${ purchase.productNo }</td>
-							<td>${ purchase.productName }</td>
-							<td class="amount-td">${ purchase.amount }</td>
-							<td>
-								${ purchase.status == 0 ? "<input type='button' class='return-btn' value='환불/교환' /><input type='button' class='confirm-btn' value='구매확정' />" 
-								 : purchase.status == 1 ? "<p>구매확정</p>" 
-								 : purchase.status == -1 ? "<p>환불/교환</p>" 
-								 : purchase.status == -2 ? "<p>환불/교환 처리 완료</p>" 
-								 : "<p>환불/교환 거절</p>" }
-							</td>
-							<td>
-								<c:if test="${ empty purchase.reviewNo }">
-									<input class="review-btn" type='button' value='리뷰 작성 하기' onclick="openReviewModal(${ purchase.purchaseLogNo });"/>
-								</c:if>
-								<c:if test="${ ! empty purchase.reviewNo }">
-									리뷰 작성 완료	
-								</c:if>
-							</td>
-						</c:forEach>
-					</tbody>
-				</c:if>
-				<c:if test="${ empty mapList }">
-					<tr>
-						<td colspan="8">구매 내역이 존재하지 않습니다.</td>
-					</tr>
-				</c:if>
-			</table>
-
+							<th scope="col">#</th>
+							<th scope="col">주문번호</th>
+							<th scope="col">구매날짜</th>
+							<th scope="col">상품번호</th>
+							<th scope="col">상품명</th>
+							<th scope="col">수량</th>
+							<th scope="col">상태</th>
+							<th scope="col">리뷰</th>
+							<th scope="col">결제여부</th>
+						</tr>
+					</thead>
+					<c:if test="${ !empty mapList }">
+						<tbody>
+							<c:forEach items="${ mapList }" var="purchase" varStatus="vs">
+							<tr>
+								<th scope="row">${ vs.count }</th>
+								<td class="purchaseLogNo-td">${ purchase.purchaseLogNo }</td>
+								<td><fmt:formatDate value="${ purchase.purchaseDate }" pattern="yyyy-MM-dd HH:mm"/></td>
+								<td>${ purchase.productNo }</td>
+								<td>${ purchase.productName }</td>
+								<td class="amount-td">${ purchase.amount }</td>
+								<td>
+									${ purchase.status == 0 ? "<input type='button' class='return-btn' value='환불/교환' /><input type='button' class='confirm-btn' value='구매확정' />" 
+									 : purchase.status == 1 ? "<p>구매확정</p>" 
+									 : purchase.confirm == 0 ? "환불/교환 처리중"
+									 : purchase.confirm == 1 ? "<p>환불/교환 처리 완료</p>" 
+									 : "<p>환불/교환 거절</p>" }
+								</td>
+								<td>
+									<c:if test="${ empty purchase.reviewNo }">
+										<input class="review-btn" type='button' value='리뷰 작성 하기' onclick="openReviewModal(${ purchase.purchaseLogNo });"/>
+									</c:if>
+									<c:if test="${ ! empty purchase.reviewNo }">
+										리뷰 작성 완료	
+									</c:if>
+								</td>
+								<td>
+									<c:if test="${ purchase.purchased == 0 }">
+										<input type='button' value='결제하기' onclick='openKakao(${purchase.purchaseNo}, ${purchase.pirce*purchase.amount});' />
+									</c:if>
+									<c:if test="${ purchase.purchased != 0 }">
+										결제완료
+									</c:if>
+								</td>
+							</tr>
+							</c:forEach>
+						</tbody>
+					</c:if>
+					<c:if test="${ empty mapList }">
+						<tr>
+							<td colspan="9">구매 내역이 존재하지 않습니다.</td>
+						</tr>
+					</c:if>
+				</table>
+	
+			</div>
 		</div>
 	</div>
-</div>
 </div>
 
 <!-- 환불/교환 모달 -->
@@ -433,14 +464,14 @@ $("#return-modal-submit").click(function(){
 			<p class="modal-title">환불/교환</p>
 		</div>
 		<div class="modal-body">
-			<input type="radio" name="return-status" id="refund" value="refund" required/>
+			<input type="radio" name="return-status" id="refund" value="R" required/>
 			<label for="refund">환불</label>
 			&nbsp;&nbsp;
-			<input type="radio" name="return-status" id="exchange" value="exchange" />
+			<input type="radio" name="return-status" id="exchange" value="E" />
 			<label for="exchange">교환</label>
 			<br />
 			<input type="file" name="returnFile" id="return-file" />
-			수량 <input type="number" name="amount" id="amount" max="" min="1"/>
+			수량 : <input type="number" name="amount" id="amount" max="" min="1"/>
 			<textarea name="comments" id="return-content" rows="5" required></textarea>
 			
 		</div>

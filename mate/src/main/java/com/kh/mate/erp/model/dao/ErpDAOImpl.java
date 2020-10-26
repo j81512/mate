@@ -1,9 +1,8 @@
 package com.kh.mate.erp.model.dao;
 
+import java.util.HashMap;
 import java.util.List;
-
 import java.util.Map;
-
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
+import com.kh.mate.erp.model.vo.EmpBoardImage;
 import com.kh.mate.erp.model.vo.EmpBoardReply;
 import com.kh.mate.log.vo.IoLog;
 import com.kh.mate.log.vo.Receive;
@@ -95,9 +95,6 @@ public class ErpDAOImpl implements ErpDAO {
 
   
   //김종완
-	
-
-
 
 	@Override
 	public int productEnroll(Product product) {
@@ -150,11 +147,40 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.delete("erp.productImagesDelete", productNo);
 	}
 
-	//호근 추가
 	@Override
-	public List<Map<String, Object>> empBoardList() {
-		return sqlSession.selectList("erpBoard.empBoard");
+	public List<RequestLog> selectRequsestList(String empId) {
+		return sqlSession.selectList("erp.selectRequsestList", empId);
 	}
+	
+	@Override
+	public int updateRequestToApp(int requestNo) {
+		return sqlSession.update("erp.updateRequestToApp", requestNo);
+	}
+
+	@Override
+	public int updateRequestToRef(int requestNo) {
+		return sqlSession.update("erp.updateRequestToRef", requestNo);
+	}
+	
+	@Override
+	public List<Receive> selectReceiveList(String empId) {
+		return sqlSession.selectList("erp.selectReceiveList", empId);
+	}
+	
+	@Override
+	public int updateReceiveToApp(int receiveNo) {
+		return sqlSession.update("erp.updateReceiveToApp", receiveNo);
+	}
+	
+	@Override
+	public int updateReceiveToRef(int receiveNo) {
+		return sqlSession.update("erp.updateReceiveToRef", receiveNo);
+	}
+	
+	//호근 추가
+
+
+	
 
 	@Override
 	public EmpBoard selectOneEmpBoard(int no) {
@@ -180,12 +206,57 @@ public class ErpDAOImpl implements ErpDAO {
 	public int updateReply(Map<String, Object> map) {
 		return sqlSession.update("erpBoard.updateReply", map);
 	}
-	
-	
-	
-	
-	
-  
 
+	@Override
+	public int inserEmpBoard(EmpBoard empBoard) {
+		return sqlSession.insert("erpBoard.insertEmpBoard", empBoard);
+	}
+
+	@Override
+	public int inserEmpBoardImage(EmpBoardImage empBoardImage) {
+		return sqlSession.insert("erpBoard.insertEmpBoardImage", empBoardImage);
+	}
+
+	@Override
+	public EmpBoardImage empBoardFileDownload(int boardImageNo) {
+		return sqlSession.selectOne("erpBoard.empBoardFileDownload", boardImageNo);
+	}
+
+	@Override
+	public List<Product> erpProductList() {
+		return sqlSession.selectList("erpBoard.erpProductList");
+	}
+
+	@Override
+	public int insertRequestStock(EmpBoard empBoard) {
+		return sqlSession.insert("erpBoard.insertRequestStock", empBoard);
+	}
+
+	@Override
+	public int increaseReadCount(int no) {
+		return sqlSession.update("erpBoard.increaseReadCount", no);
+	}
+
+
+	@Override
+	public List<EmpBoard> searchBoard(String searchType, String searchKeyword, int cPage, int numPerPage) {
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("cPage", ((cPage-1)*numPerPage+1));
+		map.put("numPerPage", (cPage * numPerPage));
+		map.put("searchType", searchType);
+		map.put("searchKeyword", searchKeyword);
+		
+		return sqlSession.selectList("erpBoard.searchBoard", map);
+	}
+
+	@Override
+	public int getSearchContents(Map<String, String> map) {
+		return sqlSession.selectOne("erpBoard.searchContents", map);
+	}
+
+	
+	
+	
 	
 }

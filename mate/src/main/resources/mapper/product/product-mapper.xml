@@ -4,6 +4,9 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="product">
 
+	<select id="countProduct" resultType="_int">
+	select COUNT(*) from product
+	</select>
 	
 	<select id="selectCartList" resultType="cart">
 		select
@@ -25,10 +28,9 @@
 	</select>
  
  	<select id="selectProductListAll" resultType="product">
- 		select
- 			*
- 		from
- 			product
+		select * from ( select ROWNUM RN, A.*
+        from (select *from product) A)
+        WHERE RN BETWEEN #{start} and #{end}
  	
  	</select>
  	
@@ -52,7 +54,8 @@
  	
  	
  	<select id="searchProductList" resultType="product">
- 		select * from product
+ 		select * from ( select ROWNUM RN, A.*
+        from (select * from product
  		<where>
  		
  		<if test="cateArr != null">
@@ -69,7 +72,8 @@
  			or content like '%' || #{search} || '%')
  		</if>
  		
- 		</where>
+ 		</where>) A)
+        WHERE RN BETWEEN #{page.start} and #{page.end}
  	</select>
  	
  	<select id="productCategory" resultType="product">
@@ -120,13 +124,20 @@
  			product_no = #{productNo}
  	</delete>
  	
-
- 	<update id="updatePurchaseConfirm">
+	<update id="updatePurchaseReturn" parameterType="_int">
  		update
- 			purchaseLog
- 		set(
+ 			purchase_log
+ 		set
+ 			status = -1
+ 		where
+ 			purchase_log_no = #{purchaseLogNo}
+ 	</update>
+
+ 	<update id="updatePurchaseConfirm" parameterType="_int">
+ 		update
+ 			purchase_log
+ 		set
  			status = 1
- 		)
  		where
  			purchase_log_no = #{purchaseLogNo}
  	</update>
@@ -155,12 +166,109 @@
  		insert into
  			return_images
  		values(
- 			seq_return_images_no.nextval,
+ 			seq_return_image_no.nextval,
  			#{ originalFilename },
  			#{ renamedFilename },
  			#{ returnNo }
  		)
  	</insert>
+ 	
+ 	<insert id="insertPurchase">
+ 		insert into
+ 			purchase
+ 		values(
+ 			seq_purchase_no.nextval,
+ 			#{memberId},
+ 			default,
+ 			#{addressName}
+ 		)
+ 	</insert>
+ 	
+ 	<select id="getPurchaseNo" resultType="_int">
+ 		select
+ 			seq_purchase_no.currval
+ 		from
+ 			dual
+ 	</select>
+ 	
+ 	<insert id="insertPurchaseLog">
+ 		insert into
+ 			purchase_log
+ 		values(
+ 			seq_purchase_log_no.nextval,
+ 			#{purchaseNo},
+ 			#{productNo},
+ 			#{amount},
+ 			default,
+ 			default
+ 		)
+ 	</insert>
+ 	
+ 	<select id="selectAllReturns" resultMap="returnMap">
+ 		select
+ 			R.return_no return_no,
+ 			R.status status,
+ 			R.purchase_log_no purchase_log_no,
+ 			R.amount amount,
+ 			R.confirm confirm,
+ 			PL.product_no product_no,
+ 			(select product_name from product where product_no = PL.product_no) product_name,
+ 			(select member_id from purchase where purchase_no = PL.purchase_no) member_id
+ 		from
+ 			return R
+ 			join purchase_log PL
+ 				on (R.purchase_log_no = PL.purchase_log_no)
+ 		where
+ 			confirm = 0
+ 		order by
+ 			return_no
+ 	</select>
+ 	
+ 	<select id="getReturnContent" resultType="string">
+ 		select
+ 			content
+ 		from
+ 			return
+ 		where
+ 			return_no = #{returnNo}
+ 	</select>
+ 	
+ 	<select id="getReturnImage" resultMap="returnImageMap">
+ 		select
+ 			*
+ 		from
+ 			return_images
+ 		where
+ 			return_no = #{returnNo}
+ 	</select>
+ 	
+ 	<update id="updateReturn">
+ 		update
+ 			return
+ 		set
+ 			confirm = #{confirm}
+ 		where
+ 			return_no = #{returnNo}
+ 	</update>
+ 	
+ 	<resultMap type="map" id="returnImageMap">
+ 		<id column="return_image_no" property="returnImageNo"/>
+ 		<result column="original_filename" property="originalFilename"/>
+ 		<result column="renamed_filename" property="renamedFilename"/>
+ 		<result column="return_no" property="returnNo"/>
+ 	</resultMap>
+ 	
+ 	 <resultMap type="map" id="returnMap">
+ 		<id column="return_no" property="returnNo"/>
+ 		<result column="status" property="status"/>
+ 		<result column="purchase_log_no" property="purchaseLogNo"/>
+ 		<result column="amount" property="amount"/>
+ 		<result column="confirm" property="confirm"/>
+ 		<result column="product_no" property="productNo"/>
+ 		<result column="product_name" property="productName"/>
+ 		<result column="member_id" property="memberId"/>
+ 	</resultMap>
+ 	
  	<resultMap type="product" id="productMap">
  		<id column="product_no" property="productNo"/>
  		<result column="product_name" property="productName"/>
@@ -178,8 +286,6 @@
 	 		<result column="product_no" property="productNo"/>
  		</collection>
  	</resultMap>
-
- 	
  	
  	<resultMap type="cart" id="cartMap">
  		<id column="member_id" property="memberId"/>
@@ -197,6 +303,4 @@
 	 		<result column="enabled" property="enabled"/>
 		</collection> 	
  	</resultMap>
- 	
- 
 </mapper>

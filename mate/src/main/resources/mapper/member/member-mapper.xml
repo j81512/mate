@@ -68,7 +68,10 @@
 		    (select product_name from product where product_no = pl.product_no) product_name,
 		    pl.amount amount,
 		    pl.status status,
-            R.review_no review_no
+		    pl.purchased purchased,
+            R.review_no review_no,
+            (select price from product where product_no = pl.product_no) price,
+            (select confirm from return where purchase_log_no = PL.purchase_log_no) confirm
 		from
 			purchase_log PL
 				join purchase P
@@ -80,15 +83,72 @@
         order by
         	purchase_date desc
 	</select>
+	
+	<select id="selectMemberAddress" resultType="address">
+		select
+			*
+		from
+			address
+		where
+			member_id = #{memberId}
+		order by
+			reg_date desc
+	</select>
+	
+	<select id="checkAddressName" resultType="_int">
+		select 
+			count(*)
+		from 
+			address
+		where 
+			member_id = #{memberId} 
+			and 
+			address_name = #{addressName}
+	</select>
+	
+	<insert id="insertAddress">
+		insert into
+			address
+		values(
+			#{addressName},
+			#{memberId},
+			#{receiverName},
+			#{receiverPhone},
+			#{addr1},
+			#{addr2},
+			#{addr3},
+			default
+		)
+	</insert>
+	
+	<update id="successPurchase">
+		update
+			purchase_log
+		set
+			purchased = 1
+		where
+			purchase_no = #{purchaseNo}
+	</update>
+	
+	<delete id="failPurchase">
+		delete from
+			purchase
+		where
+			purchase_no = #{purchaseNo}
+	</delete>
+	
 	<resultMap id="purchaseMap" type="map">
 		<result column="purchase_no" property="purchaseNo"/>
 		<result column="purchase_date" property="purchaseDate"/>
 		<result column="member_id" property="memberId"/>
+		<result column="price" property="price"/>
 		<result column="purchase_log_no" property="purchaseLogNo"/>
 		<result column="product_no" property="productNo"/>
 		<result column="product_name" property="productName"/>
+		<result column="purchased" property="purchased"/>
 		<result column="amount" property="amount"/>
 		<result column="status" property="status"/>
 		<result column="review_no" property="reviewNo"/>
+		<result column="confirm" property="confirm"/>
 	</resultMap>
 </mapper>

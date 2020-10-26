@@ -7,6 +7,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.member.model.vo.Member;
 @Repository
 public class MemberDAOImpl implements MemberDAO {
@@ -37,6 +38,31 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public List<Map<String, Object>> selectAllPurchase(String memberId) {
 		return sqlSession.selectList("member.selectAllPurchase", memberId);
+	}
+
+	@Override
+	public List<Address> selectMemberAddress(String memberId) {
+		return sqlSession.selectList("member.selectMemberAddress", memberId);
+	}
+
+	@Override
+	public int checkAddressName(Map<String, Object> param) {
+		return sqlSession.selectOne("member.checkAddressName", param);
+	}
+
+	@Override
+	public int insertAddress(Map<String, Object> param) {
+		return sqlSession.insert("member.insertAddress", param);
+	}
+
+	@Override
+	public int successPurchase(int purchaseNo) {
+		return sqlSession.update("member.successPurchase", purchaseNo);
+	}
+
+	@Override
+	public int failPurchase(int purchaseNo) {
+		return sqlSession.delete("member.failPurchase", purchaseNo);
 	}
 
 	

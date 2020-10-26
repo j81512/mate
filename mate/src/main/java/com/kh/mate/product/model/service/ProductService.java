@@ -3,6 +3,7 @@ package com.kh.mate.product.model.service;
 import java.util.List;
 import java.util.Map;
 
+import com.kh.mate.common.paging.PagingVo;
 import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.member.model.vo.Member;
 import com.kh.mate.product.model.vo.Cart;
@@ -12,9 +13,12 @@ import com.kh.mate.product.model.vo.ProductMainImages;
 
 public interface ProductService {
 	//ch
-	List<Product> selectProductListAll();
+	
+	List<Product> selectProductListAll(PagingVo page);
 
 	List<Product> productCategory(String category);
+	
+	int countProduct();
 	
 	//jw
 
@@ -44,6 +48,13 @@ public interface ProductService {
 
 	int insertReturn(Map<String, Object> param);
 
+	int purchaseProducts(List<Map<String, Object>> params);
+
+	List<Map<String, Object>> selectAllReturns();
+
+	Map<String, Object> returnDetail(String returnNo);
+
+	int updateReturn(Map<String, Object> param);
 
 
 

@@ -5,13 +5,13 @@
 --identified by mate
 --default tablespace users;
 --grant RESOURCE,CONNECT to mate;
-----------------------------------------------------------------
+--------------------------------------------------------------
 --grant create any job to mate;
 --=====================================
 -- 유저 삭제 (system 계정)
 --=====================================
 --select sid,serial#,username,status from v$session where schemaname = 'MATE'; --여기서 나온 숫자를
---alter system kill session '115,825'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
+--alter system kill session '93,1109'; --여기에 대입해서 세션 kill후 삭제하면 안껐다 켜도됌
 --DROP USER mate CASCADE;
 --=====================================
 -- Drop 관련
@@ -97,13 +97,12 @@ CREATE TABLE MEMBER (
 CREATE TABLE Address (
 	address_name	varchar2(128)		NOT NULL,
 	member_id	varchar2(100)		NOT NULL,
-	reciever_name	varchar2(128)		NOT NULL,
+	receiver_name	varchar2(128)		NOT NULL,
 	receiver_phone	char(11)		NOT NULL,
 	addr1	varchar2(512)		NOT NULL,
 	addr2	varchar2(512)		NOT NULL,
 	addr3	varchar2(512)		NOT NULL,
 	reg_date	date	DEFAULT sysdate	NOT NULL,
-	is_check	number	DEFAULT 0	NOT NULL,
     
     constraint pk_address primary key (address_name, member_id),
     constraint fk_address_member_id foreign key (member_id)
@@ -112,8 +111,6 @@ CREATE TABLE Address (
 );
 
 --DROP TABLE EMP;
---DROP TABLE EMP CASCADE CONSTRAINTS;
-select * from cart;
 CREATE TABLE EMP (
 	emp_id	varchar2(15)		NOT NULL,
 	emp_pwd	varchar2(300)		NOT NULL,
@@ -127,19 +124,6 @@ CREATE TABLE EMP (
     
     constraint pk_emp primary key (emp_id)
 );
-select * from emp;
-
-
-
-select
-	*
-from
-    emp
-order by
-    enroll_date;
-
-
-
 
 --DROP TABLE PRODUCT;
 CREATE TABLE PRODUCT (
@@ -153,7 +137,7 @@ CREATE TABLE PRODUCT (
 	enabled	number	DEFAULT 0	NOT NULL,
     
     constraint pk_product primary key (product_no),
-    constraint fk_product_emp_id foreign key (manufacturer_id)
+    constraint fk_product_emp_id foreign key(manufacturer_id)
                                          references emp (emp_id)
                                          on delete cascade
 );
@@ -384,6 +368,7 @@ CREATE TABLE PURCHASE (
 	purchase_no	number		NOT NULL,
 	member_id	varchar2(100)		NOT NULL,
 	purchase_date	date	DEFAULT sysdate	NOT NULL,
+    address_name varchar2(128) NOT NULL,
     
     constraint pk_purchase primary key (purchase_no),
     constraint fk_purchase_member_id foreign key (member_id)
@@ -398,6 +383,7 @@ CREATE TABLE PURCHASE_LOG (
 	product_no	number		NOT NULL,
 	amount	number		NOT NULL,
     status number DEFAULT 0 NOT NULL,
+    purchased number DEFAULT 0 NOT NULL,
     
     constraint pk_purchase_log primary key (purchase_log_no),
     constraint fk_purchase_log_purchase_no foreign key (purchase_no)
@@ -672,10 +658,6 @@ insert into BOARD values
 
 
 
-
-
-
-
 --======================================
 -- 트리거
 --======================================
@@ -778,51 +760,60 @@ begin
         :old.category, 
         :old.content,
         :old.price,
-        :old.emp_id,
+        :old.manufacturer_id,
         default
     );
 end;
 /
 
--- 주문 로그에 insert시 입출고 로그에 출고로 insert 되는 트리거
+-- 주문 로그에 결제 컬럼 update시 입출고 로그에 출고로 insert 되고 cart에 삭제하는 트리거
 create or replace trigger trg_purchase_log
     before
-    insert on purchase_log
+    update on purchase_log
     for each row
+declare    
+    v_member_id member.member_id%type;
 begin
-    insert into
-        io_log
-    values(
-        seq_io_no.nextval,
-        'O',
-        :new.amount,
-        default,
-        :new.product_no,
-        'admin',
-        '온라인 - 구매'
-    );
+    if :new.purchased = 1 then
+        insert into
+            io_log
+        values(
+            seq_io_no.nextval,
+            'O',
+            :new.amount,
+            default,
+            :new.product_no,
+            'admin',
+            '온라인 - 구매'
+        );
+        
+        select
+            member_id
+        into
+            v_member_id
+        from
+            purchase
+        where
+            purchase_no = :new.purchase_no;
+        
+        delete from
+            cart
+        where 
+            member_id = v_member_id
+            and product_no = :new.product_no;
+    end if;
 end;
 /
 
--- 반품 수락시 입출고 로그에 입고로 insert 되는 트리거
+-- 환불 수락시 입출고 로그에 입고로 insert 되는 트리거
 create or replace trigger trg_return
     before
     update on return
     for each row
 declare    
-    v_emp_Id emp.emp_id%type;
-    v_purchase_log_no purchase_log.purchase_log_no%type;
     v_product_no product.product_no%type;
 begin
-    if :new.confirm = 1 then
-        select
-            purchase_log_no
-        into
-            v_purchase_log_no
-        from
-            return
-        where
-            purchase_log_no = :new.purchase_log_no;
+    if :new.confirm = 1 and :new.status = 'R' then
     
         select 
             product_no
@@ -831,17 +822,7 @@ begin
         from 
             purchase_log
         where
-            purchase_log_no = v_purchase_log_no;
-            
-        select
-            emp_id
-        into
-            v_emp_id
-        from 
-            product
-        where
-            product_no = v_product_no;
-            
+            purchase_log_no = :new.purchase_log_no;
             
         insert into
             io_log
@@ -851,8 +832,44 @@ begin
             :new.amount,
             default,
             v_product_no,
-            v_emp_id,
-            '온라인 - 반품'
+            'admin',
+            '온라인 - 환불'
+        );
+    end if;
+    
+    if :new.confirm = 1 and :new.status = 'E' then
+    
+        select 
+            product_no
+        into
+            v_product_no
+        from 
+            purchase_log
+        where
+            purchase_log_no = :new.purchase_log_no;
+            
+        insert into
+            io_log
+        values(
+            seq_io_no.nextval,
+            'O',
+            :new.amount,
+            default,
+            v_product_no,
+            'admin',
+            '온라인 - 교환'
+        );
+            
+        insert into
+            io_log
+        values(
+            seq_io_no.nextval,
+            'I',
+            :new.amount,
+            default,
+            v_product_no,
+            'admin',
+            '불량품 교환'
         );
     end if;
 end;
@@ -947,10 +964,75 @@ begin
     end if;
 end;
 /
-        
-        
-        
-        
+
+-- 상품 발주시 재고테이블 insert
+create or replace trigger trg_stock
+    before
+    insert on request_log
+    for each row
+begin
+    insert into
+        stock
+    values(
+        :new.product_no,
+        :new.emp_id,
+        0
+    );
+end;
+/
+
+ --===================================
+--샘플데이터
+--===================================
+--상품 카테고리별로 10개씩 대표사진 3개
+--회원 15명 -> 배송지 한사람당 0개 이상 마음 내키는 대로 한사함당 최대 3개만
+--지점 5개
+insert into mate.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '강남점', 06234, '서울특별시 강남구 테헤란로14길 8(역삼동)', '1층', '07012341234', default, 1);
+insert into mate.EMP values ('toy2', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '역삼점', 06220, '서울특별시 강남구 역삼동 테헤란로 212', '2층', '07013246432', default, 1);
+insert into mate.EMP values ('toy3', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '부산점', 47216, '부산광역시 부산진구 연수로11번길 1(양정동)', '1층', '07085321234', default, 1);
+insert into mate.EMP values ('toy4', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '광주점', 61937, '광주광역시 서구 무진대로 904(광천동)', '1층', '07057328628', default, 1);
+insert into mate.EMP values ('toy5', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '대구점', 41931, '대구광역시 중구 달성로 22(동산동)', '1층', '07085767552', default, 1);
+--제조사 10개
+insert into mate.EMP values
+('alter',1234, '알터',01693,'서울특별시 노원구 상계2동 603-8', '1층', '0265653535', default,2);
+insert into mate.EMP values
+('bookia',1234, '고토부키아',04044,'서울특별시 마포구 서교동 신촌로6길 17', '6층', '0317133010', default,2);
+insert into mate.EMP values
+('wave',1234, '웨이브',02830,'서울특별시 성북구 동소문동6가 동소문로15길 8', '4층', '029048899', default,2);
+insert into mate.EMP values
+('smiles',1234, '굿스마일즈',05116,'서울특별시 광진구 구의3동 광나루로56길 85', '1층', '024347799', default,2);
+insert into mate.EMP values
+('megahouse',1234, '메가하우스',06014,'서울특별시 강남구 청담동 선릉로158길 3', '4층', '027974466', default,2);
+insert into mate.EMP values
+('okidsid',1234, '오키드시드',04039,'서교동 370-24 KR 서울특별시 마포구 홍익로 5안길 50', '2층', '0315597851', default,2);
+insert into mate.EMP values
+('kidoyo',1234, '카이도요',05253,'서울특별시 강동구 암사동 472-21', '1층', '025845959', default,2);
+insert into mate.EMP values
+('die',1234, '반다이',05028,'KR 서울특별시 광진구 자양동 224-9', ' 건흥빌딩 건프라샵 사이드7 2층', '029987585', default,2);
+insert into mate.EMP values
+('nami',1234, '코나미',03120,'서울특별시 종로구 창신1동 종로52길 44', '2층', '029978426', default,2);
+insert into mate.EMP values
+('gigafalse',1234, '기가펄스',01136,'서울특별시 강북구 번동 430-1', '4층', '0706659745', default,2);
+insert into mate.EMP values
+('claze',1234, '클레이즈',07782,'서울특별시 강서구 화곡2동 855-13', '1 층 아카데미 과학', '024496566', default,2);
+insert into mate.EMP values
+('bird',1234, '그리폰',06734,'서울특별시 서초구 서초동 서운로 18', '영진빌딩 16층', '027033321', default,2);
+insert into mate.EMP values
+('sega',1234, 'SEGA',06168,'서울특별시 강남구 삼성동 157-18', '하남빌딩 13층', '024439933', default,2);
+insert into mate.EMP values
+('freeing',1234, 'FREEing',04377,'서울특별시 용산구 한강로3가 한강대로23길 55', '9층', '0226482345', default,2);
+
+--관리자 1
+insert into EMP values
+('admin', '1234', '본사관리자', '06234', '서울특별시 강남구 테헤란로14길 6', '남도빌딩', '01012341234', default, 0);
+insert into member values
+('admin', '1234', '본사관리자', 'M', '01012341234', default);
+--고객센터 공지 2개 문의글 답변된거 4개 안된거 3개 비밀글 2개
+
+--게시판 카테고리별로 3개씩
+
+--(요청글은 완료된거 2개 안된거 1개)       
+commit; 
         
         
         

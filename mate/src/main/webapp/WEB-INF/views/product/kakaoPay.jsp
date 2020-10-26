@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>카카오 결제</title>
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
 <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
 </head>
@@ -20,8 +20,8 @@
             pg : 'kakaopay',
             pay_method : 'card',
             merchant_uid : 'merchant_' + new Date().getTime(),
-            name : '카카오페이 테스트',
-            amount : ${amount},
+            name : 'MATE 장난감',
+            amount : ${sum},
             /* buyer_email : '', */
             buyer_name : '${member.memberName}',
             buyer_tel : '${member.phone}'
@@ -55,14 +55,12 @@
                     }
                 });
                 //성공시 이동할 페이지
-                location.href='<%=request.getContextPath()%>/order/paySuccess?msg='+msg;
+                opener.location.href='${pageContext.request.contextPath}/member/paySuccess.do?purchaseNo=${purchaseNo}';
             } else {
-                msg = '결제에 실패하였습니다.';
-                msg += '에러내용 : ' + rsp.error_msg;
                 //실패시 이동할 페이지
-                location.href="<%=request.getContextPath()%>/order/payFail";
-                alert(msg);
+                opener.location.href="${pageContext.request.contextPath}/member/payFail.do?purchaseNo=${purchaseNo}&memberId=${loginMember.memberId}";
             }
+            window.close();
         });
         
     });
