@@ -39,7 +39,7 @@ $(function(){
     	  action="${pageContext.request.contextPath}/cs/cs.do" 
     	  class="form-inline" 
     	  method="get"> 
-    <input type="checkbox" name="memberId" id="csMyListFrm" value="${ loginMember.memberId != null ? loginMember.memberId : '' }" checked/>
+    	<input type="checkbox" name="memberId" id="csMyListFrm" value="${ loginMember.memberId != null ? loginMember.memberId : '' }" checked/>
     <label for="csMyListFrm"><span>내글만보기</span></label>
     </form>
 	<form id="csDeleteFrm" 
