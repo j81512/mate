@@ -52,7 +52,6 @@ import com.kh.mate.erp.model.vo.EmpBoardReply;
 import com.kh.mate.log.vo.IoLog;
 import com.kh.mate.log.vo.Receive;
 import com.kh.mate.log.vo.RequestLog;
-import com.kh.mate.product.model.service.ProductService;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -118,14 +117,31 @@ public class ErpContorller {
 	
 	//발주확인 진입
 	@RequestMapping("/ERP/OrderLog.do")
-	public String OrderLog(Model model) {	
-		List<RequestLog> list = erpService.requestList();
-		List<Product> list2 = erpService.productList();
-		List<EMP> list3 = erpService.empList();
+	public String OrderLog(HttpSession session, Model model) {	
+//		List<RequestLog> list = erpService.requestList();
+//		List<Product> list2 = erpService.productList();
+//		List<EMP> list3 = erpService.empList();
+//		
+//		model.addAttribute("list", list);
+//		model.addAttribute("list2", list2);
+//		model.addAttribute("list3", list3);
+		//로그인 회원이 관리자 | 지점인지 분기처리
+		EMP loginEmp = (EMP)session.getAttribute("loginEmp");
 		
+		List<RequestLog> list = new ArrayList<>();
+		//로그인 회원이 관리자일 경우
+		if(loginEmp.getStatus() == 0 ) {
+			//전체 지점의 발주 로그를 가져옴
+			list = erpService.requestList();
+		}
+		//로그인 회원이 제조사일 경우
+		else if(loginEmp.getStatus() == 2) {
+			//list = erpService.selectRequestList(loginEmp.getEmpId());
+			list = erpService.selectEmpRequest(loginEmp.getEmpId());
+		}
+		log.debug("list = {}", list);
 		model.addAttribute("list", list);
-		model.addAttribute("list2", list2);
-		model.addAttribute("list3", list3);
+		
 		return "ERP/OrderLog";
 	}
 	
