@@ -15,7 +15,7 @@ table, tr, th, td {
 	border: 1px solid black;
 }
 
-li{
+li dl{
 	margin 0;
 	list-style: none;
 	display: inline-block;
@@ -88,10 +88,8 @@ li{
 										</div>
 									</dd>
 							</a>
-							
 						</dl>
-							
-							</c:forEach>
+					</c:forEach>
 				</c:if>
 				<!-- 상품이 없을 경우 -->
 				<c:if test="${ empty list }">

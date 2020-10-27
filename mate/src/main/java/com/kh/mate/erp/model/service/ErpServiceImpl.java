@@ -205,10 +205,16 @@ public class ErpServiceImpl implements ErpService {
 		return erpDAO.updateReceiveToRef(receiveNo);
 	}
 	
+	@Override
+	public List<RequestLog> selectEmpRequest(String empId) {
+		return erpDAO.selectEmpRequest(empId);
+	}
+	
 	//호근 emp 게시판 추가
 
 
 	
+
 
 	@Override
 	public EmpBoard selectOneEmpBoard(int no, boolean hasRead) {

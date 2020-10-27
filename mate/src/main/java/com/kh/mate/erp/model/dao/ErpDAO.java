@@ -138,4 +138,6 @@ public interface ErpDAO {
 
 	int updateStockInfo(Map<String, Object> map);
 
+	List<RequestLog> selectEmpRequest(String empId);
+
 }
