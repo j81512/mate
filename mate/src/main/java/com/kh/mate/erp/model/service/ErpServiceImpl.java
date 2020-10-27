@@ -1,16 +1,20 @@
 package com.kh.mate.erp.model.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import com.kh.mate.erp.model.dao.ErpDAO;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
+import com.kh.mate.erp.model.vo.EmpBoardImage;
 import com.kh.mate.erp.model.vo.EmpBoardReply;
+import com.kh.mate.log.vo.IoLog;
+import com.kh.mate.log.vo.Receive;
+import com.kh.mate.log.vo.RequestLog;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -170,14 +174,49 @@ public class ErpServiceImpl implements ErpService {
 		return result;
 	}
 
-	//호근 emp 게시판 추가
 	@Override
-	public List<Map<String, Object>> empBoardList() {
-		return erpDAO.empBoardList();
+	public List<RequestLog> selectRequestList(String empId) {
+		List<RequestLog> requestLogList = erpDAO.selectRequsestList(empId);
+		return requestLogList;
+	}
+	
+	@Override
+	public int updateRequestToApp(int requestNo) {
+		return erpDAO.updateRequestToApp(requestNo);
+	}
+	
+	@Override
+	public int updateRequestToRef(int requestNo) {
+		return erpDAO.updateRequestToRef(requestNo);
 	}
 
 	@Override
-	public EmpBoard selectOneEmpBoard(int no) {
+	public List<Receive> selectReceiveList(String empId) {
+		return erpDAO.selectReceiveList(empId);
+	}
+	
+	@Override
+	public int updateReceiveToApp(int receiveNo) {
+		return erpDAO.updateReceiveToApp(receiveNo);
+	}
+
+	@Override
+	public int updateReceiveToref(int receiveNo) {
+		return erpDAO.updateReceiveToRef(receiveNo);
+	}
+	
+	//호근 emp 게시판 추가
+
+
+	
+
+	@Override
+	public EmpBoard selectOneEmpBoard(int no, boolean hasRead) {
+		int result = 0;
+		if(hasRead == false) {
+			result = erpDAO.increaseReadCount(no);
+		}
+		
 		return erpDAO.selectOneEmpBoard(no);
 	}
 
@@ -202,7 +241,168 @@ public class ErpServiceImpl implements ErpService {
 		return erpDAO.updateReply(map);
 	}
 
+	@Override
+	public int insertEmpBoard(EmpBoard empBoard) {
+		int result = erpDAO.inserEmpBoard(empBoard);
 
+		if(empBoard.getEmpBoardImageList() != null) {
+			
+			for(EmpBoardImage empBoardImage : empBoard.getEmpBoardImageList()) {
+				
+				empBoardImage.setBoardNo(empBoard.getBoardNo());
+				result = erpDAO.inserEmpBoardImage(empBoardImage);
+				
+			}
+		
+		}
+		
+		if(empBoard.getCategory().equals("req")) {
+			log.debug("호출은 되냐?");
+			empBoard.setBoardNo(empBoard.getBoardNo());
+			result = erpDAO.insertRequestStock(empBoard);
+	
+			
+		}
+		return result;
+	}
+	
+	public List<IoLog> ioLogList() {
+		return erpDAO.ioLogList();
+	}
+
+	@Override
+	public List<Product> productList() {
+		return erpDAO.productList();
+	}
+
+	@Override
+	public List<Receive> receiveList() {
+		return erpDAO.receiveList();
+	}
+
+	@Override
+	public List<RequestLog> requestList() {
+		return erpDAO.requestList();
+	}
+
+
+	@Override
+	public EmpBoardImage empBoardFileDownload(int boardImageNo) {
+		return erpDAO.empBoardFileDownload(boardImageNo);
+	}
+
+	@Override
+	public List<Product> erpProductList() {
+		return erpDAO.erpProductList();
+	}
+
+
+	@Override
+	public List<EmpBoard> searchBoard(String searchType, String searchKeyword, int cPage, int numPerPage) {
+		return erpDAO.searchBoard(searchType, searchKeyword,cPage,numPerPage);
+	}
+
+	@Override
+	public int getSearchContents(Map<String, String> map) {
+		
+		int totalContents = erpDAO.getSearchContents(map);
+		
+		return totalContents;
+	}
+	//김찬희 페이징작업
+	@Override
+	public int countProduct(EMP emp) {
+		return erpDAO.countProduct(emp);
+	}
+
+	//누락상품검사
+	@Override
+	public List<Product> selectAll() {
+		return erpDAO.selectAll();
+	}
+
+	@Override
+	public List<Integer> productCompare(EMP emp) {
+		return erpDAO.productCompare(emp);
+	}
+
+	//누락재고상품 추가
+	@Override
+	public int mStockInsert(Map<String, Object> map) {
+		return erpDAO.mStockInsert(map);
+	}
+
+
+	
+
+	
+	
+
+	@Override
+	public EmpBoard selectEmpStock(Map<String, Object> map) {
+		return erpDAO.selectEmpStock(map);
+	}
+
+	@Override
+	public int empBoardDelete(int boardNo) {
+		return erpDAO.empBoardDelete(boardNo);
+	}
+
+	@Override
+	public EmpBoard selectOneEmpBoard(int boardNo) {
+		return erpDAO.selectOneEmpBoard(boardNo);
+	}
+
+	@Override
+	public List<EmpBoardImage> selectBoardImage(int boardNo) {
+		return erpDAO.selectBoardImage(boardNo);
+	}
+
+	@Override
+	public int empBoardUpdate(EmpBoard empBoard) {
+		int result = erpDAO.empBoardUpdate(empBoard);
+		
+		//productMainImage 수정 여부 확인 후 진행
+		if(result > 0 && empBoard.getEmpBoardImageList() != null) {
+			//기존 섬네일 이미지 삭제
+			result = erpDAO.empBoardFileDelete(empBoard.getBoardNo());
+			//업데이트된 이미지 새로 등록
+			for(EmpBoardImage updateImages : empBoard.getEmpBoardImageList()) {
+				updateImages.setBoardNo(empBoard.getBoardNo());
+				result = erpDAO.empBoardFileUpdate(updateImages);
+			}
+			
+		}
+		
+		if(empBoard.getCategory().equals("req")) {
+			empBoard.setBoardNo(empBoard.getBoardNo());
+			result = erpDAO.insertRequestStock(empBoard);		
+		}
+		log.debug("result@service = {}", result);
+		return result;
+	}
+
+	@Override
+	public int stockTranslate(Map<String, Object> map) {
+		 int result = 0;
+		 EmpBoard empBoard = erpDAO.selectOneEmpBoard(map);
+		 
+		 if(empBoard.getEnabled() == 0) {
+				 
+				 result = erpDAO.updateTranStock(map);
+				 result = erpDAO.updateStock(map);
+				 result = erpDAO.updateStockInfo(map);
+				 result = erpDAO.updateEnabled(map);
+			 
+		 }
+		 
+		 log.debug("result = {}", result);
+		 
+		return result;
+	}
+
+
+	
 	
 	
 	

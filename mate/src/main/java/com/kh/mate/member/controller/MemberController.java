@@ -37,8 +37,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.kh.mate.common.Paging;
+import com.kh.mate.erp.model.service.ErpService;
+import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.kakao.KakaoRESTAPI;
 import com.kh.mate.member.model.service.MemberService;
+import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.member.model.vo.Member;
 import com.kh.mate.naver.NaverLoginBO;
 
@@ -48,7 +52,7 @@ import net.nurigo.java_sdk.exceptions.CoolsmsException;
 
 @Slf4j
 @Controller
-@SessionAttributes({"loginMember"})
+@SessionAttributes({"loginMember", "loginEmp"})
 public class MemberController {
 
 	private NaverLoginBO naverLoginBO;
@@ -100,7 +104,6 @@ public class MemberController {
 		log.debug("oauthOperations = {}", oauthOperations);
 		log.debug("googleurl = {}", googleurl);
 		mav.addObject("googleUrl", googleurl);
-		
 		
 		
 		mav.setViewName("member/login");
@@ -241,7 +244,7 @@ public class MemberController {
 		HashMap<String, String> map = new HashMap<>();
 		Random rnd = new Random();
 		String checkNum = "";
-		
+
 		for(int i = 0 ; i < 6 ; i++) {			
 			String ran = Integer.toString(rnd.nextInt(10));
 			checkNum += ran;
@@ -292,6 +295,7 @@ public class MemberController {
 		if(	loginMember != null && (loginMember.getMemberPWD().equals(password))
 				&& (loginMember.getMemberId().equals(userId))) {
 			model.addAttribute("loginMember", loginMember);
+			if(loginMember.getMemberId().equals("admin")) model.addAttribute("loginEmp", loginMember);
 			String next = (String)session.getAttribute("next");
 			if( next != null) 
 				location = next;
@@ -425,16 +429,127 @@ public class MemberController {
 	@RequestMapping("/member/kakaopay.do")
 	public String kakaoPay(@RequestParam("memberId") String memberId,
 						   @RequestParam("sum") String sum,
+						   @RequestParam("purchaseNo") int purchaseNo,
 						   Model model) {
-		log.debug("memberId,sum = {}, {}",memberId, sum);
+		log.debug("memberId,sum = {}, {}, {}",memberId, sum);
+		log.debug("purchaseNo = {}", purchaseNo);
 		
 		Member member = memberService.selectOneMember(memberId);
 		log.debug("member = {}", member);
 		
 		model.addAttribute("member", member);
-		model.addAttribute("amount", sum);
+		model.addAttribute("sum", sum);
+		model.addAttribute("purchaseNo", purchaseNo);
 		
 		return "product/kakaoPay";
 	}
 	
+	@RequestMapping("/member/paySuccess.do")
+	public String paySuccess(@RequestParam("purchaseNo") int purchaseNo,
+			                 RedirectAttributes rAttr){
+		
+		int result = memberService.successPurchase(purchaseNo);
+		
+		return "redirect:/member/myPage.do";
+	}
+	
+	@RequestMapping("/member/payFail.do")
+	public String payFail(@RequestParam("purchaseNo") int purchaseNo,
+						  @RequestParam("memberId") String memberId,
+            			  RedirectAttributes rAttr){
+		
+		int result = memberService.failPurchase(purchaseNo);
+		
+		rAttr.addFlashAttribute("msg", "결제실패하였습니다. 다시 결제해주세요.");
+		
+		return "redirect:/product/selectCart.do?memberId=" + memberId;
+	}
+	
+	//준혁
+	@ResponseBody
+	@RequestMapping("/member/selectMemberAddress.do")
+	public List<Address> selectMemberAddress(@RequestParam("memberId") String memberId){
+		
+		List<Address> list = memberService.selectMemberAddress(memberId);
+		log.debug("list@Controller = {}", list);
+		return list;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/member/checkAddressName.do")
+	public Map<String, Object> checkAddressName(@RequestParam("addressName") String addressName,
+												@RequestParam("memberId") String memberId){
+		
+		Map<String, Object> param = new HashMap<>();
+		param.put("addressName", addressName);
+		param.put("memberId", memberId);
+		int cnt = memberService.checkAddressName(param);
+		
+		if(cnt > 0) {
+			param.put("isAvailable", false);
+		}
+		else {
+			param.put("isAvailable", true);
+		}
+		return param;
+	}
+	
+	@ResponseBody
+	@PostMapping("/member/addressEnroll.do")
+	public Boolean addressEnroll(@RequestParam("memberId") String memberId,
+								@RequestParam("addressName") String addressName,
+								@RequestParam("receiverName") String receiverName,
+								@RequestParam("receiverPhone") String receiverPhone,
+								@RequestParam("addr1") String addr1,
+								@RequestParam("addr2") String addr2,
+								@RequestParam("addr3") String addr3){
+		
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", memberId);
+		param.put("addressName", addressName);
+		param.put("receiverName", receiverName);
+		param.put("receiverPhone", receiverPhone);
+		param.put("addr1", addr1);
+		param.put("addr2", addr2);
+		param.put("addr3", addr3);
+		
+		int result = memberService.insertAddress(param);
+		
+		return result > 0 ? true : false;
+	}
+	
+	//호근 어드민용 멤버리스트 추가
+	@GetMapping("/Member/MemberList.do")
+	public String AdminMemberList(Model model, HttpServletRequest request, HttpServletResponse response
+								,@RequestParam(required=false) String searchType, @RequestParam(required=false) String searchKeyword) {
+		
+		
+		int numPerPage = 10;
+		int cPage = 1;
+		try {
+			
+			cPage = Integer.parseInt(request.getParameter("cPage"));
+		}catch(NumberFormatException e) {
+			
+		}
+		
+		Map<String, String> map = new HashMap<>();
+		map.put("searchType", searchType);
+		map.put("searchKeyword", searchKeyword);
+		
+//		log.debug("map = {}", map);
+		List<Member> memberList = memberService.searchMember(searchType,searchKeyword,cPage, numPerPage);
+		int totalContents = memberService.getSearchContents(map);
+	
+		String url = request.getRequestURI();
+		String pageBar = Paging.getPageBarHtml(cPage, numPerPage, totalContents, url);
+		
+		log.debug("member = {}", memberList);
+		model.addAttribute("memberList", memberList);
+		model.addAttribute("searchType",searchType);
+		model.addAttribute("searchKeyword",searchKeyword);
+		model.addAttribute("pageBar", pageBar);
+		
+		return "admin/AdminMemberPage";
+	}
 }

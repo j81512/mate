@@ -38,7 +38,7 @@
               </a>
           </ul>
           <ul class="collapse nav navbar-nav nav-collapse" id="nav-collapse1">
-            <li><a href="#">회원관리</a></li>
+            <li><a href="${ pageContext.request.contextPath }/Member/MemberList.do">회원관리</a></li>
             <li><a href="${pageContext.request.contextPath}/cs/cs.do">C/S</a></li>
             <li><a href="${ pageContext.request.contextPath }/company/location.do">Location</a></li>
             <!-- 1. 추가 : 판매 상품 보기 -> toy -->

@@ -60,11 +60,20 @@ public class CsController {
 	private ResourceLoader resourceLoader;
 	
 	@RequestMapping("/cs.do")
-	public ModelAndView boardList(ModelAndView mav) {
+	@ResponseBody
+	public ModelAndView boardList(ModelAndView mav,
+								  @RequestParam(required=false, name="memberId") String memberId,
+								  @RequestParam(required=false, name="secret") String secret) {
 		
-		List<Cs> list = csService.selectCsList();
+		Map<String, Object> map = new HashMap<String, Object>();
+		log.debug("memberId = {}", memberId);
+		map.put("memberId",memberId);
+		map.put("secret", secret);
+		List<Cs> list = csService.selectCsList(map);
 		
 		log.debug("list = {}", list);
+		
+		mav.addObject("memberId", memberId);
 		
 		mav.addObject("list", list);
 		mav.setViewName("cs/cs");
@@ -238,6 +247,7 @@ public class CsController {
 	public List<CsReply> csReplyList(Model model, @RequestParam("csNo") int csNo){
 		
 		List<CsReply> list = csService.csReplyList(csNo);
+		model.addAttribute("list", list);
 		return list;
 	}
 
@@ -249,8 +259,9 @@ public class CsController {
 		log.debug("csReply= {}", csReply);
 		int result = csService.csReply(csReply);
 		log.debug("result = {}", result);
+		log.debug("result = {}", result);
 		
-		return "redirect:/cs/csDetail.do?csNo=" + csReply.getCsReplyNo();
+		return "redirect:/cs/csDetail.do?csNo=" + csReply.getCsNo();
 	}
 	
 	@PostMapping("/csReply.do")

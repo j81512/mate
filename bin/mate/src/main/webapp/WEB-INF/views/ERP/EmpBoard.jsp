@@ -7,10 +7,5 @@
 <title>Insert title here</title>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp" />
 <div id="board-container">
-	<form name="boardFrm" action="${pageContext.request.contextPath}/ERP/empboardEnroll.do" 
-	method="post" 	
-	>
-		
-	</form>
 </div>
 <jsp:include page="/WEB-INF/views/common/footerE.jsp" />

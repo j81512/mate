@@ -53,7 +53,6 @@
 				<th>상품번호</th>
 				<th>상품명</th>
 				<th>카테고리</th>
-				<th>브랜드</th>
 				<th>입출고 날짜</th>
 				<th>수량</th>
 				<th>업체명</th>
@@ -64,11 +63,10 @@
 		<div class="productInfo">
 			<tr>
 				<td>${ log_io.status }</td>
-				<td>${ product.no }</td>
+				<td>${ product.productNo }</td>
 				<td>${ product.productName }</td>
 				<td>${ product.category }</td>
-				<td>${ product.empId }</td>
-				<td><fmt:formatDate value="${ io_log.io_date }" pattern="yyyy년MM월dd일"/></td>
+				<td><fmt:formatDate value="${ log_io.ioDate }" pattern="yyyy년MM월dd일"/></td>
 				<td>${ io_log.amount }</td>
 				<td>${ emp.emp_name }</td>
 			</tr>

@@ -7,7 +7,11 @@ import java.util.Map;
 
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
+import com.kh.mate.erp.model.vo.EmpBoardImage;
 import com.kh.mate.erp.model.vo.EmpBoardReply;
+import com.kh.mate.log.vo.IoLog;
+import com.kh.mate.log.vo.Receive;
+import com.kh.mate.log.vo.RequestLog;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -38,9 +42,7 @@ public interface ErpService {
 
 	int productOrder(Product product);
 
-	List<Map<String, Object>> empBoardList();
-
-	EmpBoard selectOneEmpBoard(int no);
+	EmpBoard selectOneEmpBoard(int no, boolean hasRead);
 
 	List<EmpBoardReply> replyList(int boardNo);
 
@@ -54,10 +56,56 @@ public interface ErpService {
 
 	int updateReply(Map<String, Object> map);
 
+	int insertEmpBoard(EmpBoard empBoard);
+
+	EmpBoardImage empBoardFileDownload(int boardImageNo);
+
+	List<Product> erpProductList();
+
+	List<EmpBoard> searchBoard(String searchType, String searchKeyword, int cPage, int numPerPage);
+
+	int getSearchContents(Map<String, String> map);
+
+	List<IoLog> ioLogList();
+
+	List<Product> productList();
+
+	List<Receive> receiveList();
+
+	List<RequestLog> requestList();
+
+	EmpBoard selectEmpStock(Map<String, Object> map);
+
+	List<RequestLog> selectRequestList(String empId);
+
+	int updateRequestToApp(int requestNo);
+
+	int updateRequestToRef(int requestNo);
+
+	List<Receive> selectReceiveList(String empId);
+
+	int updateReceiveToApp(int receiveNo);
+
+	int updateReceiveToref(int receiveNo);
 
 
+	int empBoardDelete(int boardNo);
 
+	EmpBoard selectOneEmpBoard(int boardNo);
 
+	List<EmpBoardImage> selectBoardImage(int boardNo);
+
+	int empBoardUpdate(EmpBoard empBoard);
+
+	int countProduct(EMP emp);
+
+	List<Product> selectAll();
+
+	List<Integer> productCompare(EMP emp);
+
+	int mStockInsert(Map<String, Object> map);
+
+	int stockTranslate(Map<String, Object> map);
 
 
 }
