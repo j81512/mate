@@ -44,7 +44,7 @@ nav {
 	text-align: center;
 }
 
-footer{
+/* footer{
 	position: absolute;
 	display: block;
 	background-color: white;
@@ -54,7 +54,7 @@ footer{
 }
 footer p{
 	margin:0;
-}
+} */
 html{
 	overflow-y: scroll;
 }
