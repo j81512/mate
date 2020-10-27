@@ -69,7 +69,7 @@
 	$cntPerPage.val(cnt);
 	$search.submit();
 
-	 }
+}
 
  
 
@@ -170,10 +170,10 @@
 
 </div>
 <script>
- 	function change_img(image){
- 	 	console.log(image.src);
- 	 	console.log(image.parentNode.parentNode.page.firstChild);
- 	}
+function change_img(image){
+ 	console.log(image.src);
+ 	console.log(image.parentNode.parentNode.page.firstChild);
+}
 </script>
 
 <jsp:include page="/WEB-INF/views/common/footerS.jsp"></jsp:include>
