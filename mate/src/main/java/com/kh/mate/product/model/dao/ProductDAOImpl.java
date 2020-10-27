@@ -27,6 +27,14 @@ public class ProductDAOImpl implements ProductDAO {
 	}
 	
 	
+	
+	@Override
+	public int countProduct(Map<String, Object> map) {
+		return session.selectOne("product.countProduct",map);
+	}
+
+
+
 	@Override
 	public List<Product> selectProductListAll(PagingVo page) {
 		return session.selectList("product.selectProductListAll",page);

@@ -94,7 +94,7 @@ public interface ErpService {
 
 	int empBoardUpdate(EmpBoard empBoard);
 
-	int countProduct(EMP emp);
+	int countProduct(Map<String, Object> map);
 
 	List<Product> selectAll();
 
