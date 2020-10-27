@@ -241,8 +241,12 @@ public class ErpContorller {
 //		log.debug("map = {}", map);
 		List<EmpBoard> empBoardList = erpService.searchBoard(searchType,searchKeyword,cPage, numPerPage);
 		int totalContents = erpService.getSearchContents(map);
-	
-		String url = request.getRequestURI();
+		String url = request.getRequestURI() + "?";
+		if(searchType != null && !"".equals(searchType) && searchType != null && !"".equals(searchType)) {
+			url +=  "searchType" + "=" + searchType + "&searchKeyword=" + searchKeyword;
+		}
+		
+		
 		String pageBar = Paging.getPageBarHtml(cPage, numPerPage, totalContents, url);
 		
 		model.addAttribute("list", list);

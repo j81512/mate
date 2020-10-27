@@ -24,8 +24,8 @@ public class CsServiceImpl implements CsService {
 	private CsDAO csDAO;
 
 	@Override
-	public List<Cs> selectCsList(Map<String, Object> map) {
-		return csDAO.selectCsList(map);
+	public List<Cs> selectCsList(Map<String, Object> map, int cPage, int numPerPage) {
+		return csDAO.selectCsList(map,cPage, numPerPage);
 	}
 	
 	@Override
@@ -91,6 +91,13 @@ public class CsServiceImpl implements CsService {
 	public int csDeleteReply(int csReplyNo) {
 		
 		return csDAO.csDeleteReply(csReplyNo);
+	}
+
+
+	@Override
+	public int getSearchContents() {
+		// TODO Auto-generated method stub
+		return csDAO.getSearchContent();
 	}
 
 	@Override

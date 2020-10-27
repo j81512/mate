@@ -36,6 +36,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import com.kh.mate.common.Paging;
 import com.kh.mate.common.Utils;
 import com.kh.mate.cs.model.service.CsService;
 import com.kh.mate.cs.model.vo.Cs;
@@ -61,19 +62,37 @@ public class CsController {
 	@ResponseBody
 	public ModelAndView boardList(ModelAndView mav,
 								  @RequestParam(required=false, name="memberId") String memberId,
-								  @RequestParam(required=false, name="secret") String secret) {
+								  @RequestParam(required=false, name="secret") String secret
+								  ,HttpServletRequest request) {
+		int numPerPage = 10;
+		int cPage = 1;
+		try {
+			
+			cPage = Integer.parseInt(request.getParameter("cPage"));
+		}catch(NumberFormatException e) {
+			
+		}
+		
+		
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		log.debug("memberId = {}", memberId);
 		
 		map.put("memberId", memberId);
 		map.put("secret", secret);
-		List<Cs> list = csService.selectCsList(map);
+		
+		String url = request.getRequestURI();
+		int totalContents = csService.getSearchContents();
+		
+		
+		String pageBar = Paging.getPageBarHtml(cPage, numPerPage, totalContents, url);
+		
+		List<Cs> list = csService.selectCsList(map,cPage, numPerPage);
 		
 		log.debug("list = {}", list);
 		
 		mav.addObject("memberId", memberId);
-		
+		mav.addObject("pageBar", pageBar);
 		mav.addObject("list", list);
 		mav.setViewName("cs/cs");
 		return mav;

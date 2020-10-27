@@ -101,7 +101,7 @@ $(function(){
 			<div class="w100" style="padding-right:10px">
 				<select class="form-control form-control-sm" name="searchType" id="searchType">
 					<option value="title">제목</option>
-					<option value="content">본문</option>
+					<option value="emp_name">작성자</option>
 					<option value="category">카테고리</option>
 				</select>
 			</div>
@@ -122,11 +122,11 @@ $(function(){
 			<div id="search-category" class="search-type">
             <form action="${ pageContext.request.contextPath}/ERP/EmpBoardList.do" method="get">      
                 <input type="hidden" name="searchType" value="category" />
+                <input type="radio"  name="searchKeyword" value="" ${ searchKeyword eq '' ? "checked" : ""}> 전체 
                 <input type="radio"  name="searchKeyword" value="ntc" ${ searchKeyword eq 'ntc' ? "checked" : ""}> 공지사항 
                 <input type="radio"  name="searchKeyword" value="req" ${ searchKeyword eq 'req' ? "checked" : ""}> 요청 
                 <input type="radio"  name="searchKeyword" value="adv" ${ searchKeyword eq 'adv' ? "checked" : ""}> 광고 
                 <input type="radio"  name="searchKeyword" value="def" ${ searchKeyword eq 'def' ? "checked" : ""}> 일반 
-                <input type="radio"  name="searchKeyword" value="evt" ${ searchKeyword eq 'evt' ? "checked" : ""}> 이벤트 
                 <button type="submit" class="btn btn-sm btn-primary">검색</button>
             </form>
         	</div>
