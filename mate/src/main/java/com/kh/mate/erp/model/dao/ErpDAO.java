@@ -128,4 +128,14 @@ public interface ErpDAO {
 
 	int mStockInsert(Map<String, Object> map);
 
+	EmpBoard selectOneEmpBoard(Map<String, Object> map);
+
+	int updateEnabled(Map<String, Object> map);
+
+	int updateTranStock(Map<String, Object> map);
+
+	int updateStock(Map<String, Object> map);
+
+	int updateStockInfo(Map<String, Object> map);
+
 }

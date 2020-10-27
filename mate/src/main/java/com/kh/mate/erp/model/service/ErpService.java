@@ -105,5 +105,7 @@ public interface ErpService {
 
 	int mStockInsert(Map<String, Object> map);
 
+	int stockTranslate(Map<String, Object> map);
+
 
 }

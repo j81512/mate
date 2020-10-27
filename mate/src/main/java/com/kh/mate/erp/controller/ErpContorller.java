@@ -1177,9 +1177,24 @@ public class ErpContorller {
 		return "redirect:/ERP/EmpBoardList.do";
 	}
 	
-	@PostMapping("/ERP/StockTranslate")
-	public Map<String, Object> stockTranslate(){
+	@GetMapping("/ERP/StockTranslate")
+	@ResponseBody
+	public Map<String, Object> stockTranslate(@RequestParam("productNo") int productNo, @RequestParam("amount") int amount,
+												@RequestParam("empId") String empId,@RequestParam("transEmpId") String transEmpId,
+												@RequestParam("transStock") int transStock,@RequestParam("boardNo") int boardNo){
 		Map<String, Object> map = new HashMap<>();
+		map.put("productNo", productNo);	
+		map.put("amount", amount);	
+		map.put("empId", empId);	
+		map.put("transEmpId", transEmpId);	
+		map.put("transStock", transStock);	
+		map.put("no", boardNo);	
+		
+		int result = erpService.stockTranslate(map);
+		
+		boolean Available= (result > 0) ?  true : false;
+		map.put("isAvailable", Available);
+		log.debug("map = {}", map);
 		
 		return map;
 	}

@@ -30,6 +30,7 @@
 		<result column="content" property="content"/>
 		<result column="emp_id" property="empId"/>
 		<result column="reg_date" property="regDate"/>
+		<result column="enabled" property="enabled"/>
 		<result column="read_count" property="readCount"/>
 		<result column="board_info_no" property="boardInfoNo"/>
 		<result column="product_no" property="productNo"/>
@@ -255,4 +256,27 @@
 		where board_no = #{ boardNo }
 
 	</update> 	
+	
+	<update id="enabledUpdate">
+		update board set enabled = 1 where board_no = #{ no }
+	
+	</update>
+	
+	<update id="updateTranStock">
+		update stock set stock = stock - #{ amount } 
+		where product_no = #{ productNo }
+		and emp_id = #{ transEmpId }
+	</update>
+	
+	<update id="updateStock">
+		update stock set stock = stock  +  #{ transStock }
+			where product_no = #{ productNo }
+			and emp_id = #{ empId }
+	</update>
+	
+	<update id="updateStockInfo">
+		update board_info set amount = amount - #{ transStock } 
+		where board_no = #{ no }
+		and product_no =  #{ productNo }
+	</update>
 </mapper>

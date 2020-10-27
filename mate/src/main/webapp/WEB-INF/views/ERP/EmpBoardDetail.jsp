@@ -145,36 +145,50 @@ $(document).ready(function(){
 
 	function StockTranslate(productNo, amount, empId){
 		var $transEmpId = '${ loginEmp.empId}';
-		var $transStock =  '${ loginEmpStock.stock }';
+		var $transStock = ('${ loginEmpStock.stock}' >= amount) ? amount : '${ loginEmpStock.stock}' ;
+		var $boardNo = '${ empBoard.boardNo}';
+		var $enabled = '${ empBoard.enabled }';
 		var stock = {
-			productNo : productNo,
-			amount : amount,
-			empId : empId,
-			transEmpId : transEmpId, 
-			transStock : $transStock
-		};
+				productNo : productNo,
+				amount : amount,
+				empId : empId,
+				transEmpId : $transEmpId, 
+				transStock : $transStock,
+				boardNo : $boardNo
+			};
+
 
 		console.log(stock);
 		
-		$.ajax({
+		if(stock.amount > stock.transStock){
+			alert("수량이 적습니다.");
+			return;
+		}
+
+		if($enabled == 1){
+			alert("이미 처리 되었습니다.");
+			return;
+		}
+		
+ 	$.ajax({
 
 			 url : "${ pageContext.request.contextPath }/ERP/StockTranslate",
-			 method : "POST",
+			 method : "get",
 			 dataType : "json",
 			 data : stock,
 			 success : function(data){
 					console.log(data);
-					console.log(data);
-					var result = data.result;
-					if(result == "1"){                
-		                alert("재고 처리를 했습니다.");                             
+					var result = data.isAvailable;
+					if( result == true){                
+		                alert("재고 처리를 했습니다.");
+		                                           
 		            } 
 			},
 			error : function(xhr, err, status){
 					console.log(xhr, err, status);
 			}
 
-		});
+		}); 
 		
 	}
 	

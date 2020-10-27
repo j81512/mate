@@ -381,6 +381,28 @@ public class ErpServiceImpl implements ErpService {
 		log.debug("result@service = {}", result);
 		return result;
 	}
+
+	@Override
+	public int stockTranslate(Map<String, Object> map) {
+		 int result = 0;
+		 EmpBoard empBoard = erpDAO.selectOneEmpBoard(map);
+		 
+		 if(empBoard.getEnabled() == 0) {
+				 
+				 result = erpDAO.updateTranStock(map);
+				 result = erpDAO.updateStock(map);
+				 result = erpDAO.updateStockInfo(map);
+				 result = erpDAO.updateEnabled(map);
+			 
+		 }
+		 
+		 log.debug("result = {}", result);
+		 
+		return result;
+	}
+
+
+	
 	
 	
 	

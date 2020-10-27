@@ -1039,7 +1039,7 @@ INSERT into board VALUES(seq_board_no.nextval,'req','부산점 신규 RC카요�
 commit; 
         
         
-        
+    
         
         
         
