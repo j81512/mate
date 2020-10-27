@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
+<jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
 <script src="${ pageContext.request.contextPath }/resources/ckeditor/ckeditor.js"></script>
 <script>
 $(function(){

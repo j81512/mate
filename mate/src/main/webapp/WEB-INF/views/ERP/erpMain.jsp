@@ -36,7 +36,7 @@
     	</li>
     	
     	<!-- 로그인된 관리자 상태가 지점일 경우 -->
-    	<c:if test="${loginEmp.status eq 1 }">
+    	<c:if test="${loginEmp.status ne 2 }">
 	    	<li>
 		    	<button type="button" 
 		    			class="btn btn-default btn-lg"
