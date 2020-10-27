@@ -31,6 +31,11 @@ public class ProductServiceImpl implements ProductService {
 	}
 	
 
+	@Override
+	public int countProduct(Map<String, Object> map) {
+		return productDAO.countProduct(map);
+	}
+
 
 	@Override
 	public List<Product> selectProductListAll(PagingVo page) {

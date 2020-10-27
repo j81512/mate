@@ -31,7 +31,20 @@
 		</div>
 		
 		<div class="product-category">
-			카테고리 : <span>${ product.category }</span>
+			카테고리 : <span>
+				<c:if test="${ product.category eq 'fg' }">
+	    		피규어
+	    		</c:if>
+	    		<c:if test="${ product.category eq 'pm' }">
+	    		프라모델
+	    		</c:if>
+	    		<c:if test="${ product.category eq 'rc' }">
+	    		RC카
+	    		</c:if>
+	    		<c:if test="${ product.category eq 'dr' }">
+	    		드론
+	    		</c:if>
+			</span>
 		</div>
 		
 		<div class="product-price">
@@ -40,7 +53,7 @@
 		
 		<!-- 구입 수량 입력  -->
 		<div class="product-amount">
-			수량 : <input type="range" name="amount" required/>
+			수량 : <input type="number" name="amount" required/> 개
 		</div>
 		
 				<!-- 일반 쇼핑몰 회원일 경우 장바구니 | 구매하기 버튼 추가 -->

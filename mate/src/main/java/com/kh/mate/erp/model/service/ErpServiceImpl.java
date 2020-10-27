@@ -1,5 +1,6 @@
 package com.kh.mate.erp.model.service;
 
+
 import java.util.List;
 import java.util.Map;
 
@@ -199,8 +200,15 @@ public class ErpServiceImpl implements ErpService {
 	public int updateReceiveToref(int receiveNo) {
 		return erpDAO.updateReceiveToRef(receiveNo);
 	}
+	
+	@Override
+	public List<RequestLog> selectEmpRequest(String empId) {
+		return erpDAO.selectEmpRequest(empId);
+	}
+	
 
 	// 호근 emp 게시판 추가
+
 
 	@Override
 	public EmpBoard selectOneEmpBoard(int no, boolean hasRead) {
@@ -301,8 +309,8 @@ public class ErpServiceImpl implements ErpService {
 
 	// 김찬희 페이징작업
 	@Override
-	public int countProduct(EMP emp) {
-		return erpDAO.countProduct(emp);
+	public int countProduct(Map<String, Object> map) {
+		return erpDAO.countProduct(map);
 	}
 
 	// 누락상품검사

@@ -341,7 +341,10 @@ CREATE TABLE CS_REPLY (
 	content	varchar2(300)		NOT NULL,
 	reg_date	date	DEFAULT sysdate	NOT NULL,
 	cs_no	number		NOT NULL,
-    
+    member_id  varchar2(30) not null ,
+    constraint fk_cs_reply_member_id foreign key (member_id)
+                                              references member(member_id)
+                                              on delete cascade,
     constraint pk_cs_reply primary key (cs_reply_no),
     constraint fk_cs_reply_cs_no foreign key (cs_no)
                                           references cs (cs_no)

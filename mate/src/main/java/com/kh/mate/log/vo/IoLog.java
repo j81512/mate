@@ -16,7 +16,7 @@ import lombok.ToString;
 public class IoLog {
 	//입출고
 	private int ioNo;
-	private int status;
+	private String status;
 	private int amount;
 	private Date ioDate;
 	private int productNo;

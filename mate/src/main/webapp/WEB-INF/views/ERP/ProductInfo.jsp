@@ -15,6 +15,11 @@
 
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+<c:if test="${not empty msg }">
+<script>
+	alert("${msg}");
+</script>
+</c:if>
 </head>
 <style>
 .navbar-form .form-control {
@@ -122,6 +127,11 @@ function orderProduct(empId,pNo,requestId){
 				<th>등록일</th>
 				<th>재고</th>
 				<th>상태</th>
+				<!-- 로그인 상태가 관리자인 경우 상품 삭제 버튼 추가 -->
+				<c:if test="${loninEmp.status eq 0 }">
+					상품 삭제
+				</c:if>
+				
 			</tr>
 		</div>
 		
@@ -137,7 +147,15 @@ function orderProduct(empId,pNo,requestId){
 						<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>
 						<td>${ product.stock eq 0 ? '재고가 없습니다' : product.stock }</td>
 						<td><button type="button" onclick="orderProduct('${ loginEmp.empId }',${ product.productNo },${ product.empId })">발주</button></td>
+						<c:if test="${loginEmp.status eq 0 }">
+						<td>
+							<button type="button" onclick="productDelete();">상품 삭제</button>
+						</td>
+						</c:if>
 					</tr>
+				<form id="productDelFrm">
+					<input type="hidden" name="productNo" value="${product.productNo }"/>
+				</form>
 				</c:forEach>		
 			</c:if>
 			<c:if test="${ empty list }">
@@ -161,27 +179,32 @@ function orderProduct(empId,pNo,requestId){
 	</section>
 	
 	<!-- 김찬희 페이징 -->
-	<div style="display: block; text-align: center;">
-	<c:if test="${ page.startPage != 1 }">
-		<a href="#"onclick="pageing('${ page.startPage - 1}','${ page.cntPerPage }')">&lt;</a>
-	</c:if>
-	<c:forEach begin="${page.startPage }" end="${page.endPage}" var="p">
-			<c:choose>
-				<c:when test="${p == page.nowPage }">
-					<b>${p }</b>
-				</c:when>
-				<c:when test="${p != page.nowPage }">
-					<a href="${pageContext.request.contextPath}/ERP/searchInfo.do?nowPage=${p }&cntPerPage=
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+  		<c:if test="${ page.nowPage != 1 }">
+	      <a class="page-link" href="${pageContext.request.contextPath}/ERP/searchInfo.do?nowPage=${page.nowPage-1 }&cntPerPage=
 					${page.cntPerPage}&search=${ map.search }&category=${ map.category }&
-					select=${ map.select}&upper=${ upper }&lower=${ lower }">${p }</a>
-				</c:when>
-			</c:choose>
-		</c:forEach>
-		<c:if test="${page.endPage != page.lastPage}">
-			<a href="#" onclick="pageing('${ page.endPage+1 }','${ page.cntPerPage }')">&gt;</a>
-		</c:if>
-
-</div>
+					select=${ map.select}&upper=${ upper }&lower=${ lower }">Previous</a>
+  		</c:if>
+  	<c:forEach begin="${page.startPage }" end="${page.endPage}" var="p">
+  		<c:choose>
+  		<c:when test="${ p == page.nowPage }">
+		    <li class="page-item"><a class="page-link" href="#" style="color: black">${p }</a></li>
+  		</c:when>
+  		<c:when test="${ p != page.nowPage }">
+		    <li class="page-item"><a class="page-link" href="${pageContext.request.contextPath}/ERP/searchInfo.do?nowPage=${p }&cntPerPage=
+					${page.cntPerPage}&search=${ map.search }&category=${ map.category }&
+					select=${ map.select}&upper=${ upper }&lower=${ lower }">${p }</a></li>
+  		</c:when>
+  		</c:choose>
+  	</c:forEach>
+  	<c:if test="${ page.nowPage != page.endPage }">
+	      <a class="page-link" href="${pageContext.request.contextPath}/ERP/searchInfo.do?nowPage=${page.nowPage+1 }&cntPerPage=
+					${page.cntPerPage}&search=${ map.search }&category=${ map.category }&
+					select=${ map.select}&upper=${ upper }&lower=${ lower }">Next</a>
+  	</c:if>
+  </ul>
+</nav>
 	
 	
 <script>
@@ -189,6 +212,16 @@ function productEnroll(){
 
 location.href="${ pageContext.request.contextPath }/ERP/productEnroll.do";
 	
+}
+
+function productDelete(){
+	var $frm = $("#productDelFrm");
+
+
+	$frm.attr("action", "${pageContext.request.contextPath}/ERP/productDelete.do");
+	$frm.attr("method", "post");
+	$frm.submit();
+
 }
 </script>
 	</body>
