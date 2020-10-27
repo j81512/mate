@@ -1,9 +1,7 @@
 package com.kh.mate.erp.model.service;
 
 import java.util.List;
-
 import java.util.Map;
-
 
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
@@ -88,7 +86,6 @@ public interface ErpService {
 
 	int updateReceiveToref(int receiveNo);
 
-
 	int empBoardDelete(int boardNo);
 
 	EmpBoard selectOneEmpBoard(int boardNo);
@@ -97,7 +94,7 @@ public interface ErpService {
 
 	int empBoardUpdate(EmpBoard empBoard);
 
-	int countProduct(EMP emp);
+	int countProduct(Map<String, Object> map);
 
 	List<Product> selectAll();
 
@@ -107,5 +104,5 @@ public interface ErpService {
 
 	int stockTranslate(Map<String, Object> map);
 
-
-}
+	List<RequestLog> selectEmpRequest(String empId);
+}	

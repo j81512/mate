@@ -17,6 +17,7 @@
 <div class="container">
 	<div id="company-div">	
 		<select class="companyList-select">
+			<option value="" selected disabled>지점을 선택해주세요.</option>
 			<c:forEach items="${ mapList }" var="company">
 				<option value="${ company.empName }">${ company.empName }</option>
 			</c:forEach>

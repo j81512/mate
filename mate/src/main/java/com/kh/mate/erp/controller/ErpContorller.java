@@ -52,7 +52,6 @@ import com.kh.mate.erp.model.vo.EmpBoardReply;
 import com.kh.mate.log.vo.IoLog;
 import com.kh.mate.log.vo.Receive;
 import com.kh.mate.log.vo.RequestLog;
-import com.kh.mate.product.model.service.ProductService;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -118,14 +117,31 @@ public class ErpContorller {
 	
 	//발주확인 진입
 	@RequestMapping("/ERP/OrderLog.do")
-	public String OrderLog(Model model) {	
-		List<RequestLog> list = erpService.requestList();
-		List<Product> list2 = erpService.productList();
-		List<EMP> list3 = erpService.empList();
+	public String OrderLog(HttpSession session, Model model) {	
+//		List<RequestLog> list = erpService.requestList();
+//		List<Product> list2 = erpService.productList();
+//		List<EMP> list3 = erpService.empList();
+//		
+//		model.addAttribute("list", list);
+//		model.addAttribute("list2", list2);
+//		model.addAttribute("list3", list3);
+		//로그인 회원이 관리자 | 지점인지 분기처리
+		EMP loginEmp = (EMP)session.getAttribute("loginEmp");
 		
+		List<RequestLog> list = new ArrayList<>();
+		//로그인 회원이 관리자일 경우
+		if(loginEmp.getStatus() == 0 ) {
+			//전체 지점의 발주 로그를 가져옴
+			list = erpService.requestList();
+		}
+		//로그인 회원이 제조사일 경우
+		else if(loginEmp.getStatus() == 2) {
+			//list = erpService.selectRequestList(loginEmp.getEmpId());
+			list = erpService.selectEmpRequest(loginEmp.getEmpId());
+		}
+		log.debug("list = {}", list);
 		model.addAttribute("list", list);
-		model.addAttribute("list2", list2);
-		model.addAttribute("list3", list3);
+		
 		return "ERP/OrderLog";
 	}
 	
@@ -343,17 +359,17 @@ public class ErpContorller {
 		}
 		
 		
-		int total = erpService.countProduct(emp);
+		
 		if(nowPage == null && cntPerPage == null) {
 			nowPage = "1";
-			cntPerPage="8";
+			cntPerPage="10";
 		} else if (nowPage == null) {
 			nowPage = "1";
 		} else if (cntPerPage == null) { 
-			cntPerPage = "8";
+			cntPerPage = "10";
 		}
 
-		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
+		
 
 		
 		if(!upper.isEmpty() && upper != null) {
@@ -372,19 +388,21 @@ public class ErpContorller {
 			map.put("sNum", sNum);
 		}
 		
-		map.put("page", page);
 		map.put("category", category);
 		map.put("select", select);
 		map.put("search", search);
-		
+		int total = erpService.countProduct(map);
+		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
+		map.put("page", page);
 		
 		List<Product> list = erpService.searchInfo(map);
+		log.debug("page = {}",page);
+		log.debug("total = {}",total);
 
-		
 		log.debug("size = {}",list.size());
-		if(list.size() < 8 && Integer.parseInt(nowPage) == 1) {
-			page.setEndPage(1);
-		}
+//		if(total <= 10 && Integer.parseInt(nowPage) == 1) {
+//			page.setEndPage(1);
+//		}
 		
 		log.debug("list = {}",list);
 		model.addAttribute("page",page);		
@@ -461,7 +479,8 @@ public class ErpContorller {
 					method = RequestMethod.POST)
 	public String productEnroll(Product product,
 								@RequestParam("upFile") MultipartFile[] upFiles,
-								HttpServletRequest request) throws IllegalStateException, IOException {
+								HttpServletRequest request,
+								RedirectAttributes redirectAttr) throws IllegalStateException, IOException {
 		
 		//Content내 저장 폴더 명 변경
 		String content = product.getContent();
@@ -527,11 +546,13 @@ public class ErpContorller {
 		if(result > 0) {
 			Utils.fileCopy(folder1, folder2);
 			Utils.fileDelete(folder1.toString());
+			redirectAttr.addFlashAttribute("msg", "상품 추가 완료");
 		}else {
 			Utils.fileDelete(folder1.toString());
+			redirectAttr.addFlashAttribute("msg", "상품 추가 실패");
 		}
 		
-		return "redirect:/";
+		return "redirect:/ERP/ProductInfo.do";
 	}
 	
 	//뒤로가기 클릭 시 파일 삭제
@@ -690,6 +711,7 @@ public class ErpContorller {
 		return "redirect:/";
 	}
 	
+	//상품 삭제
 	@RequestMapping(value = "/ERP/productDelete.do",
 					method = RequestMethod.POST)
 	public String productDelete(@RequestParam("productNo") String productNo,
@@ -715,7 +737,6 @@ public class ErpContorller {
 			}
 			log.debug("flag,result = {}, {}",flag,result);
 		}
-		
 		return "ERP/ProductInfo";
 	}
 	
@@ -849,7 +870,7 @@ public class ErpContorller {
 	}
 	
 	@RequestMapping("/ERP/EmpBoardDetail.do")
-	public ModelAndView empBoardDetail(@ModelAttribute("loginEmp") EMP loginEmp,
+	public ModelAndView empBoardDetail(@RequestParam("loginEmp") EMP loginEmp,
 									@RequestParam("no") int no,
 									ModelAndView mav
 									,HttpServletRequest request

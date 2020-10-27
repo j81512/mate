@@ -177,8 +177,16 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.update("erp.updateReceiveToRef", receiveNo);
 	}
 	
+	@Override
+	public List<RequestLog> selectEmpRequest(String empId) {
+		return sqlSession.selectList("erp.selectEmpRequest", empId);
+	}
+	
+	
 	//호근 추가
 
+
+	
 
 	
 
@@ -257,8 +265,8 @@ public class ErpDAOImpl implements ErpDAO {
 	
 	//김찬희 페이징작업
 	@Override
-	public int countProduct(EMP emp) {
-		return sqlSession.selectOne("erp.countProduct",emp);
+	public int countProduct(Map<String, Object> map) {
+		return sqlSession.selectOne("erp.countProduct",map);
 	}
 	//누락상품검사
 	
@@ -340,8 +348,4 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.update("erpBoard.updateStockInfo",map);
 	}
 
-	
-	
-	
-	
 }

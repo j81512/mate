@@ -23,7 +23,7 @@ public class PagingVo {
 	private int lastPage;
 	private int start;
 	private int end;
-	private int cntPage = 8;
+	private int cntPage = 5;
 	
 	
 	public void calcLastPage(int total, int cntPerPage) {

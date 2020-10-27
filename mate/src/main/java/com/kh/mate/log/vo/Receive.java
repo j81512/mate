@@ -14,7 +14,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class Receive {
-
+	
 	private int receiveNo;
 	private String manufacturerId;
 	private int amount;
