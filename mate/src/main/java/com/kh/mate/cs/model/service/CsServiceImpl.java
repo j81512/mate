@@ -34,7 +34,7 @@ public class CsServiceImpl implements CsService {
 
 		result = csDAO.insertCs(cs);
 
-		if(cs.getCsImage() != null) {
+		if(cs.getCsImage().getOriginalFilename() != null) {
 			CsImages csImage = cs.getCsImage();
 			csImage.setCsNo(cs.getCsNo());
 			result = csDAO.insertCsImage(csImage);
