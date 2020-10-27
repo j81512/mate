@@ -20,8 +20,9 @@ public class CsDAOImpl implements CsDAO {
 	private SqlSessionTemplate sqlSession;
 	
 	@Override
-	public List<Cs> selectCsList(Map<String, Object> map) {
-		
+	public List<Cs> selectCsList(Map<String, Object> map, int cPage, int numPerPage) {
+		map.put("cPage", ((cPage-1)*numPerPage+1));
+		map.put("numPerPage", (cPage * numPerPage));
 		return sqlSession.selectList("cs.selectCsList", map);
 	}
 	
@@ -83,6 +84,17 @@ public class CsDAOImpl implements CsDAO {
 	public int csDeleteReply(int csReplyNo) {
 		
 		return sqlSession.delete("cs.csDeleteReply", csReplyNo);
+	}
+
+	@Override
+	public List<Cs> selectCsList(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getSearchContent() {
+		return sqlSession.selectOne("cs.getSearchContents");
 	}
 
 
