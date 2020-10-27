@@ -9,7 +9,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>    
 <jsp:include page="/WEB-INF/views/common/headerS.jsp"></jsp:include>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 <style>
 table, tr, th, td {
 	border: 1px solid black;
@@ -21,6 +23,7 @@ li{
 	display: inline-block;
 }
 </style>
+
 <div class="product-container">
 	<!-- ajax처리 -->
 	 <div class="product-search">
@@ -103,24 +106,27 @@ li{
 		</ul>
 	</div>
 </div>
-<div style="display: block; text-align: center;">
-	<c:if test="${ page.startPage != 1 }">
-		<a href="#"onclick="pageing('${ page.startPage - 1}','${ page.cntPerPage }')">&lt;</a>
-	</c:if>
-	<c:forEach begin="${page.startPage }" end="${page.endPage}" var="p">
-			<c:choose>
-				<c:when test="${p == page.nowPage }">
-					<b>${p }</b>
-				</c:when>
-				<c:when test="${p != page.nowPage }">
-					<a href="${pageContext.request.contextPath}/product/searchProduct.do?nowPage=${p }&cntPerPage=${page.cntPerPage}&search=${ search }&category=${ sCategory }">${p }</a>
-				</c:when>
-			</c:choose>
-		</c:forEach>
-		<c:if test="${page.endPage != page.lastPage}">
-			<a href="#" onclick="pageing('${ page.endPage+1 }','${ page.cntPerPage }')">&gt;</a>
-		</c:if>
 
-</div>
 
-<jsp:include page="/WEB-INF/views/common/footerS.jsp"></jsp:include>
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+  		<c:if test="${ page.nowPage != 1 }">
+	      <a class="page-link" href="${pageContext.request.contextPath}/product/searchProduct.do?nowPage=${page.nowPage-1 }&cntPerPage=${page.cntPerPage}&search=${ search }&category=${ sCategory }" tabindex="-1" aria-disabled="true">Previous</a>
+  		</c:if>
+  	<c:forEach begin="${page.startPage }" end="${page.endPage}" var="p">
+  		<c:choose>
+  		<c:when test="${ p == page.nowPage }">
+		    <li class="page-item"><a class="page-link" href="#" style="color: black">${p }</a></li>
+  		</c:when>
+  		<c:when test="${ p != page.nowPage }">
+		    <li class="page-item"><a class="page-link" href="${pageContext.request.contextPath}/product/searchProduct.do?nowPage=${p }&cntPerPage=${page.cntPerPage}&search=${ search }&category=${ sCategory }">${p }</a></li>
+  		</c:when>
+  		</c:choose>
+  	</c:forEach>
+  	<c:if test="${ page.nowPage != page.endPage }">
+	      <a class="page-link" href="${pageContext.request.contextPath}/product/searchProduct.do?nowPage=${page.nowPage+1 }&cntPerPage=${page.cntPerPage}&search=${ search }&category=${ sCategory }">Next</a>
+  	</c:if>
+  </ul>
+</nav>
+
+<%-- <jsp:include page="/WEB-INF/views/common/footerS.jsp"></jsp:include> --%>

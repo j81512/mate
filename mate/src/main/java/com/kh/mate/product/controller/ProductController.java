@@ -215,7 +215,7 @@ public class ProductController {
 		map.put("search", search);
 		
 		List<Product> list = productService.searchProductList(map);
-		if(list.size() != 8 && Integer.parseInt(nowPage) == 1) {
+		if(list.size() < 8 && Integer.parseInt(nowPage) == 1) {
 			page.setEndPage(1);
 		}
 		log.debug("listSize = {}" , list.size());
