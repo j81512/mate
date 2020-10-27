@@ -27,8 +27,6 @@
 </head>
 	<body>  
 		<div class="container">
-		
-<<<<<<< HEAD
 			<div id="buy" class="tab-pane fade active show in">
 				<div class="col-md-15">
 				    <div class="form-area">  
