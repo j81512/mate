@@ -33,9 +33,9 @@
 					<tr>
 						<td><fmt:formatDate value="${ IoLog.ioDate }" pattern="yyyy년MM월dd일"/></td>
 						<td>
-							<c:if test="${ IoLog.status == 1}">매입
+							<c:if test="${ IoLog.status eq 'I'}">매입
 							</c:if>
-							<c:if test="${ IoLog.status == 2}">매출
+							<c:if test="${ IoLog.status eq 'O'}">매출
 							</c:if>
 						</td>	
 						<td></td>				
