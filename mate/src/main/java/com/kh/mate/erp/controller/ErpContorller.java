@@ -28,7 +28,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -215,15 +214,15 @@ public class ErpContorller {
 			
 		}
 		
-		log.debug("cPage={}",cPage);
+//		log.debug("cPage={}",cPage);
 		List<EMP> list = erpService.empList();
 		//page map처리
-		log.debug("list = {} ", list);
+//		log.debug("list = {} ", list);
 		Map<String, String> map = new HashMap<>();
 		map.put("searchType", searchType);
 		map.put("searchKeyword", searchKeyword);
 		
-		log.debug("map = {}", map);
+//		log.debug("map = {}", map);
 		List<EmpBoard> empBoardList = erpService.searchBoard(searchType,searchKeyword,cPage, numPerPage);
 		int totalContents = erpService.getSearchContents(map);
 	
@@ -852,7 +851,8 @@ public class ErpContorller {
 	}
 	
 	@RequestMapping("/ERP/EmpBoardDetail.do")
-	public ModelAndView empBoardDetail(@RequestParam("no") int no,
+	public ModelAndView empBoardDetail(@ModelAttribute("loginEmp") EMP loginEmp,
+									@RequestParam("no") int no,
 									ModelAndView mav
 									,HttpServletRequest request
 									,HttpServletResponse response) {
@@ -864,11 +864,11 @@ public class ErpContorller {
 		
 		if(cookies != null) {
 			for(Cookie c : cookies) {
-				log.debug("cookies={}", cookies.toString());
+//				log.debug("cookies={}", cookies.toString());
 				String name = c.getName();
 				String value = c.getValue();
-				log.debug("name={}", name);
-				log.debug("value ={}", value.toString());
+//				log.debug("name={}", name);
+//				log.debug("value ={}", value.toString());
 				
 				if("erpBoardCookie".equals(name)) {
 					boardCookieVal = value;
@@ -890,6 +890,18 @@ public class ErpContorller {
 		}
 		
 	    EmpBoard empBoard = erpService.selectOneEmpBoard(no, hasRead);
+	    log.debug("emp = {}", loginEmp);
+	    log.debug("empBoard = {}", empBoard);
+	    // 게시판 상세보기에서 요청글 일때 제조사 지점 재고 출렷
+	    if(loginEmp != null && empBoard.getCategory().equals("req")){
+	    	Map<String, Object> map = new HashMap<>();
+	    	map.put("productNo", empBoard.getProductNo());
+	    	map.put("empId", loginEmp.getEmpId());
+	    	EmpBoard loginEmpStock = erpService.selectEmpStock(map);
+	    	log.debug("loginEmpStock = {}", loginEmpStock);	
+	    	mav.addObject("loginEmpStock", loginEmpStock);
+	    }
+	    
 	    log.debug("empBoard = {}", empBoard);
 		mav.addObject("empBoard", empBoard);
 //		model.addAttribute("board", boardList);
@@ -1084,6 +1096,109 @@ public class ErpContorller {
 		map.put("productList", list);
 		log.debug("map = {}", map);
 		model.addAttribute("map", map);
+		return map;
+	}
+	
+	@PostMapping("/ERP/boardDelete.do")
+	@ResponseBody
+	public Map<String, Object> empBoardDelete(@RequestParam("boardNo") int boardNo) {
+		log.debug("boardNo = {}", boardNo);
+		Map<String, Object> map = new HashMap<>();
+		int result = erpService.empBoardDelete(boardNo);
+		
+		if(result > 0 ) {
+			map.put("result", result);
+		}
+		
+		return map;
+	}
+	
+	@RequestMapping(value = "/ERP/empBoardUpdate.do",
+					method = RequestMethod.GET)
+	public String empBoardUpdate(@RequestParam("boardNo") int boardNo,
+						  Model model) {
+	
+		EmpBoard empBoard = erpService.selectOneEmpBoard(boardNo);
+		
+		List<EmpBoardImage> list = erpService.selectBoardImage(boardNo);
+		log.debug("empBoard = {}", empBoard);
+		log.debug("list = {}", list);
+		
+		model.addAttribute("empBoard", empBoard);
+		model.addAttribute("list", list);
+		
+		return "ERP/EmpBoardUpdate";
+	}
+	
+	@PostMapping("/ERP/empBoardCkUpdate.do")
+	public String empCKBoardUpdate(EmpBoard empBoard, 
+									@RequestParam("upFile") MultipartFile[] upFiles, 
+									@RequestParam("fileChange") int fileChange,
+									HttpServletRequest request) throws IllegalStateException, IOException {
+			
+		log.debug("empBoard= {}", empBoard);
+		if(fileChange > 0) {
+			List<EmpBoardImage> imageList 
+				= erpService.selectBoardImage(empBoard.getBoardNo());
+			String mainDirectory = request.getServletContext()
+										  .getRealPath("/resources/upload/empBoard/");
+			
+				//저장된 파일 삭제
+				for(EmpBoardImage image : imageList) {
+					boolean result = new File(mainDirectory, image.getRenamedFilename()).delete();
+					log.debug("result = {}", result);
+				}
+			
+			//새로 넘어온 파일 저장
+			List<EmpBoardImage> updateImgList = new ArrayList<>();
+			
+				for(MultipartFile upFile : upFiles) {
+					String renamedFilename = Utils.getRenamedFileName(upFile.getOriginalFilename());
+					
+					File dest = new File(mainDirectory, renamedFilename);
+					upFile.transferTo(dest);
+					
+					EmpBoardImage newMainImgs = new EmpBoardImage();
+					newMainImgs.setOriginalFilename(upFile.getOriginalFilename());
+					newMainImgs.setRenamedFilename(renamedFilename);
+					newMainImgs.setBoardNo(empBoard.getBoardNo());
+					updateImgList.add(newMainImgs);
+			
+				}
+				
+			empBoard.setEmpBoardImageList(updateImgList);
+			
+		}
+		
+		String tempDir = request.getServletContext().getRealPath("/resources/upload/empBoard");
+		File folder1 = new File(tempDir);
+		
+	
+		int result = erpService.empBoardUpdate(empBoard);
+		
+
+		return "redirect:/ERP/EmpBoardList.do";
+	}
+	
+	@GetMapping("/ERP/StockTranslate")
+	@ResponseBody
+	public Map<String, Object> stockTranslate(@RequestParam("productNo") int productNo, @RequestParam("amount") int amount,
+												@RequestParam("empId") String empId,@RequestParam("transEmpId") String transEmpId,
+												@RequestParam("transStock") int transStock,@RequestParam("boardNo") int boardNo){
+		Map<String, Object> map = new HashMap<>();
+		map.put("productNo", productNo);	
+		map.put("amount", amount);	
+		map.put("empId", empId);	
+		map.put("transEmpId", transEmpId);	
+		map.put("transStock", transStock);	
+		map.put("no", boardNo);	
+		
+		int result = erpService.stockTranslate(map);
+		
+		boolean Available= (result > 0) ?  true : false;
+		map.put("isAvailable", Available);
+		log.debug("map = {}", map);
+		
 		return map;
 	}
 	

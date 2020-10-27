@@ -69,7 +69,7 @@ div#board-container label.custom-file-label{text-align:left;}
 					<input type="hidden" name="memberId" value="${ loginMember.memberId != null ? loginMember.memberId : 'ㅋㅋㅋ'}" />
 				</div>
 				<div class="form-group">
-					<input type="hidden" name="csNo" value="${ cs.csNo }" />
+					<input type="hidden" name="csNo" id="csNo" value="${ cs.csNo }" />
 				</div>
 				<div class="form-group">
 					<textarea class="form-control col-sm-10" name="content"  rows="10"></textarea>
@@ -109,11 +109,13 @@ div#board-container label.custom-file-label{text-align:left;}
 	        data :  {"csNo" :csNo},
 	        success : function(data){
 	            var html =''; 
-	         /*    console.log(data); */
+	      	 console.log(data);
 	            $.each(data, function(key, value){                
 		            	html += '<div class="csReplyArea" style="border-bottom:1px solid darkgray; margin-bottom: 15px;">';
 		            	html += "<div class='csReplyInfo'>" + "작성자 :" + value.memberId;
+		            if( loginMember == value.memberId){
 		            	html += '<a onclick="csReplyDelete('+ value.csReplyNo +');" class="btn btn-default"> 삭제 </a> </div>';
+		            }
 		            	html += '<div class="csReplyContent'+ value.csReplyNo+'"> <p> 내용 : '+value.content +'</p>';
 		            	html += '</div></div>';
 	            });
