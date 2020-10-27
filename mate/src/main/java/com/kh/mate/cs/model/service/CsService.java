@@ -10,7 +10,7 @@ import com.kh.mate.erp.model.vo.EmpBoardReply;
 
 public interface CsService {
 
-	List<Cs> selectCsList(Map<String, Object> map);
+	List<Cs> selectCsList(Map<String, Object> map, int cPage, int numPerPage);
 
 	int insertCs(Cs cs);
 
@@ -29,6 +29,8 @@ public interface CsService {
 	int csDeleteReply(int csReplyNo);
 
 	List<Cs> selectCsList();
+
+	int getSearchContents();
 
 
 

@@ -32,4 +32,8 @@ public interface CsDAO {
 
 	int csDeleteReply(int csReplyNo);
 
+	List<Cs> selectCsList(Map<String, Object> map, int cPage, int numPerPage);
+
+	int getSearchContent();
+
 }

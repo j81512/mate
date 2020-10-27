@@ -87,7 +87,19 @@ $(function(){
 	</c:forEach>
 	</table>
 
-
+		<nav aria-label="..." style="text-align: center;">
+			<div class="pageBar">
+				<ul class="pagination">
+				<c:if test="${not empty pageBar }">
+				<c:forEach items="${ pageBar }" var="p">
+					<li>
+					  	${ p }
+					</li>
+				</c:forEach>
+				</c:if>
+				</ul>
+			</div>
+		</nav>
 	
 </section> 
 
