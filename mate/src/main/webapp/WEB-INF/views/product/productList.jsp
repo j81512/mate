@@ -110,9 +110,8 @@
 						<div class="imgNav">
 							<c:forEach items="${product.pmiList }" var="Thumbs" varStatus="vs">
 								<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${Thumbs.renamedFilename}" 
-									 alt="thums${vs.count}" id="thumbs${vs.count}"
-									 onclick="change_img(this);"
-									 width="50px"/>
+									 alt="thums${vs.count}"
+									 width="50px" class="imgNav-img"/>
 							</c:forEach>
 						</div>
 						<div class="price">
@@ -170,10 +169,13 @@
 
 </div>
 <script>
-function change_img(image){
- 	console.log(image.src);
- 	console.log(image.parentNode.parentNode.page.firstChild);
-}
+$(".imgNav-img").click(function(){
+	
+	var src = $(this).attr("src");
+	var $topSectionImg = $(this).parent().siblings(".top-section").find("img");
+	$topSectionImg.attr("src", src);
+});
+
 </script>
 
 <jsp:include page="/WEB-INF/views/common/footerS.jsp"></jsp:include>
