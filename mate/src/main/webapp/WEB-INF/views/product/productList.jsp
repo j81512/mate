@@ -61,9 +61,7 @@
 	color: #333;
 }
 </style>
-<<<<<<< HEAD
 
-=======
 <script>
  function pageing(now,cnt){
 	var $nowPage = $('[name = nowPage]');
@@ -79,7 +77,6 @@
  
 
 </script>
->>>>>>> branch 'master' of https://github.com/j81512/mate.git
 <div class="product-container">
 	<!-- ajax처리 -->
 	 <div class="product-search">
