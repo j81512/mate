@@ -82,7 +82,7 @@
 	 <div class="product-search">
 		<form class="form-inline"
 				action="${pageContext.request.contextPath}/product/searchProduct.do">
-		    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
+		    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search" value="${ search }">
 			<br />
 			<p>카테고리 선택</p>
 				<label for="pm">프라모델</label>
