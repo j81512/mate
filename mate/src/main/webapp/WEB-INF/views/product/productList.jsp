@@ -86,13 +86,13 @@
 			<br />
 			<p>카테고리 선택</p>
 				<label for="pm">프라모델</label>
-				<input type="checkbox" name="category" id="pm" value="pm"/>
+				<input type="checkbox" name="category" id="pm" value="pm" ${ sCategory.contains("pm") ? 'checked' : '' }/>
 				<label for="fg">피규어</label>
-				<input type="checkbox" name="category" id="fg" value="fg"/>
+				<input type="checkbox" name="category" id="fg" value="fg" ${ sCategory.contains("fg") ? 'checked' : '' }/>
 				<label for="rc">RC카</label>
-				<input type="checkbox" name="category" id="rc" value="rc"/>
+				<input type="checkbox" name="category" id="rc" value="rc" ${ sCategory.contains("rc") ? 'checked' : '' }/>
 				<label for="dr">드론</label>
-				<input type="checkbox" name="category" id="dr" value="dr"/>
+				<input type="checkbox" name="category" id="dr" value="dr" ${ sCategory.contains("dr") ? 'checked' : '' }/>
 		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
 			<input type="hidden" name="category" value="${ category }" />
 			<input type="hidden" name="nowPage" value="1" />
