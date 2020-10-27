@@ -112,6 +112,28 @@
 		order by rl.request_no desc
  	</select>
  	
+ 	<select id="selectEmpRequest" resultType="requestLog">
+ 		select
+			rl.request_no,
+			rl.product_no,
+			rl.manufacturer_id,
+			rl.amount,
+			rl.request_date,
+			rl.confirm,
+			rl.emp_id,
+			p.product_name,
+			p.category,
+			p.price
+		from
+			Request_Log rl inner join
+			Product p
+		on rl.Product_no = P.product_no
+		where
+			rl.manufacturer_id = #{empId}
+		order by 
+		rl.request_no desc
+ 	</select>
+ 	
  	<select id="selectReceiveList" resultType="receive">
  		select
  			r.receive_no,
