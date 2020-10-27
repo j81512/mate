@@ -14,9 +14,6 @@
 .card{
 	width: 360px;
 	background : #f1f1f1;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
 	display:inline-block;
 }
 .top-section{
@@ -24,6 +21,7 @@
 	overflow: hidden;
 	background: #fff;
 	position: relative;
+	display:inline-block;
 }
 #mainImg{
 	weight: 360px;
@@ -42,13 +40,6 @@
 }
 .imgNav img:hover{
 	border-color: #6ab04c;
-}
-.price{
-	position: absolute;
-	top: 20px;
-	right: 20px;
-	color: #6ab04c;
-	font-size: 24px;
 }
 .product-info{
 	padding: 25px;
@@ -70,11 +61,8 @@
 	$search.submit();
 
 }
-
- 
-
 </script>
-<div class="product-container">
+<div class="container">
 	<!-- ajax처리 -->
 	 <div class="product-search">
 		<form class="form-inline"
@@ -97,85 +85,86 @@
 		</form>
 	</div> 
 	
-	<div class="product-list">
-				<!-- 상품이 있을 경우 -->
-				<c:if test="${ not empty list }">
-					<c:forEach items="${ list }" var="product">
-					<div class="card">
-						<div class="top-section">
-							<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${product.pmiList[0].renamedFilename}" 
-								 alt="대표이미지" class="mainImg"
-								 width="200px"/>
-						</div>
-						<div class="imgNav">
-							<c:forEach items="${product.pmiList }" var="Thumbs" varStatus="vs">
-								<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${Thumbs.renamedFilename}" 
-									 alt="thums${vs.count}"
-									 width="50px" class="imgNav-img"/>
-							</c:forEach>
-						</div>
-						<div class="price">
-						가격 : ${product.price}원
-						</div>
-						<div class="product-info">
-							<div class="productName">
-							상품명 : ${product.productName}
-							</div>
-							<div class="category">
-							카테고리 : 
-								<c:if test="${ product.category eq 'fg' }">
-					    		피규어
-					    		</c:if>
-					    		<c:if test="${ product.category eq 'pm' }">
-					    		프라모델
-					    		</c:if>
-					    		<c:if test="${ product.category eq 'rc' }">
-					    		RC카
-					    		</c:if>
-					    		<c:if test="${ product.category eq 'dr' }">
-					    		드론
-					    		</c:if>
-							</div>
-							<div class="manufac">
-							제조사 : ${product.manufacturerId}
-							</div>
-						</div>
-					</div>
+		<!-- 상품이 있을 경우 -->
+		<c:if test="${ not empty list }">
+			<c:forEach items="${ list }" var="product">
+			<div class="card">
+				<div class="top-section">
+					<a href="${pageContext.request.contextPath }/product/productDetail.do?productNo=${product.productNo}">
+					<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${product.pmiList[0].renamedFilename}" 
+						 alt="대표이미지" class="mainImg"
+						 width="200px"/>
+					</a>
+				</div>
+				<div class="imgNav">
+					<c:forEach items="${product.pmiList }" var="Thumbs" varStatus="vs">
+						<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${Thumbs.renamedFilename}" 
+							 alt="thums${vs.count}"
+							 width="50px" class="imgNav-img"/>
 					</c:forEach>
-				</c:if>
-				<!-- 상품이 없을 경우 -->
-				<c:if test="${ empty list }">
-						<span>상품이 존재하지 않습니다.</span>
-				</c:if>
-	</div>
-</div>
-<div style="display: block; text-align: center;">
-	<c:if test="${ page.startPage != 1 }">
-		<a href="#"onclick="pageing('${ paging.startPage - 1}','${ paging.cntPerPage }')">&lt;</a>
-	</c:if>
-	<c:forEach begin="${paging.startPage }" end="${paging.endPage }" var="p">
-			<c:choose>
-				<c:when test="${p == paging.nowPage }">
-					<b>${p }</b>
-				</c:when>
-				<c:when test="${p != paging.nowPage }">
-					<a href="#"onclick="pageing('${ p }','${ paging.cntPerPage }')">${p+1 }</a>
-				</c:when>
-			</c:choose>
-		</c:forEach>
-		<c:if test="${paging.endPage != paging.lastPage}">
-			<a href="#" onclick="pageing('${ paging.endPage+1 }','${ paging.cntPerPage }')">&gt;</a>
+				</div>
+				<a href="${pageContext.request.contextPath }/product/productDetail.do?productNo=${product.productNo}">
+				<div class="product-info">
+					<div class="productName">
+					상품명 : ${product.productName}
+					</div>
+					<div class="price">
+					가격 : ${product.price}원
+					</div>
+					<div class="category">
+					카테고리 : 
+						<c:if test="${ product.category eq 'fg' }">
+			    		피규어
+			    		</c:if>
+			    		<c:if test="${ product.category eq 'pm' }">
+			    		프라모델
+			    		</c:if>
+			    		<c:if test="${ product.category eq 'rc' }">
+			    		RC카
+			    		</c:if>
+			    		<c:if test="${ product.category eq 'dr' }">
+			    		드론
+			    		</c:if>
+					</div>
+					<div class="manufac">
+					제조사 : ${product.manufacturerId}
+					</div>
+				</div>
+				</a>
+			</div>
+			</c:forEach>
 		</c:if>
-
+		<!-- 상품이 없을 경우 -->
+		<c:if test="${ empty list }">
+				<span>상품이 존재하지 않습니다.</span>
+		</c:if>
+	<div style="display: block; text-align: center;">
+		<c:if test="${ page.startPage != 1 }">
+			<a href="#"onclick="pageing('${ paging.startPage - 1}','${ paging.cntPerPage }')">&lt;</a>
+		</c:if>
+		<c:forEach begin="${paging.startPage }" end="${paging.endPage }" var="p">
+				<c:choose>
+					<c:when test="${p == paging.nowPage }">
+						<b>${p }</b>
+					</c:when>
+					<c:when test="${p != paging.nowPage }">
+						<a href="#"onclick="pageing('${ p }','${ paging.cntPerPage }')">${p+1 }</a>
+					</c:when>
+				</c:choose>
+			</c:forEach>
+			<c:if test="${paging.endPage != paging.lastPage}">
+				<a href="#" onclick="pageing('${ paging.endPage+1 }','${ paging.cntPerPage }')">&gt;</a>
+			</c:if>
+	
+	</div>
 </div>
 <script>
 $(".imgNav-img").click(function(){
 	
 	var src = $(this).attr("src");
-	var $topSectionImg = $(this).parent().siblings(".top-section").find("img");
+	var $topSectionImg = $(this).parent().siblings().siblings(".top-section").find("img");
 	$topSectionImg.attr("src", src);
 });
-
 </script>
 
 <jsp:include page="/WEB-INF/views/common/footerS.jsp"></jsp:include>

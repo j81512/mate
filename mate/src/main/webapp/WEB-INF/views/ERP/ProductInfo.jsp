@@ -64,7 +64,6 @@ function orderProduct(empId,pNo,requestId){
 }
 </script>
   <body>
-    
 	<section id="info-container" class="container">
 	  <div class="form-group"
 	  	   style="width: 1280px">
@@ -116,28 +115,32 @@ function orderProduct(empId,pNo,requestId){
 	  </div>
 	</section>
 	
+
 	
-	<section>
-		<div class="productInfo">
-			<tr>
-				<th>상품번호</th>
-				<th>상품명</th>
-				<th>카테고리</th>
-				<th>브랜드</th>
-				<th>등록일</th>
-				<th>재고</th>
-				<th>상태</th>
-				<!-- 로그인 상태가 관리자인 경우 상품 삭제 버튼 추가 -->
-				<c:if test="${loninEmp.status eq 0 }">
+	
+
+	<div id="buy" class="tab-pane fade active show in">
+		<div class="col-md-15">
+		    <div class="form-area">  
+				<table id="purchaseLog-table" class="table">
+			<thead>
+				<tr>
+					<th scope="col">상품번호</th>
+					<th scope="col">상품명</th>
+					<th scope="col">카테고리</th>
+					<th scope="col">브랜드</th>
+					<th scope="col">등록일</th>
+					<th scope="col">재고</th>
+					<th scope="col">상태</th>
+					<!-- 로그인 상태가 관리자인 경우 상품 삭제 버튼 추가 -->
+					<c:if test="${loninEmp.status eq 0 }">
 					상품 삭제
-				</c:if>
-				
-			</tr>
-		</div>
+					</c:if>
+				</tr>
+			</thead>
 		
-		
-		<div class="productInfo">
 			<c:if test="${ not empty list }">
+				<tbody>
 					<c:forEach items="${ list }" var="product">
 					<tr>
 						<td>${ product.productNo }</td>
@@ -146,38 +149,41 @@ function orderProduct(empId,pNo,requestId){
 						<td>${ product.manufacturerId }</td>
 						<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>
 						<td>${ product.stock eq 0 ? '재고가 없습니다' : product.stock }</td>
-						<td><button type="button" onclick="orderProduct('${ loginEmp.empId }',${ product.productNo },${ product.empId })">발주</button></td>
+						<td><button type="button" onclick="orderProduct('${ loginEmp.empId }',${ product.productNo },${ product.manufacturerId })">발주</button></td>
 						<c:if test="${loginEmp.status eq 0 }">
 						<td>
+							<form id="productDelFrm">
+							<input type="hidden" name="productNo" value="${product.productNo }"/>
 							<button type="button" onclick="productDelete();">상품 삭제</button>
+							</form>
 						</td>
-						</c:if>
+						
+						<!-- 상품 삭제 폼 -->
+					</c:if>
 					</tr>
-				<form id="productDelFrm">
-					<input type="hidden" name="productNo" value="${product.productNo }"/>
-				</form>
-				</c:forEach>		
+					</c:forEach>
+					<tr>
+					
+					</tr>
+				</tbody>
 			</c:if>
-			<c:if test="${ empty list }">
-				<span>검색결과 없음</span>
-			</c:if>
-		</div>
-		<form action="${pageContext.request.contextPath}/ERP/orderERP.do" name="order">
-			<input type="hidden" name="eId" value=""/>
-			<input type="hidden" name="requestId" value=""/>
-			<input type="hidden" name="pNo" value=""/>
-		</form>
-	</section>
+
+	</table>
+	</div>
+	</div>
+
+	<c:if test="${ empty list }">
+		<span>검색결과 없음</span>
+	</c:if>
 	
-	<br />
-	<!-- 종완 상품 등록 버튼  -->
-	<section id="product-enroll-btn">
-		<div class="form-group">
-			<button type="button" class="btn btn-light" onclick="history.go(-1)">뒤로 가기</button>
-			<button type="button" class="btn btn-dark" onclick="productEnroll();">상품 등록</button>
-		</div>
-	</section>
+	<form action="${pageContext.request.contextPath}/ERP/orderERP.do" name="order">
+		<input type="hidden" name="eId" value=""/>
+		<input type="hidden" name="requestId" value=""/>
+		<input type="hidden" name="pNo" value=""/>
+	</form>
 	
+	
+
 	<!-- 김찬희 페이징 -->
 	<div style="display: block; text-align: center;">
 	<c:if test="${ page.startPage != 1 }">
@@ -198,8 +204,17 @@ function orderProduct(empId,pNo,requestId){
 		<c:if test="${page.endPage != page.lastPage}">
 			<a href="#" onclick="pageing('${ page.endPage+1 }','${ page.cntPerPage }')">&gt;</a>
 		</c:if>
-
+	</div>
+	<div class="form-group">
+		<button type="button" class="btn btn-light" onclick="history.go(-1)">뒤로 가기</button>
+		<!-- 지점이 아닐 경우 등록버튼 표시  -->
+		<c:if test="${loginEmp.status ne 1 }">
+		<button type="button" class="btn btn-dark" onclick="productEnroll();">상품 등록</button>
+		</c:if>
+	</div>
 </div>
+	
+	
 	
 	
 <script>
@@ -212,10 +227,15 @@ location.href="${ pageContext.request.contextPath }/ERP/productEnroll.do";
 function productDelete(){
 	var $frm = $("#productDelFrm");
 
+	var confirm_val = confirm("정말로 상품을 삭제하시겠습니까?");
 
-	$frm.attr("action", "${pageContext.request.contextPath}/ERP/productDelete.do");
-	$frm.attr("method", "post");
-	$frm.submit();
+	if(confirm_val){
+		$frm.attr("action", "${pageContext.request.contextPath}/ERP/productDelete.do");
+		$frm.attr("method", "post");
+		$frm.submit();
+	}
+	else{return false;}
+
 
 }
 </script>
