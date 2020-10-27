@@ -64,7 +64,7 @@
 		
 		<div class="productInfo">
 			<c:if test="${ not empty list }">
-				<c:forEach items="${ list }" var="RequestLog">
+				<c:forEach items="${ list }" var="request">
 					<tr>
 						<td>${ request_log.no }</td>
 						<td>${ product.productName }</td>
