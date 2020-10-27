@@ -829,22 +829,19 @@ public class ErpContorller {
 	@PostMapping("/ERP/erpLogin.do")
 	public String memberLogin(@RequestParam("empId") String empId
 			  ,@RequestParam("empPwd") String empPwd
-			  ,@RequestParam("status") int status
 			  ,RedirectAttributes redirectAttr
 			  ,Model model
 			  ,HttpSession session) {
 		log.debug("empId = {}", empId);
 		log.debug("empPwd ={}", empPwd);
-		log.debug("status ={}", status);
-
+	
 		EMP loginEmp = erpService.selectOneEmp(empId);
 		
 		log.debug("loginEmp = {}", loginEmp);
 		String location = "/";
 		
 		if(	loginEmp != null && (loginEmp.getEmpId().equals(empId))
-				&& (loginEmp.getEmpPwd().equals(empPwd))
-				&& (loginEmp.getStatus() == status )) {
+				&& (loginEmp.getEmpPwd().equals(empPwd))) {
 			model.addAttribute("loginEmp", loginEmp);
 			if(loginEmp.getEmpId().equals("admin")) model.addAttribute("loginMember", loginEmp);
 	
