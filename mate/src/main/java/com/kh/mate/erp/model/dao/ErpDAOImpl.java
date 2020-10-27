@@ -284,6 +284,62 @@ public class ErpDAOImpl implements ErpDAO {
 	
 	
 
+	@Override
+	public EmpBoard selectEmpStock(Map<String, Object> map) {
+		return sqlSession.selectOne("erpBoard.selectEmpStock", map);
+	}
+
+	@Override
+	public int empBoardDelete(int boardNo) {
+		return sqlSession.delete("erpBoard.empBoardDelete", boardNo);
+	}
+
+	@Override
+	public List<EmpBoardImage> selectBoardImage(int boardNo) {
+		return sqlSession.selectList("erpBoard.selectOneBoardImage", boardNo);
+	}
+
+	@Override
+	public int empBoardUpdate(EmpBoard empBoard) {
+		return sqlSession.update("erpBoard.empBoardUpdate", empBoard);
+	}
+
+	@Override
+	public int empBoardFileDelete(int boardNo) {
+		return sqlSession.delete("erpBoard.empBoardFileDelete", boardNo);
+	}
+
+	@Override
+	public int empBoardFileUpdate(EmpBoardImage updateImages) {
+		return sqlSession.update("erpBoard.empBoardFileUpdate", updateImages);
+	}
+
+	@Override
+	public EmpBoard selectOneEmpBoard(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("erpBoard.selectOneEmpBoard",map);
+	}
+
+	@Override
+	public int updateEnabled(Map<String, Object> map) {
+		return sqlSession.update("erpBoard.enabledUpdate",map);
+	}
+
+	@Override
+	public int updateTranStock(Map<String, Object> map) {
+		return sqlSession.update("erpBoard.updateTranStock", map);
+	}
+
+	@Override
+	public int updateStock(Map<String, Object> map) {
+		return sqlSession.update("erpBoard.updateStock",map);
+	}
+
+	@Override
+	public int updateStockInfo(Map<String, Object> map) {
+		return sqlSession.update("erpBoard.updateStockInfo",map);
+	}
+
 	
 	
 	

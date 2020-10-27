@@ -66,6 +66,16 @@ public class MemberServiceImpl implements MemberService {
 		return memberDAO.failPurchase(purchaseNo);
 	}
 
+	@Override
+	public List<Member> searchMember(String searchType, String searchKeyword, int cPage, int numPerPage) {
+		return memberDAO.searchMember(searchKeyword,searchType,cPage,numPerPage);
+	}
+
+	@Override
+	public int getSearchContents(Map<String, String> map) {
+		return memberDAO.getSearchContent(map);
+	}
+
 	
 	
 }

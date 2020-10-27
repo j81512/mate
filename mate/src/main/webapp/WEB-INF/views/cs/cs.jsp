@@ -16,24 +16,42 @@ tr[data-no]{
 	cursor: pointer;
 }
 </style>
+	
+<script>
 
-
+$(function(){
+	$("input:checkbox[id='csMyListFrm']").change(function() {
+	    	console.log($(this).val());
+	    	var checked = $(this);
+	    	var memberId = $(this).val();
+	    	var $frm = $("#csMyListFrm");
+		if(this.checked){
+				$frm.submit();
+				$("input:checkbox[id='csMyListFrm']").prop("checked", true);
+		}else{
+			location.href="${ pageContext.request.contextPath}/cs/cs.do";
+		}
+				
+	
+	});
+	
+});
+</script>
+<section id="cs-container" class="container">
 	<form id="csMyListFrm" 
     	  action="${pageContext.request.contextPath}/cs/cs.do" 
     	  class="form-inline" 
     	  method="get"> 
-    <input type="checkbox" id="csMyListFrm" type="submit" />
-    <label for="csMyListFrm"><span>내글만보기</span></label>
+    	<input type="checkbox" name="memberId" id="csMyListFrm" value="${ loginMember.memberId != null ? loginMember.memberId : '' }" ${ loginMember.memberId eq memberId ? 'checked' : '' }/>
+	    <label for="csMyListFrm"><span>내글만보기</span></label>
+    	<input type="checkbox" name="secret" id="secret" value="" />
+	    <label for="secret"><span>비밀글 보기</span></label>
     </form>
-		<form id="csDeleteFrm" 
+	<form id="csDeleteFrm" 
 	  	  action="${ pageContext.request.contextPath }/cs/deleteCs.do" 
 	  	  method="POST">
 	<input type="hidden" name="csNo" />
 	</form>
-	
-	
-	
-<section id="cs-container" class="container">
 	<input type="button" value="글쓰기" id="btn-add" class="btn btn-outline-success" onclick="goInsertCs();"/>
 
 
@@ -46,19 +64,23 @@ tr[data-no]{
 		<th>첨부파일</th>	
 	</tr>
 	 <c:forEach items="${ list }" var="cs">
-	<tr data-no="${ cs.csNo }">
+		<tr data-no="${ cs.csNo }">
+		<c:if test="${ cs.secret == 0 }">
 		<td>${ cs.csNo }</td>
 		<td>${ cs.title }</td>
 		<td>${ cs.memberId }</td>
-		<td><fmt:formatDate value="${ cs.regDate }" pattern="yy/MM/dd HH:mm:ss"/></td>
+		<td><fmt:formatDate value="${ cs.regDate }" pattern="yy/MM/dd"/></td>
 		<td>
 			<c:if test="${ ! empty cs.csImage }">
 				<img src="${ pageContext.request.contextPath }/resources/images/file.png" style="width : 16px;"/>
 			</c:if> 
 		</td>
-		<td>
-		<button type="button" class="btn btn-outline-secondary" onclick="updateDev(${ dev.no });">수정</button>
-		</td>
+		<c:if test="${ loginMember.memberId eq cs.memberId }">
+			<td>
+			<button type="button" class="btn btn-outline-secondary" onclick="updateDev(${ dev.no });">수정</button>
+			</td>
+		</c:if>
+		</c:if>
 	</tr>
 	</c:forEach>
 	</table>

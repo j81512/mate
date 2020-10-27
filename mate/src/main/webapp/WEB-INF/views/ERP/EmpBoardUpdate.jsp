@@ -102,20 +102,23 @@ $(function(){
 	});
 
 
-		$("[name=upFile]").on("change", function(){
-				var file = $(this).prop('files')[0];
-				//console.log("this = " + $(this).val()); //선택된 파일이 this로 넘어옴
-				//console.log(file);
-				//console.log($(this).prop('files')); // 0:File, length:1 배열로 파일의 정보 넘어옴
-				var $label = $(this).next(".custom-file-label");
+	$("[name=upFile]").on("change", function(){
+		var $valid = $("[name=fileChange]");
+		var file = $(this).prop('files')[0];
+		//console.log("this = " + $(this).val()); //선택된 파일이 this로 넘어옴
+		//console.log(file);
+		//console.log($(this).prop('files')); // 0:File, length:1 배열로 파일의 정보 넘어옴
+		var $label = $(this).next(".custom-file-label");
 
-				if(file == undefined){
-					$label.html("파일을 선택하세요");		
-				}else{
-					$label.html(file.name);
-				}
-					
-		});
+		if(file == undefined){
+			$label.html("파일을 선택해 주세요");
+			$valid.val(0);	
+		}else{
+			$label.html(file.name);
+			$valid.val(1);
+		}
+			
+	});
 		
 		
 
@@ -213,44 +216,52 @@ $('#category_').change(function() {
 <jsp:include page="/WEB-INF/views/common/headerE.jsp" />
 
 
-		<form action="${ pageContext.request.contextPath }/ERP/empBoardCkEnroll.do"
-			  method="POST"
-			  id="erpBoardFrm"
-			  enctype="multipart/form-data">
-			   <div class="form-group">
-			   	<input type="text" name="title"  id="title_" />
-			   	<input type="hidden" name="empId"  id="empId_" value="${loginEmp.empId }" readOnly/>
-			   	<input type="hidden" name="empName"  id="empName" value="${loginEmp.empName}" readOnly/>
-			   </div>
-			   <div class="form-group">
+<div class="container">
+	<div id="board-container" class="mx-auto text-center">
+		<div>
+		<form action="${ pageContext.request.contextPath }/ERP/empBoardCkUpdate.do"
+		  method="POST"
+		  id="erpBoardFrm"
+		  enctype="multipart/form-data">
+		 
+			<input type="text" class="form-control" placeholder="번호" name="boardNo" id="boardNo" value="${empBoard.boardNo }"  readonly>
+		   <div class="form-group">
 			   	<select class="form-control" name="category" id="category_">
-				  <option selected="selected" disabled>카테고리를 선택하세요</option>
-				  <option value="ntc">공지</option>
-				  <option value="req">요청</option>
-				  <option value="adv">홍보</option>
-				  <option value="def">일반</option>
-				  <option value="evt">이벤트</option>
+				  <option value="ntc" selected="${empBoard.category eq 'ntc' ?'selected' : '' }">공지</option>
+				  <option value="req" selected="${empBoard.category eq 'req' ?'selected' : '' }">요청</option>
+				  <option value="adv" selected="${empBoard.category eq 'adv' ?'selected' : '' }">홍보</option>
+				  <option value="def" selected="${empBoard.category eq 'def' ?'selected' : '' }">일반</option>
+				  <option value="evt" selected="${empBoard.category eq 'evt' ?'selected' : '' }">이벤트</option>
 				</select>
-			   </div>
-			   <div class="product" id="productList"></div>
-			  <div class="custom-file">
-			  	<input type="file" class="custom-file-input" name="upFile" id="upFile1">
-     			<label class="custom-file-label" for="upFile1">파일을 선택하세요</label>
-			  </div>
-			   <div class="custom-file">
-			     <input type="file" class="custom-file-input" name="upFile" id="upFile1">
-			     <label class="custom-file-label" for="upFile1">파일을 선택하세요</label>
-			   </div>
-			  <div class="form-group">
-			  	<textarea name="content" id="content_">
-			  	</textarea>
-			  </div>
-				
-			 <div class="button-gruop">
-			 	<input type="submit"  value="등록하기"/>
+		   </div>
+		   <div class="product" id="productList"></div>
+			<c:if test="${ empBoard.category eq 'req' }">
+				<input type="text" name="productName" id="productName_" value="${ empBoard.productName }" />
+				<input type="text" name="stock" id="stock_" value="${ empBoard.amount }" />
+			</c:if>
+			<input type="text" class="form-control" placeholder="제목" name="title" id="title"  value="${empBoard.title }" >
+			<input type="text" class="form-control" name="empName" value="${ empBoard.empName }" readonly>
+			 <div class="form-group">
+				<c:forEach items="${ empBoard.empBoardImageList }" var="empBoard" varStatus="vs">	
+					  <div class="custom-file">
+					    <input type="file" class="custom-file-input" name="upFile" id="upFile${ vs.count}" >
+					    <label class="custom-file-label" for="upFile${ vs.count}">첨부파일 - ${ empBoard.originalFilename != null ? empBoard.originalFilename : "파일명" }</label>
+					  </div>
+				</c:forEach>
+				 <input type="hidden" name="fileChange" value="0" />
+			</div>
+			 <textarea class="form-control" name="content" 
+		    		  placeholder="내용" >
+		    		  ${ empBoard.content != null  ? empBoard.content : '내용'}
+		     </textarea>   
+		    <div class="button-gruop">
+			 	<input type="submit"  value="수정하기"/>
 			 	<input type="button"  value="취소" onclick="revoke();"/>
 			 </div>
-		</form>
-
+	 </form>	
+			 </div>
+		 
+		</div>
+	 </div>
  <!--호근 푸터 처리  -->
 <jsp:include page="/WEB-INF/views/common/footerE.jsp" />

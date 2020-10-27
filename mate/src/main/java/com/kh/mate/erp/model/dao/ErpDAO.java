@@ -95,6 +95,8 @@ public interface ErpDAO {
 
 	List<RequestLog> requestList();
 
+	EmpBoard selectEmpStock(Map<String, Object> map);
+	
 	List<RequestLog> selectRequsestList(String empId);
 
 	int updateRequestToApp(int requestNo);
@@ -107,6 +109,17 @@ public interface ErpDAO {
 
 	int updateReceiveToRef(int receiveNo);
 
+
+	int empBoardDelete(int boardNo);
+
+	List<EmpBoardImage> selectBoardImage(int boardNo);
+
+	int empBoardUpdate(EmpBoard empBoard);
+
+	int empBoardFileDelete(int boardNo);
+
+	int empBoardFileUpdate(EmpBoardImage updateImages);
+
 	int countProduct(EMP emp);
 
 	List<Product> selectAll();
@@ -115,5 +128,14 @@ public interface ErpDAO {
 
 	int mStockInsert(Map<String, Object> map);
 
+	EmpBoard selectOneEmpBoard(Map<String, Object> map);
+
+	int updateEnabled(Map<String, Object> map);
+
+	int updateTranStock(Map<String, Object> map);
+
+	int updateStock(Map<String, Object> map);
+
+	int updateStockInfo(Map<String, Object> map);
 
 }

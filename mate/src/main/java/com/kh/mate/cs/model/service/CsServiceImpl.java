@@ -1,6 +1,7 @@
 package com.kh.mate.cs.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,8 @@ public class CsServiceImpl implements CsService {
 	private CsDAO csDAO;
 
 	@Override
-	public List<Cs> selectCsList() {
-		return csDAO.selectCsList();
+	public List<Cs> selectCsList(Map<String, Object> map) {
+		return csDAO.selectCsList(map);
 	}
 	
 	@Override
@@ -83,7 +84,7 @@ public class CsServiceImpl implements CsService {
 	@Override
 	public int csReply(CsReply csReply) {
 		
-		return csDAO.csReplyList(csReply);
+		return csDAO.csReplyEnroll(csReply);
 	}
 
 	@Override
@@ -92,5 +93,14 @@ public class CsServiceImpl implements CsService {
 		return csDAO.csDeleteReply(csReplyNo);
 	}
 
+	@Override
+	public List<Cs> selectCsList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	
+	
 	
 }

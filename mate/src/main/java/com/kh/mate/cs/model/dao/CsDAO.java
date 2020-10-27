@@ -1,6 +1,7 @@
 package com.kh.mate.cs.model.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.kh.mate.cs.model.vo.CsImages;
 import com.kh.mate.cs.model.vo.CsReply;
@@ -11,7 +12,7 @@ public interface CsDAO {
 
 	int insertCs(Cs cs);
 
-	List<Cs> selectCsList();
+	List<Cs> selectCsList(Map<String, Object> map);
 
 	int deleteCs(int csNo);
 
@@ -27,7 +28,7 @@ public interface CsDAO {
 
 	List<CsReply> csReplyList(int csNo);
 
-	int csReplyList(CsReply csReply);
+	int csReplyEnroll(CsReply csReply);
 
 	int csDeleteReply(int csReplyNo);
 

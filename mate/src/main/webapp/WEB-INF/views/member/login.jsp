@@ -53,7 +53,7 @@
 		$("#phone-send").click(function(){
 			var $phone = $("#phone").val();
 		    var popUrl ="${ pageContext.request.contextPath }/member/pCheck.do";
-		    var popOption = "width=650px, height=550px, resizable=no, location=no, top=300px, left=300px;"
+		    var popOption = "width=650px, height=550px, resizable=no, location=no, top=300px, left=300px;";
 			console.log($phone);
 			$.ajax({
 				url:"${ pageContext.request.contextPath}/member/phoneSend.do",
@@ -65,7 +65,8 @@
 				success: function(data){
 						console.log(data);
 						var $num = data;		
-						window.open(popUrl + "/" +  $num ,"휴대폰 인증 ",popOption); 		
+						phoneCheckNum(data);
+						window.open(popUrl + "/" +  $num ,"휴대폰 인증 ",popOption);		
 				},
 				error: function(xhr, status, err){
 						console.log(xhr);
@@ -139,6 +140,14 @@
 	    }
 	    return unescape(cookieValue);
 	}
+
+	function phoneCheckNum(num){
+		console.log(" 여기 호출되냐?");
+		var num = num;
+		console.log(num);
+	
+		
+	}
 </script>
 
 
@@ -146,7 +155,7 @@
 	<div class="row">
 		<div class="col-md-3 col-md-offset-4">
 		 <ul class="nav nav-tabs">
-             <li class="active"><a href="#member" data-toggle="tab">일반 회원</a></li>
+             <li><a href="#member" data-toggle="tab">일반 회원</a></li>
              <li><a href="#adminTab" data-toggle="tab">관리자 회원</a></li>
          </ul>
           <div id="myTabContent" class="tab-content">
@@ -254,7 +263,7 @@
 						<input type="tel" class="form-control" 
 						placeholder="(-없이)01012345678" name="phone" id="phone" maxlength="11" required>
 						<div class="form-check form-check-inline">
-						<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg"id="phone-send">문자인증</button>
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg"id="phone-send" onclick="return phoneCheckNum('${ receiver}');">문자인증</button>
 						</div>
 					</div>
 					<div class="form-group">
@@ -276,9 +285,10 @@
 					</div>
 				</div>
 					<!-- 관리자용 로그인 화면 -->
-	
-				  <div class="tab-pane fade" id="adminTab">
-                      <form id="adminTab" action="${ pageContext.request.contextPath }/ERP/erpLogin.do" method="post">
+				  <div class="tab-pane fade in active" id="adminTab">
+				  <div class="form">
+				
+                      <form id="admin" action="${ pageContext.request.contextPath }/ERP/erpLogin.do" method="post">
                      	<h3 class="heading-desc">관리자 로그인</h3>
                      	<div class="form-group">
 	                        <label for="empId_">아이디</label>
@@ -300,6 +310,7 @@
                           <button type="submit" class="btn btn-primary">로그인</button>
                         </div>
                       </form>
+				  </div>
 				</div>
 			</div>
 		</div>

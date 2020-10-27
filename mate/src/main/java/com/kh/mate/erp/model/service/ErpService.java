@@ -74,6 +74,8 @@ public interface ErpService {
 
 	List<RequestLog> requestList();
 
+	EmpBoard selectEmpStock(Map<String, Object> map);
+
 	List<RequestLog> selectRequestList(String empId);
 
 	int updateRequestToApp(int requestNo);
@@ -86,6 +88,15 @@ public interface ErpService {
 
 	int updateReceiveToref(int receiveNo);
 
+
+	int empBoardDelete(int boardNo);
+
+	EmpBoard selectOneEmpBoard(int boardNo);
+
+	List<EmpBoardImage> selectBoardImage(int boardNo);
+
+	int empBoardUpdate(EmpBoard empBoard);
+
 	int countProduct(EMP emp);
 
 	List<Product> selectAll();
@@ -94,7 +105,7 @@ public interface ErpService {
 
 	int mStockInsert(Map<String, Object> map);
 
-
+	int stockTranslate(Map<String, Object> map);
 
 
 }
