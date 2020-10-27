@@ -853,6 +853,7 @@ public class ErpContorller {
 			if(loginEmp.getEmpId().equals("admin")) {
 				Member m = new Member();
 				m.setMemberId(loginEmp.getEmpId());
+				m.setMemberName(loginEmp.getEmpName());
 				model.addAttribute("loginMember", m);
 			}
 	
