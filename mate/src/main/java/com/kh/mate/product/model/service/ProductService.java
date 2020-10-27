@@ -18,6 +18,7 @@ public interface ProductService {
 
 	List<Product> productCategory(String category);
 	
+	int countProduct(Map<String, Object> map);
 	int countProduct();
 	
 	//jw

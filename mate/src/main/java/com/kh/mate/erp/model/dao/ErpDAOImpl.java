@@ -257,8 +257,8 @@ public class ErpDAOImpl implements ErpDAO {
 	
 	//김찬희 페이징작업
 	@Override
-	public int countProduct(EMP emp) {
-		return sqlSession.selectOne("erp.countProduct",emp);
+	public int countProduct(Map<String, Object> map) {
+		return sqlSession.selectOne("erp.countProduct",map);
 	}
 	//누락상품검사
 	
