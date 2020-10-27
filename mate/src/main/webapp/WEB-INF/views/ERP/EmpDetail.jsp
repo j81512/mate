@@ -25,6 +25,8 @@
 <jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
 </head>
   <body>
+  
+
 <div class="container">
 	<div id="buy" class="tab-pane fade active show in">
 		<div class="col-md-15">
@@ -68,5 +70,7 @@
 	</div>
 </div>
 <jsp:include page="/WEB-INF/views/common/footerE.jsp"/>	
+
+
   </body>
 </html>

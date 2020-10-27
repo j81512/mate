@@ -1,9 +1,7 @@
 package com.kh.mate.erp.model.dao;
 
 import java.util.List;
-
 import java.util.Map;
-
 
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
@@ -120,7 +118,7 @@ public interface ErpDAO {
 
 	int empBoardFileUpdate(EmpBoardImage updateImages);
 
-	int countProduct(EMP emp);
+	int countProduct(Map<String, Object> map);
 
 	List<Product> selectAll();
 
@@ -137,5 +135,7 @@ public interface ErpDAO {
 	int updateStock(Map<String, Object> map);
 
 	int updateStockInfo(Map<String, Object> map);
+
+	List<RequestLog> selectEmpRequest(String empId);
 
 }

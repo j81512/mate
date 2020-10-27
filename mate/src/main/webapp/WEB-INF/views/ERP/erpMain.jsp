@@ -31,6 +31,8 @@
 		    <div class="form-area">
 		    	<table id="purchaseLog-table" class="table">
 			    	<tr>
+ 				    <!-- 로그인된 관리자 상태가 지점일 경우 -->
+			    	<c:if test="${loginEmp.status ne 2 }">
 			    		<th>
 					    	<button type="button" 
 					    			class="btn btn-default btn-lg"
@@ -46,8 +48,7 @@
 							</button>
 			    		</th>
 			    	
-			    	<!-- 로그인된 관리자 상태가 지점일 경우 -->
-			    	<c:if test="${loginEmp.status eq 1 }">
+
 				    	<th>
 					    	<button type="button" 
 					    			class="btn btn-default btn-lg"
@@ -66,8 +67,11 @@
 							</button>
 				    	</th>
 			    	</c:if>
+
 			    	</tr>
 			    	<tr>
+   				    	<!-- 로그인된 관리자 상태가 지점일 경우 -->
+			    		<c:if test="${loginEmp.status ne 2 }">
 			    		<th>
 					    	<button type="button" 
 					    			class="btn btn-default btn-lg"
@@ -75,6 +79,7 @@
 							  <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>현황 조회
 							</button>
 			    		</th>
+			    		</c:if>
 				    	<th>
 				    	<!-- 호근 게시판 url 수정함 -->
 					    	<button type="button" 

@@ -285,7 +285,7 @@
 					</div>
 				</div>
 					<!-- 관리자용 로그인 화면 -->
-				  <div class="tab-pane fade in active" id="adminTab">
+				  <div class="tab-pane fade in " id="adminTab">
 				  <div class="form">
 				
                       <form id="admin" action="${ pageContext.request.contextPath }/ERP/erpLogin.do" method="post">
@@ -298,14 +298,6 @@
 	                        <label for="empPassword_">비밀번호</label>
 	                        <input type="password" name="empPwd"  class="input-xlarge">
                        	</div>
-                       	<div class="form-check form-check-inline">
-							<input type="radio" class="form-check-input" name="status" id="status2" value="2" checked>
-							<label  class="form-check-label" for="status2">제조사</label>&nbsp;
-							<input type="radio" class="form-check-input" name="status" id="status1" value="1" >
-							<label  class="form-check-label" for="status1">지점</label>
-							<input type="radio" class="form-check-input" name="status" id="status0" value="0" >
-							<label  class="form-check-label" for="status0">본사</label>
-						</div>
                         <div>
                           <button type="submit" class="btn btn-primary">로그인</button>
                         </div>

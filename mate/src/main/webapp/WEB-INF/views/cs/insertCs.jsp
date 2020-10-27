@@ -59,9 +59,11 @@ $(function(){
 	    <textarea class="form-control" name="content" placeholder="내용" required></textarea>
 		<br />
 		<label for="secret">비밀글 설정</label>
-		<input type="checkbox" id="secret" name="secret" value="1"/>		
+		<input type="checkbox" id="secret" name="secret" value="1"/>
+		<c:if test="${ loginMember.memberId eq 'admin'}">
 		<label for="notice">공지 여부</label>
 		<input type="checkbox" id="notice" name="notice" value="1"/>
+		</c:if>		
 		<input type="submit" class="btn btn-outline-success" value ="등록하기">
 	</form>
 </div>

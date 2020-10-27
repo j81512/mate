@@ -1099,8 +1099,8 @@ INSERT into board VALUES(seq_board_no.nextval,'req','강남점 프라모델요�
 INSERT into board VALUES(seq_board_no.nextval,'req','역삼점 홍보용깃발 요청','역삼점 홍보용깃발 요청드립니다.','toy2',default,1,default);
 INSERT into board VALUES(seq_board_no.nextval,'req','부산점 신규 RC카요청 ','부산점 신규RC카 요청합니다.','toy3',default,default,default);
 commit; 
->>>>>>> branch 'master' of https://github.com/j81512/mate.git
-        
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git;
+select * from board_info;
         
     
         

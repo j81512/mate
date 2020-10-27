@@ -28,6 +28,7 @@
 	<body>  
 		<div class="container">
 		
+<<<<<<< HEAD
 			<div id="buy" class="tab-pane fade active show in">
 				<div class="col-md-15">
 				    <div class="form-area">  
@@ -53,7 +54,9 @@
 									</tr>
 								</c:forEach>
 							</tbody>
+
 							</c:if>
+
 							<c:if test="${ empty list }">
 								<tr>
 									<td colspan="3">검색결과 없음</td>

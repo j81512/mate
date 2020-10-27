@@ -24,6 +24,7 @@
 	crossorigin="anonymous">
 </script>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
+
 </head>
 <style>
 .navbar-form .form-control {
@@ -68,7 +69,6 @@ function orderProduct(empId,pNo,requestId){
 }
 </script>
   <body>
-    
 	<section id="info-container" class="container">
 	  <div class="form-group"
 	  	   style="width: 1280px">
@@ -120,23 +120,32 @@ function orderProduct(empId,pNo,requestId){
 	  </div>
 	</section>
 	
+
 	
-	<section>
-		<div class="productInfo">
-			<tr>
-				<th>상품번호</th>
-				<th>상품명</th>
-				<th>카테고리</th>
-				<th>브랜드</th>
-				<th>등록일</th>
-				<th>재고</th>
-				<th>상태</th>
-			</tr>
-		</div>
+	
+
+	<div id="buy" class="tab-pane fade active show in">
+		<div class="col-md-15">
+		    <div class="form-area">  
+				<table id="purchaseLog-table" class="table">
+			<thead>
+				<tr>
+					<th scope="col">상품번호</th>
+					<th scope="col">상품명</th>
+					<th scope="col">카테고리</th>
+					<th scope="col">브랜드</th>
+					<th scope="col">등록일</th>
+					<th scope="col">재고</th>
+					<th scope="col">상태</th>
+					<!-- 로그인 상태가 관리자인 경우 상품 삭제 버튼 추가 -->
+					<c:if test="${loninEmp.status eq 0 }">
+					상품 삭제
+					</c:if>
+				</tr>
+			</thead>
 		
-		
-		<div class="productInfo">
 			<c:if test="${ not empty list }">
+				<tbody>
 					<c:forEach items="${ list }" var="product">
 					<tr>
 						<td>${ product.productNo }</td>
@@ -145,52 +154,70 @@ function orderProduct(empId,pNo,requestId){
 						<td>${ product.manufacturerId }</td>
 						<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>
 						<td>${ product.stock eq 0 ? '재고가 없습니다' : product.stock }</td>
-						<td><button type="button" onclick="orderProduct('${ loginEmp.empId }',${ product.productNo },${ product.empId })">발주</button></td>
+						<td><button type="button" onclick="orderProduct('${ loginEmp.empId }',${ product.productNo },${ product.manufacturerId })">발주</button></td>
+						<c:if test="${loginEmp.status eq 0 }">
+						<td>
+							<!-- 상품 삭제 폼 -->
+							<form id="productDelFrm">
+							<input type="hidden" name="productNo" value="${product.productNo }"/>
+							<button type="button" onclick="productDelete();">상품 삭제</button>
+							</form>
+						</td>
+						
+					</c:if>
 					</tr>
-				</c:forEach>		
+					</c:forEach>
+					<tr>
+					
+					</tr>
+				</tbody>
 			</c:if>
-			<c:if test="${ empty list }">
-				<span>검색결과 없음</span>
-			</c:if>
-		</div>
-		<form action="${pageContext.request.contextPath}/ERP/orderERP.do" name="order">
-			<input type="hidden" name="eId" value=""/>
-			<input type="hidden" name="requestId" value=""/>
-			<input type="hidden" name="pNo" value=""/>
-		</form>
-	</section>
-	
-	<br />
-	<!-- 종완 상품 등록 버튼  -->
-	<section id="product-enroll-btn">
-		<div class="form-group">
-			<button type="button" class="btn btn-light" onclick="history.go(-1)">뒤로 가기</button>
-			<button type="button" class="btn btn-dark" onclick="productEnroll();">상품 등록</button>
-		</div>
-	</section>
-	
-	<!-- 김찬희 페이징 -->
-	<div style="display: block; text-align: center;">
-	<c:if test="${ page.startPage != 1 }">
-		<a href="#"onclick="pageing('${ page.startPage - 1}','${ page.cntPerPage }')">&lt;</a>
-	</c:if>
-	<c:forEach begin="${page.startPage }" end="${page.endPage}" var="p">
-			<c:choose>
-				<c:when test="${p == page.nowPage }">
-					<b>${p }</b>
-				</c:when>
-				<c:when test="${p != page.nowPage }">
-					<a href="${pageContext.request.contextPath}/ERP/searchInfo.do?nowPage=${p }&cntPerPage=
-					${page.cntPerPage}&search=${ map.search }&category=${ map.category }&
-					select=${ map.select}&upper=${ upper }&lower=${ lower }">${p }</a>
-				</c:when>
-			</c:choose>
-		</c:forEach>
-		<c:if test="${page.endPage != page.lastPage}">
-			<a href="#" onclick="pageing('${ page.endPage+1 }','${ page.cntPerPage }')">&gt;</a>
-		</c:if>
 
-</div>
+	</table>
+	</div>
+	</div>
+
+	<c:if test="${ empty list }">
+		<span>검색결과 없음</span>
+	</c:if>
+	
+	<form action="${pageContext.request.contextPath}/ERP/orderERP.do" name="order">
+		<input type="hidden" name="eId" value=""/>
+		<input type="hidden" name="requestId" value=""/>
+		<input type="hidden" name="pNo" value=""/>
+	</form>
+	
+	
+
+	<!-- 김찬희 페이징 -->
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+  		<c:if test="${ page.nowPage != 1 }">
+	      <a class="page-link" href="${pageContext.request.contextPath}/ERP/searchInfo.do?nowPage=${page.nowPage-1 }&cntPerPage=
+					${page.cntPerPage}&search=${ map.search }&category=${ map.category }&
+					select=${ map.select}&upper=${ upper }&lower=${ lower }">Previous</a>
+  		</c:if>
+  	<c:forEach begin="${page.startPage }" end="${page.endPage}" var="p">
+  		<c:choose>
+  		<c:when test="${ p == page.nowPage }">
+		    <li class="page-item"><a class="page-link" href="#" style="color: black">${p }</a></li>
+  		</c:when>
+  		<c:when test="${ p != page.nowPage }">
+		    <li class="page-item"><a class="page-link" href="${pageContext.request.contextPath}/ERP/searchInfo.do?nowPage=${p }&cntPerPage=
+					${page.cntPerPage}&search=${ map.search }&category=${ map.category }&
+					select=${ map.select}&upper=${ upper }&lower=${ lower }">${p }</a></li>
+  		</c:when>
+  		</c:choose>
+  	</c:forEach>
+  	<c:if test="${ page.nowPage != page.endPage }">
+	      <a class="page-link" href="${pageContext.request.contextPath}/ERP/searchInfo.do?nowPage=${page.nowPage+1 }&cntPerPage=
+					${page.cntPerPage}&search=${ map.search }&category=${ map.category }&
+					select=${ map.select}&upper=${ upper }&lower=${ lower }">Next</a>
+  	</c:if>
+  </ul>
+</nav>
+	</div>
+	
 	
 	
 <script>
@@ -198,6 +225,21 @@ function productEnroll(){
 
 location.href="${ pageContext.request.contextPath }/ERP/productEnroll.do";
 	
+}
+
+function productDelete(){
+	var $frm = $("#productDelFrm");
+
+	var confirm_val = confirm("정말로 상품을 삭제하시겠습니까?");
+
+	if(confirm_val){
+		$frm.attr("action", "${pageContext.request.contextPath}/ERP/productDelete.do");
+		$frm.attr("method", "post");
+		$frm.submit();
+	}
+	else{return false;}
+
+
 }
 </script>
 	</body>

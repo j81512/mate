@@ -13,9 +13,12 @@
 			<if test="memberId != null and memberId != ''">
 				and  member_id like  #{ memberId }
 			</if>
+			<if test="secret != null and secret != ''">
+				and  secret  =  #{ secret }
+			</if>
 		</where>
 		order by
-			cs_no DESC
+		notice desc, cs_no desc
 	</select>
 	
 	<insert id="insertCs">
@@ -64,6 +67,8 @@
 			cs
 		where
 			cs_no = #{ csNo }
+		order by
+		notice desc, cs_no desc
 	</select>
 	
 	<select id="selectCsImage" resultType="csImages">
