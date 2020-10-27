@@ -43,7 +43,7 @@
 						<th>
 					    	<button type="button" 
 					    			class="btn btn-default btn-lg"
-					    			onclick="location.href='${ pageContext.request.contextPath }/ERP/ProductInfo.do';">
+					    			onclick="location.href='${ pageContext.request.contextPath }/ERP/searchInfo.do';">
 							  <span class="glyphicon glyphicon-gift" aria-hidden="true"></span>상품 관리
 							</button>
 			    		</th>

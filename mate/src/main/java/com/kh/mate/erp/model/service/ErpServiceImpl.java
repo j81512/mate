@@ -162,9 +162,7 @@ public class ErpServiceImpl implements ErpService {
 	@Override
 	public int productDelete(String productNo) {
 		// productTable 데이터 삭제
-		int result = 0;
-
-		result = erpDAO.productDelete(productNo);
+		int result = erpDAO.productDelete(productNo);
 		log.debug("result@service1 = {}", result);
 		return result;
 	}

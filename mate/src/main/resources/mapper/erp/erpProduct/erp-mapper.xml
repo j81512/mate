@@ -5,26 +5,30 @@
 <mapper namespace="erp">
 
 
-	<resultMap type="Product" id="productMap"></resultMap>
+	<resultMap type="product" id="productMap"></resultMap>
 	
 	<select id="searchInfo" resultMap="productMap">
 		select 
-			* 
+			B.* 
 		from 
 		( 
 			select 
-		ROWNUM RN, 
-		A.*
-        	from 
-        (select p.product_no,
-		p.product_name,
-		p.category,
-		s.emp_id,
-		p.reg_date,
-		nvl(s.stock,0) stock
-			from product p left join stock s
-		on (p.product_no = s.product_no
-		)
+			ROWNUM RN, 
+			A.*
+        		from 
+			        (select 
+				        p.product_no,
+						p.product_name,
+						p.category,
+						s.emp_id,
+						p.reg_date,
+						p.manufacturer_id,
+						nvl(s.stock,0) stock
+					 from 
+					 	product p 
+					 	left join stock s
+					 		on (p.product_no = s.product_no
+					)
 		<where>
 			<if test="emp.status != 0">
 				(emp_id = #{emp.empId} or emp_id is null)
@@ -49,7 +53,7 @@
 				and s.stock <![CDATA[ >= ]]> #{uNum}
 			</if>
 			
-		</where>)A)
+		</where>)A) B
         WHERE RN BETWEEN #{page.start} and #{page.end}
 	</select>
 	
