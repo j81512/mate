@@ -144,13 +144,14 @@ $(document).ready(function(){
 	};
 
 	function StockTranslate(productNo, amount, empId){
-		var tranEmpId = '${ loginEmp.empId}';
-		
+		var $transEmpId = '${ loginEmp.empId}';
+		var $transStock =  '${ loginEmpStock.stock }';
 		var stock = {
 			productNo : productNo,
 			amount : amount,
 			empId : empId,
-			transEmpId : tranEmpId 
+			transEmpId : transEmpId, 
+			transStock : $transStock
 		};
 
 		console.log(stock);
@@ -166,7 +167,7 @@ $(document).ready(function(){
 					console.log(data);
 					var result = data.result;
 					if(result == "1"){                
-		                alert(" 수량을 전송 했습니다.");                             
+		                alert("재고 처리를 했습니다.");                             
 		            } 
 			},
 			error : function(xhr, err, status){

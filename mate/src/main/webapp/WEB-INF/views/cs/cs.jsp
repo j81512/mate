@@ -75,9 +75,11 @@ $(function(){
 				<img src="${ pageContext.request.contextPath }/resources/images/file.png" style="width : 16px;"/>
 			</c:if> 
 		</td>
-		<td>
-		<button type="button" class="btn btn-outline-secondary" onclick="updateDev(${ dev.no });">수정</button>
-		</td>
+		<c:if test="${ loginMember.memberId eq cs.memberId }">
+			<td>
+			<button type="button" class="btn btn-outline-secondary" onclick="updateDev(${ dev.no });">수정</button>
+			</td>
+		</c:if>
 		</c:if>
 	</tr>
 	</c:forEach>
