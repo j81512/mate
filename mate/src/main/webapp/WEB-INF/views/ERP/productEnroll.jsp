@@ -12,7 +12,7 @@ $(function(){
 		});
 });
 
-$(function(){
+jQuery(document).ready(function($){
 	//파일 선택 | 취소 파일라벨명을 변경한다.
 	$("[name=upFile]").on("change", function(){
 			var file = $(this).prop('files')[0];
@@ -29,20 +29,41 @@ $(function(){
 				
 		});
 
-	//가격 range이용시
-	$("#priceRange").on("change", function(){
-
-		var $price = $(this).val();
-		console.log($price);
-		var $container = $("#priceValue");
-
-		$container.val($price);
+	$("#priceValue").on("focus", function(){
+		var val = $("#priceValue").val();
+		if(!isEmpty(val)){
+			val = val.replace(/,/g,'');
+			$("#priceValue").val(val);
+		}
 
 	});
 
+	$("#pricaValue").on("blur", function(){
+		var val = $("#priceValue").val();
+		if(!isEmpty(val) && isNumeric(val)){
+			val = currencyFormatter(val);
+			$("#priceValue").val(val);
+		}
+	});
 
 
 });
+function isEmpty(value){
+	if(value.length == 0 || value == null){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function isNumeric(value){
+	var regExp = /^[0-9]+$/g;
+	return regExp.test(value);
+}
+
+function currencyFormatter(amount){
+	return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
+}
 
 </script>
 <style>
@@ -121,7 +142,7 @@ div#form-container label.custom-file-label{text-align:left;}
   			<!-- 가격 -->
   <div class="form-group">
 	<label for="price">가격</label>
-	<input type="number" name="price" id="priceValue" value="" required/> 원
+	<input type="text" name="price" id="priceValue" value="" required/> 원
   </div>
   
   <!-- 제조사  -->

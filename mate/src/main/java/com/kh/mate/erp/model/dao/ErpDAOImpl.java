@@ -177,8 +177,16 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.update("erp.updateReceiveToRef", receiveNo);
 	}
 	
+	@Override
+	public List<RequestLog> selectEmpRequest(String empId) {
+		return sqlSession.selectList("erp.selectEmpRequest", empId);
+	}
+	
+	
 	//호근 추가
 
+
+	
 
 	
 
@@ -340,8 +348,4 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.update("erpBoard.updateStockInfo",map);
 	}
 
-	
-	
-	
-	
 }

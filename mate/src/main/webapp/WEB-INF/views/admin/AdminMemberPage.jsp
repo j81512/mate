@@ -23,11 +23,6 @@
 <title>회원관리</title>
 <script>
 $(function(){
-	$("tr[data-no]").click(function(){
-		var memberId = $(this).attr("data-no");
-		console.log(memberId);
-		location.href = "${ pageContext.request.contextPath }/Member/AdminMemberDelete.do?no=" + memberId;
-	});
 
 	$("#searchType").change(function(){
 		console.log($(this).val());
@@ -40,11 +35,41 @@ $(function(){
 	});
    		
 });
+
+function memberDelete(memberId){
+
+	var $confirm = confirm("정말로 삭제 하시겠습니까?");
+		if($confirm){
+			console.log(memberId);
+			$.ajax({
+				url : "${ pageContext.request.contextPath}/member/adminMemberDelete.do",
+				method : 'post',
+				dataType : "json",
+				data : {
+					"memberId" : memberId
+				},
+				success : function(data){
+					var result = data.result;
+					if(result == "1"){                
+		                alert("회원 삭제를 성공하였습니다.");
+		                location.href = "${ pageContext.request.contextPath }/Member/MemberList.do";                             
+		            } 	
+				},
+				error : function(xhr, status, err){
+					console.log(xhr);
+					console.log(status);
+					console.log(err);
+				}
+				
+			});	
+	
+		}
+	
+}
 </script>
-<jsp:include page="/WEB-INF/views/common/headerE.jsp" />
+<jsp:include page="/WEB-INF/views/common/headerS.jsp" />
 <div class="container">
 	<div id="board-container" class="mx-auto text-center">
-	<!-- 게시글 검색 -->
 	<div class="form-group row justify-content-center">
 			<div class="w100" style="padding-right:10px">
 				<select class="form-control form-control-sm" name="searchType" id="searchType">
@@ -83,6 +108,7 @@ $(function(){
 			<th>성별</th>
 			<th>핸드폰 번호</th> 
 			<th>가입일</th>
+			<th>삭제</th>
 		</tr>
 		<c:if test="${ not empty memberList }">
 		<c:forEach items="${ memberList }" var="member">
@@ -92,6 +118,7 @@ $(function(){
 			<td>${ member.gender eq 'M' ? '남자' : '여자' }</td>
 			<td>${ member.phone }</td>
 			<td><fmt:formatDate value="${ member.enrollDate }" pattern="yyyy-MM-dd"/></td>
+			<td><button type="button" value="회원삭제" onclick="memberDelete('${ member.memberId }');">회원삭제</button></td>
 		</tr>
 		</c:forEach>
 		</c:if>
@@ -100,17 +127,15 @@ $(function(){
 		<nav aria-label="..." style="text-align: center;">
 		<div class="pageBar">
 			<ul class="pagination">
-			<c:if test="${not empty pageBar }">
-			<c:forEach items="${ pageBar }" var="p">
-				<li>
+				<c:if test="${not empty pageBar }">
+				<c:forEach items="${ pageBar }" var="p">
+					<li>
 					  	${ p }
 					</li>
 				</c:forEach>
 				</c:if>
-				</ul>
-			</div>
-			</nav>
+			</ul>
 		</div>
-	</div>
+		</nav>
 </div>
-<jsp:include page="/WEB-INF/views/common/footerE.jsp" />
+<jsp:include page="/WEB-INF/views/common/footerS.jsp" />

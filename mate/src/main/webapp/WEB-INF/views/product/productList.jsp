@@ -13,17 +13,73 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 <style>
-table, tr, th, td {
-	border: 1px solid black;
+.card{
+	width: 360px;
+	background : #f1f1f1;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	display:inline-block;
 }
-
-li{
-	margin 0;
-	list-style: none;
-	display: inline-block;
+.top-section{
+	height: 310px;
+	overflow: hidden;
+	background: #fff;
+	position: relative;
+}
+#mainImg{
+	weight: 360px;
+	height: 240px;
+}
+.imgNav{
+	text-align: center;
+}
+.imgNav img{
+	width: 80px;
+	height: 50px;
+	border: 1px solid #ddd;
+	margin: 8px 2px;
+	cursor:pointer;
+	transition: 0.3s;
+}
+.imgNav img:hover{
+	border-color: #6ab04c;
+}
+.price{
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	color: #6ab04c;
+	font-size: 24px;
+}
+.product-info{
+	padding: 25px;
+}
+.name{
+	text-transform: uppercase;
+	font-size: 24px;
+	color: #333;
 }
 </style>
+<<<<<<< HEAD
 
+=======
+<script>
+ function pageing(now,cnt){
+	var $nowPage = $('[name = nowPage]');
+	var $cntPerPage = $('[name = cntPerPage]');
+	var $search = $('[name = search]');
+	
+	$nowPage.val(now);
+	$cntPerPage.val(cnt);
+	$search.submit();
+
+}
+
+ 
+
+</script>
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
 <div class="product-container">
 	<!-- ajax처리 -->
 	 <div class="product-search">
@@ -42,71 +98,73 @@ li{
 				<input type="checkbox" name="category" id="dr" value="dr"/>
 		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
 			<input type="hidden" name="category" value="${ category }" />
+			<input type="hidden" name="nowPage" value="1" />
+			<input type="hidden" name="cntPerPage" value="8" />
 		</form>
 	</div> 
 	
 	<div class="product-list">
-		<ul>
-			<li>
 				<!-- 상품이 있을 경우 -->
 				<c:if test="${ not empty list }">
-						<c:forEach items="${ list }" var="product">
-						<dl>
-								<a href="${ pageContext.request.contextPath }/product/productDetail.do?productNo=${ product.productNo }"  >
-									<dt>
-										<c:if test="${ not empty product.pmiList }" >
-											<c:forEach items="${ product.pmiList }" var="pmi" varStatus="vs">
-											<div class="img-container" >
-												<img src="${ pageContext.request.contextPath }/resources/upload/mainimages/${pmi.renamedFilename}"
-													 alt="img" 
-													 width="250px"
-													 id="imgTag"/>
-											</div>
-											</c:forEach>
-										</c:if>
-										<!-- <img id="Thums"
-											 alt="Thumnail" 
-											 width="250px" /> -->
-										<c:if test="${ empty product.pmiList }">
-											<script>
-											console.log("empty");
-											</script>	
-										</c:if>	 
-									</dt>
-									<dd>
-										<div class="product-name">
-										상품명 : ${ product.productName }
-										</div>
-										<div class="product-price">
-										상품 가격 : ${ product.price } 
-										</div>
-										<div class="product-rank">
-										별점 : /10
-										</div>
-										<div class="product-date">
-										등록일 : <fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/>									
-										</div>
-										<div class="product-brand">
-										제조사 ${ product.manufacturerId }
-										</div>
-									</dd>
-							</a>
-							
-						</dl>
-							
+					<c:forEach items="${ list }" var="product">
+					<div class="card">
+						<div class="top-section">
+							<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${product.pmiList[0].renamedFilename}" 
+								 alt="대표이미지" class="mainImg"
+								 width="200px"/>
+						</div>
+						<div class="imgNav">
+							<c:forEach items="${product.pmiList }" var="Thumbs" varStatus="vs">
+								<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${Thumbs.renamedFilename}" 
+									 alt="thums${vs.count}"
+									 width="50px" class="imgNav-img"/>
 							</c:forEach>
+						</div>
+						<div class="price">
+						가격 : ${product.price}원
+						</div>
+						<div class="product-info">
+							<div class="productName">
+							상품명 : ${product.productName}
+							</div>
+							<div class="category">
+							카테고리 : 
+								<c:if test="${ product.category eq 'fg' }">
+					    		피규어
+					    		</c:if>
+					    		<c:if test="${ product.category eq 'pm' }">
+					    		프라모델
+					    		</c:if>
+					    		<c:if test="${ product.category eq 'rc' }">
+					    		RC카
+					    		</c:if>
+					    		<c:if test="${ product.category eq 'dr' }">
+					    		드론
+					    		</c:if>
+							</div>
+							<div class="manufac">
+							제조사 : ${product.manufacturerId}
+							</div>
+						</div>
+					</div>
+					</c:forEach>
 				</c:if>
 				<!-- 상품이 없을 경우 -->
 				<c:if test="${ empty list }">
-					<li>
 						<span>상품이 존재하지 않습니다.</span>
-					</li>
 				</c:if>
-			</li>
-		</ul>
 	</div>
 </div>
 
+<script>
+$(".imgNav-img").click(function(){
+	
+	var src = $(this).attr("src");
+	var $topSectionImg = $(this).parent().siblings(".top-section").find("img");
+	$topSectionImg.attr("src", src);
+});
+
+</script>
 
 <nav aria-label="Page navigation example">
   <ul class="pagination justify-content-center">

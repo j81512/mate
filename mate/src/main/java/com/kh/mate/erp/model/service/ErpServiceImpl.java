@@ -1,11 +1,11 @@
 package com.kh.mate.erp.model.service;
 
+
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import com.kh.mate.erp.model.dao.ErpDAO;
 import com.kh.mate.erp.model.vo.EMP;
@@ -205,10 +205,16 @@ public class ErpServiceImpl implements ErpService {
 		return erpDAO.updateReceiveToRef(receiveNo);
 	}
 	
+	@Override
+	public List<RequestLog> selectEmpRequest(String empId) {
+		return erpDAO.selectEmpRequest(empId);
+	}
+	
 	//호근 emp 게시판 추가
 
 
 	
+
 
 	@Override
 	public EmpBoard selectOneEmpBoard(int no, boolean hasRead) {

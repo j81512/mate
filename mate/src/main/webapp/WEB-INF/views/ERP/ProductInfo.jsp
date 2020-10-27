@@ -15,6 +15,11 @@
 
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+<c:if test="${not empty msg }">
+<script>
+	alert("${msg}");
+</script>
+</c:if>
 </head>
 <style>
 .navbar-form .form-control {
@@ -122,6 +127,11 @@ function orderProduct(empId,pNo,requestId){
 				<th>등록일</th>
 				<th>재고</th>
 				<th>상태</th>
+				<!-- 로그인 상태가 관리자인 경우 상품 삭제 버튼 추가 -->
+				<c:if test="${loninEmp.status eq 0 }">
+					상품 삭제
+				</c:if>
+				
 			</tr>
 		</div>
 		
@@ -137,7 +147,15 @@ function orderProduct(empId,pNo,requestId){
 						<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>
 						<td>${ product.stock eq 0 ? '재고가 없습니다' : product.stock }</td>
 						<td><button type="button" onclick="orderProduct('${ loginEmp.empId }',${ product.productNo },${ product.empId })">발주</button></td>
+						<c:if test="${loginEmp.status eq 0 }">
+						<td>
+							<button type="button" onclick="productDelete();">상품 삭제</button>
+						</td>
+						</c:if>
 					</tr>
+				<form id="productDelFrm">
+					<input type="hidden" name="productNo" value="${product.productNo }"/>
+				</form>
 				</c:forEach>		
 			</c:if>
 			<c:if test="${ empty list }">
@@ -194,6 +212,16 @@ function productEnroll(){
 
 location.href="${ pageContext.request.contextPath }/ERP/productEnroll.do";
 	
+}
+
+function productDelete(){
+	var $frm = $("#productDelFrm");
+
+
+	$frm.attr("action", "${pageContext.request.contextPath}/ERP/productDelete.do");
+	$frm.attr("method", "post");
+	$frm.submit();
+
 }
 </script>
 	</body>

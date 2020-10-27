@@ -524,7 +524,7 @@ public class MemberController {
 								,@RequestParam(required=false) String searchType, @RequestParam(required=false) String searchKeyword) {
 		
 		
-		int numPerPage = 10;
+		int numPerPage = 4;
 		int cPage = 1;
 		try {
 			
@@ -552,4 +552,19 @@ public class MemberController {
 		
 		return "admin/AdminMemberPage";
 	}
+	
+	@PostMapping("/member/adminMemberDelete.do")
+	@ResponseBody
+	public Map<String, Object> adminMemberDelete(@RequestParam("memberId")String memberId){
+		Map<String, Object>map = new HashMap<>();
+		
+		map.put("memberId", memberId);
+		int result = memberService.deleteMember(map);
+		map.put("result", result);
+		
+		log.debug("result = {}", result);
+		return map;
+		
+	}
+	
 }
