@@ -6,6 +6,23 @@
 
 	<select id="countProduct" resultType="_int">
 	select COUNT(*) from product
+	<where>
+ 		
+ 		<if test="cateArr != null">
+ 			category in  <foreach collection="cateArr"
+			    		 item="cateArr"
+			    		 open="("
+			    		 close=")"
+			    		 separator=",">
+			    	#{ cateArr }
+			    	</foreach>
+ 		</if>
+ 		<if test="search != null and !search.isempty">
+	 		and (product_name like '%' || #{search} || '%'
+ 			or content like '%' || #{search} || '%')
+ 		</if>
+ 		
+ 		</where>
 	</select>
 	
 	<select id="selectCartList" resultType="cart">

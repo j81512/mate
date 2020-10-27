@@ -179,27 +179,32 @@ function orderProduct(empId,pNo,requestId){
 	</section>
 	
 	<!-- 김찬희 페이징 -->
-	<div style="display: block; text-align: center;">
-	<c:if test="${ page.startPage != 1 }">
-		<a href="#"onclick="pageing('${ page.startPage - 1}','${ page.cntPerPage }')">&lt;</a>
-	</c:if>
-	<c:forEach begin="${page.startPage }" end="${page.endPage}" var="p">
-			<c:choose>
-				<c:when test="${p == page.nowPage }">
-					<b>${p }</b>
-				</c:when>
-				<c:when test="${p != page.nowPage }">
-					<a href="${pageContext.request.contextPath}/ERP/searchInfo.do?nowPage=${p }&cntPerPage=
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+  		<c:if test="${ page.nowPage != 1 }">
+	      <a class="page-link" href="${pageContext.request.contextPath}/ERP/searchInfo.do?nowPage=${page.nowPage-1 }&cntPerPage=
 					${page.cntPerPage}&search=${ map.search }&category=${ map.category }&
-					select=${ map.select}&upper=${ upper }&lower=${ lower }">${p }</a>
-				</c:when>
-			</c:choose>
-		</c:forEach>
-		<c:if test="${page.endPage != page.lastPage}">
-			<a href="#" onclick="pageing('${ page.endPage+1 }','${ page.cntPerPage }')">&gt;</a>
-		</c:if>
-
-</div>
+					select=${ map.select}&upper=${ upper }&lower=${ lower }">Previous</a>
+  		</c:if>
+  	<c:forEach begin="${page.startPage }" end="${page.endPage}" var="p">
+  		<c:choose>
+  		<c:when test="${ p == page.nowPage }">
+		    <li class="page-item"><a class="page-link" href="#" style="color: black">${p }</a></li>
+  		</c:when>
+  		<c:when test="${ p != page.nowPage }">
+		    <li class="page-item"><a class="page-link" href="${pageContext.request.contextPath}/ERP/searchInfo.do?nowPage=${p }&cntPerPage=
+					${page.cntPerPage}&search=${ map.search }&category=${ map.category }&
+					select=${ map.select}&upper=${ upper }&lower=${ lower }">${p }</a></li>
+  		</c:when>
+  		</c:choose>
+  	</c:forEach>
+  	<c:if test="${ page.nowPage != page.endPage }">
+	      <a class="page-link" href="${pageContext.request.contextPath}/ERP/searchInfo.do?nowPage=${page.nowPage+1 }&cntPerPage=
+					${page.cntPerPage}&search=${ map.search }&category=${ map.category }&
+					select=${ map.select}&upper=${ upper }&lower=${ lower }">Next</a>
+  	</c:if>
+  </ul>
+</nav>
 	
 	
 <script>

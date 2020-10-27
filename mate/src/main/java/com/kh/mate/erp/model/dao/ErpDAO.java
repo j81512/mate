@@ -118,7 +118,7 @@ public interface ErpDAO {
 
 	int empBoardFileUpdate(EmpBoardImage updateImages);
 
-	int countProduct(EMP emp);
+	int countProduct(Map<String, Object> map);
 
 	List<Product> selectAll();
 

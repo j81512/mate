@@ -182,24 +182,19 @@ public class ProductController {
 		
 		Map<String,Object> map = new HashMap<String, Object>();
 		
-		int total = productService.countProduct(); 
 		log.debug("nowPage = {}",nowPage);
 		log.debug("cntPerPage = {}",cntPerPage);
-		log.debug("total = {}",total);
 		
 		if(nowPage == null && cntPerPage == null) {
 			nowPage = "1";
-			cntPerPage="8";
+			cntPerPage="4";
 		} else if (nowPage == null) {
 			nowPage = "1";
 		} else if (cntPerPage == null) { 
-			cntPerPage = "8";
+			cntPerPage = "4";
 		}
 		
-		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
 		
-		
-		map.put("page", page);
 		
 		log.debug("search = {}",search);
 		
@@ -214,10 +209,14 @@ public class ProductController {
 
 		map.put("search", search);
 		
+		int total = productService.countProduct(map); 
+		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
+		map.put("page", page);
+		
 		List<Product> list = productService.searchProductList(map);
-		if(list.size() != 8 && Integer.parseInt(nowPage) == 1) {
-			page.setEndPage(1);
-		}
+//		if(list.size() <= 8 && Integer.parseInt(nowPage) == 1) {
+//			page.setEndPage(1);
+//		}
 		log.debug("listSize = {}" , list.size());
 		
 		log.debug("page = {}",page);

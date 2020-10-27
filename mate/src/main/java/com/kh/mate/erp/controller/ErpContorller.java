@@ -355,17 +355,17 @@ public class ErpContorller {
 		}
 		
 		
-		int total = erpService.countProduct(emp);
+		
 		if(nowPage == null && cntPerPage == null) {
 			nowPage = "1";
-			cntPerPage="8";
+			cntPerPage="10";
 		} else if (nowPage == null) {
 			nowPage = "1";
 		} else if (cntPerPage == null) { 
-			cntPerPage = "8";
+			cntPerPage = "10";
 		}
 
-		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
+		
 
 		
 		if(!upper.isEmpty() && upper != null) {
@@ -384,19 +384,21 @@ public class ErpContorller {
 			map.put("sNum", sNum);
 		}
 		
-		map.put("page", page);
 		map.put("category", category);
 		map.put("select", select);
 		map.put("search", search);
-		
+		int total = erpService.countProduct(map);
+		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
+		map.put("page", page);
 		
 		List<Product> list = erpService.searchInfo(map);
+		log.debug("page = {}",page);
+		log.debug("total = {}",total);
 
-		
 		log.debug("size = {}",list.size());
-		if(list.size() < 8 && Integer.parseInt(nowPage) == 1) {
-			page.setEndPage(1);
-		}
+//		if(total <= 10 && Integer.parseInt(nowPage) == 1) {
+//			page.setEndPage(1);
+//		}
 		
 		log.debug("list = {}",list);
 		model.addAttribute("page",page);		

@@ -304,8 +304,27 @@
 		from product p left join stock s
 		on (p.product_no = s.product_no)
 		<where>
-			<if test="status != 0">
-				emp_id = #{empId} or emp_id is null
+			<if test="emp.status != 0">
+				emp_id = #{emp.empId} or emp_id is null
+			</if>
+			<if test="category != null and category != ''">
+				 and p.category = #{category}
+			</if>
+			<if test="select != null and select.equals('product_name')">
+				<if test="search != null and !search.isempty">
+					and p.product_name like '%' || #{search} || '%'
+				</if>
+			</if>
+			<if test="select != null and select.equals('product_no')">
+				<if test="search != null and !search.isempty">
+					and p.product_no = #{sNum}
+				</if>
+			</if>
+			<if test="lNum != null">
+				and s.stock <![CDATA[ <= ]]> #{lNum}
+			</if>
+			<if test="uNum!= null">
+				and s.stock <![CDATA[ >= ]]> #{uNum}
 			</if>
 		</where>
 	</select>
