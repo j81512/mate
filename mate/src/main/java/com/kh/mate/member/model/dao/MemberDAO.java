@@ -28,4 +28,8 @@ public interface MemberDAO {
 
 	int failPurchase(int purchaseNo);
 
+	List<Member> searchMember(String searchKeyword, String searchType, int cPage, int numPerPage);
+
+	int getSearchContent(Map<String, String> map);
+
 }

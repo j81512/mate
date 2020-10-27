@@ -198,7 +198,7 @@ $(function(){
 		       			</a>
 		       		</c:if>
 		       		<c:if test='${ ! empty loginMember && loginMember.memberId eq "admin" }'>
-		       			<a class="nav-list " href="${ pageContext.request.contextPath }/member/memberManage.do">
+		       			<a class="nav-list " href="${ pageContext.request.contextPath }/Member/MemberList.do">
  							<img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/mypage.png" alt="" />
 		       				<span class="nav-list-text font-cookie">Manage</span>
 		       			</a>

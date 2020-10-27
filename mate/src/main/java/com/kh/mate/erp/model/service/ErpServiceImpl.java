@@ -205,10 +205,16 @@ public class ErpServiceImpl implements ErpService {
 		return erpDAO.updateReceiveToRef(receiveNo);
 	}
 	
+	@Override
+	public List<RequestLog> selectEmpRequest(String empId) {
+		return erpDAO.selectEmpRequest(empId);
+	}
+	
 	//호근 emp 게시판 추가
 
 
 	
+
 
 	@Override
 	public EmpBoard selectOneEmpBoard(int no, boolean hasRead) {
@@ -309,6 +315,101 @@ public class ErpServiceImpl implements ErpService {
 		
 		return totalContents;
 	}
+	//김찬희 페이징작업
+	@Override
+	public int countProduct(EMP emp) {
+		return erpDAO.countProduct(emp);
+	}
 
+	//누락상품검사
+	@Override
+	public List<Product> selectAll() {
+		return erpDAO.selectAll();
+	}
+
+	@Override
+	public List<Integer> productCompare(EMP emp) {
+		return erpDAO.productCompare(emp);
+	}
+
+	//누락재고상품 추가
+	@Override
+	public int mStockInsert(Map<String, Object> map) {
+		return erpDAO.mStockInsert(map);
+	}
+
+
+	
+
+	
+	
+
+	@Override
+	public EmpBoard selectEmpStock(Map<String, Object> map) {
+		return erpDAO.selectEmpStock(map);
+	}
+
+	@Override
+	public int empBoardDelete(int boardNo) {
+		return erpDAO.empBoardDelete(boardNo);
+	}
+
+	@Override
+	public EmpBoard selectOneEmpBoard(int boardNo) {
+		return erpDAO.selectOneEmpBoard(boardNo);
+	}
+
+	@Override
+	public List<EmpBoardImage> selectBoardImage(int boardNo) {
+		return erpDAO.selectBoardImage(boardNo);
+	}
+
+	@Override
+	public int empBoardUpdate(EmpBoard empBoard) {
+		int result = erpDAO.empBoardUpdate(empBoard);
+		
+		//productMainImage 수정 여부 확인 후 진행
+		if(result > 0 && empBoard.getEmpBoardImageList() != null) {
+			//기존 섬네일 이미지 삭제
+			result = erpDAO.empBoardFileDelete(empBoard.getBoardNo());
+			//업데이트된 이미지 새로 등록
+			for(EmpBoardImage updateImages : empBoard.getEmpBoardImageList()) {
+				updateImages.setBoardNo(empBoard.getBoardNo());
+				result = erpDAO.empBoardFileUpdate(updateImages);
+			}
+			
+		}
+		
+		if(empBoard.getCategory().equals("req")) {
+			empBoard.setBoardNo(empBoard.getBoardNo());
+			result = erpDAO.insertRequestStock(empBoard);		
+		}
+		log.debug("result@service = {}", result);
+		return result;
+	}
+
+	@Override
+	public int stockTranslate(Map<String, Object> map) {
+		 int result = 0;
+		 EmpBoard empBoard = erpDAO.selectOneEmpBoard(map);
+		 
+		 if(empBoard.getEnabled() == 0) {
+				 
+				 result = erpDAO.updateTranStock(map);
+				 result = erpDAO.updateStock(map);
+				 result = erpDAO.updateStockInfo(map);
+				 result = erpDAO.updateEnabled(map);
+			 
+		 }
+		 
+		 log.debug("result = {}", result);
+		 
+		return result;
+	}
+
+
+	
+	
+	
 	
 }

@@ -28,4 +28,8 @@ public interface MemberService {
 
 	int failPurchase(int purchaseNo);
 
+	List<Member> searchMember(String searchType, String searchKeyword, int cPage, int numPerPage);
+
+	int getSearchContents(Map<String, String> map);
+
 }

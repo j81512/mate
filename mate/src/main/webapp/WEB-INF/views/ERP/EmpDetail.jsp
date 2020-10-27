@@ -27,6 +27,8 @@
 			  <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>재고
 			</button>
     	</li>
+    	<!-- 로그인 회원이 지점이 아닐 경우 '발주'메뉴 노출 -->
+    	<c:if test="${loginEmp.status ne 1 }">
     	<li>
 	    	<button type="button" 
 	    			class="btn btn-default btn-lg"
@@ -34,6 +36,7 @@
 			  <span class="glyphicon glyphicon-gift" aria-hidden="true"></span>발주
 			</button>
     	</li>
+    	</c:if>
     </div>
     <div>
     	<li>

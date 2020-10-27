@@ -37,6 +37,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.kh.mate.common.Paging;
+import com.kh.mate.erp.model.service.ErpService;
+import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.kakao.KakaoRESTAPI;
 import com.kh.mate.member.model.service.MemberService;
 import com.kh.mate.member.model.vo.Address;
@@ -514,4 +517,54 @@ public class MemberController {
 		
 		return result > 0 ? true : false;
 	}
+	
+	//호근 어드민용 멤버리스트 추가
+	@GetMapping("/Member/MemberList.do")
+	public String AdminMemberList(Model model, HttpServletRequest request, HttpServletResponse response
+								,@RequestParam(required=false) String searchType, @RequestParam(required=false) String searchKeyword) {
+		
+		
+		int numPerPage = 4;
+		int cPage = 1;
+		try {
+			
+			cPage = Integer.parseInt(request.getParameter("cPage"));
+		}catch(NumberFormatException e) {
+			
+		}
+		
+		Map<String, String> map = new HashMap<>();
+		map.put("searchType", searchType);
+		map.put("searchKeyword", searchKeyword);
+		
+//		log.debug("map = {}", map);
+		List<Member> memberList = memberService.searchMember(searchType,searchKeyword,cPage, numPerPage);
+		int totalContents = memberService.getSearchContents(map);
+	
+		String url = request.getRequestURI();
+		String pageBar = Paging.getPageBarHtml(cPage, numPerPage, totalContents, url);
+		
+		log.debug("member = {}", memberList);
+		model.addAttribute("memberList", memberList);
+		model.addAttribute("searchType",searchType);
+		model.addAttribute("searchKeyword",searchKeyword);
+		model.addAttribute("pageBar", pageBar);
+		
+		return "admin/AdminMemberPage";
+	}
+	
+	@PostMapping("/member/adminMemberDelete.do")
+	@ResponseBody
+	public Map<String, Object> adminMemberDelete(@RequestParam("memberId")String memberId){
+		Map<String, Object>map = new HashMap<>();
+		
+		map.put("memberId", memberId);
+		int result = memberService.deleteMember(map);
+		map.put("result", result);
+		
+		log.debug("result = {}", result);
+		return map;
+		
+	}
+	
 }

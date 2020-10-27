@@ -26,6 +26,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +43,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.google.gson.JsonObject;
 import com.kh.mate.common.Paging;
 import com.kh.mate.common.Utils;
+import com.kh.mate.common.paging.PagingVo;
 import com.kh.mate.erp.model.service.ErpService;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
@@ -115,14 +117,31 @@ public class ErpContorller {
 	
 	//발주확인 진입
 	@RequestMapping("/ERP/OrderLog.do")
-	public String OrderLog(Model model) {	
-		List<RequestLog> list = erpService.requestList();
-		List<Product> list2 = erpService.productList();
-		List<EMP> list3 = erpService.empList();
+	public String OrderLog(HttpSession session, Model model) {	
+//		List<RequestLog> list = erpService.requestList();
+//		List<Product> list2 = erpService.productList();
+//		List<EMP> list3 = erpService.empList();
+//		
+//		model.addAttribute("list", list);
+//		model.addAttribute("list2", list2);
+//		model.addAttribute("list3", list3);
+		//로그인 회원이 관리자 | 지점인지 분기처리
+		EMP loginEmp = (EMP)session.getAttribute("loginEmp");
 		
+		List<RequestLog> list = new ArrayList<>();
+		//로그인 회원이 관리자일 경우
+		if(loginEmp.getStatus() == 0 ) {
+			//전체 지점의 발주 로그를 가져옴
+			list = erpService.requestList();
+		}
+		//로그인 회원이 제조사일 경우
+		else if(loginEmp.getStatus() == 2) {
+			//list = erpService.selectRequestList(loginEmp.getEmpId());
+			list = erpService.selectEmpRequest(loginEmp.getEmpId());
+		}
+		log.debug("list = {}", list);
 		model.addAttribute("list", list);
-		model.addAttribute("list2", list2);
-		model.addAttribute("list3", list3);
+		
 		return "ERP/OrderLog";
 	}
 	
@@ -211,15 +230,15 @@ public class ErpContorller {
 			
 		}
 		
-		log.debug("cPage={}",cPage);
+//		log.debug("cPage={}",cPage);
 		List<EMP> list = erpService.empList();
 		//page map처리
-		log.debug("list = {} ", list);
+//		log.debug("list = {} ", list);
 		Map<String, String> map = new HashMap<>();
 		map.put("searchType", searchType);
 		map.put("searchKeyword", searchKeyword);
 		
-		log.debug("map = {}", map);
+//		log.debug("map = {}", map);
 		List<EmpBoard> empBoardList = erpService.searchBoard(searchType,searchKeyword,cPage, numPerPage);
 		int totalContents = erpService.getSearchContents(map);
 	
@@ -309,16 +328,45 @@ public class ErpContorller {
 
 	//김찬희 ERP 상품검색
 	@RequestMapping("/ERP/searchInfo.do")
-	public String searchInfo(String category, String search, String select,String upper, String lower, Model model) {
-		
-		log.debug(category);
-		log.debug(search);
-		log.debug("upper = {}", upper);
-		log.debug("lower = {}", lower);
-		
-		log.debug("select = {}", select);
-		
+	public String searchInfo(HttpServletRequest request ,String category,
+			String search, PagingVo page, String nowPage, String cntPerPage, 
+			String select,String upper, String lower, Model model) throws Exception {
+		HttpSession session = request.getSession();
+		EMP emp = (EMP)session.getAttribute("loginEmp");
 		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("emp", emp);
+		List<Product> pList = erpService.selectAll();
+		List<Integer> cList = erpService.productCompare(emp);
+		
+		
+		
+		//누락상품검사
+		for(Product pro : pList) {
+			
+//			log.debug("cTest = {}", cList.contains(pro.getProductNo()));
+//			log.debug("pro.no = {}",pro.getProductNo());
+			
+			if(!cList.contains(pro.getProductNo()) && emp.getStatus() != 0) {
+				map.put("pro", pro);
+				int result = erpService.mStockInsert(map);
+				log.debug("cTest = {}",pro);
+				
+			}
+		}
+		
+		
+		int total = erpService.countProduct(emp);
+		if(nowPage == null && cntPerPage == null) {
+			nowPage = "1";
+			cntPerPage="8";
+		} else if (nowPage == null) {
+			nowPage = "1";
+		} else if (cntPerPage == null) { 
+			cntPerPage = "8";
+		}
+
+		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
+
 		
 		if(!upper.isEmpty() && upper != null) {
 			int uNum = Integer.parseInt(upper);
@@ -336,14 +384,23 @@ public class ErpContorller {
 			map.put("sNum", sNum);
 		}
 		
-		
+		map.put("page", page);
 		map.put("category", category);
 		map.put("select", select);
 		map.put("search", search);
 		
 		
-		List<Product> list = erpService.searchInfo(map);		
-		log.debug("list = {}",list);		
+		List<Product> list = erpService.searchInfo(map);
+
+		
+		log.debug("size = {}",list.size());
+		if(list.size() < 8 && Integer.parseInt(nowPage) == 1) {
+			page.setEndPage(1);
+		}
+		
+		log.debug("list = {}",list);
+		model.addAttribute("page",page);		
+		model.addAttribute("map",map);		
 		model.addAttribute("list",list);		
 		return "/ERP/ProductInfo";
 	}
@@ -416,7 +473,8 @@ public class ErpContorller {
 					method = RequestMethod.POST)
 	public String productEnroll(Product product,
 								@RequestParam("upFile") MultipartFile[] upFiles,
-								HttpServletRequest request) throws IllegalStateException, IOException {
+								HttpServletRequest request,
+								RedirectAttributes redirectAttr) throws IllegalStateException, IOException {
 		
 		//Content내 저장 폴더 명 변경
 		String content = product.getContent();
@@ -482,11 +540,13 @@ public class ErpContorller {
 		if(result > 0) {
 			Utils.fileCopy(folder1, folder2);
 			Utils.fileDelete(folder1.toString());
+			redirectAttr.addFlashAttribute("msg", "상품 추가 완료");
 		}else {
 			Utils.fileDelete(folder1.toString());
+			redirectAttr.addFlashAttribute("msg", "상품 추가 실패");
 		}
 		
-		return "redirect:/";
+		return "redirect:/ERP/ProductInfo.do";
 	}
 	
 	//뒤로가기 클릭 시 파일 삭제
@@ -645,6 +705,7 @@ public class ErpContorller {
 		return "redirect:/";
 	}
 	
+	//상품 삭제
 	@RequestMapping(value = "/ERP/productDelete.do",
 					method = RequestMethod.POST)
 	public String productDelete(@RequestParam("productNo") String productNo,
@@ -670,7 +731,6 @@ public class ErpContorller {
 			}
 			log.debug("flag,result = {}, {}",flag,result);
 		}
-		
 		return "ERP/ProductInfo";
 	}
 	
@@ -769,22 +829,19 @@ public class ErpContorller {
 	@PostMapping("/ERP/erpLogin.do")
 	public String memberLogin(@RequestParam("empId") String empId
 			  ,@RequestParam("empPwd") String empPwd
-			  ,@RequestParam("status") int status
 			  ,RedirectAttributes redirectAttr
 			  ,Model model
 			  ,HttpSession session) {
 		log.debug("empId = {}", empId);
 		log.debug("empPwd ={}", empPwd);
-		log.debug("status ={}", status);
-
+	
 		EMP loginEmp = erpService.selectOneEmp(empId);
 		
 		log.debug("loginEmp = {}", loginEmp);
 		String location = "/";
 		
 		if(	loginEmp != null && (loginEmp.getEmpId().equals(empId))
-				&& (loginEmp.getEmpPwd().equals(empPwd))
-				&& (loginEmp.getStatus() == status )) {
+				&& (loginEmp.getEmpPwd().equals(empPwd))) {
 			model.addAttribute("loginEmp", loginEmp);
 			if(loginEmp.getEmpId().equals("admin")) model.addAttribute("loginMember", loginEmp);
 	
@@ -807,7 +864,8 @@ public class ErpContorller {
 	}
 	
 	@RequestMapping("/ERP/EmpBoardDetail.do")
-	public ModelAndView empBoardDetail(@RequestParam("no") int no,
+	public ModelAndView empBoardDetail(@RequestParam("loginEmp") EMP loginEmp,
+									@RequestParam("no") int no,
 									ModelAndView mav
 									,HttpServletRequest request
 									,HttpServletResponse response) {
@@ -819,11 +877,11 @@ public class ErpContorller {
 		
 		if(cookies != null) {
 			for(Cookie c : cookies) {
-				log.debug("cookies={}", cookies.toString());
+//				log.debug("cookies={}", cookies.toString());
 				String name = c.getName();
 				String value = c.getValue();
-				log.debug("name={}", name);
-				log.debug("value ={}", value.toString());
+//				log.debug("name={}", name);
+//				log.debug("value ={}", value.toString());
 				
 				if("erpBoardCookie".equals(name)) {
 					boardCookieVal = value;
@@ -845,6 +903,18 @@ public class ErpContorller {
 		}
 		
 	    EmpBoard empBoard = erpService.selectOneEmpBoard(no, hasRead);
+	    log.debug("emp = {}", loginEmp);
+	    log.debug("empBoard = {}", empBoard);
+	    // 게시판 상세보기에서 요청글 일때 제조사 지점 재고 출렷
+	    if(loginEmp != null && empBoard.getCategory().equals("req")){
+	    	Map<String, Object> map = new HashMap<>();
+	    	map.put("productNo", empBoard.getProductNo());
+	    	map.put("empId", loginEmp.getEmpId());
+	    	EmpBoard loginEmpStock = erpService.selectEmpStock(map);
+	    	log.debug("loginEmpStock = {}", loginEmpStock);	
+	    	mav.addObject("loginEmpStock", loginEmpStock);
+	    }
+	    
 	    log.debug("empBoard = {}", empBoard);
 		mav.addObject("empBoard", empBoard);
 //		model.addAttribute("board", boardList);
@@ -1039,6 +1109,109 @@ public class ErpContorller {
 		map.put("productList", list);
 		log.debug("map = {}", map);
 		model.addAttribute("map", map);
+		return map;
+	}
+	
+	@PostMapping("/ERP/boardDelete.do")
+	@ResponseBody
+	public Map<String, Object> empBoardDelete(@RequestParam("boardNo") int boardNo) {
+		log.debug("boardNo = {}", boardNo);
+		Map<String, Object> map = new HashMap<>();
+		int result = erpService.empBoardDelete(boardNo);
+		
+		if(result > 0 ) {
+			map.put("result", result);
+		}
+		
+		return map;
+	}
+	
+	@RequestMapping(value = "/ERP/empBoardUpdate.do",
+					method = RequestMethod.GET)
+	public String empBoardUpdate(@RequestParam("boardNo") int boardNo,
+						  Model model) {
+	
+		EmpBoard empBoard = erpService.selectOneEmpBoard(boardNo);
+		
+		List<EmpBoardImage> list = erpService.selectBoardImage(boardNo);
+		log.debug("empBoard = {}", empBoard);
+		log.debug("list = {}", list);
+		
+		model.addAttribute("empBoard", empBoard);
+		model.addAttribute("list", list);
+		
+		return "ERP/EmpBoardUpdate";
+	}
+	
+	@PostMapping("/ERP/empBoardCkUpdate.do")
+	public String empCKBoardUpdate(EmpBoard empBoard, 
+									@RequestParam("upFile") MultipartFile[] upFiles, 
+									@RequestParam("fileChange") int fileChange,
+									HttpServletRequest request) throws IllegalStateException, IOException {
+			
+		log.debug("empBoard= {}", empBoard);
+		if(fileChange > 0) {
+			List<EmpBoardImage> imageList 
+				= erpService.selectBoardImage(empBoard.getBoardNo());
+			String mainDirectory = request.getServletContext()
+										  .getRealPath("/resources/upload/empBoard/");
+			
+				//저장된 파일 삭제
+				for(EmpBoardImage image : imageList) {
+					boolean result = new File(mainDirectory, image.getRenamedFilename()).delete();
+					log.debug("result = {}", result);
+				}
+			
+			//새로 넘어온 파일 저장
+			List<EmpBoardImage> updateImgList = new ArrayList<>();
+			
+				for(MultipartFile upFile : upFiles) {
+					String renamedFilename = Utils.getRenamedFileName(upFile.getOriginalFilename());
+					
+					File dest = new File(mainDirectory, renamedFilename);
+					upFile.transferTo(dest);
+					
+					EmpBoardImage newMainImgs = new EmpBoardImage();
+					newMainImgs.setOriginalFilename(upFile.getOriginalFilename());
+					newMainImgs.setRenamedFilename(renamedFilename);
+					newMainImgs.setBoardNo(empBoard.getBoardNo());
+					updateImgList.add(newMainImgs);
+			
+				}
+				
+			empBoard.setEmpBoardImageList(updateImgList);
+			
+		}
+		
+		String tempDir = request.getServletContext().getRealPath("/resources/upload/empBoard");
+		File folder1 = new File(tempDir);
+		
+	
+		int result = erpService.empBoardUpdate(empBoard);
+		
+
+		return "redirect:/ERP/EmpBoardList.do";
+	}
+	
+	@GetMapping("/ERP/StockTranslate")
+	@ResponseBody
+	public Map<String, Object> stockTranslate(@RequestParam("productNo") int productNo, @RequestParam("amount") int amount,
+												@RequestParam("empId") String empId,@RequestParam("transEmpId") String transEmpId,
+												@RequestParam("transStock") int transStock,@RequestParam("boardNo") int boardNo){
+		Map<String, Object> map = new HashMap<>();
+		map.put("productNo", productNo);	
+		map.put("amount", amount);	
+		map.put("empId", empId);	
+		map.put("transEmpId", transEmpId);	
+		map.put("transStock", transStock);	
+		map.put("no", boardNo);	
+		
+		int result = erpService.stockTranslate(map);
+		
+		boolean Available= (result > 0) ?  true : false;
+		map.put("isAvailable", Available);
+		log.debug("map = {}", map);
+		
 		return map;
 	}
 	

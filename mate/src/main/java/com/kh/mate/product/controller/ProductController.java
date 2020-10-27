@@ -154,19 +154,24 @@ public class ProductController {
 		
 		int total = productService.countProduct(); 
 		
+		log.debug("nowPage = {}", nowPage);
+		log.debug("cntPerPage = {}", cntPerPage);
+		
 		if(nowPage == null && cntPerPage == null) {
 			nowPage = "1";
-			cntPerPage="5";
+			cntPerPage="8";
 		} else if (nowPage == null) {
 			nowPage = "1";
 		} else if (cntPerPage == null) { 
-			cntPerPage = "5";
+			cntPerPage = "8";
 		}
 
+//		page = new PagingVo(total, nowPage, cntPerPage);
 		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
 		
 		List<Product> list = productService.selectProductListAll(page);
 		log.debug("list = {}", list);
+		log.debug("page = {}",page);
 		model.addAttribute("page",page);
 		model.addAttribute("list", list);
 		return "product/productList";
@@ -184,15 +189,15 @@ public class ProductController {
 		
 		if(nowPage == null && cntPerPage == null) {
 			nowPage = "1";
-			cntPerPage="5";
+			cntPerPage="8";
 		} else if (nowPage == null) {
 			nowPage = "1";
 		} else if (cntPerPage == null) { 
-			cntPerPage = "5";
+			cntPerPage = "8";
 		}
 		
 		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
-		log.debug("page = {}",page);
+		
 		
 		map.put("page", page);
 		
@@ -210,7 +215,14 @@ public class ProductController {
 		map.put("search", search);
 		
 		List<Product> list = productService.searchProductList(map);
+		if(list.size() != 8 && Integer.parseInt(nowPage) == 1) {
+			page.setEndPage(1);
+		}
+		log.debug("listSize = {}" , list.size());
 		
+		log.debug("page = {}",page);
+		model.addAttribute("search",search);
+		model.addAttribute("sCategory",category);
 		model.addAttribute("page",page);
 		model.addAttribute("list",list);
 		
