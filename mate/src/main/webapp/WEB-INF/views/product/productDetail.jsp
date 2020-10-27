@@ -13,13 +13,12 @@
 </c:if>
 
 
-<div class="product-container">
+<div class="container">
 <form id="productDetailFrm">
 	
 	<!-- 상품 번호 -->
 	<input type="hidden" name="productNo" value="${ product.productNo }" />
 	<input type="hidden" name="memberId" value="${ loginMember.memberId }" />
-	
 	<!-- 내용이 입력될 자리 -->
 	<div class="product-content">
 	${ product.content }
