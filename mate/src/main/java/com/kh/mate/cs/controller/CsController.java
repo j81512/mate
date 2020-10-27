@@ -88,8 +88,8 @@ public class CsController {
 		String pageBar = Paging.getPageBarHtml(cPage, numPerPage, totalContents, url);
 		
 		List<Cs> list = csService.selectCsList(map,cPage, numPerPage);
-		
 		log.debug("list = {}", list);
+	
 		
 		mav.addObject("memberId", memberId);
 		mav.addObject("pageBar", pageBar);

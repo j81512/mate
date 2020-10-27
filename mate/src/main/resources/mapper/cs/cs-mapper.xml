@@ -4,15 +4,21 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cs">
   
- <select id="selectCsList" resultType="cs">
-	 	SELECT * 
-			FROM (
-				SELECT ROWNUM as rnum, B.*
-					FROM (
-	                    select *
-	                        from(   
-	                            SELECT ba.*
-	                                 FROM cs ba ) 			
+ <select id="selectCsList" resultMap="csMap">
+SELECT * 
+		FROM (
+			SELECT ROWNUM as rnum, B.*
+				FROM (
+                    select c.*,
+                        (select count(*) from cs_reply cr where c.cs_no =  cr.cs_no ) reply_is
+                        from(   
+                            SELECT
+                                     ba.*,
+                                     ci.cs_image_no,
+                                     ci.original_filename,
+                                     ci.renamed_filename
+                                 	FROM cs ba  
+                                 	left join cs_images ci on ba.cs_no = ci.cs_no )c 			
 	                             	 <where>
 										<if test="memberId != null and memberId != ''">
 											and  member_id like  #{ memberId }
@@ -27,6 +33,9 @@
 					)
 			 where rnum BETWEEN #{ cPage } AND #{ numPerPage }
 	</select>
+	<resultMap type="cs" id="csMap">
+	
+	</resultMap>
 	
 	<insert id="insertCs">
 		insert into

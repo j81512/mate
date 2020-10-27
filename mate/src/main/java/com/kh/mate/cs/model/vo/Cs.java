@@ -28,5 +28,7 @@ public class Cs implements Serializable {
 	private int notice;
 	
 	private CsImages csImage;
+	private String renamedFilename;
+	private int replyIs;
 	
 }
