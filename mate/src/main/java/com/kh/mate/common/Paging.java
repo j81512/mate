@@ -32,7 +32,7 @@ public class Paging {
 		while(pageNo <= pageEnd && pageNo <=totalPage) {
 			//현재페이지인 경우
 			if(pageNo==cPage) {
-				pageBar.append("<span class='cPage'>"+pageNo+"</span>\n");
+				pageBar.append("<span class='cPage' style='background-color:#F2F2F2;'>"+pageNo+"</span>\n");
 			}
 			//현재페이지가 아닌경우
 			else {

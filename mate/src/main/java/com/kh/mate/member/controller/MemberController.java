@@ -542,6 +542,9 @@ public class MemberController {
 		int totalContents = memberService.getSearchContents(map);
 	
 		String url = request.getRequestURI();
+		if(searchType != null && !"".equals(searchType) && searchType != null && !"".equals(searchType)) {
+			url += "&" + "searchType" + "=" + searchType + "&searchKeyword=" + searchKeyword;
+		}
 		String pageBar = Paging.getPageBarHtml(cPage, numPerPage, totalContents, url);
 		
 		log.debug("member = {}", memberList);
