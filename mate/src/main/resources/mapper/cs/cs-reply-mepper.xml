@@ -25,7 +25,7 @@
 	<select id="selectReplyList" resultType="CsReply">
 		select 
 		    * 
-		from  cs_reply
+		from  cs_reply c left join member m on c.member_id = m.member_id
 		where  cs_no = #{ csNo }
 		order by reg_date desc
 			

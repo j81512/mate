@@ -21,4 +21,5 @@ public class CsReply implements Serializable {
 	private Date regDate;
 	private int csNo;
 	private String memberId;
+	private String memberName;
 }

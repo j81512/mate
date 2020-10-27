@@ -4,13 +4,13 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cs">
   
- <select id="selectCsList" resultMap="csMap">
+ <select id="selectCsList" resultType="cs">
 SELECT * 
 		FROM (
 			SELECT ROWNUM as rnum, B.*
 				FROM (
                     select c.*,
-                        (select count(*) from cs_reply cr where c.cs_no =  cr.cs_no ) reply_is
+                        (select count(*) from cs_reply cr where c.cs_no =  cr.cs_no ) is_reply
                         from(   
                             SELECT
                                      ba.*,

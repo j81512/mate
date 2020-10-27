@@ -266,6 +266,7 @@ public class CsController {
 		
 		List<CsReply> list = csService.csReplyList(csNo);
 		model.addAttribute("list", list);
+		log.debug("replyList = {}", list);
 		return list;
 	}
 

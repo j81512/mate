@@ -92,7 +92,14 @@ $(function(){
 		<tr class="${ cs.notice eq 1 ? 'notice' : '' }" data-no="${ cs.csNo }">
 		<td>${ cs.csNo }</td>
 		<td>${ cs.notice == 0 ? '일반 문의' : '공지사항' }</td>
-		<td>${ cs.secret eq 1 ? '----------비밀글 입니다.--------' : cs.title }</td>
+		<td>
+		<c:if test="${ cs.isReply eq '0' }">
+		${ cs.secret eq 1 ? '----------비밀글 입니다.--------' : cs.title }
+		</c:if>
+		<c:if test="${ cs.isReply eq '1' }">
+			${ cs.secret eq 1 ? '----------비밀글 입니다.--------' : cs.title  } [답변완료]
+		</c:if>
+		</td>
 		<td class="csMemberId">${ cs.memberId }</td>
 		<td><fmt:formatDate value="${ cs.regDate }" pattern="yy/MM/dd"/></td>
 		<td class="secret" style="display:none;">${ cs.secret }</td>
@@ -153,13 +160,16 @@ $(function(){
 
 		console.log(secret);
 		console.log(memberId);
-		if( (loginMember != memberId || loginMember == 'admin')  && secret == 1){
+		console.log(loginMember);
+	
+		if(secret == '1' && loginMember != 'admin' && loginMember != memberId  ){
+		
 			alert("비밀글 입니다. 본인만 확인 할 수 있다.");
 			return;
-		}else{
-
-			location.href = "${ pageContext.request.contextPath }/cs/csDetail.do?csNo=" + csNo; 
 		}
+
+		location.href = "${ pageContext.request.contextPath }/cs/csDetail.do?csNo=" + csNo; 
+	
 	
 		
 	});
