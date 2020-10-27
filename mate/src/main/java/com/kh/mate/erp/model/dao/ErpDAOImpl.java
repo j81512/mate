@@ -348,8 +348,4 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.update("erpBoard.updateStockInfo",map);
 	}
 
-	
-	
-	
-	
 }
