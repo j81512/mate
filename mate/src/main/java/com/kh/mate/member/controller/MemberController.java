@@ -38,8 +38,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.kh.mate.common.Paging;
-import com.kh.mate.erp.model.service.ErpService;
-import com.kh.mate.erp.model.vo.EmpBoard;
+import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.kakao.KakaoRESTAPI;
 import com.kh.mate.member.model.service.MemberService;
 import com.kh.mate.member.model.vo.Address;
@@ -295,7 +294,13 @@ public class MemberController {
 		if(	loginMember != null && (loginMember.getMemberPWD().equals(password))
 				&& (loginMember.getMemberId().equals(userId))) {
 			model.addAttribute("loginMember", loginMember);
-			if(loginMember.getMemberId().equals("admin")) model.addAttribute("loginEmp", loginMember);
+			if(loginMember.getMemberId().equals("admin")) {
+				EMP e = new EMP();
+				e.setEmpId(loginMember.getMemberId());
+				e.setEmpName(loginMember.getMemberName());
+				model.addAttribute("loginEmp", e);
+				
+			}
 			String next = (String)session.getAttribute("next");
 			if( next != null) 
 				location = next;
