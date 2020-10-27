@@ -88,8 +88,6 @@ public class ErpContorller {
 	@RequestMapping("/ERP/ProductInfo.do")
 	public ModelAndView productInfo(ModelAndView mav) {		
 		mav.setViewName("/ERP/ProductInfo");
-		mav.addObject("click", "   ");
-		
 		return mav;
 	}
 	//현황조회 진입부
@@ -102,17 +100,20 @@ public class ErpContorller {
 	//재고확인 진입
 	@RequestMapping("/ERP/StockLog.do")
 	public String StockLog(Model model) {	
-		List<IoLog> list = erpService.ioLogList();
-		List<Product> list2 = erpService.productList();
-		List<Receive> list3 = erpService.receiveList();
+//		List<IoLog> list = erpService.ioLogList();
+//		List<Product> list2 = erpService.productList();
+//		List<Receive> list3 = erpService.receiveList();
+//		
+//		log.debug("list = {} ", list);
+//		log.debug("list2 = {} ", list2);
+//		log.debug("list3 = {} ", list3);
+//		
+//		model.addAttribute("list", list);
+//		model.addAttribute("list2", list2);
+//		model.addAttribute("list3", list3);
+		List<Map<String, Object>> mapList= erpService.StockLogMapList();
+		log.debug("mapList = {}", mapList);
 		
-		log.debug("list = {} ", list);
-		log.debug("list2 = {} ", list2);
-		log.debug("list3 = {} ", list3);
-		
-		model.addAttribute("list", list);
-		model.addAttribute("list2", list2);
-		model.addAttribute("list3", list3);
 		
 		return "ERP/StockLog";
 	}
@@ -374,17 +375,17 @@ public class ErpContorller {
 		
 
 		
-		if(upper != null && !upper.isEmpty()) {
+		if(!upper.isEmpty() && upper != null) {
 			int uNum = Integer.parseInt(upper);
 			map.put("uNum", uNum);
 			
 		}
-		if(lower != null && !lower.isEmpty()) {
+		if(!lower.isEmpty() && lower != null) {
 			int lNum = Integer.parseInt(lower);
 			map.put("lNum", lNum);
 			
 		}
-		if(select != null && select.equals("product_no")) {
+		if(select.equals("product_no")) {
 			int sNum = Integer.parseInt(search);
 			log.debug("sNum = {}",sNum);
 			map.put("sNum", sNum);
@@ -720,10 +721,10 @@ public class ErpContorller {
 								HttpServletRequest request,
 								RedirectAttributes redirectAtttis) {
 		
-		List<ProductMainImages> pmis = erpService.selectProductMainImages(productNo);
-		List<ProductImages> pis = erpService.selectProductImages(productNo);
-		String mainDir = request.getServletContext().getRealPath("/resources/upload/mainimages");
-		String imgDir = request.getServletContext().getRealPath("/resources/upload/images");
+//		List<ProductMainImages> pmis = erpService.selectProductMainImages(productNo);
+//		List<ProductImages> pis = erpService.selectProductImages(productNo);
+//		String mainDir = request.getServletContext().getRealPath("/resources/upload/mainimages");
+//		String imgDir = request.getServletContext().getRealPath("/resources/upload/images");
 		
 		int result = erpService.productDelete(productNo);
 		
@@ -732,12 +733,12 @@ public class ErpContorller {
 		if(result > 0) {
 			//폴더 내 파일 모두 삭제 
 			boolean flag = false;
-			for(ProductMainImages p : pmis) {
-				flag = new File(mainDir, p.getRenamedFilename()).delete();
-			}
-			for(ProductImages pp : pis) {
-				flag = new File(imgDir, pp.getRenamedFilename()).delete();
-			}
+//			for(ProductMainImages p : pmis) {
+//				flag = new File(mainDir, p.getRenamedFilename()).delete();
+//			}
+//			for(ProductImages pp : pis) {
+//				flag = new File(imgDir, pp.getRenamedFilename()).delete();
+//			}
 			log.debug("flag,result = {}, {}",flag,result);
 			redirectAtttis.addFlashAttribute("msg", "상품이 삭제되었습니다.");
 			

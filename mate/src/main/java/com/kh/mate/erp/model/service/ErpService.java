@@ -105,4 +105,6 @@ public interface ErpService {
 	int stockTranslate(Map<String, Object> map);
 
 	List<RequestLog> selectEmpRequest(String empId);
+
+	List<Map<String, Object>> StockLogMapList();
 }	

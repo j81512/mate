@@ -138,4 +138,6 @@ public interface ErpDAO {
 
 	List<RequestLog> selectEmpRequest(String empId);
 
+	List<Map<String, Object>> StockLogMapList();
+
 }

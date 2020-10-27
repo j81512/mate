@@ -182,6 +182,10 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.selectList("erp.selectEmpRequest", empId);
 	}
 	
+	@Override
+	public List<Map<String, Object>> StockLogMapList() {
+		return sqlSession.selectList("erp.StockLogMapList");
+	}
 	
 	//호근 추가
 
@@ -189,6 +193,8 @@ public class ErpDAOImpl implements ErpDAO {
 	
 
 	
+
+
 
 	@Override
 	public EmpBoard selectOneEmpBoard(int no) {

@@ -203,8 +203,15 @@ public class ErpServiceImpl implements ErpService {
 		return erpDAO.selectEmpRequest(empId);
 	}
 	
+	@Override
+	public List<Map<String, Object>> StockLogMapList() {
+		return erpDAO.StockLogMapList();
+	}
+	
 
 	// 호근 emp 게시판 추가
+
+
 
 
 	@Override
