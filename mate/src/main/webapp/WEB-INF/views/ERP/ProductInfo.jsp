@@ -153,11 +153,10 @@ function orderProduct(empId,pNo,requestId){
 						<c:if test="${loginEmp.status eq 0 }">
 						<td>
 							<!-- 상품 삭제 폼 -->
-							<form id="productDelFrm">
-							<input type="hidden" name="productNo" value="${product.productNo }"/>
-							<button type="button" onclick="productDelete();">상품 삭제</button>
-							</form>
+							<button type="button" onclick="productDelete(${product.productNo});">상품 삭제</button>
 						</td>
+						
+						
 						
 					</c:if>
 					</tr>
@@ -181,6 +180,9 @@ function orderProduct(empId,pNo,requestId){
 		<input type="hidden" name="requestId" value=""/>
 		<input type="hidden" name="pNo" value=""/>
 	</form>
+	
+	<form id="productDelFrm"></form>
+	
 	
 	
 
@@ -222,15 +224,13 @@ location.href="${ pageContext.request.contextPath }/ERP/productEnroll.do";
 	
 }
 
-function productDelete(){
+function productDelete(no){
 	var $frm = $("#productDelFrm");
 
 	var confirm_val = confirm("정말로 상품을 삭제하시겠습니까?");
 
 	if(confirm_val){
-		$frm.attr("action", "${pageContext.request.contextPath}/ERP/productDelete.do");
-		$frm.attr("method", "post");
-		$frm.submit();
+		location.href="${pageContext.request.contextPath}/ERP/productDelete.do?productNo="+no
 	}
 	else{return false;}
 

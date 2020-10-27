@@ -70,18 +70,20 @@
 	 <div class="product-search">
 		<form class="form-inline"
 				action="${pageContext.request.contextPath}/product/searchProduct.do">
-		    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
+		    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" name="search">
 			<br />
 			<p>카테고리 선택</p>
-				<label for="pm">프라모델</label>
-				<input type="checkbox" name="category" id="pm" value="pm" ${ sCategory.contains("pm") ? 'checked' : '' }/>
-				<label for="fg">피규어</label>
-				<input type="checkbox" name="category" id="fg" value="fg" ${ sCategory.contains("fg") ? 'checked' : '' }/>
-				<label for="rc">RC카</label>
-				<input type="checkbox" name="category" id="rc" value="rc" ${ sCategory.contains("rc") ? 'checked' : '' }/>
-				<label for="dr">드론</label>
-				<input type="checkbox" name="category" id="dr" value="dr" ${ sCategory.contains("dr") ? 'checked' : '' }/>
+			<label for="pm">프라모델</label>
+			<input type="checkbox" name="category" id="pm" value="pm" ${ sCategory.contains("pm") ? 'checked' : '' }/>
+			<label for="fg">피규어</label>
+			<input type="checkbox" name="category" id="fg" value="fg" ${ sCategory.contains("fg") ? 'checked' : '' }/>
+			<label for="rc">RC카</label>
+			<input type="checkbox" name="category" id="rc" value="rc" ${ sCategory.contains("rc") ? 'checked' : '' }/>
+			<label for="dr">드론</label>
+			<input type="checkbox" name="category" id="dr" value="dr" ${ sCategory.contains("dr") ? 'checked' : '' }/>
+			
 		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
+		    
 			<input type="hidden" name="category" value="${ category }" />
 			<input type="hidden" name="nowPage" value="1" />
 			<input type="hidden" name="cntPerPage" value="8" />
@@ -105,7 +107,6 @@
 							 alt="thums${vs.count}"
 							 width="50px" class="imgNav-img"/>
 					</c:forEach>
-<<<<<<< HEAD
 				</div>
 				<a href="${pageContext.request.contextPath }/product/productDetail.do?productNo=${product.productNo}">
 				<div class="product-info">
@@ -162,16 +163,6 @@
 	
 	</div>
 </div>
-=======
-				</c:if>
-				<!-- 상품이 없을 경우 -->
-				<c:if test="${ empty list }">
-						<span>상품이 존재하지 않습니다.</span>
-				</c:if>
-	</div>
-</div>
-
->>>>>>> branch 'master' of https://github.com/j81512/mate.git
 <script>
 $(".imgNav-img").click(function(){
 	

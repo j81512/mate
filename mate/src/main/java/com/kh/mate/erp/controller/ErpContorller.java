@@ -709,14 +709,15 @@ public class ErpContorller {
 	
 	//상품 삭제
 	@RequestMapping(value = "/ERP/productDelete.do",
-					method = RequestMethod.POST)
+					method = RequestMethod.GET)
 	public String productDelete(@RequestParam("productNo") String productNo,
-								HttpServletRequest request) {
+								HttpServletRequest request,
+								RedirectAttributes redirectAtttis) {
 		
-		List<ProductMainImages> pmis = erpService.selectProductMainImages(productNo);
-		List<ProductImages> pis = erpService.selectProductImages(productNo);
-		String mainDir = request.getServletContext().getRealPath("/resources/upload/mainimages");
-		String imgDir = request.getServletContext().getRealPath("/resources/upload/images");
+//		List<ProductMainImages> pmis = erpService.selectProductMainImages(productNo);
+//		List<ProductImages> pis = erpService.selectProductImages(productNo);
+//		String mainDir = request.getServletContext().getRealPath("/resources/upload/mainimages");
+//		String imgDir = request.getServletContext().getRealPath("/resources/upload/images");
 		
 		int result = erpService.productDelete(productNo);
 		
@@ -725,15 +726,19 @@ public class ErpContorller {
 		if(result > 0) {
 			//폴더 내 파일 모두 삭제 
 			boolean flag = false;
-			for(ProductMainImages p : pmis) {
-				flag = new File(mainDir, p.getRenamedFilename()).delete();
-			}
-			for(ProductImages pp : pis) {
-				flag = new File(imgDir, pp.getRenamedFilename()).delete();
-			}
+//			for(ProductMainImages p : pmis) {
+//				flag = new File(mainDir, p.getRenamedFilename()).delete();
+//			}
+//			for(ProductImages pp : pis) {
+//				flag = new File(imgDir, pp.getRenamedFilename()).delete();
+//			}
 			log.debug("flag,result = {}, {}",flag,result);
+			redirectAtttis.addFlashAttribute("msg", "상품이 삭제되었습니다.");
+			
+		}else {
+			redirectAtttis.addFlashAttribute("msg", "상품삭제에 실패하였습니다.");
 		}
-		return "ERP/ProductInfo";
+		return "redirect:/ERP/ProductInfo.do";
 	}
 	
 	//발주 요청 가져오기

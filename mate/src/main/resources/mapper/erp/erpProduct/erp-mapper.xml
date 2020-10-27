@@ -9,7 +9,7 @@
 	
 	<select id="searchInfo" resultMap="productMap">
 		select 
-			* 
+			B.* 
 		from 
 		( 
 			select 
@@ -49,7 +49,7 @@
 				and s.stock <![CDATA[ >= ]]> #{uNum}
 			</if>
 			
-		</where>)A)
+		</where>)A) B
         WHERE RN BETWEEN #{page.start} and #{page.end}
 	</select>
 	
