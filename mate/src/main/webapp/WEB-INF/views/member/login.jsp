@@ -285,7 +285,7 @@
 					</div>
 				</div>
 					<!-- 관리자용 로그인 화면 -->
-				  <div class="tab-pane fade in active" id="adminTab">
+				  <div class="tab-pane fade in " id="adminTab">
 				  <div class="form">
 				
                       <form id="admin" action="${ pageContext.request.contextPath }/ERP/erpLogin.do" method="post">

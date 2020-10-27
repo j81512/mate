@@ -15,6 +15,9 @@ input#btn-add{float:right; margin: 0 0 15px;}
 tr[data-no]{
 	cursor: pointer;
 }
+.notice{
+	background-color: blue;
+}
 </style>
 	
 <script>
@@ -34,7 +37,7 @@ $(function(){
 				
 	
 	});
-	
+
 });
 </script>
 <section id="cs-container" class="container">
@@ -44,8 +47,6 @@ $(function(){
     	  method="get"> 
     	<input type="checkbox" name="memberId" id="csMyListFrm" value="${ loginMember.memberId != null ? loginMember.memberId : '' }" ${ loginMember.memberId eq memberId ? 'checked' : '' }/>
 	    <label for="csMyListFrm"><span>내글만보기</span></label>
-    	<input type="checkbox" name="secret" id="secret" value="" />
-	    <label for="secret"><span>비밀글 보기</span></label>
     </form>
 	<form id="csDeleteFrm" 
 	  	  action="${ pageContext.request.contextPath }/cs/deleteCs.do" 
@@ -58,28 +59,29 @@ $(function(){
 	<table id="tbl-cs" class="table table-striped table-hover">
 	<tr>
 		<th>번호</th>
+		<th>분류</th>
 		<th>제목</th>
 		<th>작성자</th>
 		<th>작성일</th>
 		<th>첨부파일</th>	
 	</tr>
 	 <c:forEach items="${ list }" var="cs">
-		<tr data-no="${ cs.csNo }">
-		<c:if test="${ cs.secret == 0 }">
+		<tr class="${ cs.notice eq 1 ? 'notice' : '' }" data-no="${ cs.csNo }">
 		<td>${ cs.csNo }</td>
-		<td>${ cs.title }</td>
-		<td>${ cs.memberId }</td>
+		<td>${ cs.notice == 0 ? '일반 문의' : '공지사항' }</td>
+		<td>${ cs.secret eq 1 ? '----------비밀글 입니다.--------' : cs.title }</td>
+		<td class="csMemberId">${ cs.memberId }</td>
 		<td><fmt:formatDate value="${ cs.regDate }" pattern="yy/MM/dd"/></td>
+		<td class="secret" style="visibility:hidden;">${ cs.secret }</td>
 		<td>
 			<c:if test="${ ! empty cs.csImage }">
 				<img src="${ pageContext.request.contextPath }/resources/images/file.png" style="width : 16px;"/>
 			</c:if> 
 		</td>
-		<c:if test="${ loginMember.memberId eq cs.memberId }">
+		<c:if test="${ loginMember.memberId eq cs.memberId ||  loginMember.memberId eq 'admin' }">
 			<td>
-			<button type="button" class="btn btn-outline-secondary" onclick="updateDev(${ dev.no });">수정</button>
+			<button type="button" class="btn btn-outline-secondary" onclick="updateDev(${ dev.no });">삭제</button>
 			</td>
-		</c:if>
 		</c:if>
 	</tr>
 	</c:forEach>
@@ -106,7 +108,21 @@ function deleteCs(csNo){
 $(function(){
 	$("tr[data-no]").click(function(){
 		var csNo = $(this).attr("data-no");
-		location.href = "${ pageContext.request.contextPath }/cs/csDetail.do?csNo=" + csNo;
+		var memberId = $(this).find(".csMemberId").text();
+		var secret = $(this).find(".secret").text();
+		var loginMember = '${ loginMember.memberId}';
+
+		console.log(secret);
+		console.log(memberId);
+		if( (loginMember != memberId || loginMember == 'admin')  && secret == 1){
+			alert("비밀글 입니다. 본인만 확인 할 수 있다.");
+			return;
+		}else{
+
+			location.href = "${ pageContext.request.contextPath }/cs/csDetail.do?csNo=" + csNo; 
+		}
+	
+		
 	});
 });
 

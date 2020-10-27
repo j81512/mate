@@ -10,7 +10,7 @@
 		from
 			cs
 		order by
-			reg_date desc
+		notice desc, cs_no desc
 	</select>
 	<select id="selectOneCs" resultType="cs">
 		select 
@@ -18,6 +18,8 @@
 		from 
 			cs 
 		 where cs_no = #{ csNo }
+		order by
+		notice desc, cs_no desc
 	</select>
 	
 	<select id="selectReplyList" resultType="CsReply">
