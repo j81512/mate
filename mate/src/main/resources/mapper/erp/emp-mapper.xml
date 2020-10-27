@@ -103,7 +103,7 @@
 		select
 			*
 		from
-			IoLog	
+			Io_Log	
 	</select>
 	
 	<select id="productList" resultType="Product">
@@ -118,15 +118,15 @@
 		select
 			*
 		from
-			ReceiveLog
+			Receive
 			
 	</select>
 	
-	<select id="requestLogList" resultType="RequestLog">
+	<select id="requestList" resultType="RequestLog">
 		select
 			*
 		from
-			RequestLog
+			Request_Log
 	</select>
 
 </mapper>

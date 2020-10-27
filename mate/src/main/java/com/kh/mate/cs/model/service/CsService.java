@@ -1,6 +1,7 @@
 package com.kh.mate.cs.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.kh.mate.cs.model.vo.Cs;
 import com.kh.mate.cs.model.vo.CsImages;
@@ -9,7 +10,7 @@ import com.kh.mate.erp.model.vo.EmpBoardReply;
 
 public interface CsService {
 
-	List<Cs> selectCsList();
+	List<Cs> selectCsList(Map<String, Object> map);
 
 	int insertCs(Cs cs);
 
@@ -26,7 +27,10 @@ public interface CsService {
 	int csReply(CsReply csReply);
 	
 	int csDeleteReply(int csReplyNo);
-	
+
+	List<Cs> selectCsList();
+
+
 
 
 	

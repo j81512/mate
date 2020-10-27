@@ -23,7 +23,7 @@
 	<select id="selectReplyList" resultType="CsReply">
 		select 
 		    * 
-		from  (select r.* ,e.member_id memberId from cs e join cs_reply r on e.member_id = r.member_id) 
+		from  cs_reply
 		where  cs_no = #{ csNo }
 		order by reg_date desc
 			

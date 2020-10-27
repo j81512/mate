@@ -9,6 +9,11 @@
 			*
 		from 
 			CS
+		 <where>
+			<if test="memberId != null and memberId != ''">
+				and  member_id like  #{ memberId }
+			</if>
+		</where>
 		order by
 			cs_no DESC
 	</select>

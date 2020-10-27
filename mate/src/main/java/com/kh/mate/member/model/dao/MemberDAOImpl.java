@@ -1,5 +1,6 @@
 package com.kh.mate.member.model.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +64,22 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public int failPurchase(int purchaseNo) {
 		return sqlSession.delete("member.failPurchase", purchaseNo);
+	}
+
+	@Override
+	public List<Member> searchMember(String searchKeyword, String searchType, int cPage, int numPerPage) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("cPage", ((cPage-1)*numPerPage+1));
+		map.put("numPerPage", (cPage * numPerPage));
+		map.put("searchType", searchType);
+		map.put("searchKeyword", searchKeyword);
+		
+		return sqlSession.selectList("member.searchMember", map);
+	}
+
+	@Override
+	public int getSearchContent(Map<String, String> map) {
+		return sqlSession.selectOne("member.searchContent", map);
 	}
 
 	
