@@ -52,7 +52,7 @@ public class ErpServiceImpl implements ErpService {
 	public List<Product> searchInfo(Map<String, Object> map) {
 		return erpDAO.searchInfo(map);
 	}
-	
+
 	@Override
 	public List<EMP> empList() {
 		return erpDAO.empList();
@@ -60,54 +60,51 @@ public class ErpServiceImpl implements ErpService {
 
 	@Override
 	public Product orderProduct(Map<String, Object> map) {
-		
+
 		Product product = erpDAO.orderProduct(map);
-		
+
 //		product.setEId(erpDAO.findEmpid(product.getProductNo()));
-		
+
 		return product;
 	}
-	
-	
+
 	@Override
 	public int productOrder(Product product) {
 		return erpDAO.productOrder(product);
 	}
-	
-	
-	//김종완
 
+	// 김종완
 
 	@Override
 	public int productEnroll(Product product) {
-		
+
 		int result = erpDAO.productEnroll(product);
-		
-		//MainImages가 추가되어있다면 실행될 메소드
-		if(product.getPmiList() != null) {
-			for(ProductMainImages mainImg : product.getPmiList()) {
-				
+
+		// MainImages가 추가되어있다면 실행될 메소드
+		if (product.getPmiList() != null) {
+			for (ProductMainImages mainImg : product.getPmiList()) {
+
 				mainImg.setProductNo(product.getProductNo());
 				result = erpDAO.productMainImagesEnroll(mainImg);
 			}
 		}
 
-		//ImagesName도 추가
-		if(product.getProductImagesName() != null) {
+		// ImagesName도 추가
+		if (product.getProductImagesName() != null) {
 			List<String> imagesName = product.getProductImagesName();
 			String str = "";
-			for(int i = 0; i < imagesName.size(); i++) {
+			for (int i = 0; i < imagesName.size(); i++) {
 				str += imagesName.get(i);
-				if(i != (imagesName.size() - 1)) {
+				if (i != (imagesName.size() - 1)) {
 					str += ",";
 				}
 			}
 			log.debug("str = {}", str);
-			
-		ProductImages pigs = new ProductImages(0, str, product.getProductNo());
-		result = erpDAO.productImageEnroll(pigs);
+
+			ProductImages pigs = new ProductImages(0, str, product.getProductNo());
+			result = erpDAO.productImageEnroll(pigs);
 		}
-		
+
 		return result;
 	}
 
@@ -125,52 +122,51 @@ public class ErpServiceImpl implements ErpService {
 	public List<ProductImages> selectProductImages(String productNo) {
 		return erpDAO.selectProductImages(productNo);
 	}
-	
+
 	@Override
 	public int productUpdate(Product product) {
 		int result = erpDAO.productUpdate(product);
-		
-		//productMainImage 수정 여부 확인 후 진행
-		if(result > 0 && product.getPmiList() != null) {
-			//기존 섬네일 이미지 삭제
+
+		// productMainImage 수정 여부 확인 후 진행
+		if (result > 0 && product.getPmiList() != null) {
+			// 기존 섬네일 이미지 삭제
 			result = erpDAO.productMainImagesDelete(String.valueOf(product.getProductNo()));
-			//업데이트된 이미지 새로 등록
-			for(ProductMainImages mainImg : product.getPmiList()) {
+			// 업데이트된 이미지 새로 등록
+			for (ProductMainImages mainImg : product.getPmiList()) {
 				mainImg.setProductNo(product.getProductNo());
 				result = erpDAO.productMainImagesEnroll(mainImg);
 			}
-			
+
 		}
-		
-		//productImage 수정 여부 확인 후 진행
-		if(product.getProductImagesName() != null) {
+
+		// productImage 수정 여부 확인 후 진행
+		if (product.getProductImagesName() != null) {
 			List<String> imagesName = product.getProductImagesName();
 			String str = "";
-			for(int i = 0; i < imagesName.size(); i++) {
+			for (int i = 0; i < imagesName.size(); i++) {
 				str += imagesName.get(i);
-				if(i != (imagesName.size() - 1)) {
+				if (i != (imagesName.size() - 1)) {
 					str += ",";
 				}
 			}
 			log.debug("str = {}", str);
-			
-		ProductImages pigs = new ProductImages(0, str, product.getProductNo());
-		result = erpDAO.productImageEnroll(pigs);
+
+			ProductImages pigs = new ProductImages(0, str, product.getProductNo());
+			result = erpDAO.productImageEnroll(pigs);
 		}
-		
+
 		log.debug("result@service = {}", result);
 		return result;
 	}
 
 	@Override
 	public int productDelete(String productNo) {
-		//productTable 데이터 삭제
+		// productTable 데이터 삭제
 		int result = 0;
-		
+
 		result = erpDAO.productDelete(productNo);
 		log.debug("result@service1 = {}", result);
-		
-		
+
 		return result;
 	}
 
@@ -179,12 +175,12 @@ public class ErpServiceImpl implements ErpService {
 		List<RequestLog> requestLogList = erpDAO.selectRequsestList(empId);
 		return requestLogList;
 	}
-	
+
 	@Override
 	public int updateRequestToApp(int requestNo) {
 		return erpDAO.updateRequestToApp(requestNo);
 	}
-	
+
 	@Override
 	public int updateRequestToRef(int requestNo) {
 		return erpDAO.updateRequestToRef(requestNo);
@@ -194,7 +190,7 @@ public class ErpServiceImpl implements ErpService {
 	public List<Receive> selectReceiveList(String empId) {
 		return erpDAO.selectReceiveList(empId);
 	}
-	
+
 	@Override
 	public int updateReceiveToApp(int receiveNo) {
 		return erpDAO.updateReceiveToApp(receiveNo);
@@ -210,19 +206,17 @@ public class ErpServiceImpl implements ErpService {
 		return erpDAO.selectEmpRequest(empId);
 	}
 	
-	//호근 emp 게시판 추가
 
-
-	
+	// 호근 emp 게시판 추가
 
 
 	@Override
 	public EmpBoard selectOneEmpBoard(int no, boolean hasRead) {
 		int result = 0;
-		if(hasRead == false) {
+		if (hasRead == false) {
 			result = erpDAO.increaseReadCount(no);
 		}
-		
+
 		return erpDAO.selectOneEmpBoard(no);
 	}
 
@@ -243,7 +237,7 @@ public class ErpServiceImpl implements ErpService {
 
 	@Override
 	public int updateReply(Map<String, Object> map) {
-	
+
 		return erpDAO.updateReply(map);
 	}
 
@@ -251,27 +245,26 @@ public class ErpServiceImpl implements ErpService {
 	public int insertEmpBoard(EmpBoard empBoard) {
 		int result = erpDAO.inserEmpBoard(empBoard);
 
-		if(empBoard.getEmpBoardImageList() != null) {
-			
-			for(EmpBoardImage empBoardImage : empBoard.getEmpBoardImageList()) {
-				
+		if (empBoard.getEmpBoardImageList() != null) {
+
+			for (EmpBoardImage empBoardImage : empBoard.getEmpBoardImageList()) {
+
 				empBoardImage.setBoardNo(empBoard.getBoardNo());
 				result = erpDAO.inserEmpBoardImage(empBoardImage);
-				
+
 			}
-		
+
 		}
-		
-		if(empBoard.getCategory().equals("req")) {
+
+		if (empBoard.getCategory().equals("req")) {
 			log.debug("호출은 되냐?");
 			empBoard.setBoardNo(empBoard.getBoardNo());
 			result = erpDAO.insertRequestStock(empBoard);
-	
-			
+
 		}
 		return result;
 	}
-	
+
 	public List<IoLog> ioLogList() {
 		return erpDAO.ioLogList();
 	}
@@ -291,7 +284,6 @@ public class ErpServiceImpl implements ErpService {
 		return erpDAO.requestList();
 	}
 
-
 	@Override
 	public EmpBoardImage empBoardFileDownload(int boardImageNo) {
 		return erpDAO.empBoardFileDownload(boardImageNo);
@@ -302,26 +294,26 @@ public class ErpServiceImpl implements ErpService {
 		return erpDAO.erpProductList();
 	}
 
-
 	@Override
 	public List<EmpBoard> searchBoard(String searchType, String searchKeyword, int cPage, int numPerPage) {
-		return erpDAO.searchBoard(searchType, searchKeyword,cPage,numPerPage);
+		return erpDAO.searchBoard(searchType, searchKeyword, cPage, numPerPage);
 	}
 
 	@Override
 	public int getSearchContents(Map<String, String> map) {
-		
+
 		int totalContents = erpDAO.getSearchContents(map);
-		
+
 		return totalContents;
 	}
-	//김찬희 페이징작업
+
+	// 김찬희 페이징작업
 	@Override
 	public int countProduct(Map<String, Object> map) {
 		return erpDAO.countProduct(map);
 	}
 
-	//누락상품검사
+	// 누락상품검사
 	@Override
 	public List<Product> selectAll() {
 		return erpDAO.selectAll();
@@ -332,17 +324,11 @@ public class ErpServiceImpl implements ErpService {
 		return erpDAO.productCompare(emp);
 	}
 
-	//누락재고상품 추가
+	// 누락재고상품 추가
 	@Override
 	public int mStockInsert(Map<String, Object> map) {
 		return erpDAO.mStockInsert(map);
 	}
-
-
-	
-
-	
-	
 
 	@Override
 	public EmpBoard selectEmpStock(Map<String, Object> map) {
@@ -367,22 +353,22 @@ public class ErpServiceImpl implements ErpService {
 	@Override
 	public int empBoardUpdate(EmpBoard empBoard) {
 		int result = erpDAO.empBoardUpdate(empBoard);
-		
-		//productMainImage 수정 여부 확인 후 진행
-		if(result > 0 && empBoard.getEmpBoardImageList() != null) {
-			//기존 섬네일 이미지 삭제
+
+		// productMainImage 수정 여부 확인 후 진행
+		if (result > 0 && empBoard.getEmpBoardImageList() != null) {
+			// 기존 섬네일 이미지 삭제
 			result = erpDAO.empBoardFileDelete(empBoard.getBoardNo());
-			//업데이트된 이미지 새로 등록
-			for(EmpBoardImage updateImages : empBoard.getEmpBoardImageList()) {
+			// 업데이트된 이미지 새로 등록
+			for (EmpBoardImage updateImages : empBoard.getEmpBoardImageList()) {
 				updateImages.setBoardNo(empBoard.getBoardNo());
 				result = erpDAO.empBoardFileUpdate(updateImages);
 			}
-			
+
 		}
-		
-		if(empBoard.getCategory().equals("req")) {
+
+		if (empBoard.getCategory().equals("req")) {
 			empBoard.setBoardNo(empBoard.getBoardNo());
-			result = erpDAO.insertRequestStock(empBoard);		
+			result = erpDAO.insertRequestStock(empBoard);
 		}
 		log.debug("result@service = {}", result);
 		return result;
@@ -390,26 +376,21 @@ public class ErpServiceImpl implements ErpService {
 
 	@Override
 	public int stockTranslate(Map<String, Object> map) {
-		 int result = 0;
-		 EmpBoard empBoard = erpDAO.selectOneEmpBoard(map);
-		 
-		 if(empBoard.getEnabled() == 0) {
-				 
-				 result = erpDAO.updateTranStock(map);
-				 result = erpDAO.updateStock(map);
-				 result = erpDAO.updateStockInfo(map);
-				 result = erpDAO.updateEnabled(map);
-			 
-		 }
-		 
-		 log.debug("result = {}", result);
-		 
+		int result = 0;
+		EmpBoard empBoard = erpDAO.selectOneEmpBoard(map);
+
+		if (empBoard.getEnabled() == 0) {
+
+			result = erpDAO.updateTranStock(map);
+			result = erpDAO.updateStock(map);
+			result = erpDAO.updateStockInfo(map);
+			result = erpDAO.updateEnabled(map);
+
+		}
+
+		log.debug("result = {}", result);
+
 		return result;
 	}
 
-
-	
-	
-	
-	
 }
