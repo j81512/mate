@@ -4,54 +4,69 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-
-<!-- bootstrap js: jquery load 이후에 작성할것.-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-
-<!-- bootstrap css -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+	crossorigin="anonymous">
+<link
+	href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
+	rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet"
+	href="${ pageContext.request.contextPath }/resources/css/loginForm.css" />
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+	integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+	crossorigin="anonymous"></script>
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+	crossorigin="anonymous"></script>
+<jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
 </head>
   <body>
-
-    <div>
-    	<li>
-	    	<button type="button" 
-	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/StockLog.do';">
-			  <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>재고
-			</button>
-    	</li>
-    	<li>
-	    	<button type="button" 
-	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/OrderLog.do';">
-			  <span class="glyphicon glyphicon-gift" aria-hidden="true"></span>발주
-			</button>
-    	</li>
-    </div>
-    <div>
-    	<li>
-	    	<button type="button" 
-	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/PriceLog.do';">
-			  <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>매출
-			</button>
-    	</li>	
-    	<li>
-	    	<button type="button" 
-	    			class="btn btn-default btn-lg"
-	    			onclick="location.href='${ pageContext.request.contextPath }/ERP/ReceiveLog.do';">
-			  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>입출고
-			</button>
-    	</li>	
-    </div>
- 	
-		
+<div class="container">
+	<div id="buy" class="tab-pane fade active show in">
+		<div class="col-md-15">
+		    <div class="form-area">
+			    <table id="purchaseLog-table" class="table">
+			    	<tr>
+			    		<th>
+					    	<button type="button" 
+					    			class="btn btn-default btn-lg"
+					    			onclick="location.href='${ pageContext.request.contextPath }/ERP/StockLog.do';">
+							  <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>재고
+							</button>
+			    		</th>
+						<th>
+					    	<button type="button" 
+					    			class="btn btn-default btn-lg"
+					    			onclick="location.href='${ pageContext.request.contextPath }/ERP/OrderLog.do';">
+							  <span class="glyphicon glyphicon-gift" aria-hidden="true"></span>발주
+							</button>
+						</th>
+					</tr>
+					<tr>
+						<th>
+					    	<button type="button" 
+					    			class="btn btn-default btn-lg"
+					    			onclick="location.href='${ pageContext.request.contextPath }/ERP/PriceLog.do';">
+							  <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>매출
+							</button>
+						</th>
+						<th>
+					    	<button type="button" 
+					    			class="btn btn-default btn-lg"
+					    			onclick="location.href='${ pageContext.request.contextPath }/ERP/ReceiveLog.do';">
+							  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>입출고
+							</button>
+						</th>
+			    	</tr>	
+			    </table>
+    		</div>
+ 		</div>
+	</div>
+</div>
+<jsp:include page="/WEB-INF/views/common/footerE.jsp"/>	
   </body>
 </html>
