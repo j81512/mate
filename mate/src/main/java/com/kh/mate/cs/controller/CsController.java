@@ -247,6 +247,7 @@ public class CsController {
 	public List<CsReply> csReplyList(Model model, @RequestParam("csNo") int csNo){
 		
 		List<CsReply> list = csService.csReplyList(csNo);
+		model.addAttribute("list", list);
 		return list;
 	}
 
@@ -258,8 +259,9 @@ public class CsController {
 		log.debug("csReply= {}", csReply);
 		int result = csService.csReply(csReply);
 		log.debug("result = {}", result);
+		log.debug("result = {}", result);
 		
-		return "redirect:/cs/csDetail.do?csNo=" + csReply.getCsReplyNo();
+		return "redirect:/cs/csDetail.do?csNo=" + csReply.getCsNo();
 	}
 	
 	@PostMapping("/csReply.do")

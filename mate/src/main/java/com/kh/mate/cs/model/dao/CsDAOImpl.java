@@ -70,13 +70,13 @@ public class CsDAOImpl implements CsDAO {
 	@Override
 	public List<CsReply> csReplyList(int csNo) {
 		
-		return sqlSession.selectList("cs.selectReplyList", csNo);
+		return sqlSession.selectList("csReply.selectReplyList", csNo);
 	}
 
 	@Override
-	public int csReplyList(CsReply csReply) {
+	public int csReplyEnroll(CsReply csReply) {
 		
-		return sqlSession.insert("cs.csInsertReply", csReply);
+		return sqlSession.insert("csReply.csInsertReply", csReply);
 	}
 
 	@Override
@@ -84,4 +84,8 @@ public class CsDAOImpl implements CsDAO {
 		
 		return sqlSession.delete("cs.csDeleteReply", csReplyNo);
 	}
+
+
+	
+	
 }

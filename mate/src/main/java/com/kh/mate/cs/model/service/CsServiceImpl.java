@@ -84,7 +84,7 @@ public class CsServiceImpl implements CsService {
 	@Override
 	public int csReply(CsReply csReply) {
 		
-		return csDAO.csReplyList(csReply);
+		return csDAO.csReplyEnroll(csReply);
 	}
 
 	@Override
@@ -99,5 +99,8 @@ public class CsServiceImpl implements CsService {
 		return null;
 	}
 
+
+	
+	
 	
 }

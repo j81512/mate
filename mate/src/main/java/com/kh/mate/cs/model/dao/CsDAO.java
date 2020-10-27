@@ -28,7 +28,7 @@ public interface CsDAO {
 
 	List<CsReply> csReplyList(int csNo);
 
-	int csReplyList(CsReply csReply);
+	int csReplyEnroll(CsReply csReply);
 
 	int csDeleteReply(int csReplyNo);
 
