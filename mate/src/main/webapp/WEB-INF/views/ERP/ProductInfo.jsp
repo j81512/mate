@@ -62,6 +62,7 @@ function orderProduct(empId,pNo,requestId){
 	$order.submit();
 	
 }
+
 </script>
   <body>
     
@@ -74,10 +75,10 @@ function orderProduct(empId,pNo,requestId){
 			  <div class="child">
 			  	<select name="category" id="category">
 				    <option value="">카테고리</option>
-				    <option value="pm">프라모델</option>
-				    <option value="fg">피규어</option>
-				    <option value="rc">RC카</option>
-				    <option value="dr">드론</option>
+				    <option value="pm" ${ map.category eq "pm" ? "selected='selected'" : '' }>프라모델</option>
+				    <option value="fg" ${ map.category eq "fg" ? "selected='selected'" : '' }>피규어</option>
+				    <option value="rc" ${ map.category eq "rc" ? "selected='selected'" : '' }>RC카</option>
+				    <option value="dr" ${ map.category eq "dr" ? "selected='selected'" : '' }>드론</option>
 				</select>
 			  </div>
 			  <div class="child">
@@ -90,13 +91,13 @@ function orderProduct(empId,pNo,requestId){
 				</select>
 			  </div>
 			  <div class="child">
-			    <input type="number" class="form-control" name="upper" placeholder="재고 수량">
+			    <input type="number" class="form-control" name="upper" placeholder="재고 수량" value="${ map.uNum }">
 			  </div>
 			  <div class="child">
 				<p>이상</p>			
 			  </div>
 			  <div class="child">
-			    <input type="number" class="form-control" name="lower" placeholder="재고 수량">
+			    <input type="number" class="form-control" name="lower" placeholder="재고 수량" value="${ map.lNum }" >
 			  </div>
 			  <div class="child">
 				<p>이하</p>			
@@ -104,14 +105,14 @@ function orderProduct(empId,pNo,requestId){
 			  <div class="child">
 			  	<select name="select">
 				    <option value="">검색 분류</option>
-				    <option value="product_name">상품명</option>
-				    <option value="product_no">상품번호</option>
+				    <option value="product_name" ${ map.select eq "product_name" ? "selected='selected'" : '' }>상품명</option>
+				    <option value="product_no" ${ map.select eq "product_no" ? "selected='selected'" : '' }>상품번호</option>
 				</select>
 			  </div>
 			  <div class="child">
-			    <input type="text" class="form-control2" name="search" placeholder="상품명/상품번호 조회">
+			    <input type="text" class="form-control2" name="search" placeholder="상품명/상품번호 조회" value="${ map.search }">
 			  </div>
-			  <button type="submit" class="btn btn-default">검색</button>
+			  <button type="submit" class="btn btn-default" onclick="checkNum('${ map.uNum }','${ map.lNum }')">검색</button>
 		</form>
 	  </div>
 	</section>
