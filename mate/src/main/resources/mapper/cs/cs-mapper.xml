@@ -5,20 +5,27 @@
 <mapper namespace="cs">
   
  <select id="selectCsList" resultType="cs">
-		select
-			*
-		from 
-			CS
-		 <where>
-			<if test="memberId != null and memberId != ''">
-				and  member_id like  #{ memberId }
-			</if>
-			<if test="secret != null and secret != ''">
-				and  secret  =  #{ secret }
-			</if>
-		</where>
-		order by
-		notice desc, cs_no desc
+	 	SELECT * 
+			FROM (
+				SELECT ROWNUM as rnum, B.*
+					FROM (
+	                    select *
+	                        from(   
+	                            SELECT ba.*
+	                                 FROM cs ba ) 			
+	                             	 <where>
+										<if test="memberId != null and memberId != ''">
+											and  member_id like  #{ memberId }
+										</if>
+										<if test="secret != null and secret != ''">
+											and  secret  =  #{ secret }
+										</if>
+									</where>
+	                                 order by
+							notice desc, cs_no desc
+							) B
+					)
+			 where rnum BETWEEN #{ cPage } AND #{ numPerPage }
 	</select>
 	
 	<insert id="insertCs">
@@ -78,5 +85,12 @@
 			cs_images
 		where
 			cs_no = #{ csNo }
+	</select>
+	
+	<select id="getSearchContents" resultType="_Int">
+		select
+			count(*)
+		from cs
+	
 	</select>
 </mapper>
