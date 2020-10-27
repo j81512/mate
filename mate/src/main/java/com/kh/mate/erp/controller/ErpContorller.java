@@ -344,7 +344,7 @@ public class ErpContorller {
 		List<Product> pList = erpService.selectAll();
 		List<Integer> cList = erpService.productCompare(emp);
 		
-		
+		log.debug("emp= {}",emp);
 		
 		//누락상품검사
 		for(Product pro : pList) {
