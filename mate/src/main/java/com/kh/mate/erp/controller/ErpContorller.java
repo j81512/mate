@@ -88,6 +88,8 @@ public class ErpContorller {
 	@RequestMapping("/ERP/ProductInfo.do")
 	public ModelAndView productInfo(ModelAndView mav) {		
 		mav.setViewName("/ERP/ProductInfo");
+		mav.addObject("click", "   ");
+		
 		return mav;
 	}
 	//현황조회 진입부
@@ -372,17 +374,17 @@ public class ErpContorller {
 		
 
 		
-		if(!upper.isEmpty() && upper != null) {
+		if(upper != null && !upper.isEmpty()) {
 			int uNum = Integer.parseInt(upper);
 			map.put("uNum", uNum);
 			
 		}
-		if(!lower.isEmpty() && lower != null) {
+		if(lower != null && !lower.isEmpty()) {
 			int lNum = Integer.parseInt(lower);
 			map.put("lNum", lNum);
 			
 		}
-		if(select.equals("product_no")) {
+		if(select != null && select.equals("product_no")) {
 			int sNum = Integer.parseInt(search);
 			log.debug("sNum = {}",sNum);
 			map.put("sNum", sNum);
@@ -718,10 +720,10 @@ public class ErpContorller {
 								HttpServletRequest request,
 								RedirectAttributes redirectAtttis) {
 		
-//		List<ProductMainImages> pmis = erpService.selectProductMainImages(productNo);
-//		List<ProductImages> pis = erpService.selectProductImages(productNo);
-//		String mainDir = request.getServletContext().getRealPath("/resources/upload/mainimages");
-//		String imgDir = request.getServletContext().getRealPath("/resources/upload/images");
+		List<ProductMainImages> pmis = erpService.selectProductMainImages(productNo);
+		List<ProductImages> pis = erpService.selectProductImages(productNo);
+		String mainDir = request.getServletContext().getRealPath("/resources/upload/mainimages");
+		String imgDir = request.getServletContext().getRealPath("/resources/upload/images");
 		
 		int result = erpService.productDelete(productNo);
 		
@@ -730,12 +732,12 @@ public class ErpContorller {
 		if(result > 0) {
 			//폴더 내 파일 모두 삭제 
 			boolean flag = false;
-//			for(ProductMainImages p : pmis) {
-//				flag = new File(mainDir, p.getRenamedFilename()).delete();
-//			}
-//			for(ProductImages pp : pis) {
-//				flag = new File(imgDir, pp.getRenamedFilename()).delete();
-//			}
+			for(ProductMainImages p : pmis) {
+				flag = new File(mainDir, p.getRenamedFilename()).delete();
+			}
+			for(ProductImages pp : pis) {
+				flag = new File(imgDir, pp.getRenamedFilename()).delete();
+			}
 			log.debug("flag,result = {}, {}",flag,result);
 			redirectAtttis.addFlashAttribute("msg", "상품이 삭제되었습니다.");
 			

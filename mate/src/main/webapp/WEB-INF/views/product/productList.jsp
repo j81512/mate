@@ -94,9 +94,11 @@
 					<c:forEach items="${ list }" var="product">
 					<div class="card">
 						<div class="top-section">
+						<a href="${pageContext.request.contextPath}/product/productDetail.do?productNo=${product.productNo}">
 							<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${product.pmiList[0].renamedFilename}"
 								 alt="대표이미지" class="mainImg"
 								 width="200px"/>
+						</a>
 						</div>
 						<div class="imgNav">
 							<c:forEach items="${product.pmiList }" var="Thumbs" varStatus="vs">
@@ -105,6 +107,8 @@
 									 width="50px" class="imgNav-img"/>
 							</c:forEach>
 						</div>
+						<hr />
+						<a href="${pageContext.request.contextPath}/product/productDetail.do?productNo=${product.productNo}">
 						<div class="product-info">
 							<div class="productName">
 							상품명 : ${product.productName}
@@ -131,6 +135,7 @@
 							제조사 : ${product.manufacturerId}
 							</div>
 						</div>
+						</a>
 					</div>
 					</c:forEach>
 				</c:if>
@@ -144,7 +149,7 @@
 $(".imgNav-img").click(function(){
 	
 	var src = $(this).attr("src");
-	var $topSectionImg = $(this).parent().siblings(".top-section").find("img");
+	var $topSectionImg = $(this).parent().siblings().siblings(".top-section").find("img");
 	$topSectionImg.attr("src", src);
 });
 </script>
