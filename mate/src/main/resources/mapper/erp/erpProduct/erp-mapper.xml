@@ -8,15 +8,23 @@
 	<resultMap type="Product" id="productMap"></resultMap>
 	
 	<select id="searchInfo" resultMap="productMap">
-		select * from ( select ROWNUM RN, A.*
-        from (select p.product_no,
-			p.product_name,
-			p.category,
-			s.emp_id,
-			p.reg_date,
-			nvl(s.stock,0) stock
-		from product p left join stock s
-		on (p.product_no = s.product_no)
+		select 
+			* 
+		from 
+		( 
+			select 
+		ROWNUM RN, 
+		A.*
+        	from 
+        (select p.product_no,
+		p.product_name,
+		p.category,
+		s.emp_id,
+		p.reg_date,
+		nvl(s.stock,0) stock
+			from product p left join stock s
+		on (p.product_no = s.product_no
+		)
 		<where>
 			<if test="emp.status != 0">
 				(emp_id = #{emp.empId} or emp_id is null)
@@ -46,12 +54,12 @@
 	</select>
 	
 	<select id="orderProduct" resultMap="productMap">
-		select p.product_no,
-			p.product_name,
-			p.category,
-			p.manufacturer_id,
-			p.reg_date,
-			s.stock,
+		select p.product_no product_no,
+			p.product_name product_name,
+			p.category category,
+			p.manufacturer_id manufacturer_id,
+			p.reg_date reg_date,
+			s.stock stock,
 			s.emp_id branchEmp 
 		from product p left join stock s
 		on (p.product_no = s.product_no)
@@ -63,6 +71,9 @@
 			</if>
 		</where>
 	</select>
+	
+	
+	
 	
 	<select id="selectProductOne" resultType="product">
  		select
@@ -151,7 +162,7 @@
 			from 
 				stock S
 			where 
-				emp_id = #{empId} and 
+				s.emp_id = #{ empId } and 
 				S.product_no = P.product_no 
 			) stock
 		from          
@@ -161,8 +172,8 @@
 		on
  			R.product_no = P.product_no
 		where 
-			emp_id = #{empId} and
-			r.confirm not in 1 
+			r.emp_id = #{ empId } and
+			r.confirm not in 1
 			
  	</select>
  	

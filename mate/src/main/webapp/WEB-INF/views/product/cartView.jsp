@@ -142,6 +142,7 @@ function execPostCode() {
 		alert("${msg}");
 	</script>
 </c:if>
+<div class="container">
 
 <table class="table table-hover">
   <thead>
@@ -215,6 +216,7 @@ function execPostCode() {
 <div class="container center my-5"><button class="btn btn-warning" type="button" id="purchase-btn" >결제하기</button></div>
 <div id="selectProduct-div-hidden"></div>
 <div id="selectAddress-div-hidden"></div>
+</div>
 <script>
 $("#purchase-btn").click(function(){
 	var $productNos = $(".hidden-productNo");

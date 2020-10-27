@@ -26,7 +26,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,6 +51,7 @@ import com.kh.mate.erp.model.vo.EmpBoardReply;
 import com.kh.mate.log.vo.IoLog;
 import com.kh.mate.log.vo.Receive;
 import com.kh.mate.log.vo.RequestLog;
+import com.kh.mate.member.model.vo.Member;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
 import com.kh.mate.product.model.vo.ProductMainImages;
@@ -241,8 +241,12 @@ public class ErpContorller {
 //		log.debug("map = {}", map);
 		List<EmpBoard> empBoardList = erpService.searchBoard(searchType,searchKeyword,cPage, numPerPage);
 		int totalContents = erpService.getSearchContents(map);
-	
-		String url = request.getRequestURI();
+		String url = request.getRequestURI() + "?";
+		if(searchType != null && !"".equals(searchType) && searchType != null && !"".equals(searchType)) {
+			url +=  "searchType" + "=" + searchType + "&searchKeyword=" + searchKeyword;
+		}
+		
+		
 		String pageBar = Paging.getPageBarHtml(cPage, numPerPage, totalContents, url);
 		
 		model.addAttribute("list", list);
@@ -845,7 +849,13 @@ public class ErpContorller {
 		if(	loginEmp != null && (loginEmp.getEmpId().equals(empId))
 				&& (loginEmp.getEmpPwd().equals(empPwd))) {
 			model.addAttribute("loginEmp", loginEmp);
-			if(loginEmp.getEmpId().equals("admin")) model.addAttribute("loginMember", loginEmp);
+			
+			if(loginEmp.getEmpId().equals("admin")) {
+				Member m = new Member();
+				m.setMemberId(loginEmp.getEmpId());
+				m.setMemberName(loginEmp.getEmpName());
+				model.addAttribute("loginMember", m);
+			}
 	
 		}
 
