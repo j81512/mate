@@ -5,7 +5,7 @@
 <mapper namespace="erp">
 
 
-	<resultMap type="product" id="productMap"></resultMap>
+	<resultMap type="Product" id="productMap"></resultMap>
 	
 	<select id="searchInfo" resultMap="productMap">
 		select 
@@ -13,22 +13,18 @@
 		from 
 		( 
 			select 
-			ROWNUM RN, 
-			A.*
-        		from 
-			        (select 
-				        p.product_no,
-						p.product_name,
-						p.category,
-						s.emp_id,
-						p.reg_date,
-						p.manufacturer_id,
-						nvl(s.stock,0) stock
-					 from 
-					 	product p 
-					 	left join stock s
-					 		on (p.product_no = s.product_no
-					)
+		ROWNUM RN, 
+		A.*
+        	from 
+        (select p.product_no,
+		p.product_name,
+		p.category,
+		s.emp_id,
+		p.reg_date,
+		nvl(s.stock,0) stock
+			from product p left join stock s
+		on (p.product_no = s.product_no
+		)
 		<where>
 			<if test="emp.status != 0">
 				emp_id = #{emp.empId} or emp_id is null
@@ -179,6 +175,22 @@
 			r.emp_id = #{ empId } and
 			r.confirm not in 1
 			
+ 	</select>
+ 	
+ 	<select id="StockLogMapList" resultMap="stockLogMap">
+ 		select
+ 			s.product_no,
+ 			s.emp_id,
+ 			s.stock,
+ 			p.product_name
+ 		from
+ 			product p 
+ 		inner join
+ 			stock s
+ 		on p.product_no = s.product_no
+ 		inner join 
+ 			receive r
+ 		on p.product_no = r.product_no
  	</select>
  	
 	<insert id="productEnroll">
@@ -359,6 +371,18 @@
 	<insert id="mStockInsert">
 		 insert into stock VALUES(#{ pro.productNo },#{emp.empId},default)
 	</insert>
+	
+	<resultMap type="map" id="stockLogMap">
+		<id column="product_no" property="productNo"/>
+		<result column="emp_id" property="empId"/>
+		<result column="stock" property="stock"/>
+		<result column="status" property="status"/>
+		<result column="product_no" property="productNo"/>
+		<result column="product_name" property="productName"/>
+		<result column="category" property="category"/>
+		<result column="amount" property="amount"/>
+		<result column="manufacturer_id" property="manufacturerId"/>
+	</resultMap>
 	
 	
 </mapper>
