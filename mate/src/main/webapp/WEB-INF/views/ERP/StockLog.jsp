@@ -33,60 +33,62 @@
 				    <div class="form-area">  
 						<table id="purchaseLog-table" class="table">
 							<thead>
+							<form id="searchFrm" method="POST">
 								<tr>
 									<th>
-									  	<select name="searchType" id="searchType">
-										    <option value="">검색타입</option>
-										    <option value="online"${ 'online' eq param.searchType ? 'selected' : '' }>온라인</option>
-										    <option value="gn"${ 'gn' eq param.searchType ? 'selected' : '' }>강남점</option>
-										    <option value=""${ '' eq param.searchType ? 'selected' : '' }></option>
-										    <option value=""${ '' eq param.searchType ? 'selected' : '' }></option>
-										    <option value=""${ '' eq param.searchType ? 'selected' : '' }></option>
+									  	<select name="branchId" id="branchId">
+										    <option value="" disabled selected>지점 선택</option>
+										    <c:forEach items="${empList}" var="list">
+										    <c:if test="${list.status eq 1 }">
+										    <option value="${list.empId}">${list.empName}</option>
+										    </c:if>
+										    <c:if test="${list.status eq 0  }">
+										    <option value="${list.empId }">온라인</option>
+										    </c:if>
+										    </c:forEach>
 										</select>
 									</th>
 									<th>
-									  	<select name="productlist" id="productlist">
-										    <option value="no">상품번호</option>
-										    <option value="name">상품명</option>
+									  	<select name="searchType" id="searchType">
+										    <option value="" disabled selected>검색 타입 선택</option>
+										    <option value="product_no">상품번호</option>
+										    <option value="product_name">상품명</option>
 										</select>
 									</th>
 									<th>	
-									    <input type="text" class="form-control" placeholder="내용을 입력해주세요">
+									    <input type="text" name="searchKeyword" class="form-control" placeholder="내용을 입력해주세요">
 									</th>
 									<th>
-									  <button type="submit" class="btn btn-default">검색</button>
+									  <button type="button" class="btn btn-default" id="searchStock">검색</button>
 									</th>
 								</tr>
+							</form>
 							</thead>
 							<tbody class="thead-dark">
 								<tr>
-									<th scope="col">구분</th>
 									<th scope="col">보유점</th>
 									<th scope="col">상품번호</th>
 									<th scope="col">상품명</th>
 									<th scope="col">카테고리</th>
-									<th scope="col">브랜드</th>
+									<th scope="col">제조사</th>
 									<th scope="col">수량</th>
-									<th scope="col">업체명</th>
 								</tr>
 							</tbody>
+							<tfoot class="stockInfo">
 							<c:if test="${ not empty list }">
-								<tfoot>
 								<fmt:setLocale value="ko_kr"/>
 									<c:forEach items="${ list }" var="stock">
 										<tr>
-											<td>${ ioLog.status }</td>
-											<td>${ receive.empId }</td>
-											<td>${ product.productNo }</td>
-											<td>${ product.productName }</td>
-											<td>${ product.category }</td>
-											<td>${ product.empId }</td>
-											<td>${ ioLog.amount }</td>
-											<td>${ product.empId }</td>
+											<td>${ stock.empName }</td>
+											<td>${ stock.productNo }</td>
+											<td>${ stock.productName }</td>
+											<td>${ stock.category }</td>
+											<td>${ stock.manufacturerName }</td>
+											<td>${ stock.stock }</td>
 										</tr>
 									</c:forEach>
-								</tfoot>
 							</c:if>
+							</tfoot>
 							<c:if test="${ empty list }">
 								<tr>
 									<td colspan="8">검색결과 없음</td>
@@ -98,4 +100,47 @@
 			</div>
 		</div>
 	</body>
+	
+<script>
+$("#searchStock").click(function(){
+
+	var formData = $("#searchFrm").serialize();
+
+	$.ajax({
+		url : "${pageContext.request.contextPath}/ERP/searchStock.do",
+		type: "POST",
+		data : formData,
+		success: function(data) {
+			console.log(data);
+			displayStock(data);
+			
+	    },
+	    error: function(error) {
+		    alert("상품이 존재하지 않습니다.");
+			console.log(error);
+		}
+	});
+	
+});
+
+function displayStock(data){
+	var $container = $(".stockInfo");
+	var html = "<fmt:setLocale value='ko_kr'/>";
+
+	for(var i in data){
+		var m = data[i];
+		html += "<tr>"
+			+"<td>" + m.empName + "</td>"
+			+"<td>" + m.productNo + "</td>"
+			+"<td>" + m.productName + "</td>"
+			+"<td>" + m.category + "</td>"
+			+"<td>" + m.manufacturerName + "</td>"
+			+"<td>" + m.stock + "</td>"
+			+"</tr>";
+		
+	}
+	$container.html(html);
+}
+
+</script>	
 </html>
