@@ -25,6 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ErpServiceImpl implements ErpService {
 
+	
+
 	@Autowired
 	private ErpDAO erpDAO;
 
@@ -204,8 +206,13 @@ public class ErpServiceImpl implements ErpService {
 	}
 	
 	@Override
-	public List<Map<String, Object>> StockLogMapList() {
-		return erpDAO.StockLogMapList();
+	public List<Map<String, Object>> StockLogMapList(Map<String,String> param) {
+		return erpDAO.StockLogMapList(param);
+	}
+	
+	@Override
+	public List<Map<String, Object>> selectRequestMapList(Map<String, Object> temp) {
+		return erpDAO.selectRequestMapList(temp);
 	}
 	
 

@@ -180,9 +180,12 @@
  	<select id="StockLogMapList" resultMap="stockLogMap">
  		select
  			s.product_no,
+ 			(select emp_name from emp where emp_id = s.emp_id) emp_name,
  			s.emp_id,
  			s.stock,
- 			p.product_name
+ 			p.product_name,
+ 			p.category,
+ 			(select emp_name from emp where emp_id = p.manufacturer_id) manufacturer_name
  		from
  			product p 
  		inner join
@@ -191,6 +194,44 @@
  		inner join 
  			receive r
  		on p.product_no = r.product_no
+		<where>
+			<if test="branchId != null and branchId != '' ">
+			s.emp_id = #{branchId}
+			</if>
+			<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
+			and p.${searchType} like '%' || #{searchKeyword} || '%'
+			</if>
+		</where>
+ 	</select>
+ 	
+ 	<select id="selectRequestMapList" resultMap="requestMap">
+ 		select
+ 			rl.request_no,
+ 			rl.manufacturer_id,
+ 			rl.amount,
+ 			TO_CHAR(rl.request_date,'YYYY-MM-DD') request_date,
+ 			rl.confirm,
+ 			rl.product_no,
+ 			rl.emp_id,
+ 			p.product_name,
+ 			(select emp_name from emp where emp_id = rl.manufacturer_id) manufacturer_name,
+ 			(select emp_name from emp where emp_id = rl.emp_id) branch_name
+ 		from
+ 			request_log rl
+ 		inner join
+ 			product p
+ 		on rl.product_no = p.product_no
+ 			<where>
+	 			<if test="manufacturerId != null and manufacturerId != '' ">
+				rl.manufacturer_id = #{manufacturerId}
+				</if>
+				<if test="confirm != null and confirm != ''">
+				and rl.confirm = #{confirm}
+				</if>
+				<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
+				and p.${searchType} like '%' || #{searchKeyword} || '%'
+				</if>
+ 			</where>
  	</select>
  	
 	<insert id="productEnroll">
@@ -374,7 +415,9 @@
 	
 	<resultMap type="map" id="stockLogMap">
 		<id column="product_no" property="productNo"/>
+		<result column="emp_name" property="empName"/>
 		<result column="emp_id" property="empId"/>
+		<result column="manufacturer_name" property="manufacturerName"/>
 		<result column="stock" property="stock"/>
 		<result column="status" property="status"/>
 		<result column="product_no" property="productNo"/>
@@ -384,5 +427,17 @@
 		<result column="manufacturer_id" property="manufacturerId"/>
 	</resultMap>
 	
+	<resultMap type="map" id="requestMap">
+		<id column="request_no" property="requestNo"/>
+		<result column="manufacturer_id" property="manufacturerId"/>
+		<result column="amount" property="amount"/>
+		<result column="request_date" property="requestDate"/>
+		<result column="product_name" property="productName"/>
+		<result column="confirm" property="confirm"/>
+		<result column="product_no" property="productNo"/>
+		<result column="emp_id" property="empId"/>
+		<result column="manufacturer_name" property="manufacturerName"/>
+		<result column="branch_name" property="branchName"/>
+	</resultMap>
 	
 </mapper>

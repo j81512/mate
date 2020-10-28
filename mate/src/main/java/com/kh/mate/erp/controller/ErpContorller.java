@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -88,6 +90,8 @@ public class ErpContorller {
 	@RequestMapping("/ERP/ProductInfo.do")
 	public ModelAndView productInfo(ModelAndView mav) {		
 		mav.setViewName("/ERP/ProductInfo");
+		mav.addObject("click", "   ");
+		
 		return mav;
 	}
 	//현황조회 진입부
@@ -111,10 +115,12 @@ public class ErpContorller {
 //		model.addAttribute("list", list);
 //		model.addAttribute("list2", list2);
 //		model.addAttribute("list3", list3);
-		List<Map<String, Object>> mapList= erpService.StockLogMapList();
+		Map<String, String> temp = new HashMap<>();
+		List<EMP> empList = erpService.empList();
+		List<Map<String, Object>> mapList = erpService.StockLogMapList(temp);
 		log.debug("mapList = {}", mapList);
-		
-		
+		model.addAttribute("list", mapList);
+		model.addAttribute("empList", empList);
 		return "ERP/StockLog";
 	}
 	
@@ -128,23 +134,11 @@ public class ErpContorller {
 //		model.addAttribute("list", list);
 //		model.addAttribute("list2", list2);
 //		model.addAttribute("list3", list3);
-		//로그인 회원이 관리자 | 지점인지 분기처리
-		EMP loginEmp = (EMP)session.getAttribute("loginEmp");
-		
-		List<RequestLog> list = new ArrayList<>();
-		//로그인 회원이 관리자일 경우
-		if(loginEmp.getStatus() == 0 ) {
-			//전체 지점의 발주 로그를 가져옴
-			list = erpService.requestList();
-		}
-		//로그인 회원이 제조사일 경우
-		else if(loginEmp.getStatus() == 2) {
-			//list = erpService.selectRequestList(loginEmp.getEmpId());
-			list = erpService.selectEmpRequest(loginEmp.getEmpId());
-		}
-		log.debug("list = {}", list);
-		model.addAttribute("list", list);
-		
+		Map<String,Object> temp = new HashMap<>();
+		List<EMP> empList = erpService.empList();
+		List<Map<String, Object>> mapList = erpService.selectRequestMapList(temp);
+		model.addAttribute("list", mapList);
+		model.addAttribute("empList", empList);
 		return "ERP/OrderLog";
 	}
 	
@@ -345,7 +339,7 @@ public class ErpContorller {
 		List<Product> pList = erpService.selectAll();
 		List<Integer> cList = erpService.productCompare(emp);
 		
-		
+		log.debug("emp= {}",emp);
 		
 		//누락상품검사
 		for(Product pro : pList) {
@@ -375,17 +369,17 @@ public class ErpContorller {
 		
 
 		
-		if(!upper.isEmpty() && upper != null) {
+		if(upper != null && !upper.isEmpty()) {
 			int uNum = Integer.parseInt(upper);
 			map.put("uNum", uNum);
 			
 		}
-		if(!lower.isEmpty() && lower != null) {
+		if(lower != null && !lower.isEmpty()) {
 			int lNum = Integer.parseInt(lower);
 			map.put("lNum", lNum);
 			
 		}
-		if(select.equals("product_no")) {
+		if(select != null && select.equals("product_no")) {
 			int sNum = Integer.parseInt(search);
 			log.debug("sNum = {}",sNum);
 			map.put("sNum", sNum);
@@ -721,10 +715,10 @@ public class ErpContorller {
 								HttpServletRequest request,
 								RedirectAttributes redirectAtttis) {
 		
-//		List<ProductMainImages> pmis = erpService.selectProductMainImages(productNo);
-//		List<ProductImages> pis = erpService.selectProductImages(productNo);
-//		String mainDir = request.getServletContext().getRealPath("/resources/upload/mainimages");
-//		String imgDir = request.getServletContext().getRealPath("/resources/upload/images");
+		List<ProductMainImages> pmis = erpService.selectProductMainImages(productNo);
+		List<ProductImages> pis = erpService.selectProductImages(productNo);
+		String mainDir = request.getServletContext().getRealPath("/resources/upload/mainimages");
+		String imgDir = request.getServletContext().getRealPath("/resources/upload/images");
 		
 		int result = erpService.productDelete(productNo);
 		
@@ -733,12 +727,12 @@ public class ErpContorller {
 		if(result > 0) {
 			//폴더 내 파일 모두 삭제 
 			boolean flag = false;
-//			for(ProductMainImages p : pmis) {
-//				flag = new File(mainDir, p.getRenamedFilename()).delete();
-//			}
-//			for(ProductImages pp : pis) {
-//				flag = new File(imgDir, pp.getRenamedFilename()).delete();
-//			}
+			for(ProductMainImages p : pmis) {
+				flag = new File(mainDir, p.getRenamedFilename()).delete();
+			}
+			for(ProductImages pp : pis) {
+				flag = new File(imgDir, pp.getRenamedFilename()).delete();
+			}
 			log.debug("flag,result = {}, {}",flag,result);
 			redirectAtttis.addFlashAttribute("msg", "상품이 삭제되었습니다.");
 			
@@ -837,6 +831,54 @@ public class ErpContorller {
 		}
 		
 		return "redirect:/ERP/ProductReceive.do";
+	}
+	
+	//재고 확인 search
+	@PostMapping("/ERP/searchStock.do")
+	@ResponseBody
+	public ResponseEntity<?> searchStock(@RequestParam(value = "branchId", required = false) String branchId,
+										 @RequestParam(value = "searchType", required = false) String searchType,
+										 @RequestParam(value = "searchKeyword", required = false) String searchKeyword){
+		
+		//파라미터 확인
+		log.debug("branchId = {}",branchId);
+		log.debug("searchType = {}",searchType);
+		log.debug("searchKeyword = {}",searchKeyword);
+		
+		Map<String, String> param = new HashMap<>();
+		param.put("branchId", branchId);
+		param.put("searchType", searchType);
+		param.put("searchKeyword", searchKeyword);
+		
+		List<Map<String, Object>> mapList = erpService.StockLogMapList(param);
+		log.debug("mapList = {}", mapList);
+		
+		return new ResponseEntity<List<Map<String,Object>>>(mapList, HttpStatus.OK);
+	}
+	
+	@PostMapping("/ERP/searchRequest.do")
+	@ResponseBody
+	public ResponseEntity<?> searchRequest(@RequestParam(value = "manufacturerId", required = false) String manufacturerId,
+										   @RequestParam(value = "searchType", required = false) String searchType,
+										   @RequestParam(value = "searchKeyword", required = false) String searchKeyword,
+										   @RequestParam(value = "confirm", required = false) String confirm){
+		
+		//파라미터 확인
+		log.debug("manufacturerId = {}",manufacturerId);
+		log.debug("searchType = {}",searchType);
+		log.debug("searchKeyword = {}",searchKeyword);
+		log.debug("confirm = {}",confirm);
+		
+		Map<String, Object> param = new HashMap<>();
+		param.put("manufacturerId", manufacturerId);
+		param.put("searchType", searchType);
+		param.put("searchKeyword", searchKeyword);
+		param.put("confirm", confirm);
+		
+		List<Map<String, Object>> mapList = erpService.selectRequestMapList(param);
+		log.debug("mapList = {}", mapList);
+		
+		return new ResponseEntity<List<Map<String,Object>>>(mapList, HttpStatus.OK);
 	}
 	
 	// 호근 관리자 로그인 및 로그인 세션 추가 
