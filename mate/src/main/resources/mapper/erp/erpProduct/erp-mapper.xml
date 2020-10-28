@@ -70,8 +70,7 @@
 		<where>
 			p.product_no = #{productNo} 
 			<if test="eId != null and !eId.isempty">
-				and s.emp_id = #{eId}
-			
+				and (s.emp_id = #{ eId } or s.emp_id is null)
 			</if>
 		</where>
 	</select>
