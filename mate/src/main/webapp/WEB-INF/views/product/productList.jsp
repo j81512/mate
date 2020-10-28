@@ -64,6 +64,10 @@
 	$cntPerPage.val(cnt);
 	$search.submit();
 }
+
+ function sReset(){
+	 location.href="${ pageContext.request.contextPath }/product/productList.do";
+	 }
 </script>
 <div class="container">
 	<!-- ajax처리 -->
@@ -84,8 +88,9 @@
 		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
 			<input type="hidden" name="category" value="${ category }" />
 			<input type="hidden" name="nowPage" value="1" />
-			<input type="hidden" name="cntPerPage" value="8" />
+			<input type="hidden" name="cntPerPage" value="4" />
 		</form>
+		<input type="button" class="btn btn-outline-success my-2 my-sm-0" value="검색초기화" onclick="sReset()"/>
 	</div>
 	
 	<div class="product-list">

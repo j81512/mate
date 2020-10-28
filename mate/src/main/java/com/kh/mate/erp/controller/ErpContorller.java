@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -144,10 +145,41 @@ public class ErpContorller {
 	
 	//매출확인 진입
 	@RequestMapping("/ERP/PriceLog.do")
-	public String PriceLog(Model model) {	
-		List<IoLog> list = erpService.ioLogList();
+	public String PriceLog(Model model,
+						   @RequestParam(value = "year", required = false) String year,
+						   @RequestParam(value = "month", required = false) String month,
+						   HttpServletRequest request) {
+
+		Map<String, Object> param = new HashMap<>();
+		Calendar c = Calendar.getInstance();
+		if(year == null || year.isEmpty() || year.equals("")) {
+			year = String.valueOf(c.get(Calendar.YEAR));
+			param.put("year", year);
+			model.addAttribute("year", year);
+		}
+		else if (year != null) {
+			param.put("year", year);
+			model.addAttribute("year", year);
+		}
+		if(month != null) {
+			param.put("month", month);
+			model.addAttribute("month", month);
+		}
+		log.debug("year, month = {}, {}", year, month);
+		List<Map<String, Object>> mapList = erpService.ioLogMapList(param);
 		
-		model.addAttribute("list", list);
+		HttpSession session = request.getSession();
+		EMP emp = (EMP)session.getAttribute("loginEmp");
+
+		List<Map<String, Object>> empList = erpService.empNameList(emp);
+		
+		List<String> yearList = erpService.yearList();
+		
+		model.addAttribute("yearList", yearList);
+		model.addAttribute("mapList", mapList);
+		model.addAttribute("empList", empList);
+		
+		
 		return "ERP/PriceLog";
 	}
 	
@@ -445,6 +477,7 @@ public class ErpContorller {
 							   RedirectAttributes redirectAttr) {
 		
 		log.debug("product = {}",product);
+		
 		
 		int result = erpService.productOrder(product);
 		
@@ -894,7 +927,7 @@ public class ErpContorller {
 		EMP loginEmp = erpService.selectOneEmp(empId);
 		
 		log.debug("loginEmp = {}", loginEmp);
-		String location = "/";
+		String location = "";
 		
 		if(	loginEmp != null && (loginEmp.getEmpId().equals(empId))
 				&& (loginEmp.getEmpPwd().equals(empPwd))) {
@@ -906,10 +939,13 @@ public class ErpContorller {
 				m.setMemberName(loginEmp.getEmpName());
 				model.addAttribute("loginMember", m);
 			}
-	
+			location = "redirect:/ERP/menu.do";
 		}
-
-		return "redirect:/ERP/menu.do";
+		else {
+			location = "redirect:/member/memberLogin.do";
+			redirectAttr.addFlashAttribute("msg","아이디와 비밀번호를 확인해주세요.");
+		}
+		return location;
 	}
 	@RequestMapping("/ERP/logout.do")
 	public String empLogout(SessionStatus sessionStatus) {
