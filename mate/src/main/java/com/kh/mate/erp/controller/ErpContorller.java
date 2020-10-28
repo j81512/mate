@@ -451,6 +451,7 @@ public class ErpContorller {
 		
 		log.debug("product = {}",product);
 		
+		
 		int result = erpService.productOrder(product);
 		
 		if(result > 0) {
