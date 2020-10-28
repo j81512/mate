@@ -50,8 +50,8 @@ function orderModal(){
 			      		
 			      </div>
 				<div class="modal-footer">
-				   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-primary">Save changes</button>
+				   <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="history.go(-1)">뒤로가기</button>
+					<button type="submit" class="btn btn-primary">발주 하기</button>
 				</div>
 			      	</form>
 			    </div>

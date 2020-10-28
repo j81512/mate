@@ -13,12 +13,12 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 <style>
+.product-list{
+	display: inline-block;
+}
 .card{
 	width: 360px;
 	background : #F1F1F1;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
 	display:inline-block;
 }
 .top-section{
@@ -45,13 +45,6 @@
 .imgNav img:hover{
 	border-color: #6AB04C;
 }
-.price{
-	position: absolute;
-	top: 20px;
-	right: 20px;
-	color: #6AB04C;
-	font-size: 24px;
-}
 .product-info{
 	padding: 25px;
 }
@@ -72,7 +65,7 @@
 	$search.submit();
 }
 </script>
-<div class="product-container">
+<div class="container">
 	<!-- ajax처리 -->
 	 <div class="product-search">
 		<form class="form-inline"
@@ -101,9 +94,11 @@
 					<c:forEach items="${ list }" var="product">
 					<div class="card">
 						<div class="top-section">
+						<a href="${pageContext.request.contextPath}/product/productDetail.do?productNo=${product.productNo}">
 							<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${product.pmiList[0].renamedFilename}"
 								 alt="대표이미지" class="mainImg"
 								 width="200px"/>
+						</a>
 						</div>
 						<div class="imgNav">
 							<c:forEach items="${product.pmiList }" var="Thumbs" varStatus="vs">
@@ -112,12 +107,14 @@
 									 width="50px" class="imgNav-img"/>
 							</c:forEach>
 						</div>
-						<div class="price">
-						가격 : ${product.price}원
-						</div>
+						<hr />
+						<a href="${pageContext.request.contextPath}/product/productDetail.do?productNo=${product.productNo}">
 						<div class="product-info">
 							<div class="productName">
 							상품명 : ${product.productName}
+							</div>
+							<div class="price">
+							가격 : ${product.price}원
 							</div>
 							<div class="category">
 							카테고리 :
@@ -138,6 +135,7 @@
 							제조사 : ${product.manufacturerId}
 							</div>
 						</div>
+						</a>
 					</div>
 					</c:forEach>
 				</c:if>
@@ -151,7 +149,7 @@
 $(".imgNav-img").click(function(){
 	
 	var src = $(this).attr("src");
-	var $topSectionImg = $(this).parent().siblings(".top-section").find("img");
+	var $topSectionImg = $(this).parent().siblings().siblings(".top-section").find("img");
 	$topSectionImg.attr("src", src);
 });
 </script>

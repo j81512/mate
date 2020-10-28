@@ -138,7 +138,7 @@ public class ErpDAOImpl implements ErpDAO {
 
 	@Override
 	public int productDelete(String productNo) {
-		return sqlSession.delete("erp.productDelete", productNo);
+		return sqlSession.delete("erp.productDelete", Integer.parseInt(productNo));
 	}
 
 

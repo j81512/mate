@@ -88,6 +88,8 @@ public class ErpContorller {
 	@RequestMapping("/ERP/ProductInfo.do")
 	public ModelAndView productInfo(ModelAndView mav) {		
 		mav.setViewName("/ERP/ProductInfo");
+		mav.addObject("click", "   ");
+		
 		return mav;
 	}
 	//현황조회 진입부
@@ -342,7 +344,7 @@ public class ErpContorller {
 		List<Product> pList = erpService.selectAll();
 		List<Integer> cList = erpService.productCompare(emp);
 		
-		
+		log.debug("emp= {}",emp);
 		
 		//누락상품검사
 		for(Product pro : pList) {
@@ -372,17 +374,17 @@ public class ErpContorller {
 		
 
 		
-		if(!upper.isEmpty() && upper != null) {
+		if(upper != null && !upper.isEmpty()) {
 			int uNum = Integer.parseInt(upper);
 			map.put("uNum", uNum);
 			
 		}
-		if(!lower.isEmpty() && lower != null) {
+		if(lower != null && !lower.isEmpty()) {
 			int lNum = Integer.parseInt(lower);
 			map.put("lNum", lNum);
 			
 		}
-		if(select.equals("product_no")) {
+		if(select != null && select.equals("product_no")) {
 			int sNum = Integer.parseInt(search);
 			log.debug("sNum = {}",sNum);
 			map.put("sNum", sNum);
@@ -713,9 +715,10 @@ public class ErpContorller {
 	
 	//상품 삭제
 	@RequestMapping(value = "/ERP/productDelete.do",
-					method = RequestMethod.POST)
+					method = RequestMethod.GET)
 	public String productDelete(@RequestParam("productNo") String productNo,
-								HttpServletRequest request) {
+								HttpServletRequest request,
+								RedirectAttributes redirectAtttis) {
 		
 		List<ProductMainImages> pmis = erpService.selectProductMainImages(productNo);
 		List<ProductImages> pis = erpService.selectProductImages(productNo);
@@ -736,8 +739,12 @@ public class ErpContorller {
 				flag = new File(imgDir, pp.getRenamedFilename()).delete();
 			}
 			log.debug("flag,result = {}, {}",flag,result);
+			redirectAtttis.addFlashAttribute("msg", "상품이 삭제되었습니다.");
+			
+		}else {
+			redirectAtttis.addFlashAttribute("msg", "상품삭제에 실패하였습니다.");
 		}
-		return "ERP/ProductInfo";
+		return "redirect:/ERP/ProductInfo.do";
 	}
 	
 	//발주 요청 가져오기
@@ -853,6 +860,7 @@ public class ErpContorller {
 			if(loginEmp.getEmpId().equals("admin")) {
 				Member m = new Member();
 				m.setMemberId(loginEmp.getEmpId());
+				m.setMemberName(loginEmp.getEmpName());
 				model.addAttribute("loginMember", m);
 			}
 	
