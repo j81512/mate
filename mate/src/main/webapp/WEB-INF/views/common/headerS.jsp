@@ -216,7 +216,11 @@ $(function(){
        	<img src="${ pageContext.request.contextPath }/resources/images/back.png" id="back-img" alt="" />
        	<c:if test="${! empty loginMember }">
 			<span class="font-cookie" id="loginMember-span"><b class="font-uhbee color-hotPink">${ loginMember.memberName }</b> 님, 반갑습니다.</span>
+			<c:if test='${ loginMember.memberId eq "admin" }'>
+				<input type="button" value="erp" onclick="location.href='${pageContext.request.contextPath}/ERP/erpMain.do';" />
+			</c:if>
 		</c:if>
+			
 	</nav>
 </header>
 <br />

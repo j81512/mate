@@ -31,7 +31,7 @@
 		    	<li>
 			    	<button type="button" 
 			    			class="btn btn-default btn-lg"
-			    			onclick="location.href='${ pageContext.request.contextPath }/.do';">
+			    			onclick="location.href='${ pageContext.request.contextPath }/';">
 					  <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>쇼핑몰
 					</button>
 		    	</li>
