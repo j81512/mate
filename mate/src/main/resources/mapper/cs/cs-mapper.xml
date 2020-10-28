@@ -5,14 +5,20 @@
 <mapper namespace="cs">
   
  <select id="selectCsList" resultType="cs">
-	 	SELECT * 
-			FROM (
-				SELECT ROWNUM as rnum, B.*
-					FROM (
-	                    select *
-	                        from(   
-	                            SELECT ba.*
-	                                 FROM cs ba ) 			
+SELECT * 
+		FROM (
+			SELECT ROWNUM as rnum, B.*
+				FROM (
+                    select c.*,
+                        (select count(*) from cs_reply cr where c.cs_no =  cr.cs_no ) is_reply
+                        from(   
+                            SELECT
+                                     ba.*,
+                                     ci.cs_image_no,
+                                     ci.original_filename,
+                                     ci.renamed_filename
+                                 	FROM cs ba  
+                                 	left join cs_images ci on ba.cs_no = ci.cs_no )c 			
 	                             	 <where>
 										<if test="memberId != null and memberId != ''">
 											and  member_id like  #{ memberId }
@@ -27,6 +33,9 @@
 					)
 			 where rnum BETWEEN #{ cPage } AND #{ numPerPage }
 	</select>
+	<resultMap type="cs" id="csMap">
+	
+	</resultMap>
 	
 	<insert id="insertCs">
 		insert into
@@ -78,7 +87,16 @@
 		notice desc, cs_no desc
 	</select>
 	
-	<select id="selectCsImage" resultType="csImages">
+	<select id="selectCsImage" resultType="CsImages">
+		select
+			*
+		from
+			cs_images
+		where
+			cs_no = #{ csNo }
+	</select>
+	
+	<select id="selectOneCsImage" resultType="CsImages">
 		select
 			*
 		from
@@ -93,4 +111,5 @@
 		from cs
 	
 	</select>
+	
 </mapper>

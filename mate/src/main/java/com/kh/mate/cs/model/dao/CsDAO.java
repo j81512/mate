@@ -36,4 +36,5 @@ public interface CsDAO {
 
 	int getSearchContent();
 
+
 }
