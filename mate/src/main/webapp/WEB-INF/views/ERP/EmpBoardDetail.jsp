@@ -56,7 +56,7 @@ $(document).ready(function(){
 	            $.each(data, function(key, value){                
 		            	html += '<div class="replyArea" style="border-bottom:1px solid darkgray; margin-bottom: 15px;">';
 		            	html += "<div class='replyInfo'>" + "작성자 :" + value.empName;
-		            if( loginEmp == value.empName){
+		            if( loginEmp == value.empName || loginEmp =='admin'){
 		            	html += '<a onclick="replyUpdate('+ value.boardReplyNo +',\''+ value.content + '\');" class="btn btn-primary"> 수정 </a>';
 		            	html += '<a onclick="replyDelete('+ value.boardReplyNo +');" class="btn btn-default"> 삭제 </a> </div>';
 			            }	

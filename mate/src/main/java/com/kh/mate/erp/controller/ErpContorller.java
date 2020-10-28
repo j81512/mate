@@ -883,7 +883,7 @@ public class ErpContorller {
 	}
 	
 	@RequestMapping("/ERP/EmpBoardDetail.do")
-	public ModelAndView empBoardDetail(@RequestParam("loginEmp") EMP loginEmp,
+	public ModelAndView empBoardDetail(@RequestParam(required=false, name="loginEmp") EMP loginEmp,
 									@RequestParam("no") int no,
 									ModelAndView mav
 									,HttpServletRequest request

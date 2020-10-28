@@ -42,6 +42,7 @@ import com.kh.mate.cs.model.service.CsService;
 import com.kh.mate.cs.model.vo.Cs;
 import com.kh.mate.cs.model.vo.CsImages;
 import com.kh.mate.cs.model.vo.CsReply;
+import com.kh.mate.erp.model.vo.EmpBoardImage;
 import com.kh.mate.member.model.vo.Member;
 
 import lombok.extern.slf4j.Slf4j;
@@ -88,8 +89,8 @@ public class CsController {
 		String pageBar = Paging.getPageBarHtml(cPage, numPerPage, totalContents, url);
 		
 		List<Cs> list = csService.selectCsList(map,cPage, numPerPage);
-		
 		log.debug("list = {}", list);
+	
 		
 		mav.addObject("memberId", memberId);
 		mav.addObject("pageBar", pageBar);
@@ -179,6 +180,13 @@ public class CsController {
 		log.debug("csno@controller = {}", csNo);
 		Cs cs = csService.selectOneCsCollection(csNo);
 		log.debug("cs@controller = {}", cs);
+		CsImages csImage = csService.selectCsImage(csNo);
+		
+		if(csImage != null) {
+			
+			mav.addObject("csImage",csImage);
+		}
+		
 		mav.addObject("cs", cs);
 		mav.setViewName("cs/csDetail");
 		return mav;
@@ -216,9 +224,9 @@ public class CsController {
 							 HttpServletResponse response,
 							 ServletOutputStream sos,
 							 @RequestHeader("user-agent") String userAgent) {
-		
-		CsImages csImages = csService.selectOneAttachment(csNo);
-
+		log.debug("csNo = {}" ,csNo);
+		CsImages csImages = csService.selectCsImage(csNo);
+		log.debug("csImages = {}", csImages);
 		String saveDirectory = request.getServletContext().getRealPath("/resources/upload/cs");
 		File downFile = new File(saveDirectory, csImages.getRenamedFilename());
 				
@@ -266,6 +274,7 @@ public class CsController {
 		
 		List<CsReply> list = csService.csReplyList(csNo);
 		model.addAttribute("list", list);
+		log.debug("replyList = {}", list);
 		return list;
 	}
 
@@ -295,4 +304,6 @@ public class CsController {
 		map.put("isAvailable", Available);
 		return map;
 	}
+	
+
 }
