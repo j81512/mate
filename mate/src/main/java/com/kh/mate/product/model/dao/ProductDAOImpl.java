@@ -177,6 +177,20 @@ public class ProductDAOImpl implements ProductDAO {
 	public int updateReturn(Map<String, Object> param) {
 		return session.update("product.updateReturn", param);
 	}
+
+
+
+	@Override
+	public List<Integer> getBestList() {
+		return session.selectList("product.getBestList");
+	}
+
+
+
+	@Override
+	public List<Map<String, Object>> getBestImg(Integer productNo) {
+		return session.selectList("product.getBestImg", productNo);
+	}
 	
 
 	
