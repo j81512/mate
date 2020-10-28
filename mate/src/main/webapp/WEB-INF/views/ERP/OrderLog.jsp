@@ -32,63 +32,75 @@
 				    <div class="form-area">  
 						<table id="purchaseLog-table" class="table">
 							<thead>
-									<tr>
-										<th>
-										  	<select name="orderemplist" id="orderemplist">
-											    <option value="all">전체</option>
-											    <option value="online">온라인</option>
-											    <option value="gn">강남점</option>
-											    <option value="yn">용인점</option>
+								<form id="searchFrm" method="POST">
+										<tr>
+											<th>
+											  	<select name="manufacturerId" id="manufacturerId">
+											    	<option value="" disabled selected>제조사 선택</option>
+												    <c:forEach items="${empList}" var="list">
+													    <c:if test="${list.status eq 2 }">
+													    <option value="${list.empId}">${list.empName}</option>
+													    </c:if>
+												    </c:forEach>
+												</select>
+											</th>
+											<th>
+											  	<select name="confirm" id="confirm">
+												    <option value="" disabled selected>발주 현황</option>
+												    <option value="">전체</option>
+												    <option value="0">처리중</option>
+												    <option value="-1">취소</option>
+												    <option value="1">처리완료</option>
+												</select>
+											</th>
+											<th>
+												<select name="searchType" id="searchType">
+											    <option value="" disabled selected>검색 타입 선택</option>
+											    <option value="product_no">상품번호</option>
+											    <option value="product_name">상품명</option>
 											</select>
-										</th>
-										<th>
-										  	<select name="status" id="status">
-											    <option value="">상태</option>
-											    <option value="all">전체</option>
-											    <option value="process">처리중</option>
-											    <option value="cancel">취소</option>
-											    <option value="complete">처리완료</option>
-											</select>
-										</th>
-										<th>
-											<input type="date" />
-											<select name="productlist" id="productlist">
-											    <option value="no">상품번호</option>
-											    <option value="name">상품명</option>
-											</select>
-										</th>
-										<th>
-										    <input type="text" class="form-control" placeholder="내용을 입력해주세요">
-										</th>
-										<th>
-										  	<button type="submit" class="btn btn-default">검색</button>
-										</th>
-									</tr>
+											</th>
+											<th>
+											    <input type="text" class="form-control" name="searchKeyword" placeholder="내용을 입력해주세요">
+											</th>
+											<th>
+											  	<button type="button" class="btn btn-default" id="searchRequest">검색</button>
+											</th>
+										</tr>
+									</form>
 								</thead>
 									<tbody class="thead-dark">
 										<tr>
 											<th scope="col">발주번호</th>
 											<th scope="col">상품명</th>
-											<th scope="col">발주자</th>
+											<th scope="col">상품 번호</th>
+											<th scope="col">제조사</th>
+											<th scope="col">발주 요청 지점</th>
 											<th scope="col">발주 날짜</th>
 											<th scope="col">발주량</th>
 											<th scope="col">상태</th>
 										</tr>
 									</tbody>	
-								<c:if test="${ not empty list }">
-									<tfoot>
-										<c:forEach items="${ list }" var="RequestLog">
-											<tr>
-												<td>${ request_log.no }</td>
-												<td>${ product.productName }</td>
-												<td>${ emp.emp_id }</td>
-												<td><fmt:formatDate value="${ request_log.request_date }" pattern="yyyy년MM월dd일"/></td>
-												<td>${ request_log.amount }</td>
-												<td>${ request_log.confirm }</td>
-											</tr>
-										</c:forEach>
+									<tfoot class="requestInfo">
+										<c:if test="${ not empty list }">
+											<c:forEach items="${ list }" var="request">
+												<tr>
+													<td>${ request.requestNo }</td>
+													<td>${ request.productName }</td>
+													<td>${ request.productNo }</td>
+													<td>${ request.manufacturerName }</td>
+													<td>${ request.branchName }</td>
+													<td><${request.requestDate }</td>
+													<td>${ request.amount }</td>
+													<td>
+														<c:if test="${ request.confirm eq 0}">발주 대기</c:if>
+														<c:if test="${ request.confirm eq 1}">발주 완료</c:if>
+														<c:if test="${ request.confirm eq -1}">발주 취소</c:if>
+													</td>
+												</tr>
+											</c:forEach>
+										</c:if>
 									</tfoot>
-							</c:if>
 							<c:if test="${ empty list }">
 								<tr>
 									<td colspan="6">검색결과 없음</td>
@@ -99,7 +111,51 @@
 				</div>
 			</div>
 		</div>
-
-
 	</body>
+<script>
+$("#searchRequest").click(function(){
+
+	var formData = $("#searchFrm").serialize();
+
+	$.ajax({
+		url : "${pageContext.request.contextPath}/ERP/searchRequest.do",
+		type: "POST",
+		data : formData,
+		success: function(data) {
+			console.log(data);
+			displayRequest(data);
+			
+	    },
+	    error: function(error) {
+		    alert("상품이 존재하지 않습니다.");
+			console.log(error);
+		}
+	});
+
+	
+});
+
+function displayRequest(data){
+
+	var $container = $(".requestInfo");
+	var html = "<fmt:setLocale value='ko_kr'/>";
+
+	for(var i in data){
+		var m = data[i];
+		html += "<tr>"
+			+"<td>" + m.requestNo + "</td>"
+			+"<td>" + m.productName + "</td>"
+			+"<td>" + m.productNo + "</td>"
+			+"<td>" + m.manufacturerName + "</td>"
+			+"<td>" + m.branchName + "</td>"
+			+"<td>" + m.requestDate + "</td>"
+			+"<td>" + m.amount + "</td>"
+			+'<td>' + (m.confirm == 0 ? "발주 대기" : ( m.confirm == 1 ? "발주완료" : "발주 취소")) + '</td>'
+			+"</tr>";
+		
+	}
+	$container.html(html);
+}
+
+</script>	
 </html>
