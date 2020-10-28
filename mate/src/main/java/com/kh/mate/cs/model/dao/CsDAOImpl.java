@@ -47,7 +47,7 @@ public class CsDAOImpl implements CsDAO {
 	@Override
 	public CsImages selectCsImage(int csNo) {
 		
-		return sqlSession.selectOne("csReply.selectCsImage", csNo);
+		return sqlSession.selectOne("cs.selectCsImage", csNo);
 	}
 
 	@Override

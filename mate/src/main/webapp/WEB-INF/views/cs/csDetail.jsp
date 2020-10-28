@@ -19,6 +19,7 @@
 	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
 	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
 	crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <jsp:include page="/WEB-INF/views/common/headerS.jsp">
 	<jsp:param value="게시판상세보기" name="csDetail"/>
 </jsp:include>
@@ -40,12 +41,14 @@ div#board-container label.custom-file-label{text-align:left;}
 		<input type="text" class="form-control" 
 			   name="memberId" 
 			   value="${ cs.memberId }" readonly required>
-			   
+			 
+		<c:if test="${ not empty csImage }">
 		<button type="button" 
 				class="btn btn-outline-success btn-block"
 				onclick="fileDownload(${ cs.csNo });">
 			첨부파일 - ${ csImage.originalFilename }
 		</button>
+		</c:if>	   
 	
 	    <textarea class="form-control" name="content" 
 	    		  placeholder="내용" readonly required>${ cs.content }</textarea>
@@ -118,12 +121,12 @@ div#board-container label.custom-file-label{text-align:left;}
 						+'</tr>'; 
 	      		 console.log(data);
 	      		 var vs = 1;
-	      		 var dateFormat = new Date();
+	      		 
 	            $.each(data, function(key, value){   
 	            		html +=  '<tr data-no="'+ value.csNo+'" >';         
 		       		 	html += '<th>'+ vs++ +'</th>';
 		            	html += "<th>" + value.content + "</th>";
-		            	html += '<th>'+value.regDate +'</th>';
+		            	html += '<th>'+ moment(value.regDate).format("YYYY-MM-DD")+'</th>';
 		            	html += '<th>'+ value.memberName +'</th>'; 
 		            	html += '</tr>';
 		     
@@ -134,6 +137,8 @@ div#board-container label.custom-file-label{text-align:left;}
 	        }
 	    });
 	}
+
+	
 	function csReplyDelete(csReplyNo) {
 		var csReplyNo = csReplyNo;
 
