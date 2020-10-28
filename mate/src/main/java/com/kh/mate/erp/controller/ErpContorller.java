@@ -432,9 +432,9 @@ public class ErpContorller {
 		}else {
 			
 			product = erpService.orderProduct(map);
-			product.setBranchEmp(eId);
 		}
 		
+		product.setBranchEmp(eId);
 		
 		
 		log.debug("product = {}",product);
