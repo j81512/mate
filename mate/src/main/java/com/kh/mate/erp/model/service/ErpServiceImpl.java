@@ -281,6 +281,11 @@ public class ErpServiceImpl implements ErpService {
 	}
 
 	@Override
+	public List<Map<String, Object>> ioLogMapList(Map<String, Object> param) {
+		return erpDAO.ioLogMapList(param);
+	}
+
+	@Override
 	public List<Product> productList() {
 		return erpDAO.productList();
 	}
@@ -402,6 +407,17 @@ public class ErpServiceImpl implements ErpService {
 		log.debug("result = {}", result);
 
 		return result;
+	}
+
+	@Override
+	public List<Map<String, Object>> empNameList(EMP emp) {
+		return erpDAO.empNameList(emp);
+	}
+
+
+	@Override
+	public List<String> yearList() {
+		return erpDAO.yearList();
 	}
 
 }
