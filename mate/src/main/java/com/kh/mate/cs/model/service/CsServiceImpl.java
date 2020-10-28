@@ -14,9 +14,12 @@ import com.kh.mate.cs.model.vo.Cs;
 import com.kh.mate.cs.model.vo.CsImages;
 import com.kh.mate.cs.model.vo.CsReply;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Transactional(propagation = Propagation.REQUIRED,  
 			   isolation = Isolation.READ_COMMITTED, 
 			   rollbackFor = Exception.class)
+@Slf4j
 @Service
 public class CsServiceImpl implements CsService {
 
@@ -25,7 +28,7 @@ public class CsServiceImpl implements CsService {
 
 	@Override
 	public List<Cs> selectCsList(Map<String, Object> map, int cPage, int numPerPage) {
-		return csDAO.selectCsList(map,cPage, numPerPage);
+		return csDAO.selectCsList(map, cPage, numPerPage);
 	}
 	
 	@Override
@@ -38,6 +41,7 @@ public class CsServiceImpl implements CsService {
 			CsImages csImage = cs.getCsImage();
 			csImage.setCsNo(cs.getCsNo());
 			result = csDAO.insertCsImage(csImage);
+			log.debug("csImage={}", csImage);
 		}
 		
 		return result;
@@ -106,7 +110,13 @@ public class CsServiceImpl implements CsService {
 		return null;
 	}
 
+	@Override
+	public CsImages selectCsImage(int csNo) {
+		// TODO Auto-generated method stub
+		return csDAO.selectCsImage(csNo);
+	}
 
+	
 	
 	
 	

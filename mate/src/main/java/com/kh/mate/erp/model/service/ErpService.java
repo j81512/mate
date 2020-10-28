@@ -106,9 +106,15 @@ public interface ErpService {
 
 	List<RequestLog> selectEmpRequest(String empId);
 
+
 	List<Map<String, Object>> ioLogMapList(Map<String, Object> param);
 
 	List<Map<String, Object>> empNameList(EMP emp);
 
 	List<String> yearList();
+
+	List<Map<String, Object>> StockLogMapList(Map<String, String> param);
+
+	List<Map<String, Object>> selectRequestMapList(Map<String, Object> temp);
+
 }	
