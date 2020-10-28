@@ -24,7 +24,6 @@
 <style>
 .form-area
 {
-    background-color: #FAFAFA;
 	padding: 10px 40px 60px;
 	margin: 10px 0px 60px;
 	border: 1px solid GREY;
@@ -393,7 +392,7 @@ function openKakao(purchaseNo, sum){
 	<div id="buy" class="tab-pane fade active show in">
 		<div class="col-md-15">
 		    <div class="form-area">  
-				<table id="purchaseLog-table" class="table">
+				<table id="purchaseLog-table" class="table table-hover">
 					<thead class="thead-dark">
 						<tr>
 							<th scope="col">#</th>

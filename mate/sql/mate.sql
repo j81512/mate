@@ -376,7 +376,10 @@ CREATE TABLE PURCHASE (
     constraint pk_purchase primary key (purchase_no),
     constraint fk_purchase_member_id foreign key (member_id)
                                                 references member (member_id)
-                                                on delete cascade
+                                                on delete cascade,
+    constraint fk_purchase_product_no foreign key (product_no)
+                                                references product (product_no)
+                                                on delete set null;
 );
 
 --DROP TABLE PURCHASE_LOG;

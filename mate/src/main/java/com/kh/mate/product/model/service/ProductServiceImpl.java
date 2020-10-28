@@ -1,5 +1,6 @@
 package com.kh.mate.product.model.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -202,6 +203,23 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public int updateReturn(Map<String, Object> param) {
 		return productDAO.updateReturn(param);
+	}
+
+
+	@Override
+	public List<Map<String, Object>> getBest() {
+		
+		List<Map<String, Object>> mapList = new ArrayList<>();
+		
+		List<Integer> best = productDAO.getBestList();
+		
+		for(Integer productNo : best) {
+			List<Map<String, Object>> images = productDAO.getBestImg(productNo);
+			
+			mapList.addAll(images);
+		}
+		
+		return mapList;
 	}
 	
 

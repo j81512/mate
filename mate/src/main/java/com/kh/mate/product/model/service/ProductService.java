@@ -57,6 +57,8 @@ public interface ProductService {
 
 	int updateReturn(Map<String, Object> param);
 
+	List<Map<String, Object>> getBest();
+
 
 
 
