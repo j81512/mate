@@ -182,11 +182,24 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.selectList("erp.selectEmpRequest", empId);
 	}
 	
+	@Override
+	public List<Map<String, Object>> StockLogMapList(Map<String,String> param) {
+		return sqlSession.selectList("erp.StockLogMapList", param);
+	}
+	
+	@Override
+	public List<Map<String, Object>> selectRequestMapList(Map<String, Object> temp) {
+		return sqlSession.selectList("erp.selectRequestMapList", temp);
+	}
 	
 	//호근 추가
 
 
 	
+
+	
+
+
 
 	
 
