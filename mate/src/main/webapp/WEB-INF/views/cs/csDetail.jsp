@@ -44,7 +44,7 @@ div#board-container label.custom-file-label{text-align:left;}
 		<button type="button" 
 				class="btn btn-outline-success btn-block"
 				onclick="fileDownload(${ cs.csNo });">
-			첨부파일 - ${ cs.csImage.originalFilename }
+			첨부파일 - ${ csImage.originalFilename }
 		</button>
 	
 	    <textarea class="form-control" name="content" 

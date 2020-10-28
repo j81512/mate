@@ -32,6 +32,7 @@ public interface CsService {
 
 	int getSearchContents();
 
+	CsImages selectCsImage(int csNo);
 
 
 

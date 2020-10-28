@@ -87,7 +87,16 @@ SELECT *
 		notice desc, cs_no desc
 	</select>
 	
-	<select id="selectCsImage" resultType="csImages">
+	<select id="selectCsImage" resultType="CsImages">
+		select
+			*
+		from
+			cs_images
+		where
+			cs_no = #{ csNo }
+	</select>
+	
+	<select id="selectOneCsImage" resultType="CsImages">
 		select
 			*
 		from
@@ -102,4 +111,5 @@ SELECT *
 		from cs
 	
 	</select>
+	
 </mapper>

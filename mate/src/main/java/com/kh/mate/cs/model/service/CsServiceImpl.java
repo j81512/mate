@@ -110,7 +110,13 @@ public class CsServiceImpl implements CsService {
 		return null;
 	}
 
+	@Override
+	public CsImages selectCsImage(int csNo) {
+		// TODO Auto-generated method stub
+		return csDAO.selectCsImage(csNo);
+	}
 
+	
 	
 	
 	
