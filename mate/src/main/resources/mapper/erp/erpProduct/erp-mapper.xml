@@ -19,6 +19,7 @@
         (select p.product_no,
 		p.product_name,
 		p.category,
+		p.manufacturer_id,
 		s.emp_id,
 		p.reg_date,
 		nvl(s.stock,0) stock

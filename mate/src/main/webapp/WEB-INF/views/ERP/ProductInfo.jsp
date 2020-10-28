@@ -77,6 +77,10 @@ function orderProduct(empId,pNo,requestId){
 	
 }
 
+function erpSReset(){
+	location.href="${ pageContext.request.contextPath }/ERP/searchInfo.do";
+}
+
 </script>
   <body>
 	<section id="info-container" class="container">
@@ -126,6 +130,7 @@ function orderProduct(empId,pNo,requestId){
 			    <input type="text" class="form-control2" name="search" placeholder="상품명/상품번호 조회" value="${ map.search }">
 			  </div>
 			  <button type="submit" class="btn btn-default" onclick="checkNum('${ map.uNum }','${ map.lNum }')">검색</button>
+				<input type="button" class="btn btn-default" value="검색초기화" onclick="erpSReset()"/>
 		</form>
 	  </div>
 	</section>

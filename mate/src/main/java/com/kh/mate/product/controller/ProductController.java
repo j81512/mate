@@ -159,11 +159,11 @@ public class ProductController {
 		
 		if(nowPage == null && cntPerPage == null) {
 			nowPage = "1";
-			cntPerPage="8";
+			cntPerPage="4";
 		} else if (nowPage == null) {
 			nowPage = "1";
 		} else if (cntPerPage == null) { 
-			cntPerPage = "8";
+			cntPerPage = "4";
 		}
 
 //		page = new PagingVo(total, nowPage, cntPerPage);
