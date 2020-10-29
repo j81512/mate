@@ -11,7 +11,7 @@
 <script>
 function orderModal(){
 
-	$("#modelTest").modal({backdrop: 'static', keyboard: false})
+	$("#modelTest").modal({backdrop: 'static', keyboard: false});
 	
 }
 </script>
