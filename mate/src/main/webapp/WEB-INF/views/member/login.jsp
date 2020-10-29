@@ -2,22 +2,39 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>    
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%> 
+<fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>   
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+	crossorigin="anonymous">
+	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 <link
 	href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
 	rel="stylesheet" id="bootstrap-css">
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+	integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+	crossorigin="anonymous"></script>
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+	crossorigin="anonymous"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/stove99/jquery-modal-sample@v1.4/css/animate.min.css" />
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/stove99/jquery-modal-sample@v1.4/css/jquery.modal.css" />
+<script src="//cdn.jsdelivr.net/gh/stove99/jquery-modal-sample@v1.4/js/jquery.modal.js"></script>
+<script src="//cdn.jsdelivr.net/gh/stove99/jquery-modal-sample@v1.4/js/modal.js"></script>
 <link rel="stylesheet"
 	href="${ pageContext.request.contextPath }/resources/css/loginForm.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <jsp:include page="/WEB-INF/views/common/headerS.jsp" />
+<style>
+.modal-dialog{
+	position : relative;
+	float: left;
+	display:inline-block;
+}
+</style>
 <script>
 	$(function() {
 
@@ -55,6 +72,10 @@
 		    var popUrl ="${ pageContext.request.contextPath }/member/pCheck.do";
 		    var popOption = "width=650px, height=550px, resizable=no, location=no, top=300px, left=300px;";
 			console.log($phone);
+			if(typeof $phone == "undefined" || $phone == ""){
+				alert("핸드폰 번호를 입력하세요");
+				return;
+			}
 			$.ajax({
 				url:"${ pageContext.request.contextPath}/member/phoneSend.do",
 				data:{
@@ -63,10 +84,10 @@
 				dataType:"json",
 				method: "post",
 				success: function(data){
+						var $num = $("#MocheckNum_").html(data);
 						console.log(data);
-						var $num = data;		
-						phoneCheckNum(data);
-						window.open(popUrl + "/" +  $num ,"휴대폰 인증 ",popOption);		
+						openModal(data);
+
 				},
 				error: function(xhr, status, err){
 						console.log(xhr);
@@ -78,6 +99,16 @@
 			
 		});
 	});
+	function openModal(phoneCheck){
+		console.log("호출됨?");
+		$("#MocheckNum_").val(Number(phoneCheck));
+		$("#MophoneNum_").val(Number(phoneCheck));
+		$("#myModal").fadeIn(300);
+	}
+
+	function closeReturnModal(){
+		$("#myModal").fadeOut(300);
+	}
 
 	$(document).ready(function(){
 		var key = getCookie("key");	
@@ -140,14 +171,20 @@
 	    }
 	    return unescape(cookieValue);
 	}
-
-	function phoneCheckNum(num){
-		console.log(" 여기 호출되냐?");
-		var num = num;
-		console.log(num);
-	
+	function phoneCheck(){
 		
-	}
+		var num = $("#MophoneNum_").val();
+		var num2 = 	$("#MocheckNum_").val();
+		console.log(num);
+		if(num != num2){
+			alert("인증번호가 다릅니다.");
+			return;
+		}else{
+			alert("인증 되었습니다.");
+			$("#phone-send").val("인증완료");
+			closeReturnModal();
+		}
+	};
 </script>
 
 
@@ -251,8 +288,7 @@
 						<input type="tel" class="form-control" 
 						placeholder="(-없이)01012345678" name="phone" id="phone" maxlength="11" required>
 						<div class="form-check form-check-inline">
-						<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg"id="phone-send" onclick="return phoneCheckNum('${ receiver}');">문자인증</button>
-						</div>
+						<input type="button" class="btn btn-primary"data-target="#myModal" data-toggle="modal"id="phone-send" value="문자인증"/>						</div>
 					</div>
 					<div class="form-group">
 						<div class="row">
@@ -295,30 +331,28 @@
 			</div>
 		</div>
 	</div>
-	<!-- 비밀번호 찾기용 모달 창 -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+</div>
+
+		<!-- 핸드폰 인증 -->
+<div class="modal active" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 					  <div class="modal-dialog">
 					    <div class="modal-content">
-					      <div class="modal-header">
-					        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					        <span aria-hidden="true">&times;</span>
-					        </button>
+					      <div class="modal-head">
+							<a href="javascript:closeReturnModal();" class="modal-close">X</a>
 					        <h4 class="modal-title" id="myModalLabel">인증번호를 입력하세요</h4>
 					      </div>
 					      <div class="modal-body">
 						        인증번호 : 
-						     <input type="password" class="form-control" name="phoneNum" id="phoneNum_" >
-						     <input type="hidden" class="form-control" name="checkNum" id="checkNum_" >
+						     <input type="password" class="form-control" name="MophoneNum" id="MophoneNum_" >
+						     <input type="hidden" class="form-control" name="MocheckNum" id="MocheckNum_" >
 					      </div>
 					      <div class="modal-footer">
-					        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
-					        <input type="button" class="btn btn-primary btn-delete" id="infoSubmit" name="infoSubmit" value="확인" >
+					        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="closeReturnModal();">닫기</button>
+					        <input type="button" class="btn btn-primary btn-delete" id="infoSubmit" name="infoSubmit" onclick="phoneCheck();" value="확인" >
 					      </div>
 					    </div>
 					  </div>
-					</div>	
-</div>
-
-		
+</div>		
 
 <jsp:include page="/WEB-INF/views/common/footerS.jsp" />
