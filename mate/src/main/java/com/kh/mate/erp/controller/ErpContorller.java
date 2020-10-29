@@ -756,10 +756,10 @@ public class ErpContorller {
 		return "redirect:/ERP/searchInfo.do";
 	}
 	
-	//상품 삭제
-	@RequestMapping(value = "/ERP/productDelete.do",
-					method = RequestMethod.GET)
-	public String productDelete(@RequestParam("productNo") String productNo,
+	
+//	@RequestMapping(value = "/ERP/productDelete.do",
+//					method = RequestMethod.GET)
+	public String productDeleteNotUse(@RequestParam("productNo") String productNo,
 								HttpServletRequest request,
 								RedirectAttributes redirectAtttis) {
 		
@@ -789,6 +789,26 @@ public class ErpContorller {
 		}
 		return "redirect:/ERP/searchInfo.do";
 	}
+	
+	//상품삭제 -> enabled 1로 업데이트
+	@RequestMapping(value = "/ERP/productDelete.do",
+			method = RequestMethod.GET)
+	public String productDelete(@RequestParam("productNo") String productNo,
+			HttpServletRequest request,
+			RedirectAttributes redirectAttr) {
+		
+		try {
+			int result = erpService.UpdateProductToDelete(productNo);
+			redirectAttr.addFlashAttribute("msg", "판매 목록에서 상품이 삭제되었습니다.");
+		}catch(Exception e) {
+			log.error("상품 삭제 업데이트 실패");
+			redirectAttr.addFlashAttribute("msg", "상품 삭제에 실패하였습니다.");
+			
+		}
+				
+		return "redirect:/ERP/searchInfo.do";
+	}
+	
 	
 	//발주 요청 가져오기
 	@RequestMapping("/ERP/ProductRequestList.do")
