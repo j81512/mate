@@ -8,17 +8,30 @@
 	<resultMap type="Product" id="productMap"></resultMap>
 	
 	<select id="searchInfo" resultMap="productMap">
-		select p.product_no,
-			p.product_name,
-			p.category,
-			s.emp_id,
-			p.reg_date,
-			nvl(s.stock,0) stock
-		from product p left join stock s
-		on (p.product_no = s.product_no)
+		select 
+			B.* 
+		from 
+		( 
+			select 
+		ROWNUM RN, 
+		A.*
+        	from 
+        (select p.product_no,
+		p.product_name,
+		p.category,
+		p.manufacturer_id,
+		s.emp_id,
+		p.reg_date,
+		nvl(s.stock,0) stock
+			from product p left join stock s
+		on (p.product_no = s.product_no
+		)
 		<where>
-			<if test="category != null and category != ''">
-				p.category = #{category}
+			<if test="emp.status != 0">
+				(emp_id = #{emp.empId} or emp_id is null)
+			</if>
+			<if test="category != null and !category.isempty">
+				 and p.category = #{category}
 			</if>
 			<if test="select != null and select.equals('product_name')">
 				<if test="search != null and !search.isempty">
@@ -37,28 +50,30 @@
 				and s.stock <![CDATA[ >= ]]> #{uNum}
 			</if>
 			
-			
-		</where>
+		</where>)A) B
+        WHERE RN BETWEEN #{page.start} and #{page.end}
 	</select>
 	
 	<select id="orderProduct" resultMap="productMap">
-		select p.product_no,
-			p.product_name,
-			p.category,
-			p.manufacturer_id,
-			p.reg_date,
-			s.stock,
+		select p.product_no product_no,
+			p.product_name product_name,
+			p.category category,
+			p.manufacturer_id manufacturer_id,
+			p.reg_date reg_date,
+			s.stock stock,
 			s.emp_id branchEmp 
 		from product p left join stock s
 		on (p.product_no = s.product_no)
 		<where>
 			p.product_no = #{productNo} 
 			<if test="eId != null and !eId.isempty">
-				and s.emp_id = #{eId}
-			
+				and (s.emp_id = #{ eId } or s.emp_id is null)
 			</if>
 		</where>
 	</select>
+	
+	
+	
 	
 	<select id="selectProductOne" resultType="product">
  		select
@@ -108,6 +123,28 @@
 		order by rl.request_no desc
  	</select>
  	
+ 	<select id="selectEmpRequest" resultType="requestLog">
+ 		select
+			rl.request_no,
+			rl.product_no,
+			rl.manufacturer_id,
+			rl.amount,
+			rl.request_date,
+			rl.confirm,
+			rl.emp_id,
+			p.product_name,
+			p.category,
+			p.price
+		from
+			Request_Log rl inner join
+			Product p
+		on rl.Product_no = P.product_no
+		where
+			rl.manufacturer_id = #{empId}
+		order by 
+		rl.request_no desc
+ 	</select>
+ 	
  	<select id="selectReceiveList" resultType="receive">
  		select
  			r.receive_no,
@@ -125,7 +162,7 @@
 			from 
 				stock S
 			where 
-				emp_id = #{empId} and 
+				s.emp_id = #{ empId } and 
 				S.product_no = P.product_no 
 			) stock
 		from          
@@ -135,9 +172,66 @@
 		on
  			R.product_no = P.product_no
 		where 
-			emp_id = #{empId} and
-			r.confirm not in 1 
+			r.emp_id = #{ empId } and
+			r.confirm not in 1
 			
+ 	</select>
+ 	
+ 	<select id="StockLogMapList" resultMap="stockLogMap">
+ 		select
+ 			s.product_no,
+ 			(select emp_name from emp where emp_id = s.emp_id) emp_name,
+ 			s.emp_id,
+ 			s.stock,
+ 			p.product_name,
+ 			p.category,
+ 			(select emp_name from emp where emp_id = p.manufacturer_id) manufacturer_name
+ 		from
+ 			product p 
+ 		inner join
+ 			stock s
+ 		on p.product_no = s.product_no
+ 		inner join 
+ 			receive r
+ 		on p.product_no = r.product_no
+		<where>
+			<if test="branchId != null and branchId != '' ">
+			s.emp_id = #{branchId}
+			</if>
+			<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
+			and p.${searchType} like '%' || #{searchKeyword} || '%'
+			</if>
+		</where>
+ 	</select>
+ 	
+ 	<select id="selectRequestMapList" resultMap="requestMap">
+ 		select
+ 			rl.request_no,
+ 			rl.manufacturer_id,
+ 			rl.amount,
+ 			TO_CHAR(rl.request_date,'YYYY-MM-DD') request_date,
+ 			rl.confirm,
+ 			rl.product_no,
+ 			rl.emp_id,
+ 			p.product_name,
+ 			(select emp_name from emp where emp_id = rl.manufacturer_id) manufacturer_name,
+ 			(select emp_name from emp where emp_id = rl.emp_id) branch_name
+ 		from
+ 			request_log rl
+ 		inner join
+ 			product p
+ 		on rl.product_no = p.product_no
+ 			<where>
+	 			<if test="manufacturerId != null and manufacturerId != '' ">
+				rl.manufacturer_id = #{manufacturerId}
+				</if>
+				<if test="confirm != null and confirm != ''">
+				and rl.confirm = #{confirm}
+				</if>
+				<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
+				and p.${searchType} like '%' || #{searchKeyword} || '%'
+				</if>
+ 			</where>
  	</select>
  	
 	<insert id="productEnroll">
@@ -272,4 +366,78 @@
 		where
 			receive_no = {receiveNo}
 	</update>
+	
+	<select id="countProduct" resultType="_int">
+	    select COUNT(*)
+		from product p left join stock s
+		on (p.product_no = s.product_no)
+		<where>
+			<if test="emp.status != 0">
+				(emp_id = #{emp.empId} or emp_id is null)
+			</if>
+			<if test="category != null and category != ''">
+				 and p.category = #{category}
+			</if>
+			<if test="select != null and select.equals('product_name')">
+				<if test="search != null and !search.isempty">
+					and p.product_name like '%' || #{search} || '%'
+				</if>
+			</if>
+			<if test="select != null and select.equals('product_no')">
+				<if test="search != null and !search.isempty">
+					and p.product_no = #{sNum}
+				</if>
+			</if>
+			<if test="lNum != null">
+				and s.stock <![CDATA[ <= ]]> #{lNum}
+			</if>
+			<if test="uNum!= null">
+				and s.stock <![CDATA[ >= ]]> #{uNum}
+			</if>
+		</where>
+	</select>
+	<select id="selectAll" resultMap="productMap">
+	select * from product
+	</select>
+	<select id="productCompare" resultType="_int">
+	 	select p.product_no
+		from product p left join stock s
+		on (p.product_no = s.product_no)
+		<where>
+			<if test="status != 0 and status != null">
+			s.emp_id = #{empId} or emp_id is null
+			</if>
+		</where>
+	</select>
+	<insert id="mStockInsert">
+		 insert into stock VALUES(#{ pro.productNo },#{emp.empId},default)
+	</insert>
+	
+	<resultMap type="map" id="stockLogMap">
+		<id column="product_no" property="productNo"/>
+		<result column="emp_name" property="empName"/>
+		<result column="emp_id" property="empId"/>
+		<result column="manufacturer_name" property="manufacturerName"/>
+		<result column="stock" property="stock"/>
+		<result column="status" property="status"/>
+		<result column="product_no" property="productNo"/>
+		<result column="product_name" property="productName"/>
+		<result column="category" property="category"/>
+		<result column="amount" property="amount"/>
+		<result column="manufacturer_id" property="manufacturerId"/>
+	</resultMap>
+	
+	<resultMap type="map" id="requestMap">
+		<id column="request_no" property="requestNo"/>
+		<result column="manufacturer_id" property="manufacturerId"/>
+		<result column="amount" property="amount"/>
+		<result column="request_date" property="requestDate"/>
+		<result column="product_name" property="productName"/>
+		<result column="confirm" property="confirm"/>
+		<result column="product_no" property="productNo"/>
+		<result column="emp_id" property="empId"/>
+		<result column="manufacturer_name" property="manufacturerName"/>
+		<result column="branch_name" property="branchName"/>
+	</resultMap>
+	
 </mapper>

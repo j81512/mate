@@ -4,31 +4,44 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5f16f27e7564ae5efd073c689a6db2a9&libraries=services,clusterer,drawing"></script>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
-
+<style>
+#map{
+	margin-left: 25%;
+}
+</style>
+<div class="container">
 	<div id="company-div">	
-	
+		<select class="companyList-select">
+			<option value="" selected disabled>지점을 선택해주세요.</option>
 			<c:forEach items="${ mapList }" var="company">
-				<div class="companyList-div">
-					${ company.empName }
-					<input type="hidden" name="companyName" value="${ company.empName }" />
-					<input type="hidden" name="companyPhone" value="${ company.phone }" />
-					<input type="hidden" name="companyAddress" value="${ company.addr2 }" />
-					<input type="hidden" name="companyAddressDetail" value="${ company.addr3 }" />
-				</div>
+				<option value="${ company.empName }">${ company.empName }</option>
 			</c:forEach>
+		</select>
+		<c:forEach items="${ mapList }" var="company">
+			<div class="companyList-div" id="${ company.empName }">
+				<input type="hidden" name="companyName" id="${ company.empName }" />
+				<input type="hidden" name="companyPhone" value="${ company.phone }" />
+				<input type="hidden" name="companyAddress" value="${ company.addr2 }" />
+				<input type="hidden" name="companyAddressDetail" value="${ company.addr3 }" />
+			</div>
+		</c:forEach>
 		
 	</div>
 	<div id="map" style="width:500px;height:400px;"></div>
-
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5f16f27e7564ae5efd073c689a6db2a9&libraries=services,clusterer,drawing"></script>
+</div>
 <script>
 
-	$(".companyList-div").click(function(){
-		var name = $(this).find("[name=companyName]").val();
-		var phone = $(this).find("[name=companyPhone]").val();
-		var address = $(this).find("[name=companyAddress]").val();
-		var addressDetail = $(this).find("[name=companyAddressDetail]").val();
+	$(".companyList-select").change(function(){
+		var name = $(this).val();
+		var $div = $("#"+name);
+		var phone = $div.find("[name=companyPhone]").val();
+		var address = $div.find("[name=companyAddress]").val();
+		var addressDetail = $div.find("[name=companyAddressDetail]").val();
 		
 		var container = document.getElementById('map');
 		var options = {

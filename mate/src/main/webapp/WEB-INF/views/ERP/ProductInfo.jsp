@@ -99,15 +99,6 @@ function erpSReset(){
 				</select>
 			  </div>
 			  <div class="child">
-			  	<select name="product-brand" id="product-brand">
-				    <option value="">브랜드</option>
-				    <option value="">1</option>
-				    <option value="">2</option>
-				    <option value="">3</option>
-				    <option value="">4</option>
-				</select>
-			  </div>
-			  <div class="child">
 			    <input type="number" class="form-control" name="upper" placeholder="재고 수량" value="${ map.uNum }">
 			  </div>
 			  <div class="child">
