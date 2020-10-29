@@ -16,6 +16,11 @@
 <link rel="stylesheet"
 	href="${ pageContext.request.contextPath }/resources/css/headerS.css" />
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<c:if test="${ not empty msg }">
+<script>
+	alert("${ msg }");
+</script>
+</c:if>
 </head>
 <body>
 <header>
