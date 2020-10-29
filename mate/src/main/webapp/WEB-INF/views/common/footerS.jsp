@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 
 <br />
+</div>
 </section>
 	<footer>
 		<p>&lt;Copyright 2020.<strong>MATE</strong>&gt;</p>

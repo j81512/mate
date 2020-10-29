@@ -377,4 +377,13 @@ public class ProductController {
 		
 		return "redirect:/product/returnPage.do";
 	}
+	
+	@ResponseBody
+	@GetMapping("/getBest.do")
+	public List<Map<String, Object>> getBest(){
+		
+		List<Map<String, Object>> mapList = productService.getBest();
+		
+		return mapList;
+	}
 }
