@@ -121,6 +121,7 @@ CREATE TABLE EMP (
 	phone   char(11)		NOT NULL,
 	enroll_date	date	DEFAULT sysdate	NOT NULL,
 	status	number		NOT NULL,
+    enabled number default 0 not null,
     
     constraint pk_emp primary key (emp_id)
 );
@@ -369,24 +370,21 @@ CREATE TABLE CART (
 --DROP TABLE PURCHASE;
 CREATE TABLE PURCHASE (
 	purchase_no	number		NOT NULL,
-	member_id	varchar2(100)		NOT NULL,
+	member_id	varchar2(100),
 	purchase_date	date	DEFAULT sysdate	NOT NULL,
     address_name varchar2(128) NOT NULL,
     
     constraint pk_purchase primary key (purchase_no),
     constraint fk_purchase_member_id foreign key (member_id)
                                                 references member (member_id)
-                                                on delete cascade,
-    constraint fk_purchase_product_no foreign key (product_no)
-                                                references product (product_no)
-                                                on delete set null;
+                                                on delete cascade
 );
 
 --DROP TABLE PURCHASE_LOG;
 CREATE TABLE PURCHASE_LOG (
 	purchase_log_no	number		NOT NULL,
 	purchase_no	number		NOT NULL,
-	product_no	number		NOT NULL,
+	product_no	number,
 	amount	number		NOT NULL,
     status number DEFAULT 0 NOT NULL,
     purchased number DEFAULT 0 NOT NULL,
@@ -394,7 +392,10 @@ CREATE TABLE PURCHASE_LOG (
     constraint pk_purchase_log primary key (purchase_log_no),
     constraint fk_purchase_log_purchase_no foreign key (purchase_no)
                                                       references purchase (purchase_no)
-                                                      on delete cascade
+                                                      on delete cascade,
+    constraint fk_purchase_log_product_no foreign key (product_no)
+                                                references product (product_no)
+                                                on delete set null;
 );
 
 --DROP TABLE RETURN;
@@ -473,31 +474,7 @@ CREATE TABLE DELETE_BOARD (
 	delete_date	date	DEFAULT sysdate	NOT NULL
 );
 
---DROP TABLE DELETE_PRODUCT;
-CREATE TABLE DELETE_PRODUCT (
-	product_no	number		NOT NULL,
-	product_name	varchar2(256)		NOT NULL,
-	reg_date	date	NOT NULL,
-	category	varchar2(128)		NOT NULL,
-	content	varchar2(4000)		NOT NULL,
-	price	number		NOT NULL,
-    emp_id varchar2(15) NOT NULL,
-	delete_date	date	DEFAULT sysdate	NOT NULL
-);
 
---DROP TABLE DELETE_EMP;
-CREATE TABLE DELETE_EMP (
-	emp_id	varchar2(15)		NOT NULL,
-	emp_pwd	varchar2(300)		NOT NULL,
-	emp_name	varchar2(256)		NOT NULL,
-	addr1	varchar2(512)		NOT NULL,
-	addr2	varchar2(512)		NOT NULL,
-	addr3	varchar2(512)		NOT NULL,
-	phone	char(11)		NOT NULL,
-	enroll_date	date	NOT NULL,
-	status	char(1)		NOT NULL,
-	delete_date	date	DEFAULT sysdate	NOT NULL
-);
 
 --======================================
 -- 시퀀스
@@ -591,49 +568,6 @@ begin
 end;
 /
 
--- 삭제 지점/제조사 관련 트리거
-create or replace trigger trg_delete_emp
-    before
-    delete on emp
-    for each row
-begin
-    insert into 
-        delete_emp
-    values(
-        :old.emp_id, 
-        :old.emp_pwd, 
-        :old.emp_name, 
-        :old.addr1,
-        :old.addr2,
-        :old.addr3,
-        :old.phone,
-        :old.enroll_date,
-        :old.status,
-        default
-    );
-end;
-/
-
--- 삭제 상품 관련 트리거
-create or replace trigger trg_delete_product
-    before
-    delete on product
-    for each row
-begin
-    insert into 
-        delete_product
-    values(
-        :old.product_no, 
-        :old.product_name, 
-        :old.reg_date, 
-        :old.category, 
-        :old.content,
-        :old.price,
-        :old.manufacturer_id,
-        default
-    );
-end;
-/
 
 -- 주문 로그에 결제 컬럼 update시 입출고 로그에 출고로 insert 되고 cart에 삭제하는 트리거
 create or replace trigger trg_purchase_log

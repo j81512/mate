@@ -9,7 +9,8 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 <style>
 html{
 	overflow-y: scroll;
@@ -65,7 +66,7 @@ html{
 	text-align: center;
 	vertical-align: sub;
 }
-nav{
+#header-nav{
 	height: 60px;
 	padding-top: 18px;
 }
@@ -77,10 +78,10 @@ nav{
 .search-div{
 	height: 320px;
 }
-nav a{
+#header-nav a{
 	color: rgba(54,54,54,0.6);
 }
-nav a:hover{
+#header-nav a:hover{
 	text-decoration: none;
 	color: rgb(164,80,68);
 }
@@ -102,7 +103,7 @@ $(function(){
 <body>
 <img id="background-img" src="${ pageContext.request.contextPath }/resources/images/background.png" alt="" />
 <header>
-	 <nav>
+	 <nav id="header-nav">
 		<div class="nav">
 			<div class="brand-div" >
 				<a id="brand" class="font-cookie" href="${ pageContext.request.contextPath }">&nbsp;MATE&nbsp;</a>
