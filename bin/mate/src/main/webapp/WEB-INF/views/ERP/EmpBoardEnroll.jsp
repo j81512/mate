@@ -232,8 +232,7 @@ $('#category_').change(function() {
 				  <option value="evt">이벤트</option>
 				</select>
 			   </div>
-			   <div class="product" id="productList">
-			   </div>
+			   <div class="product" id="productList"></div>
 			  <div class="custom-file">
 			  	<input type="file" class="custom-file-input" name="upFile" id="upFile1">
      			<label class="custom-file-label" for="upFile1">파일을 선택하세요</label>

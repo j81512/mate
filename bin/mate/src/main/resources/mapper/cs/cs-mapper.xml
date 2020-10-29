@@ -5,13 +5,37 @@
 <mapper namespace="cs">
   
  <select id="selectCsList" resultType="cs">
-		select
-			*
-		from 
-			CS
-		order by
-			cs_no DESC
+SELECT * 
+		FROM (
+			SELECT ROWNUM as rnum, B.*
+				FROM (
+                    select c.*,
+                        (select count(*) from cs_reply cr where c.cs_no =  cr.cs_no ) is_reply
+                        from(   
+                            SELECT
+                                     ba.*,
+                                     ci.cs_image_no,
+                                     ci.original_filename,
+                                     ci.renamed_filename
+                                 	FROM cs ba  
+                                 	left join cs_images ci on ba.cs_no = ci.cs_no )c 			
+	                             	 <where>
+										<if test="memberId != null and memberId != ''">
+											and  member_id like  #{ memberId }
+										</if>
+										<if test="secret != null and secret != ''">
+											and  secret  =  #{ secret }
+										</if>
+									</where>
+	                                 order by
+							notice desc, cs_no desc
+							) B
+					)
+			 where rnum BETWEEN #{ cPage } AND #{ numPerPage }
 	</select>
+	<resultMap type="cs" id="csMap">
+	
+	</resultMap>
 	
 	<insert id="insertCs">
 		insert into
@@ -59,9 +83,11 @@
 			cs
 		where
 			cs_no = #{ csNo }
+		order by
+		notice desc, cs_no desc
 	</select>
 	
-	<select id="selectCsImage" resultType="csImages">
+	<select id="selectCsImage" resultType="CsImages">
 		select
 			*
 		from
@@ -69,4 +95,21 @@
 		where
 			cs_no = #{ csNo }
 	</select>
+	
+	<select id="selectOneCsImage" resultType="CsImages">
+		select
+			*
+		from
+			cs_images
+		where
+			cs_no = #{ csNo }
+	</select>
+	
+	<select id="getSearchContents" resultType="_Int">
+		select
+			count(*)
+		from cs
+	
+	</select>
+	
 </mapper>
