@@ -279,15 +279,15 @@
                       <form id="admin" action="${ pageContext.request.contextPath }/ERP/erpLogin.do" method="post">
                      	<h3 class="heading-desc">관리자 로그인</h3>
                      	<div class="form-group">
-	                        <label for="empId_">아이디</label>
-	                        <input type="text" name="empId" id="empId" class="input-xlarge">
+	                       <!--  <label for="empId_">아이디</label> -->
+	                        <input type="text" placeholder="아이디를 입력하세요" name="empId" id="empId" class="form-control">
 	                    </div>
 	                    <div class="form-group">   
-	                        <label for="empPassword_">비밀번호</label>
-	                        <input type="password" name="empPwd"  class="input-xlarge">
+	                     <!--    <label for="empPassword_">비밀번호</label> -->
+	                        <input type="password" placeholder="비밀번호를 입력하세요" name="empPwd"  class="form-control">
                        	</div>
                         <div>
-                          <button type="submit" class="btn btn-primary">로그인</button>
+                          <button type="submit" class="btn btn-lg btn-block purple-bg" >로그인</button>
                         </div>
                       </form>
 				  </div>
@@ -295,8 +295,30 @@
 			</div>
 		</div>
 	</div>
+	<!-- 비밀번호 찾기용 모달 창 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+					  <div class="modal-dialog">
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					        <span aria-hidden="true">&times;</span>
+					        </button>
+					        <h4 class="modal-title" id="myModalLabel">인증번호를 입력하세요</h4>
+					      </div>
+					      <div class="modal-body">
+						        인증번호 : 
+						     <input type="password" class="form-control" name="phoneNum" id="phoneNum_" >
+						     <input type="hidden" class="form-control" name="checkNum" id="checkNum_" >
+					      </div>
+					      <div class="modal-footer">
+					        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+					        <input type="button" class="btn btn-primary btn-delete" id="infoSubmit" name="infoSubmit" value="확인" >
+					      </div>
+					    </div>
+					  </div>
+					</div>	
 </div>
 
-<!-- 비밀번호 찾기용 모달 창 -->
+		
 
 <jsp:include page="/WEB-INF/views/common/footerS.jsp" />
