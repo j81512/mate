@@ -27,6 +27,7 @@
 </head>
 	<body>  
 		<div class="container">
+		<h2>입출고 현황</h2>
 			<div id="buy" class="tab-pane fade active show in">
 				<div class="col-md-15">
 				    <div class="form-area">  

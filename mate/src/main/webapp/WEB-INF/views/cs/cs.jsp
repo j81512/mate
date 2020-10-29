@@ -136,7 +136,7 @@ $(function(){
 		</nav>
 	
 </section> 
-
+<jsp:include page="/WEB-INF/views/common/footerS.jsp"></jsp:include>
 	
   	
 

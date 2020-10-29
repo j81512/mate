@@ -27,80 +27,82 @@
 </head>
  	<body>  
 		<div class="container">
-		
+			<h2>재고관리</h2>
 			<div id="buy" class="tab-pane fade active show in">
 				<div class="col-md-15">
 				    <div class="form-area">  
-						<table id="purchaseLog-table" class="table">
-							<thead>
-							<form id="searchFrm" method="POST">
-								<tr>
-									<th>
-									  	<select name="branchId" id="branchId">
-										    <option value="" disabled selected>지점 선택</option>
-										    <c:forEach items="${empList}" var="list">
-										    <c:if test="${list.status eq 1 }">
-										    <option value="${list.empId}">${list.empName}</option>
-										    </c:if>
-										    <c:if test="${list.status eq 0  }">
-										    <option value="${list.empId }">온라인</option>
-										    </c:if>
-										    </c:forEach>
-										</select>
-									</th>
-									<th>
-									  	<select name="searchType" id="searchType">
-										    <option value="" disabled selected>검색 타입 선택</option>
-										    <option value="product_no">상품번호</option>
-										    <option value="product_name">상품명</option>
-										</select>
-									</th>
-									<th>	
-									    <input type="text" name="searchKeyword" class="form-control" placeholder="내용을 입력해주세요">
-									</th>
-									<th>
-									  <button type="button" class="btn btn-default" id="searchStock">검색</button>
-									</th>
-								</tr>
-							</form>
-							</thead>
-							<tbody class="thead-dark">
-								<tr>
-									<th scope="col">보유점</th>
-									<th scope="col">상품번호</th>
-									<th scope="col">상품명</th>
-									<th scope="col">카테고리</th>
-									<th scope="col">제조사</th>
-									<th scope="col">수량</th>
-								</tr>
-							</tbody>
-							<tfoot class="stockInfo">
-							<c:if test="${ not empty list }">
-								<fmt:setLocale value="ko_kr"/>
-									<c:forEach items="${ list }" var="stock">
-										<tr>
-											<td>${ stock.empName }</td>
-											<td>${ stock.productNo }</td>
-											<td>${ stock.productName }</td>
-											<td>${ stock.category }</td>
-											<td>${ stock.manufacturerName }</td>
-											<td>${ stock.stock }</td>
-										</tr>
-									</c:forEach>
-							</c:if>
-							</tfoot>
-							<c:if test="${ empty list }">
-								<tr>
-									<td colspan="8">검색결과 없음</td>
-								</tr>
-							</c:if>
-						</table>
+						<form id="searchFrm" method="POST">
+							<table id="purchaseLog-table" class="table">
+								<thead>
+									<tr>
+										<th>
+										  	<select name="branchId" id="branchId">
+											    <option value="" disabled selected>지점 선택</option>
+											    <c:forEach items="${empList}" var="list">
+											    <c:if test="${list.status eq 1 }">
+											    <option value="${list.empId}">${list.empName}</option>
+											    </c:if>
+											    <c:if test="${list.status eq 0  }">
+											    <option value="${list.empId }">온라인</option>
+											    </c:if>
+											    </c:forEach>
+											</select>
+										</th>
+										<th>
+										  	<select name="searchType" id="searchType">
+											    <option value="" disabled selected>검색 타입 선택</option>
+											    <option value="product_no">상품번호</option>
+											    <option value="product_name">상품명</option>
+											</select>
+										</th>
+										<th>	
+										    <input type="text" name="searchKeyword" class="form-control" placeholder="내용을 입력해주세요">
+										</th>
+										<th>
+										  <button type="button" class="btn btn-default" id="searchStock">검색</button>
+										</th>
+									</tr>
+								
+								</thead>
+								<tbody class="thead-dark">
+									<tr>
+										<th scope="col">보유점</th>
+										<th scope="col">상품번호</th>
+										<th scope="col">상품명</th>
+										<th scope="col">카테고리</th>
+										<th scope="col">제조사</th>
+										<th scope="col">수량</th>
+									</tr>
+								</tbody>
+								<tfoot class="stockInfo">
+								<c:if test="${ not empty list }">
+									<fmt:setLocale value="ko_kr"/>
+										<c:forEach items="${ list }" var="stock">
+											<tr>
+												<td>${ stock.empName }</td>
+												<td>${ stock.productNo }</td>
+												<td>${ stock.productName }</td>
+												<td>${ stock.category }</td>
+												<td>${ stock.manufacturerName }</td>
+												<td>${ stock.stock }</td>
+											</tr>
+										</c:forEach>
+								</c:if>
+								</tfoot>
+								<c:if test="${ empty list }">
+									<tr>
+										<td colspan="8">검색결과 없음</td>
+									</tr>
+								</c:if>
+							</table>
+						</form>
 					</div>
 				</div>
 			</div>
 		</div>
 	</body>
-	
+
+<jsp:include page="/WEB-INF/views/common/footerE.jsp"/>
 <script>
 $("#searchStock").click(function(){
 
