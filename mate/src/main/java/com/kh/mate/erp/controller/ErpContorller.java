@@ -582,7 +582,7 @@ public class ErpContorller {
 			redirectAttr.addFlashAttribute("msg", "상품 추가 실패");
 		}
 		
-		return "redirect:/ERP/ProductInfo.do";
+		return "redirect:/ERP/searchInfo.do";
 	}
 	
 	//뒤로가기 클릭 시 파일 삭제
@@ -738,7 +738,7 @@ public class ErpContorller {
 			Utils.fileDelete(folder1.toString());
 		}
 		
-		return "redirect:/";
+		return "redirect:/ERP/searchInfo.do";
 	}
 	
 	//상품 삭제
@@ -772,7 +772,7 @@ public class ErpContorller {
 		}else {
 			redirectAtttis.addFlashAttribute("msg", "상품삭제에 실패하였습니다.");
 		}
-		return "redirect:/ERP/ProductInfo.do";
+		return "redirect:/ERP/searchInfo.do";
 	}
 	
 	//발주 요청 가져오기

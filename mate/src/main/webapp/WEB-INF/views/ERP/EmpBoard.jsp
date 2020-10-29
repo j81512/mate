@@ -7,5 +7,4 @@
 <title>Insert title here</title>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp" />
 <div id="board-container">
-</div>
 <jsp:include page="/WEB-INF/views/common/footerE.jsp" />
