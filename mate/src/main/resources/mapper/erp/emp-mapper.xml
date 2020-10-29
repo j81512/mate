@@ -99,11 +99,77 @@
 			enroll_date
 	</select>
 	
-	<select id="ioLogList" resultType="IoLog">
+	<select id="ioLogList" resultType="ioLog">
 		select
 			*
 		from
 			Io_Log	
+	</select>
+	<select id="ioLogMapList" resultMap="salesMap">
+		select
+			*
+		from(
+			select
+			    <if test="month == null">to_char(io_date, 'yyyyMM') io_date,</if>
+			    <if test="month != null">to_char(io_date, 'yyyyMMdd') io_date,</if>
+			    emp_id,
+			    decode((select emp_name from emp where emp_id = I.emp_id), '본사관리자','온라인', (select emp_name from emp where emp_id = I.emp_id)) emp_name,
+			    status,
+			    product_no,
+			    (select product_name from product where product_no = I.product_no) product_name,
+			    (select price from product where product_no = I.product_no) price,
+			    amount
+			from
+			    io_log I
+			order by
+			    io_date asc
+			)
+		<where>
+			<if test="month == null">
+		    	io_date like #{ year } || '%'		
+			</if>
+			<if test="month != null">
+		    	io_date like #{year} || #{ month } || '%'		
+			</if>
+		</where>
+	</select>
+	<resultMap id="salesMap" type="map">
+		<result column="io_date" property="ioDate"/>
+		<result column="emp_id" property="empId"/>
+		<result column="emp_name" property="empName"/>
+		<result column="status" property="status"/>
+		<result column="product_no" property="productNo"/>
+		<result column="product_name" property="productName"/>
+		<result column="price" property="price"/>
+		<result column="amount" property="amount"/>
+	</resultMap>
+	
+	<select id="empNameList" resultMap="empNameMap">
+		select
+			decode(emp_name,'본사관리자','온라인', emp_name) emp_name
+		from
+			emp
+		where
+			status != 2
+			<if test="empId != 'admin'">
+				and emp_id = #{empId}
+			</if>
+	</select>
+	<resultMap id="empNameMap" type="map">
+		<result column="emp_name" property="empName"/>
+	</resultMap>
+	
+	<select id="yearList" resultType="string">
+		select 
+			*
+		from(
+			select 
+				to_char(io_date, 'yyyy') io_date
+			from 
+				io_log
+			)	
+		group by io_date
+		order by io_date
 	</select>
 	
 	<select id="productList" resultType="Product">

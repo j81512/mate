@@ -361,4 +361,19 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.update("erpBoard.updateStockInfo",map);
 	}
 
+	@Override
+	public List<Map<String, Object>> ioLogMapList(Map<String, Object> param) {
+		return sqlSession.selectList("emp.ioLogMapList", param);
+	}
+
+	@Override
+	public List<Map<String, Object>> empNameList(EMP emp) {
+		return sqlSession.selectList("emp.empNameList", emp);
+	}
+
+	@Override
+	public List<String> yearList() {
+		return sqlSession.selectList("emp.yearList");
+	}
+
 }

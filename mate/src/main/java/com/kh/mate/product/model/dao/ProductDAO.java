@@ -71,6 +71,10 @@ public interface ProductDAO {
 
 	int updateReturn(Map<String, Object> param);
 
+	List<Integer> getBestList();
+
+	List<Map<String, Object>> getBestImg(Integer productNo);
+
 
 
 }
