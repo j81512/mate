@@ -7,13 +7,31 @@
 <!DOCTYPE html>
 <html lang="ko">
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-
+<script src="${ pageContext.request.contextPath }/resources/ckeditor/ckeditor.js"></script>
 <!-- bootstrap js: jquery load 이후에 작성할것.-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+<style>
+.btn-custom {
+  background-color: hsl(0, 0%, 16%) !important;
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#5b5b5b", endColorstr="#282828");
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#5b5b5b), to(#282828));
+  background-image: -moz-linear-gradient(top, #5b5b5b, #282828);
+  background-image: -ms-linear-gradient(top, #5b5b5b, #282828);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #5b5b5b), color-stop(100%, #282828));
+  background-image: -webkit-linear-gradient(top, #5b5b5b, #282828);
+  background-image: -o-linear-gradient(top, #5b5b5b, #282828);
+  background-image: linear-gradient(#5b5b5b, #282828);
+  border-color: #282828 #282828 hsl(0, 0%, 11%);
+  color: #fff !important;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.33);
+  -webkit-font-smoothing: antialiased;
+}
+</style>
 <!-- 호근 헤더 처리-->
 <title>게시판</title>
 <script>
@@ -33,12 +51,15 @@ $(document).ready(function(){
 	        data :  {"boardNo" :boardNo},
 	        success : function(data){
 	            var html =''; 
+	            var loginEmp = '${loginEmp.empName}';
 	         /*    console.log(data); */
 	            $.each(data, function(key, value){                
 		            	html += '<div class="replyArea" style="border-bottom:1px solid darkgray; margin-bottom: 15px;">';
 		            	html += "<div class='replyInfo'>" + "작성자 :" + value.empName;
+		            if( loginEmp == value.empName || loginEmp =='admin'){
 		            	html += '<a onclick="replyUpdate('+ value.boardReplyNo +',\''+ value.content + '\');" class="btn btn-primary"> 수정 </a>';
 		            	html += '<a onclick="replyDelete('+ value.boardReplyNo +');" class="btn btn-default"> 삭제 </a> </div>';
+			            }	
 		            	html += '<div class="replyContent'+ value.boardReplyNo+'"> <p> 내용 : '+value.content +'</p>';
 		            	html += '</div></div>';
 	            });
@@ -117,27 +138,72 @@ $(document).ready(function(){
 		});
 	}
 
+
 	function fileDownload(no){
 		location.href= "${ pageContext.request.contextPath}/ERP/fileDownload.do?no=" + no;
 	};
 
+	function StockTranslate(productNo, amount, empId){
+		var $transEmpId = '${ loginEmp.empId}';
+		var $transStock = ('${ loginEmpStock.stock}' >= amount) ? amount : '${ loginEmpStock.stock}' ;
+		var $boardNo = '${ empBoard.boardNo}';
+		var $enabled = '${ empBoard.enabled }';
+		var stock = {
+				productNo : productNo,
+				amount : amount,
+				empId : empId,
+				transEmpId : $transEmpId, 
+				transStock : $transStock,
+				boardNo : $boardNo
+			};
+
+
+		console.log(stock);
+		
+		if(stock.amount > stock.transStock){
+			alert("수량이 적습니다.");
+			return;
+		}
+
+		if($enabled == 1){
+			alert("이미 처리 되었습니다.");
+			return;
+		}
+		
+ 	$.ajax({
+
+			 url : "${ pageContext.request.contextPath }/ERP/StockTranslate",
+			 method : "get",
+			 dataType : "json",
+			 data : stock,
+			 success : function(data){
+					console.log(data);
+					var result = data.isAvailable;
+					if( result == true){                
+		                alert("재고 처리를 했습니다.");
+		                                           
+		            } 
+			},
+			error : function(xhr, err, status){
+					console.log(xhr, err, status);
+			}
+
+		}); 
+		
+	}
 	
 </script>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp" />
 <div class="container">
 	<div id="board-container" class="mx-auto text-center">
-		<input type="text" class="form-control" 
-			   placeholder="번호" name="boardNo" id="boardNo" 
-			   value="${empBoard.boardNo }" required>
-		<input type="text" class="form-control" 
-			   placeholder="카테고리" name="category" id="category" 
-			   value="${empBoard.category }" required>
-		<input type="text" class="form-control" 
-			   placeholder="제목" name="title" id="title" 
-			   value="${empBoard.title }" required>
-		<input type="text" class="form-control" 
-			   name="memberId" 
-		   value="${ empBoard.empId }" readonly required>
+		<input type="text" class="form-control" placeholder="번호" name="boardNo" id="boardNo" value="${empBoard.boardNo }"  readonly>
+		<input type="text" class="form-control" placeholder="카테고리" name="category" id="category"    value="${empBoard.category  == 'ntc' ? '공지사항'  : empBoard.category eq 'req' ? '요청' : empBoard.category eq 'adv' ? '광고' : empBoard.category eq 'def' ? '일반' : empBoard.category eq 'evt' ? '이벤트' : ''}"  readonly>
+		<c:if test="${ empBoard.category eq 'req' }">
+			<input type="text" name="productName" id="productName_" value="${ empBoard.productName }" readonly/>
+			<input type="text" name="stock" id="stock_" value="${ empBoard.amount }" readonly/>
+		</c:if>
+		<input type="text" class="form-control" placeholder="제목" name="title" id="title"  value="${empBoard.empName }"  readonly>
+		<input type="text" class="form-control" name="memberId" value="${ empBoard.empId }" readonly>
 		 <div class="form-group">
 			<c:forEach items="${ empBoard.empBoardImageList }" var="empBoard">	
 				<button type="button" 
@@ -147,12 +213,23 @@ $(document).ready(function(){
 				</button>
 			</c:forEach>
 		 </div>
-	    <textarea class="form-control" name="content" 
-	    		  placeholder="내용" required>
+	    <div class="row" name="content" >
 	    		  ${ empBoard.content != null  ? empBoard.content : '내용'}
-	    		  </textarea>
+	    		  </div>
 		</div>
+		<!-- 요청 상품에 재고가 있을 때만  -->
+		<c:if test="${loginEmpStock.empId eq loginEmp.empId && empBoard.category eq 'req' }">
+				<a href="#" class="btn btn-custom" role="button">${ loginEmpStock.empName }</a>
+				<a href="#" class="btn btn-custom" role="button">${ loginEmpStock.productName }</a>
+				<a href="#" class="btn btn-custom" role="button">재고 수  : ${ loginEmpStock.stock }</a>
+				<button type="button" class="btn btn-warning" onclick="StockTranslate('${ empBoard.productNo }' ,'${ empBoard.amount}', '${empBoard.empId }');"> 보내기 </button>
+		</c:if>
 		
+		<c:if test="${ empBoard.empId eq loginEmp.empId }" >		
+			<button class="btn btn-default" type="button" onclick="return goEmpBoardUpdate('${ empBoard.boardNo}')">수정</button>
+			<button class="btn btn-default" type="button"  onclick="return delBoard('${ empBoard.boardNo}');">삭제</button>
+		</c:if>
+		<!--댓글 폼 -->
 		<div id="reply-container">
 			<form action="${ pageContext.request.contextPath }/ERP/empReplyEnroll.do" method="POST">
 				<div class="form-group">				
@@ -178,6 +255,50 @@ $(document).ready(function(){
 		</div>
     </div>
 
+<script>
 
+function goEmpBoardList(){                
+    location.href = "${ pageContext.request.contextPath }/ERP/EmpBoardList.do";
+}
+	function delBoard(boardNo){
+		console.log(boardNo);
+		var $boardNo = boardNo;
+
+		$.ajax({
+			url : "${ pageContext.request.contextPath}/ERP/boardDelete.do",
+			method:"POST",
+			dataType : "json",
+			data : {
+				"boardNo" : $boardNo},
+			cache   : false,
+            async   : true,
+			success : function(data) {
+				console.log(data);
+				var result = data.result;
+				if(result == "1"){                
+	                alert("게시글 삭제를 성공하였습니다.");                             
+	            } else {                
+	                alert("게시글 삭제를 실패하였습니다.");    
+	                return;
+	            }
+					
+			},
+			error : function(xhr, status, err){
+				console.log(xhr);
+				console.log(status);
+				console.log(err);
+			}
+			
+		});
+
+	}
+
+		 function goEmpBoardUpdate(boardNo){
+		        
+		        var boardNo =  boardNo;
+		        console.log(boardNo);
+		        location.href = "${ pageContext.request.contextPath}/ERP/empBoardUpdate.do?boardNo="+ boardNo;
+		   }
+</script>
 		
 <jsp:include page="/WEB-INF/views/common/footerE.jsp" />

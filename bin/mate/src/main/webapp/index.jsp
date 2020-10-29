@@ -4,18 +4,17 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>
-<jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <link rel="stylesheet"
 	href="${ pageContext.request.contextPath }/resources/css/index.css" />
+
+<jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
 <script>
-$(function(){
-	$('#blogCarousel').carousel({
-		interval: 5000
-	});	
-})
+$('#blogCarousel').on('slide.bs.carousel', function () {
+	interval: 5000;
+});
 </script>
 
 	<div class="container">

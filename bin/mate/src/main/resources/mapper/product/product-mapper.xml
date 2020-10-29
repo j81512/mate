@@ -6,6 +6,23 @@
 
 	<select id="countProduct" resultType="_int">
 	select COUNT(*) from product
+	<where>
+ 		
+ 		<if test="cateArr != null">
+ 			category in  <foreach collection="cateArr"
+			    		 item="cateArr"
+			    		 open="("
+			    		 close=")"
+			    		 separator=",">
+			    	#{ cateArr }
+			    	</foreach>
+ 		</if>
+ 		<if test="search != null and !search.isempty">
+	 		and (product_name like '%' || #{search} || '%'
+ 			or content like '%' || #{search} || '%')
+ 		</if>
+ 		
+ 		</where>
 	</select>
 	
 	<select id="selectCartList" resultType="cart">
@@ -203,6 +220,72 @@
  			default
  		)
  	</insert>
+ 	
+ 	<select id="selectAllReturns" resultMap="returnMap">
+ 		select
+ 			R.return_no return_no,
+ 			R.status status,
+ 			R.purchase_log_no purchase_log_no,
+ 			R.amount amount,
+ 			R.confirm confirm,
+ 			PL.product_no product_no,
+ 			(select product_name from product where product_no = PL.product_no) product_name,
+ 			(select member_id from purchase where purchase_no = PL.purchase_no) member_id
+ 		from
+ 			return R
+ 			join purchase_log PL
+ 				on (R.purchase_log_no = PL.purchase_log_no)
+ 		where
+ 			confirm = 0
+ 		order by
+ 			return_no
+ 	</select>
+ 	
+ 	<select id="getReturnContent" resultType="string">
+ 		select
+ 			content
+ 		from
+ 			return
+ 		where
+ 			return_no = #{returnNo}
+ 	</select>
+ 	
+ 	<select id="getReturnImage" resultMap="returnImageMap">
+ 		select
+ 			*
+ 		from
+ 			return_images
+ 		where
+ 			return_no = #{returnNo}
+ 	</select>
+ 	
+ 	<update id="updateReturn">
+ 		update
+ 			return
+ 		set
+ 			confirm = #{confirm}
+ 		where
+ 			return_no = #{returnNo}
+ 	</update>
+ 	
+ 	<resultMap type="map" id="returnImageMap">
+ 		<id column="return_image_no" property="returnImageNo"/>
+ 		<result column="original_filename" property="originalFilename"/>
+ 		<result column="renamed_filename" property="renamedFilename"/>
+ 		<result column="return_no" property="returnNo"/>
+ 	</resultMap>
+ 	
+ 	 <resultMap type="map" id="returnMap">
+ 		<id column="return_no" property="returnNo"/>
+ 		<result column="status" property="status"/>
+ 		<result column="purchase_log_no" property="purchaseLogNo"/>
+ 		<result column="amount" property="amount"/>
+ 		<result column="confirm" property="confirm"/>
+ 		<result column="product_no" property="productNo"/>
+ 		<result column="product_name" property="productName"/>
+ 		<result column="member_id" property="memberId"/>
+ 	</resultMap>
+ 	
  	<resultMap type="product" id="productMap">
  		<id column="product_no" property="productNo"/>
  		<result column="product_name" property="productName"/>
@@ -220,8 +303,6 @@
 	 		<result column="product_no" property="productNo"/>
  		</collection>
  	</resultMap>
-
- 	
  	
  	<resultMap type="cart" id="cartMap">
  		<id column="member_id" property="memberId"/>
@@ -239,6 +320,4 @@
 	 		<result column="enabled" property="enabled"/>
 		</collection> 	
  	</resultMap>
- 	
- 
 </mapper>

@@ -4,82 +4,158 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-
-<!-- bootstrap js: jquery load 이후에 작성할것.-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-
-<!-- bootstrap css -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+	crossorigin="anonymous">
+<link
+	href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
+	rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet"
+	href="${ pageContext.request.contextPath }/resources/css/loginForm.css" />
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+	integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+	crossorigin="anonymous"></script>
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+	crossorigin="anonymous">
+</script>
+<jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
 </head>
-  <body>  
-	<section id="info-container" class="container">
-	  <div class="form-group"
-	  	   style="width: 1280px">
-		<form class="navbar-form navbar-left" 
-			  role="search"
-			  action="${pageContext.request.contextPath}/ERP/searchInfo.do">
-			  <div class="child">
-			  	<select name="orderemplist" id="orderemplist">
-				    <option value="all">전체</option>
-				    <option value="online">온라인</option>
-				    <option value="gn">강남점</option>
-				    <option value="yn">용인점</option>
-				</select>
-			  	<select name="status" id="status">
-				    <option value="">상태</option>
-				    <option value="all">전체</option>
-				    <option value="process">처리중</option>
-				    <option value="cancel">취소</option>
-				    <option value="complete">처리완료</option>
-				</select>
-				<input type="date" />
-				<select name="productlist" id="productlist">
-				    <option value="no">상품번호</option>
-				    <option value="name">상품명</option>
-				</select>
-			    <input type="text" class="form-control" placeholder="내용을 입력해주세요">
-			  	<button type="submit" class="btn btn-default">검색</button>
-			  </div>
-		</form>
-	  </div>
-	</section>
-	
-	<section>
-		<div class="productInfo">
-			<tr>
-				<th>발주번호</th>
-				<th>상품명</th>
-				<th>발주자</th>
-				<th>발주 날짜</th>
-				<th>발주량</th>
-				<th>상태</th>
-			</tr>
+	<body>  
+		<div class="container">
+			<div id="buy" class="tab-pane fade active show in">
+				<div class="col-md-15">
+				    <div class="form-area">  
+						<table id="purchaseLog-table" class="table">
+							<thead>
+								<form id="searchFrm" method="POST">
+										<tr>
+											<th>
+											  	<select name="manufacturerId" id="manufacturerId">
+											    	<option value="" disabled selected>제조사 선택</option>
+												    <c:forEach items="${empList}" var="list">
+													    <c:if test="${list.status eq 2 }">
+													    <option value="${list.empId}">${list.empName}</option>
+													    </c:if>
+												    </c:forEach>
+												</select>
+											</th>
+											<th>
+											  	<select name="confirm" id="confirm">
+												    <option value="" disabled selected>발주 현황</option>
+												    <option value="">전체</option>
+												    <option value="0">처리중</option>
+												    <option value="-1">취소</option>
+												    <option value="1">처리완료</option>
+												</select>
+											</th>
+											<th>
+												<select name="searchType" id="searchType">
+											    <option value="" disabled selected>검색 타입 선택</option>
+											    <option value="product_no">상품번호</option>
+											    <option value="product_name">상품명</option>
+											</select>
+											</th>
+											<th>
+											    <input type="text" class="form-control" name="searchKeyword" placeholder="내용을 입력해주세요">
+											</th>
+											<th>
+											  	<button type="button" class="btn btn-default" id="searchRequest">검색</button>
+											</th>
+										</tr>
+									</form>
+								</thead>
+									<tbody class="thead-dark">
+										<tr>
+											<th scope="col">발주번호</th>
+											<th scope="col">상품명</th>
+											<th scope="col">상품 번호</th>
+											<th scope="col">제조사</th>
+											<th scope="col">발주 요청 지점</th>
+											<th scope="col">발주 날짜</th>
+											<th scope="col">발주량</th>
+											<th scope="col">상태</th>
+										</tr>
+									</tbody>	
+									<tfoot class="requestInfo">
+										<c:if test="${ not empty list }">
+											<c:forEach items="${ list }" var="request">
+												<tr>
+													<td>${ request.requestNo }</td>
+													<td>${ request.productName }</td>
+													<td>${ request.productNo }</td>
+													<td>${ request.manufacturerName }</td>
+													<td>${ request.branchName }</td>
+													<td><${request.requestDate }</td>
+													<td>${ request.amount }</td>
+													<td>
+														<c:if test="${ request.confirm eq 0}">발주 대기</c:if>
+														<c:if test="${ request.confirm eq 1}">발주 완료</c:if>
+														<c:if test="${ request.confirm eq -1}">발주 취소</c:if>
+													</td>
+												</tr>
+											</c:forEach>
+										</c:if>
+									</tfoot>
+							<c:if test="${ empty list }">
+								<tr>
+									<td colspan="6">검색결과 없음</td>
+								</tr>
+							</c:if>
+						</table>
+					</div>
+				</div>
+			</div>
 		</div>
-		
-		
-		<div class="productInfo">
-			<c:if test="${ not empty list }">
-				<c:forEach items="${ list }" var="RequestLog">
-					<tr>
-						<td>${ request_log.no }</td>
-						<td>${ product.productName }</td>
-						<td>${ emp.emp_id }</td>
-						<td><fmt:formatDate value="${ request_log.request_date }" pattern="yyyy년MM월dd일"/></td>
-						<td>${ request_log.amount }</td>
-						<td>${ request_log.confirm }</td>
-					</tr>
-				</c:forEach>
-			</c:if>
-			<c:if test="${ empty list }">
-				<span>검색결과 없음</span>
-			</c:if>
-		</div>
-	</section>
-
 	</body>
+<script>
+$("#searchRequest").click(function(){
+
+	var formData = $("#searchFrm").serialize();
+
+	$.ajax({
+		url : "${pageContext.request.contextPath}/ERP/searchRequest.do",
+		type: "POST",
+		data : formData,
+		success: function(data) {
+			console.log(data);
+			displayRequest(data);
+			
+	    },
+	    error: function(error) {
+		    alert("상품이 존재하지 않습니다.");
+			console.log(error);
+		}
+	});
+
+	
+});
+
+function displayRequest(data){
+
+	var $container = $(".requestInfo");
+	var html = "<fmt:setLocale value='ko_kr'/>";
+
+	for(var i in data){
+		var m = data[i];
+		html += "<tr>"
+			+"<td>" + m.requestNo + "</td>"
+			+"<td>" + m.productName + "</td>"
+			+"<td>" + m.productNo + "</td>"
+			+"<td>" + m.manufacturerName + "</td>"
+			+"<td>" + m.branchName + "</td>"
+			+"<td>" + m.requestDate + "</td>"
+			+"<td>" + m.amount + "</td>"
+			+'<td>' + (m.confirm == 0 ? "발주 대기" : ( m.confirm == 1 ? "발주완료" : "발주 취소")) + '</td>'
+			+"</tr>";
+		
+	}
+	$container.html(html);
+}
+
+</script>	
 </html>

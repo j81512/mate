@@ -9,10 +9,17 @@
 		    B.*,
 		    bi.board_image_no,
 		    bi.original_filename,
-		    bi.renamed_filename
+		    bi.renamed_filename,
+            i.board_info_no,
+            i.product_no,
+            i.amount,
+            (select  product_name from product where  product_no = i.product_no ) as product_name,
+            (select emp_name from emp where emp_id= b.emp_id) as emp_name
 		from board B
-		left join board_images bi 
-		on  b.board_no =  bi.board_no
+			left join board_images bi 
+				on  b.board_no =  bi.board_no
+	        left join board_info i
+	       		 on b.board_no = i.board_no
 		where b.board_no = #{ no }
 	</select>
 	
@@ -23,10 +30,14 @@
 		<result column="content" property="content"/>
 		<result column="emp_id" property="empId"/>
 		<result column="reg_date" property="regDate"/>
+		<result column="enabled" property="enabled"/>
 		<result column="read_count" property="readCount"/>
 		<result column="board_info_no" property="boardInfoNo"/>
 		<result column="product_no" property="productNo"/>
 		<result column="amount" property="amount"/>
+		<result column="product_name" property="productName"/>
+		<result column="emp_name" property="empName"/>
+		<result column="stock" property="stock"/>
 		<collection property="empBoardImageList" ofType="EmpBoardImage">
 			<id column="board_image_no" property="boardImageNo"/>
 			<result column="original_filename" property="originalFilename"/>
@@ -77,6 +88,7 @@
 		,#{ content } 
 		,#{ empId}
 		,default
+		, 0
 		, 0)
 		<selectKey order="AFTER" resultType="_int" keyProperty="boardNo">
 			select
@@ -133,8 +145,8 @@
 			values(
 			    seq_board_info_no.nextval,
 			    #{ boardNo },
-			    #{ productNo},
-			    #{ amount}
+			    #{ productNo },
+			    #{ amount }
 			)
 	</insert>
 	
@@ -154,10 +166,14 @@
 	<select id="searchBoard" resultType="EmpBoard">
 		SELECT * 
 		FROM (
-			SELECT ROWNUM as rnum, B.* 
+			SELECT ROWNUM as rnum, B.*
 				FROM (
-						SELECT * 
-						FROM board			
+			    	select *
+                       from(   
+                            SELECT ba.*,
+                                (select emp_name from emp where emp_id= ba.emp_id) as emp_name
+                                 FROM board ba
+                             ) 					
 						<where>
 							<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
 								and ${ searchType }  like '%' || #{ searchKeyword } || '%'
@@ -179,4 +195,88 @@
 			</if>
 		</where>
 	</select>
+	
+	<select id="selectEmpStock"  resultMap="empBoardCollection">
+		select
+		    *
+		from
+			(select p.product_no,
+					p.product_name,
+					p.category,
+					s.emp_id,
+					p.reg_date,
+					s.stock,
+		            (select emp_name from emp where emp_id= s.emp_id) as emp_name
+				from product p left join stock s
+						on (p.product_no = s.product_no)
+                )
+		where emp_id = #{ empId }
+		and product_no = #{ productNo }
+	</select>
+	
+	<delete id="empBoardDelete">
+		delete from board
+		where board_no = #{ boardNo }
+	</delete>
+	
+	<select id="selectOneBoardImage" resultType="EmpBoardImage">
+ 		select
+ 			*
+ 		from
+ 			board_images
+ 		where
+ 			board_no = #{ boardNo }
+ 	</select>
+ 	
+ 	<update id="empBoardUpdate">
+ 		update
+ 			board
+	 	<trim prefix="SET" prefixOverrides=",">
+			<if test='category != null and category != ""'>
+				, category = #{ category }
+			</if>
+			<if test='title != null and title != ""'>
+				,title	= #{ title }
+	   	  	</if>
+			<if test='content != null and content != ""'>
+				,content	= #{ content }
+	   	  	</if>
+		</trim>
+	 			where board_no = #{boardNo}
+ 	</update>
+	
+	<delete id="empBoardFileDelete">
+		delete from board_images where board_no = #{ boardNo }
+	</delete>
+	
+	<update id="empBoardFileUpdate">
+		update board_images 
+			set original_filename = #{ originalFilename },
+				 renamed_filename = #{ renamedFilename }
+		where board_no = #{ boardNo }
+
+	</update> 	
+	
+	<update id="enabledUpdate">
+		update board set enabled = 1 where board_no = #{ no }
+	
+	</update>
+	
+	<update id="updateTranStock">
+		update stock set stock = stock - #{ amount } 
+		where product_no = #{ productNo }
+		and emp_id = #{ transEmpId }
+	</update>
+	
+	<update id="updateStock">
+		update stock set stock = stock  +  #{ transStock }
+			where product_no = #{ productNo }
+			and emp_id = #{ empId }
+	</update>
+	
+	<update id="updateStockInfo">
+		update board_info set amount = amount - #{ transStock } 
+		where board_no = #{ no }
+		and product_no =  #{ productNo }
+	</update>
 </mapper>

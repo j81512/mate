@@ -65,21 +65,6 @@ public class MemberController {
 		this.naverLoginBO = naverLoginBO;
 	}
 
-//	구글 관련 추가
-	@Autowired
-	private GoogleConnectionFactory googleConnectionFactory;
-
-	@Autowired
-	private OAuth2Parameters googleOAuth2Parameters;
-
-	public void setGoogleConnectionFactory(GoogleConnectionFactory googleConnectionFactory) {
-		this.googleConnectionFactory = googleConnectionFactory;
-	}
-
-	public void setGoogleOAuth2Parameters(OAuth2Parameters googleOAuth2Parameters) {
-		this.googleOAuth2Parameters = googleOAuth2Parameters;
-	}
-
 	/*
 	 * 
 	  *로그인 연동시 한방에 처리할 수 있게 함
@@ -97,12 +82,6 @@ public class MemberController {
 		mav.addObject("kakaoUrl", kakaoUrl);
 //		log.debug("kakaoUrl = {}", kakaoUrl);
 
-		// 구글 관련 코드
-		OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
-		String googleurl = oauthOperations.buildAuthenticateUrl(GrantType.AUTHORIZATION_CODE, googleOAuth2Parameters);
-		log.debug("oauthOperations = {}", oauthOperations);
-		log.debug("googleurl = {}", googleurl);
-		mav.addObject("googleUrl", googleurl);
 		
 		
 		mav.setViewName("member/login");
@@ -208,30 +187,7 @@ public class MemberController {
 		}	
 	}
 
-	//해결해본다
-	// 구글 로그인 정보값
-	@RequestMapping(value = "/googlecallback.do", method = { RequestMethod.GET, RequestMethod.POST })
-	public String googleCallback(Model model, @RequestParam String code) {
 
-		OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
-		AccessGrant accessGrant = oauthOperations.exchangeForAccess(code, googleOAuth2Parameters.getRedirectUri(),
-				null);
-		log.debug("oauthOperations= ", oauthOperations);
-		String accessToken = accessGrant.getAccessToken();
-		Long expireTime = accessGrant.getExpireTime();
-		
-		  if(expireTime != null && expireTime < System.currentTimeMillis()) {
-			  accessToken = accessGrant.getRefreshToken();
-			  log.debug(" refresh accessToken = {}", accessToken); 
-		  }
-		  
-		  log.debug("accessGrant= ", accessGrant);
-		log.debug("accessToken= ", accessToken);
-		  
-		 
-		return "member/login";
-	}
-	
 	@ResponseBody
 	@PostMapping("/member/phoneSend.do")
 	public String PhoneSend(@RequestParam("receiver") String phone) {

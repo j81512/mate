@@ -206,19 +206,7 @@
 								</div>
 							</div>
 							</div>
-							<!-- 구글 로그인 버튼 추가 -->
-							<div class="center-block">
-							<div class="col-md-12 row-block" id="google_id_login">
-								<div id="google_id_login">
-									<a class="social-login-btn social-google" href="${ googleUrl }">
-										<img width="50"
-										src="${pageContext.request.contextPath}/resources/images/googleL.png"
-										class="img-rounded" />
-									</a>
-								</div>
-							</div>
-							</div>
-
+				
 						</div>
 					</div>
 					<div class="or-box row-block">

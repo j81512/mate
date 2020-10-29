@@ -19,7 +19,7 @@
 $(function(){
 	$(".guide").hide();
 		
-		$("#phone_").keyup(function(){
+		$("#phone_").blur(function(){
 			var $this = $(this);
 			var $phoneCheck = parseInt("${ num }");
 			console.log($this.val());
@@ -30,7 +30,7 @@ $(function(){
 			if($this.val() == $phoneCheck){
 				$ok.show();
 				$error.hide();
-				setTimeout("closed()", 3000);
+		
 			}else{
 				$error.show();
 				$ok.hide();
@@ -39,6 +39,12 @@ $(function(){
 		});
 
 });
+
+var submitAction = function() {
+	/* do something with Error */
+    return false;
+};
+$('form').bind('submit', submitAction);
 
 function closed(){	
 	window.close();
@@ -60,6 +66,7 @@ function closed(){
 	<div class="form-group">
 		<div class="row">
 			<div class="col-sm-6 col-sm-offset-3">
+				<input type="submit"  class="btn btn-lg btn-block purple-bg" value="인증하기"/>
 				 <input type="button" class="btn btn-lg btn-block purple-bg" value="창닫기" onclick="window.close()">
 			</div>
 		</div>
