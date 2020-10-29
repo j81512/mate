@@ -23,6 +23,20 @@
 	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
 	crossorigin="anonymous">
 </script>
+
+<script>
+$(function(){
+	
+$("#searchIO").click(function(){
+
+	var formData = $("#searchFrm").serialize();
+	var monthday = $("#monthday").val();
+	console.log(monthday);
+	console.log(formData);
+});
+})
+
+</script>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
 </head>
 	<body>  
@@ -33,59 +47,55 @@
 				    <div class="form-area">  
 						<table id="purchaseLog-table" class="table">
 							<thead>
+							<form id="searchFrm" method="get" action="${pageContext.request.contextPath }/ERP/ReceiveLog.do">
 								<tr>
 									<th>
-									  	<select name="emplist" id="emplist">
-										    <option value="all">전체</option>
-										    <option value="online">온라인</option>
-										    <option value="gn">강남점</option>
-										    <option value="yn">용인점</option>
-										</select>
+										<input type="date" name="monthday" id="monthday" value="${ monthday != null ? monthday: '' }"/>
 									</th>
 									<th>
-									  	<select name="productlist" id="productlist">
-										    <option value="no">상품번호</option>
-										    <option value="name">상품명</option>
-										</select>
-									</th>
-									<th>
-				   						<input type="text" class="form-control" placeholder="내용을 입력해주세요">
-									</th>
-									<th>
-				  						<button type="submit" class="btn btn-default">검색</button>
+				  						<button type="submit" class="btn btn-default"  id="searchIO">검색</button>
 									</th>
 			  					</tr>
+							</form>
+			  				
 			  					</thead>
 			  					<tbody class="thead-dark">						
 									<tr>
-										<th>구분</th>
+										<th>번호</th>
+										<th>지점명</th>
 										<th>상품번호</th>
 										<th>상품명</th>
-										<th>카테고리</th>
-										<th>입출고 날짜</th>
 										<th>수량</th>
-										<th>업체명</th>
+										<th>입/출고 분류</th>
+										<th>입출고 날짜</th>
+										<th>제조사명</th>
 									</tr>
 								</tbody>
-								<c:if test="${ not empty list }">
-									<tfoot>
-										<c:forEach items="${ list }" var="Receive">
+						
+								<tfoot>
+									<c:if test="${ not empty ioList }">
+										<c:forEach items="${ ioList }" var="io" varStatus="vs">
 											<tr>
-												<td>${ log_io.status }</td>
-												<td>${ product.productNo }</td>
-												<td>${ product.productName }</td>
-												<td>${ product.category }</td>
-												<td><fmt:formatDate value="${ log_io.ioDate }" pattern="yyyy년MM월dd일"/></td>
-												<td>${ io_log.amount }</td>
-												<td>${ emp.emp_name }</td>
+												<td>${ io.ioNo }</td>
+												<td>${ io.empName }</td>
+												<td>${ io.productNo }</td>
+												<td>${ io.productName }</td>
+												<td>${ io.amount }</td>
+												<td>${ io.status eq 'I' ?"입고" :"출고"}</td>
+												<td><fmt:formatDate value="${ io.ioDate }" pattern="yyyy-MM-dd"/></td>
+												<td>${ io.manufacturerName }</td>
+										
 											</tr>
 										</c:forEach>
-									</tfoot>
-								</c:if>
+									</c:if>
+								</tfoot>
+						
 							</table>
 						</div>
 					</div>
 				</div>
 			</div>						
 	</body>
+	
+	
 </html>

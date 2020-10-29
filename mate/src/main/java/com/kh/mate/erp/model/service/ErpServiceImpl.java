@@ -420,4 +420,11 @@ public class ErpServiceImpl implements ErpService {
 		return erpDAO.yearList();
 	}
 
+	@Override
+	public List<Map<String, Object>> ioEmpList(Map<String, Object> param) {
+		return erpDAO.ioEmpList(param);
+	}
+	
+	
+
 }

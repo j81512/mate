@@ -376,4 +376,11 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.selectList("emp.yearList");
 	}
 
+	@Override
+	public List<Map<String, Object>> ioEmpList(Map<String, Object> param) {
+		return sqlSession.selectList("erpBoard.ioEmpList", param);
+	}
+
+	
+	
 }
