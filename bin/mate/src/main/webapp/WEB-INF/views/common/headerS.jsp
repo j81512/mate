@@ -11,6 +11,9 @@
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 <style>
+html{
+	overflow-y: scroll;
+}
 @font-face {
     font-family: 'CookieRunOTF-Bold';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/CookieRunOTF-Bold00.woff') format('woff');
@@ -29,116 +32,57 @@
 .font-uhbee{
 	font-family: 'UhBeeSe_hyun';
 }
-nav {
-    position: relative;
-    padding: 50px 10px 10px 10px;
-    min-width: 300px;
-    min-height: 200px;
-}
-.nav-brand{
-	position: absolute;
-	left: 50%;
-	right: 50%;
-	width: 100%;
-	transform:translate(-50%, 0);
-	text-align: center;
-}
-
-/* footer{
-	position: absolute;
-	display: block;
-	background-color: white;
-	bottom: 0;
-	width: 100%;
-	height: 10%;
-}
-footer p{
-	margin:0;
-} */
-html{
-	overflow-y: scroll;
-}
-.color-hotPink{
-	color: rgb(238,80,78);
-}
-.color-emerald{
-	color: rgb(61,171,139);
-}
-.color-coralBlue{
-	color: rgb(9,72,178);
-}
 #brand{
-	font-size: 400%;
-	border: 4px solid white;
-	border-radius: 20%;
-	margin-left: 5%;
-	margin-right: 5%;
+	font-size: 200%;
 }
-#brand:hover{
-	color: rgb(238,80,78);
-	text-decoration: none;
+.brand-div{
+	width: 15%;
+	text-align: center;	
 }
-.nav-list-img{
-	height: 50px;
-	width: 50px;
+.nav-div{
+	width: 65%;
+	position: relative;
+	text-align: left;
+	padding-top: 10px;
+	min-width: 610px;
 }
-.nav-list{
+.nav-span{
 	display: inline-block;
-	text-align: left;
-	margin-left: 1%;
-	margin-top: 1%;
-	width: 150px;
-	border-radius: 100%;
-}
-.nav-list:hover{
-	background-color: rgba(255,255,255,0.3);
+	width: 10%;
 	text-align: center;
+	vertical-align: sub;
 }
-.nav-list-text{
-	vertical-align: bottom;
-	color: white;
-	margin-left:2px;
-	text-decoration: underline;
-}
-#back-img{
-	position:absolute;
-	width: 30px;
-	height: 30px;
-	margin: 30px;
-}
-#back-img:hover{
-	width: 35px;
-	margin-left: 20px;
-	cursor: pointer;
-}
-.nav-list-div{
-	width: 100%;
-	height: 100%;
+.login-div{
+	width: 20%;
+	position: relative;
 	text-align: left;
-	position: absolute;
+	padding-top: 15px;
+	min-width: 130px;
 }
-#loginMember-span{
-	position: absolute;
-	top: 20%;
-	left: 80%;
-	color: white;
+.loginMember-span{
+	font-size: 14px;
+	display: inline-block;
+	text-align: center;
+	vertical-align: sub;
 }
-
-body{
-	background-image: url("/mate/resources/images/background.png");
-	background-size: cover;
+nav{
+	height: 60px;
+	padding-top: 18px;
 }
-.container{
-	border: 1px solid white;
-	background-color: white;
-	border-radius: 10%;
-	min-height: 500px;
-	padding: 30px;
-	margin-left: auto;
-	margin-right: auto;
- 	box-sizing: border-box;
-  	max-width: 70%;
-  	text-align: center;
+#background-img{
+	position: fixed;
+	z-index: -1;
+	width: 100%;
+}
+.search-div{
+	height: 320px;
+}
+nav a{
+	color: rgba(54,54,54,0.6);
+}
+nav a:hover{
+	text-decoration: none;
+	color: rgb(164,80,68);
 }
 
 </style>
@@ -156,70 +100,69 @@ $(function(){
 </script>
 </head>
 <body>
+<img id="background-img" src="${ pageContext.request.contextPath }/resources/images/background.png" alt="" />
 <header>
 	 <nav>
 		<div class="nav">
-			<div class="nav-brand" >
-				<a id="brand" class="color-hotPink font-uhbee" href="${ pageContext.request.contextPath }">&nbsp;메이트&nbsp;</a>
-				<br />
-				<div class="nav-list-div">
-		       		<a class="nav-list " href="${ pageContext.request.contextPath }/product/productList.do">
-			       		<img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/toy.png" alt="" />
-			       		<span class="nav-list-text font-cookie">Toy</span>
-		       		</a>
-		       		<br />
- 				    <c:if test='${ empty loginMember || loginMember.memberId ne "admin" }'>
-						<a class="nav-list " href="${ pageContext.request.contextPath }/product/selectCart.do?memberId=${ loginMember.memberId }">
-				       		<img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/cart.png" alt="" />
-				       		<span class="nav-list-text font-cookie">Cart</span>
-			       		</a>
-		       		</c:if>
-		       		<c:if test='${ ! empty loginMember && loginMember.memberId eq "admin" }'>
-		       			<a class="nav-list " href="${ pageContext.request.contextPath }/product/returnPage.do">
-				       		<img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/cart.png" alt="" />
-				       		<span class="nav-list-text font-cookie">return</span>
-			       		</a>
-		       		</c:if>
-		       		<br />
-		       		<a class="nav-list " href="${ pageContext.request.contextPath }/company/location.do">
-			       		<img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/location.png" alt="" />
-			       		<span class="nav-list-text font-cookie">Location</span>
-		       		</a>
-		       		<br />
-		       		<a class="nav-list " href="${ pageContext.request.contextPath }/cs/cs.do">
-			       		<img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/cs.png" alt="" />
-			       		<span class="nav-list-text font-cookie">C/S</span>
-		       		</a>
-		       		<br />
-		       		<c:if test='${ empty loginMember || loginMember.memberId ne "admin" }'>
-		       			<a class="nav-list " href="${ pageContext.request.contextPath }/member/myPage.do">
-    					    <img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/mypage.png" alt="" />
-		       				<span class="nav-list-text font-cookie">MyPage</span>
-		       			</a>
-		       		</c:if>
-		       		<c:if test='${ ! empty loginMember && loginMember.memberId eq "admin" }'>
-		       			<a class="nav-list " href="${ pageContext.request.contextPath }/Member/MemberList.do">
- 							<img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/mypage.png" alt="" />
-		       				<span class="nav-list-text font-cookie">Manage</span>
-		       			</a>
-		       		</c:if>
-		       		<br />
-	       			<c:if test="${ empty loginMember }">
-	       				<a class="nav-list " href="${ pageContext.request.contextPath}/member/memberLogin.do"><img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/login.png" alt="" /><span class="nav-list-text font-cookie">Login</span></a>
-	       			</c:if>
-	       			<c:if test="${! empty loginMember }">
-	       				<a class="nav-list " href="${ pageContext.request.contextPath}/member/logout.do"><img class="nav-list-img" src="${ pageContext.request.contextPath }/resources/images/logout.png" alt="" /><span class="nav-list-text font-cookie">Logout</span></a>
-	       			</c:if>  	
-       			</div>
+			<div class="brand-div" >
+				<a id="brand" class="font-cookie" href="${ pageContext.request.contextPath }">&nbsp;MATE&nbsp;</a>
 			</div>
-       	</div>
-       	<img src="${ pageContext.request.contextPath }/resources/images/back.png" id="back-img" alt="" />
-       	<c:if test="${! empty loginMember }">
-			<span class="font-cookie" id="loginMember-span"><b class="font-uhbee color-hotPink">${ loginMember.memberName }</b> 님, 반갑습니다.</span>
-		</c:if>
+			<div class="nav-div">
+	       		<a class="" href="${ pageContext.request.contextPath }/product/productList.do">
+		       		<span class="font-cookie nav-span">Toy</span>
+	       		</a>
+
+				    <c:if test='${ empty loginMember || loginMember.memberId ne "admin" }'>
+					<a class="" href="${ pageContext.request.contextPath }/product/selectCart.do?memberId=${ loginMember.memberId }">
+			       		<span class="font-cookie nav-span">Cart</span>
+		       		</a>
+	       		</c:if>
+	       		<c:if test='${ ! empty loginMember && loginMember.memberId eq "admin" }'>
+	       			<a class=" " href="${ pageContext.request.contextPath }/product/returnPage.do">
+			       		<span class=" font-cookie nav-span">return</span>
+		       		</a>
+	       		</c:if>
+
+	       		<a class=" " href="${ pageContext.request.contextPath }/company/location.do">
+		       		<span class=" font-cookie nav-span">Location</span>
+	       		</a>
+
+	       		<a class=" " href="${ pageContext.request.contextPath }/cs/cs.do">
+		       		<span class=" font-cookie nav-span">C/S</span>
+	       		</a>
+
+	       		<c:if test='${ empty loginMember || loginMember.memberId ne "admin" }'>
+	       			<a class=" " href="${ pageContext.request.contextPath }/member/myPage.do">
+	       				<span class=" font-cookie nav-span">MyPage</span>
+	       			</a>
+	       		</c:if>
+	       		<c:if test='${ ! empty loginMember && loginMember.memberId eq "admin" }'>
+	       			<a class=" " href="${ pageContext.request.contextPath }/Member/MemberList.do">
+	       				<span class=" font-cookie nav-span">Manage</span>
+	       			</a>
+	       		</c:if>
+
+       			<c:if test="${ empty loginMember }">
+       				<a class=" " href="${ pageContext.request.contextPath}/member/memberLogin.do"><span class=" font-cookie nav-span">Login</span></a>
+       			</c:if>
+       			<c:if test="${! empty loginMember }">
+       				<a class=" " href="${ pageContext.request.contextPath}/member/logout.do"><span class=" font-cookie nav-span">Logout</span></a>
+       			</c:if>  	
+    		</div>	
+      
+	       	<div class="login-div">
+		       	<c:if test="${! empty loginMember }">
+					<span class="font-cookie loginMember-span" ><b class="font-cookie ">${ loginMember.memberName }</b> 님, 반갑습니다.</span>
+					<c:if test='${ loginMember.memberId eq "admin" }'>
+						<input type="button" value="erp" onclick="location.href='${pageContext.request.contextPath}/ERP/erpMain.do';" />
+					</c:if>
+				</c:if>
+			</div>
+	 	</div>
 	</nav>
 </header>
 <br />
 <section id="content-sec">
+<div class="container">
 
 

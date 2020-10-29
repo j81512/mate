@@ -57,30 +57,20 @@
 			  					</thead>
 			  					<tbody class="thead-dark">						
 									<tr>
-										<th>구분</th>
+										<th>번호</th>
 										<th>상품번호</th>
 										<th>상품명</th>
-										<th>카테고리</th>
-										<th>입출고 날짜</th>
 										<th>수량</th>
-										<th>업체명</th>
+										<th>입/출고 분류</th>
+										<th>입출고 날짜</th>
+										<th>제조사명</th>
 									</tr>
 								</tbody>
-								<c:if test="${ not empty list }">
+						
 									<tfoot>
-										<c:forEach items="${ list }" var="Receive">
-											<tr>
-												<td>${ log_io.status }</td>
-												<td>${ product.productNo }</td>
-												<td>${ product.productName }</td>
-												<td>${ product.category }</td>
-												<td><fmt:formatDate value="${ log_io.ioDate }" pattern="yyyy년MM월dd일"/></td>
-												<td>${ io_log.amount }</td>
-												<td>${ emp.emp_name }</td>
-											</tr>
-										</c:forEach>
+								
 									</tfoot>
-								</c:if>
+							
 							</table>
 						</div>
 					</div>

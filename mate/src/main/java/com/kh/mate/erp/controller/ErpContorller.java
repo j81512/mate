@@ -8,7 +8,9 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -146,8 +148,8 @@ public class ErpContorller {
 	//매출확인 진입
 	@RequestMapping("/ERP/PriceLog.do")
 	public String PriceLog(Model model,
-						   @RequestParam(value = "year", required = false) String year,
-						   @RequestParam(value = "month", required = false) String month,
+			@RequestParam(value = "year", required = false) String year,
+			   @RequestParam(value = "month", required = false) String month,
 						   HttpServletRequest request) {
 
 		Map<String, Object> param = new HashMap<>();
@@ -185,14 +187,27 @@ public class ErpContorller {
 	
 	//입출고 확인 진입
 	@RequestMapping("/ERP/ReceiveLog.do")
-	public String ReceiveLog(Model model) {	
+	public String ReceiveLog(Model model,
+							@RequestParam(value = "monthday", required = false) String monthday,
+						    HttpServletRequest request) {	
 		List<IoLog> list = erpService.ioLogList();
 		List<Product> list2 = erpService.productList();
 		List<EMP> list3 = erpService.empList();
 		
-		model.addAttribute("list", list);
-		model.addAttribute("list2", list2);
-		model.addAttribute("list3", list3);
+		Map<String, Object> param = new HashMap<>();
+		
+		log.debug("monthday = {}", monthday );
+		if(monthday != null) {
+			model.addAttribute("monthday", monthday);
+			monthday = monthday.replaceAll("-", "");
+			log.debug("monthday = {}", monthday );
+			param.put("monthday", monthday);
+		}
+		
+		List<Map<String,Object>> ioList = erpService.ioEmpList(param);
+		log.debug("ioList = {}", ioList);
+		model.addAttribute("ioList", ioList);
+		
 		return "ERP/ReceiveLog";
 	}
 	

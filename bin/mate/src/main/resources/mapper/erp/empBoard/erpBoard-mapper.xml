@@ -279,4 +279,47 @@
 		where board_no = #{ no }
 		and product_no =  #{ productNo }
 	</update>
+	
+	<select id="ioEmpList" resultMap="ioMap">
+		select
+		    *
+		from ( 
+		        select 
+		            b.*
+		           from( 
+		                select 
+		                        e.emp_name,
+		                         io.io_no,
+		                         io.product_no,
+		                         io.amount,
+		                         p.product_name,
+		                         io.status,
+		                         io.io_date,
+		                         (select emp_name from emp where emp_id = p.manufacturer_id ) manufacturer_name 
+		                     from  
+		                       emp  e 
+		                     join io_log io on e.emp_id = io.emp_id          
+		                     join product p on p.product_no = io.product_no
+		                 )b
+		        ) d
+			<where>
+			<if test="month == null">
+		    	io_date like #{ year } || '%'		
+			</if>
+			<if test="month != null">
+		    	io_date like #{year} || #{ month } || '%'		
+			</if>
+			</where>     
+	</select>
+	<resultMap id="ioMap" type="map">
+		<result column="io_date" property="ioDate"/>
+		<result column="emp_id" property="empId"/>
+		<result column="emp_name" property="empName"/>
+		<result column="status" property="status"/>
+		<result column="product_no" property="productNo"/>
+		<result column="product_name" property="productName"/>
+		<result column="product_name" property="productName"/>
+		<result column="manufacturer_name " property="manufacturerName "/>
+		<result column="amount" property="amount"/>
+	</resultMap>
 </mapper>
