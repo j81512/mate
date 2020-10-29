@@ -260,11 +260,11 @@ public class MemberController {
 			String next = (String)session.getAttribute("next");
 			if( next != null) 
 				location = next;
-		
+	
 		}
 		else {
 			redirectAttr.addFlashAttribute("msg", "아이디 또는 비밀번호가 틀립니다.");
-			log.debug("location = " + location);
+			location = "/member/memberLogin.do";
 		}
 		return "redirect:" + location;
 	}
