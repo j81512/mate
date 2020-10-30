@@ -75,6 +75,7 @@ div#board-container label.custom-file-label {
 		<input type="hidden" name="csNo" id="hidden-no" />
 	</form>
 	<div></div>
+	<hr />
 	<div class="replyList-container"></div>
 	<div id="reply-container">
 		<form action="${ pageContext.request.contextPath }/cs/csReplyEnroll.do"

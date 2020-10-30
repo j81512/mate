@@ -4,7 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>    
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
 <jsp:include page="/WEB-INF/views/common/headerS.jsp"></jsp:include>
 <link rel="stylesheet"
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
@@ -17,7 +17,7 @@
 	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
 	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
 	crossorigin="anonymous"></script>
-
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 
 <style>
 .border{
@@ -58,7 +58,7 @@
 
 .modal-head{
 	padding: 1%; 
-	background-color : gold;
+	background-color : rgb(164,80,68,0.6);
 	border: 1px solid #000;
 	min-height: 45px;
 	border-radius: 25px 25px 0px 0px;
@@ -75,6 +75,10 @@
 	margin-right: 3%;
 }
 .modal-cancel{
+}
+.modal-title{
+	font-family: 'UhBeeSe_hyun';
+	padding-left: 5%;
 }
 #address-tbl{
 	width: 100%;
@@ -99,6 +103,16 @@
 }
 th{
 	position:sticky; top:0;
+}
+#selectAddress-div{
+	font-family: 'UhBeeSe_hyun';
+	font-size:15px;
+}
+.delete-btn{
+	background-color: red;
+	width: 100%;
+	height: 100%;
+	color: white;
 }
 </style>
 <!-- 주소API -->
@@ -147,6 +161,11 @@ function execPostCode() {
        }
     }).open();
 }
+
+
+
+
+
 </script>
 
 <div class="search-div"></div>
@@ -341,7 +360,7 @@ function openKakao(purchaseNo){
 			    </div>
 			    <div class="form-group col-md-6">
 			      <label for="inputPassword4">수취인 연락처</label>
-			      <input type="text" class="form-control addressEnrollInput" id="receiverPhone" required >
+			      <input type="text" class="form-control addressEnrollInput" id="receiverPhone" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required >
 			    </div>
 		    </div>
 		    
@@ -399,7 +418,7 @@ function selectAddress(){
 function openAddressModal(){
 	
 	var memberId = "${loginMember.memberId}";
-	var html = "<tr><th>#</th><th>배송지명</th><th>수취인명</th><th>수취인 전화번호</th><th>우편번호</th><th>배송지 주소</th><th>배송지 상세주소</th><th>배송지 생성일</th></tr>";
+	var html = "<tr><th>#</th><th>배송지명</th><th>수취인명</th><th>수취인 전화번호</th><th>우편번호</th><th>배송지 주소</th><th>배송지 상세주소</th><th>배송지 생성일</th><th>삭제</th></tr>";
 	$.ajax({
 		url : "${ pageContext.request.contextPath}/member/selectMemberAddress.do",
 		data : {
@@ -413,7 +432,6 @@ function openAddressModal(){
 			if(data.length != 0){
 				$(data).each(function(i, addr){
 					var stillUtc = moment.utc(addr.regDate).toDate();
-					
 					html += "<tr>"
 						  + "<td><input type='radio' name='address-radio'/>"
 						  + "<td class='addrName'>" + addr.addressName + "</td>"
@@ -423,12 +441,13 @@ function openAddressModal(){
 						  + "<td class='addr2'>" + addr.addr2 + "</td>"
 						  + "<td class='addr3'>" + addr.addr3 + "</td>"
 						  + "<td>" + moment(stillUtc).local().format('YYYY-MM-DD') + "</td>"
+						  + "<td><input class='delete-btn' type='button' value='X' onclick='deleteAddress(\"" + addr.addressName + "\");' /></td>"
 						  + "</tr>";
 				});
 			}
 			else{
 				html += "<tr>"
-					  + "<td colspan='8'>등록된 배송지가 없습니다. 새로운 배송지를 등록해주세요.</td>"
+					  + "<td colspan='9'>등록된 배송지가 없습니다. 새로운 배송지를 등록해주세요.</td>"
 					  + "</tr>";
 				
 			}
@@ -516,10 +535,13 @@ function addressEnroll(){
 		if($(input).val() == null || $(input).val() == "") {
 			alert("모든 항목을 입력해주세요.");
 			flag++;
-			return false;
 		}
 	});
-
+	if(flag > 0) return false;
+	if(/^[0-9]{11,11}$/.test($("#receiverPhone").val()) == false){
+		alert("전화번호는 숫자 11자를 입력해야합니다.");
+		return false;
+	}
 	if($("#nameValid").val() == 0) flag++;
 	
 	if(flag > 0) return;
@@ -580,6 +602,24 @@ function removeCommas(str){
 	return parseInt(str.replace(/,/g,""));
 }
 
-
+function deleteAddress(addressName){
+	$.ajax({
+		url: '${pageContext.request.contextPath}/member/deleteAddress.do',
+		method: 'POST',
+		data: {
+			memberId: '${loginMember.memberId}',
+			addressName: addressName
+		},
+		dataType: 'json',
+		success: function(data){
+			alert(data.msg);
+			closeAddressModal();
+			openAddressModal();
+		},
+		error: function(xhr, status, err){
+			console.log(xhr, status, err);
+		}
+	});
+}
 </script>
 <jsp:include page="/WEB-INF/views/common/footerS.jsp"></jsp:include>
