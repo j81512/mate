@@ -502,7 +502,7 @@ public class MemberController {
 		List<Member> memberList = memberService.searchMember(searchType,searchKeyword,cPage, numPerPage);
 		int totalContents = memberService.getSearchContents(map);
 	
-		String url = request.getRequestURI();
+		String url = request.getRequestURI() + "?";
 		if(searchType != null && !"".equals(searchType) && searchType != null && !"".equals(searchType)) {
 			url += "&" + "searchType" + "=" + searchType + "&searchKeyword=" + searchKeyword;
 		}

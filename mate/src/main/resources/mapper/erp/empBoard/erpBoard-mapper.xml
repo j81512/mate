@@ -179,7 +179,11 @@
 								and ${ searchType }  like '%' || #{ searchKeyword } || '%'
 							</if>
 						</where>
-						ORDER BY reg_date DESC 
+						ORDER BY                
+                                    CASE WHEN enabled = 0  THEN enabled END asc,
+                                    CASE WHEN category LIKE 'ntc' THEN category END asc,
+                                    CASE WHEN category LIKE 'req' THEN category END asc,
+                            		 reg_date DESC 
 						) B
 				)
 			 where rnum BETWEEN #{ cPage } AND #{ numPerPage }

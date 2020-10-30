@@ -79,7 +79,7 @@ div#board-container label.custom-file-label{text-align:left;}
 					<input type="hidden" name="csNo" id="csNo" value="${ cs.csNo }" />
 				</div>
 				<div class="form-group">
-					<textarea class="form-control col-sm-10" name="content"  rows="10"></textarea>
+					<textarea rows = "3" cols = "30" id = "content_" name = "content" class="form-control" aria-describedby="basic-addon1" placeholder="댓글을 입력하세요."></textarea>
 				</div>
 				<div class="button-group">
 					<input type="submit" class="btn btn-primary" value="등록하기" />
