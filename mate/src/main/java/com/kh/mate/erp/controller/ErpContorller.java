@@ -139,13 +139,14 @@ public class ErpContorller {
 //		model.addAttribute("list2", list2);
 //		model.addAttribute("list3", list3);
 		EMP loginEmp = (EMP)session.getAttribute("loginEmp");
-		String empId = loginEmp.getEmpId();
+		int status = loginEmp.getStatus();
 		Map<String,Object> temp = new HashMap<>();
+		temp.put("status", status);
 		//로그인 회원이 관리자 아이디가 아닐 경우
-//		if(!empId.equals("admin")) {
-//			temp.put("manufacturerId", empId);
-//		}else {
-//		}
+		if(status == 1) {
+			temp.put("branchId", loginEmp.getEmpId());
+		}
+		log.debug("temp", temp);
 		List<Map<String, Object>> mapList = erpService.selectRequestMapList(temp);
 		List<EMP> empList = erpService.empList();
 		model.addAttribute("empList", empList);

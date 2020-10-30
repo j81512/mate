@@ -222,19 +222,25 @@
  			product p
  		on rl.product_no = p.product_no
  			<where>
-	 			<if test="manufacturerId != null and manufacturerId != '' ">
-				rl.manufacturer_id = #{manufacturerId}
-				</if>
-				<if test="branchId != null and branchId != '' ">
-				and rl.emp_id = #{branchId}
-				</if>
-				<if test="confirm != null and confirm != ''">
-				and rl.confirm = #{confirm}
-				</if>
-				<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
-				and p.${searchType} like '%' || #{searchKeyword} || '%'
-				</if>
-				
+ 				<choose>
+ 					<when test="status == 1">
+						rl.emp_id = #{branchId} 					
+ 					</when>
+ 					<otherwise>
+ 					<if test="manufacturerId != null and manufacturerId != '' ">
+					rl.manufacturer_id = #{manufacturerId}
+					</if>
+					<if test="confirm != null and confirm != ''">
+					and rl.confirm = #{confirm}
+					</if>
+					<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
+					and p.${searchType} like '%' || #{searchKeyword} || '%'
+					</if>
+	 				<if test ="branchId != null and branchId != ''">
+					and rl.emp_id = #{branchId}
+ 					</if>
+ 					</otherwise>
+ 				</choose>
  			</where>
  	</select>
  	
