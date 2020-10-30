@@ -1,5 +1,6 @@
 package com.kh.mate.member.model.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,5 +32,7 @@ public interface MemberDAO {
 	List<Member> searchMember(String searchKeyword, String searchType, int cPage, int numPerPage);
 
 	int getSearchContent(Map<String, String> map);
+
+	int tempPassword(HashMap<String, String> map);
 
 }

@@ -288,12 +288,19 @@ public class ErpContorller {
 		List<EMP> list = erpService.empList();
 		//page map처리
 //		log.debug("list = {} ", list);
-		Map<String, String> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("searchType", searchType);
 		map.put("searchKeyword", searchKeyword);
 		
+		HttpSession session = request.getSession();
+		EMP emp = (EMP)session.getAttribute("loginEmp");
+		if(emp != null && emp.getStatus() == 2) {
+			
+			map.put("status", emp.getStatus());
+		}
+		
 //		log.debug("map = {}", map);
-		List<EmpBoard> empBoardList = erpService.searchBoard(searchType,searchKeyword,cPage, numPerPage);
+		List<EmpBoard> empBoardList = erpService.searchBoard(map,searchType,searchKeyword,cPage, numPerPage);
 		int totalContents = erpService.getSearchContents(map);
 		String url = request.getRequestURI() + "?";
 		if(searchType != null && !"".equals(searchType) && searchType != null && !"".equals(searchType)) {
@@ -455,18 +462,25 @@ public class ErpContorller {
 		log.debug("size = {}",list.size());
 
 		List<Product> loList = erpService.proLogList(map);
-		for(Product pro : list) {
-			for(Product lopro : loList) {
+		if(!loList.isEmpty() && loList != null) {
+			for(Product pro : list) {
+				for(Product lopro : loList) {
 //				log.debug("productNo = {}",pro.getProductNo());
 //				log.debug("logProductNo = {}",lopro.getProductNo());
-				if(pro.getProductNo() == lopro.getProductNo() && lopro.getConfirm() == 0) {
-					pro.setConfirm(0);
-					break;
-				}else {
-					pro.setConfirm(-2);
+					if(pro.getProductNo() == lopro.getProductNo() && lopro.getConfirm() == 0) {
+						pro.setConfirm(0);
+						break;
+					}else {
+						pro.setConfirm(-2);
+					}
 				}
 			}
+		}else {
+			for(Product pro : list) {
+				pro.setConfirm(-2);
+			}
 		}
+		
 		log.debug("lolist = {}",loList);
 				
 		log.debug("list = {}",list);

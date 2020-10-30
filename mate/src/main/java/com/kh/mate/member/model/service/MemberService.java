@@ -1,5 +1,6 @@
 package com.kh.mate.member.model.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,5 +32,7 @@ public interface MemberService {
 	List<Member> searchMember(String searchType, String searchKeyword, int cPage, int numPerPage);
 
 	int getSearchContents(Map<String, String> map);
+
+	int tempPassword(HashMap<String, String> map);
 
 }

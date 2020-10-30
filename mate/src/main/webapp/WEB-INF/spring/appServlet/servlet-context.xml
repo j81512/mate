@@ -35,6 +35,10 @@
 			<exclude-mapping path="/product/productList.do"/>
 			<exclude-mapping path="/member/memberLogin.do"/>
 			<exclude-mapping path="/member/loginCheck.do"/>
+
+			<exclude-mapping path="/member/checkPasswordDuplicate.do"/>
+			<exclude-mapping path="/member/sendPassword"/>
+
 			<exclude-mapping path="/cs/selectList.do"/>
 			<exclude-mapping path="/company/**/*.do"/>
 			<beans:bean class="com.kh.mate.common.interceptor.LoginCheckInterceptor"/>

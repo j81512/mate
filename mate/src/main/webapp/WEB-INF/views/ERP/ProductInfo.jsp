@@ -79,7 +79,9 @@ function orderProduct(empId,pNo,requestId){
 								  	<th>	
 									  	<select name="category" id="category">
 										    <option value="" selected disabled>카테고리</option>
+
 										    <option value="" ${ map.category eq "" ? "selected='selected'" : '' }>전체</option>
+
 										    <option value="pm" ${ map.category eq "pm" ? "selected='selected'" : '' }>프라모델</option>
 										    <option value="fg" ${ map.category eq "fg" ? "selected='selected'" : '' }>피규어</option>
 										    <option value="rc" ${ map.category eq "rc" ? "selected='selected'" : '' }>RC카</option>
