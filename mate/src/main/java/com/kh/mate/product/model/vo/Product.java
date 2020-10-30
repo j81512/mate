@@ -37,4 +37,5 @@ public class Product {
 	private String empName;//지점명(임시)
 	private String branchEmp; //지점ID(임시)
 	private String empId;
+	private int confirm;
 }
