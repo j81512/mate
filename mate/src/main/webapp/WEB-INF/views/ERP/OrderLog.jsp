@@ -38,8 +38,9 @@
 											<tr>
 												<th>
 												  	<select name="manufacturerId" id="manufacturerId">
-												    	<option value="" disabled selected>제조사 선택</option>
+												    	<option value="" disabled selected id="manufacturerId-default">제조사 선택</option>
 													    <c:forEach items="${empList}" var="list">
+														    <option value="">전체</option>
 														    <c:if test="${list.status eq 2 }">
 														    <option value="${list.empId}">${list.empName}</option>
 														    </c:if>
@@ -48,7 +49,7 @@
 												</th>
 												<th>
 												  	<select name="confirm" id="confirm">
-													    <option value="" disabled selected>발주 현황</option>
+													    <option value="" disabled selected id="confirm-default">발주 현황</option>
 													    <option value="">전체</option>
 													    <option value="0">처리중</option>
 													    <option value="-1">취소</option>
@@ -57,17 +58,38 @@
 												</th>
 												<th>
 													<select name="searchType" id="searchType">
-												    <option value="" disabled selected>검색 타입 선택</option>
+												    <option value="" disabled selected id="searchType-default">검색 타입 선택</option>
 												    <option value="product_no">상품번호</option>
 												    <option value="product_name">상품명</option>
 												</select>
-
+												</th>
+												<th>
+													<select name="branchId" id="branchId">
+														<option value="" disabled selected id="branchId-default">지점 선택</option>
+														    <option value="">전체</option>
+														<c:if test="${loginEmp.status eq 0 }">
+														<c:forEach items="${empList}" var="list">
+														    <c:if test="${list.status eq 0 }">
+														    <option value="${list.empId}">온라인</option>
+														    </c:if>
+														    <c:if test="${list.status eq 1 }">
+														    <option value="${list.empId}">${list.empName}</option>
+														    </c:if>
+													    </c:forEach>
+														</c:if>
+														<c:if test="${loginEmp.status eq 1 }">
+															<option value="${loginEmp.empId }" selected>${loginEmp.empName }</option>
+														</c:if>
+													</select>
 												</th>
 												<th>
 												    <input type="text" class="form-control" name="searchKeyword" placeholder="내용을 입력해주세요">
 												</th>
 												<th>
 												  	<button type="button" class="btn btn-default" id="searchRequest">검색</button>
+												</th>
+												<th>
+												  	<button type="button" class="btn btn-default" id="strike">검색어 초기화</button>
 												</th>
 											</tr>
 									</thead>
@@ -92,7 +114,7 @@
 														<td>${ request.productNo }</td>
 														<td>${ request.manufacturerName }</td>
 														<td>${ request.branchName }</td>
-														<td><${request.requestDate }</td>
+														<td>${request.requestDate }</td>
 														<td>${ request.amount }</td>
 														<td>
 															<c:if test="${ request.confirm eq 0}">발주 대기</c:if>
@@ -161,6 +183,15 @@ function displayRequest(data){
 	}
 	$container.html(html);
 }
+
+$("#strike").click(function(){
+
+	$("#manufacturerId-default").prop("selected", true);
+	$("#confirm-default").prop("selected", true);
+	$("#searchType-default").prop("selected", true);
+	$("#branchId-default").prop("selected", true);
+	
+});
 
 </script>	
 </html>

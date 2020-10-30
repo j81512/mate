@@ -13,11 +13,24 @@
 #map{
 	margin-left: 25%;
 }
+.companyList-select{
+	background: none;
+	border:none;
+	min-width: 350px;
+	max-width: 350px;
+	min-height: 70px;
+	max-height: 70px;
+	font-size: 50px;
+	border-bottom: 10px solid rgba(54,54,54,0.6);
+	border-radius: 10%;
+	color: rgba(54,54,54,0.8);
+	font-family: 'CookieRunOTF-Bold';
+}
 </style>
-<div class="container">
+<div class="search-div">
 	<div id="company-div">	
 		<select class="companyList-select">
-			<option value="" selected disabled>지점을 선택해주세요.</option>
+			<option value="" selected disabled>지점 선택</option>
 			<c:forEach items="${ mapList }" var="company">
 				<option value="${ company.empName }">${ company.empName }</option>
 			</c:forEach>
@@ -30,10 +43,12 @@
 				<input type="hidden" name="companyAddressDetail" value="${ company.addr3 }" />
 			</div>
 		</c:forEach>
-		
 	</div>
+</div>
+<div class="content-div">
 	<div id="map" style="width:500px;height:400px;"></div>
 </div>
+
 <script>
 
 	$(".companyList-select").change(function(){

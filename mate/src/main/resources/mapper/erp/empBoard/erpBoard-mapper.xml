@@ -183,6 +183,7 @@
 							</if>
 						</where>
 						ORDER BY                
+
                                     CASE WHEN enabled = 0  THEN enabled END asc
                                     <if test="status == null">
                                     ,
@@ -190,6 +191,7 @@
                                     CASE WHEN category LIKE 'req' THEN category END asc
                                     </if>
                                     ,
+
                             		 reg_date DESC 
 						) B
 				)

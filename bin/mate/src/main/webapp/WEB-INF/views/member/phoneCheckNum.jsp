@@ -60,14 +60,13 @@ function closed(){
 	<h3 class="heading-desc">핸드폰인증</h3>
 	<div class="form-group">
 		<input type="text" name="phone" id="phone_" tabindex="1" class="form-control" placeholder="인증번호를 입력해주세요" value="">
-			<span class="guide ok" style="color:blue;">인증 되었습니다.</span> 
-			<span class="guide error"style="color:red;">잘못 입력하셨습니다.</span>
+		
 	</div>
 	<div class="form-group">
 		<div class="row">
 			<div class="col-sm-6 col-sm-offset-3">
 				<input type="submit"  class="btn btn-lg btn-block purple-bg" value="인증하기"/>
-				 <input type="button" class="btn btn-lg btn-block purple-bg" value="창닫기" onclick="window.close()">
+				 <input type="button" class="btn btn-lg btn-block purple-bg" value="창닫기" >
 			</div>
 		</div>
 	</div>			

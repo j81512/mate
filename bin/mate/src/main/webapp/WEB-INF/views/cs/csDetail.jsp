@@ -1,92 +1,104 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<link rel="stylesheet"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
-	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
-	crossorigin="anonymous">
-<link
-	href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
-	rel="stylesheet" id="bootstrap-css">
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-	integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-	crossorigin="anonymous"></script>
-<script
-	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-	crossorigin="anonymous"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-<jsp:include page="/WEB-INF/views/common/headerS.jsp">
-	<jsp:param value="게시판상세보기" name="csDetail"/>
-</jsp:include>
 
+<jsp:include page="/WEB-INF/views/common/headerS.jsp">
+	<jsp:param value="게시판상세보기" name="csDetail" />
+</jsp:include>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <style>
-div#board-container{width:400px;}
-input, button, textarea {margin-bottom:15px;}
+div#board-container {
+	width: 400px;
+}
+
+input, button, textarea {
+	margin-bottom: 15px;
+}
+
 button {
 	overflow: hidden;
 }
 /* 부트스트랩 : 파일라벨명 정렬*/
-div#board-container label.custom-file-label{text-align:left;}
+div#board-container label.custom-file-label {
+	text-align: left;
+}
+.chk-label{
+	background-color: rgba(54,54,54,0.2);
+	color: white;
+	margin: 0;
+}
+.chk-label:hover{
+	background-color: rgba(54,54,54,0.6);
+	color: white;
+}
+.chk-label:active{
+	background-color: rgb(164,80,68);
+	color: white;
+}
+.chk-label.active{
+	background-color: rgb(164,80,68);
+	color: white;
+}
 </style>
-<div class="container">	
+
+<div class="search-div">
+	<c:if test="${ loginMember.memberId eq cs.memberId || loginMember.memberId eq 'admin' }">
+		<button type="button" class="btn chk-label"
+			onclick="deleteCs(${ cs.csNo });">삭제</button>
+	</c:if>
+</div>
+<div class="content-div">
+
 	<div id="cs-container" class="mx-auto text-center">
-		<input type="text" class="form-control" 
-			   placeholder="제목" name="csTitle" id="title" 
-			   value="${ cs.title }" readonly required>
-		<input type="text" class="form-control" 
-			   name="memberId" 
-			   value="${ cs.memberId }" readonly required>
-			 
+		<input type="text" class="form-control" placeholder="제목" name="csTitle"
+			id="title" value="${ cs.title }" readonly required> <input
+			type="text" class="form-control" name="memberId"
+			value="${ cs.memberId }" readonly required>
+	
 		<c:if test="${ not empty csImage }">
-		<button type="button" 
-				class="btn btn-outline-success btn-block"
-				onclick="fileDownload(${ cs.csNo });">
-			첨부파일 - ${ csImage.originalFilename }
-		</button>
-		</c:if>	   
-	
-	    <textarea class="form-control" name="content" 
-	    		  placeholder="내용" readonly required>${ cs.content }</textarea>
-		<input type="datetime-local" class="form-control" name="regDate" 
-			   value='<fmt:formatDate value="${ cs.regDate }" pattern="yyyy-MM-dd'T'HH:mm"/>' readonly>
-	</div>
-		<c:if test="${ loginMember.memberId eq cs.memberId || loginMember.memberId eq 'admin' }">
-		<button type="button" class="btn btn-outline-secondary" onclick="updateCs(${ cs.csNo });">수정</button>
-	    <button type="button" class="btn btn-outline-danger" onclick="deleteCs(${ cs.csNo });">삭제</button>
+			<button type="button" class="btn btn-outline-success btn-block"
+				onclick="fileDownload(${ cs.csNo });">첨부파일 - ${ csImage.originalFilename }
+			</button>
 		</c:if>
-	<form action="${ pageContext.request.contextPath }/cs/deleteCs.do" method="POST" id="deleteFrm">
-		<input type="hidden" name="csNo" id="hidden-no"/>
-	</form>
-	<div>
 
-
-</div>
-	<div class="replyList-container">
-	
-	
+		<textarea class="form-control" name="content" placeholder="내용" readonly
+			required>${ cs.content }</textarea>
+		<input type="datetime-local" class="form-control" name="regDate"
+			value='<fmt:formatDate value="${ cs.regDate }" pattern="yyyy-MM-dd'T'HH:mm"/>'
+			readonly>
 	</div>
-		<div id="reply-container">
-			<form action="${ pageContext.request.contextPath }/cs/csReplyEnroll.do" method="POST">
-				<div class="form-group">				
-					<input type="hidden" name="memberId" value="${ loginMember.memberId != null ? loginMember.memberId : 'ㅋㅋㅋ'}" />
-				</div>
-				<div class="form-group">
-					<input type="hidden" name="csNo" id="csNo" value="${ cs.csNo }" />
-				</div>
-				<div class="form-group">
-					<textarea class="form-control col-sm-10" name="content"  rows="10"></textarea>
-				</div>
-				<div class="button-group">
-					<input type="submit" class="btn btn-primary" value="등록하기" />
-				</div>
-			</form>
-		</div>
+
+	<form action="${ pageContext.request.contextPath }/cs/deleteCs.do"
+		method="POST" id="deleteFrm">
+		<input type="hidden" name="csNo" id="hidden-no" />
+	</form>
+	<div></div>
+	<div class="replyList-container"></div>
+	<div id="reply-container">
+		<form action="${ pageContext.request.contextPath }/cs/csReplyEnroll.do"
+			method="POST">
+			<div class="form-group">
+				<input type="hidden" name="memberId"
+					value="${ loginMember.memberId != null ? loginMember.memberId : 'ㅋㅋㅋ'}" />
+			</div>
+			<div class="form-group">
+				<input type="hidden" name="csNo" id="csNo" value="${ cs.csNo }" />
+			</div>
+			<div class="form-group">
+				<textarea rows="3" cols="30" id="content_" name="content"
+					class="form-control" aria-describedby="basic-addon1"
+					placeholder="댓글을 입력하세요."></textarea>
+			</div>
+			<div class="button-group">
+				<input type="submit" class="btn btn-primary" value="등록하기" />
+			</div>
+		</form>
+	</div>
 </div>
+
+
 
 <script>
 	function fileDownload(csNo){

@@ -385,6 +385,12 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.selectList("erpBoard.ioEmpList", param);
 	}
 
+	//발주검사
+	@Override
+	public List<Product> proLogList(Map<String, Object> map) {
+		return sqlSession.selectList("erp.proLogList",map);
+	}
+
 	
 	
 }

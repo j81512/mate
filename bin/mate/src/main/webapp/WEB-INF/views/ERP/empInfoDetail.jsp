@@ -3,11 +3,43 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
-<jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
-<div id="enroll-container" class="mx-auto text-center">
-	<form action="" id="infoFrm" method="post" enctype="">
-		<table class="mx-auto">
+<!-- bootstrap js: jquery load 이후에 작성할것.-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+<!-- bootstrap css -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
+<!-- 사용자작성 css -->
+<link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/style.css" />
+<script>
+$(function(){
+	//모달 시각화 함수
+	$("#empDetailModal").modal()
+	//모달 감춰질때 발생 이벤트핸들러 바인딩
+	.on("hide.bs.modal", function(){
+		location.href = "${ header.referer }";
+	});
+});
+</script>
+<body>
+
+<div class="modal fade" id="empDetailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">empDetailModal</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="${ pageContext.request.contextPath }/ERP/infoUpdate.do"
+        	  method="POST"
+        	  id="infoFrm">
+          <table class="mx-auto">
 			<tr>
 				<th>아이디</th>
 				<td>
@@ -24,7 +56,7 @@
 			<tr>
 				<th>패스워드</th>
 				<td>
-					<input type="text" class="form-control" name="password_" id="password_" value="${ emp.empPwd }">
+					<input type="text" class="form-control" name="empPwd" id="password_" value="${ emp.empPwd }">
 					
 				</td>
 			</tr>
@@ -38,7 +70,7 @@
 			<tr>
 				<th>지점/업체명</th>
 				<td>	
-					<input type="text" class="form-control" name="empName" id="empName" value="${ emp.empName }">
+					<input type="text" class="form-control" name="empName" id="empName" value="${ emp.empName }" required>
 				</td>
 			</tr>
 			<tr>
@@ -57,45 +89,16 @@
 				</td>
 			</tr>
 		</table>
-	</form>
-					<!-- 정보수정모달버튼 -->
-					<button type="button" class="btn btn-primary btn-lg btn-update" data-toggle="modal" data-target="#myModal">
-					  수정하기
-					</button>				
-					
-					
-					<!-- 정보삭제 모달버튼 -->
-					<button type="button" class="btn btn-primary btn-lg1 btn-delete" data-toggle="modal" data-target="#myModal">
-					  삭제하기
-					</button>	
-								
-					<!-- 관리자 확인 모달내용 -->
-					<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-					  <div class="modal-dialog">
-					    <div class="modal-content">
-					      <div class="modal-header">
-					        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					        <span aria-hidden="true">&times;</span>
-					        </button>
-					        <h4 class="modal-title" id="myModalLabel">관리자의 비밀번호를 입력하세요</h4>
-					      </div>
-					      <div class="modal-body">
-						        비밀번호 : 
-						     <input type="password" class="form-control" name="adminPwd" id="adminPwd" >
-					      </div>
-					      <div class="modal-footer">
-					        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
-					        <input type="button" class="btn btn-primary btn-delete" id="infoSubmit" name="infoSubmit" value="확인" >
-					      </div>
-					    </div>
-					  </div>
-					</div>
-					<button type="button" value="취소" onclick="history.go(-1)">취소</button>				
-			
-		
-	
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+        <button type="submit" class="btn btn-primary" id="infoSubmit">정보 수정</button>
+        <button type="button" class="btn btn-danger" id="deleteBtn">지점/제조사 삭제</button>
+      </div>
+    </div>
+  </div>
 </div>
-
+</form>
 <!-- 주소API -->
 <!-- 주소검색용 스크립트 -->
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
@@ -143,31 +146,11 @@ function execPostCode() {
        }
     }).open();
 }
-
-
-
-$("#infoSubmit").click(function(){
-	//유효성검사
-	var $frm = $("#infoFrm");
-	var $adminPwd = $("#adminPwd");
-	var $adminPCK = '${ loginEmp.empPwd }';
-	console.log($adminPwd.val());
 	
-	
-    if($adminPwd.val() != $adminPCK ){
-		alert("비밀 번호가 일치 하지 않습니다.");
-		$adminPwd.select();
-		return false;
-	//아니면 return
-    }
-	$("#infoFrm").submit();
-});
+	$("#deleteBtn").click(function(){
 		
-	$(".btn-update").click(function(){
-		$("#infoFrm").prop("action", "${ pageContext.request.contextPath }/ERP/infoUpdate.do");
-	});
-	
-	$(".btn-delete").click(function(){
-		$("#infoFrm").prop("action", "${ pageContext.request.contextPath }/ERP/infoDelete.do");
+		$("#infoFrm").attr("action", "${ pageContext.request.contextPath }/ERP/infoDelete.do");
+		$("#infoFrm").attr("method", "POST");
+		$("#infoFrm").submit();
 	});
 </script>

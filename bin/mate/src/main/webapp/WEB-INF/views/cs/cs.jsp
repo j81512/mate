@@ -5,36 +5,34 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<link rel="stylesheet"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
-	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
-	crossorigin="anonymous">
-<link
-	href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
-	rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet"
-	href="${ pageContext.request.contextPath }/resources/css/loginForm.css" />
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-	integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-	crossorigin="anonymous"></script>
-<script
-	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-	crossorigin="anonymous"></script>
-<jsp:include page="/WEB-INF/views/common/headerS.jsp">
-	<jsp:param value="고객센터" name="csTitle"/>
-</jsp:include>
+<jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
 
 <style>
-/*글쓰기버튼*/
-input#btn-add{float:right; margin: 0 0 15px;}
+#btn-add{
+	position: relative;
+}
 tr[data-no]{
 	cursor: pointer;
 }
 .notice{
 	background-color: blue;
+}
+.chk-label{
+	background-color: rgba(54,54,54,0.2);
+	color: white;
+	margin: 0;
+}
+.chk-label:hover{
+	background-color: rgba(54,54,54,0.6);
+	color: white;
+}
+.chk-label:active{
+	background-color: rgb(164,80,68);
+	color: white;
+}
+.chk-label.active{
+	background-color: rgb(164,80,68);
+	color: white;
 }
 </style>
 	
@@ -58,27 +56,34 @@ $(function(){
 
 });
 </script>
-<section id="cs-container" class="container">
 
+<div class="search-div">
 	<form id="csMyListFrm" 
     	  action="${pageContext.request.contextPath}/cs/cs.do" 
     	  class="form-inline" 
     	  method="get"> 
-    	<input type="checkbox" name="memberId" id="csMyListFrm" value="${ loginMember.memberId != null ? loginMember.memberId : '' }" ${ loginMember.memberId eq memberId ? 'checked' : '' }/>
-	    <label for="csMyListFrm"><span>내글만보기</span></label>
+    	<div class="btn-group-toggle btn-group" data-toggle="buttons">
+	   	  	<label for="csMyListFrm" class="btn chk-label ${ loginMember.memberId eq memberId ? 'active' : '' }">
+				<input type="checkbox" name="memberId" id="csMyListFrm" value="${ loginMember.memberId != null ? loginMember.memberId : '' }" ${ loginMember.memberId eq memberId ? 'checked' : '' }/>
+				내 글 보기
+			</label>
+			<input type="button" value="글쓰기" id="btn-add" class="btn chk-label" onclick="goInsertCs();"/>
+		</div>
     </form>
+</div>
+<div class="content-div">
 	<form id="csDeleteFrm" 
-	  	  action="${ pageContext.request.contextPath }/cs/deleteCs.do" 
-	  	  method="POST">
-	<input type="hidden" name="csNo" />
-	</form>
-	<input type="button" value="글쓰기" id="btn-add" class="btn btn-outline-success" onclick="goInsertCs();"/>
-
-<div id="buy" class="tab-pane fade active show in">
-		<div class="col-md-15">
-		    <div class="form-area">  
-				<table id="tbl-cs" class="table table-striped table-hover">
-					<thead class="thead-dark">
+		  	  action="${ pageContext.request.contextPath }/cs/deleteCs.do" 
+		  	  method="POST">
+		<input type="hidden" name="csNo" />
+		</form>
+		
+	
+	<div id="buy" class="tab-pane fade active show in">
+			<div class="col-md-15">
+			    <div class="form-area">  
+					<table id="tbl-cs" class="table table-striped table-hover">
+						<thead class="thead-dark">
 	<tr>
 		<th>번호</th>
 		<th>분류</th>
@@ -134,9 +139,11 @@ $(function(){
 				</ul>
 			</div>
 		</nav>
+</div>
 	
-</section> 
+	
 
+<jsp:include page="/WEB-INF/views/common/footerS.jsp"></jsp:include>
 	
   	
 

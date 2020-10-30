@@ -6,13 +6,20 @@
 <jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
 <script src="${ pageContext.request.contextPath }/resources/ckeditor/ckeditor.js"></script>
 <script>
+
 $(function(){
 	CKEDITOR.replace('content',{
 				filebrowserUploadUrl : "${ pageContext.request.contextPath }/ERP/imageFileUpload.do"
-		});
+	});
+
+
 });
 
+
+
+
 jQuery(document).ready(function($){
+	
 	//파일 선택 | 취소 파일라벨명을 변경한다.
 	$("[name=upFile]").on("change", function(){
 			var file = $(this).prop('files')[0];
@@ -28,23 +35,6 @@ jQuery(document).ready(function($){
 			}
 				
 		});
-
-	$("#priceValue").on("focus", function(){
-		var val = $("#priceValue").val();
-		if(!isEmpty(val)){
-			val = val.replace(/,/g,'');
-			$("#priceValue").val(val);
-		}
-
-	});
-
-	$("#pricaValue").on("blur", function(){
-		var val = $("#priceValue").val();
-		if(!isEmpty(val) && isNumeric(val)){
-			val = currencyFormatter(val);
-			$("#priceValue").val(val);
-		}
-	});
 
 
 });
@@ -74,6 +64,7 @@ div#form-container{
 	border-radius: 10px;
 }
 div#form-container label.custom-file-label{text-align:left;}
+
 </style>
 </head>
 <body>
@@ -137,25 +128,16 @@ div#form-container label.custom-file-label{text-align:left;}
   </div>
   			<!-- 내용 -->
   <div class="form-group">
-   <textarea name="content"></textarea>
+   <textarea  name="content"></textarea>
   </div>
+  
   			<!-- 가격 -->
   <div class="form-group">
 	<label for="price">가격</label>
 	<input type="text" name="price" id="priceValue" value="" required/> 원
   </div>
   
-  <!-- 제조사  -->
-  <!-- 로그인된 회원이 제조사 회원일 경우  -->
-  <c:if test="${loginEmp.status eq 2 }">
-  	<div class="form-group">
-  		<label for="manufacturerId">제조사 : </label>
-  		<input type="text" name="manufacturerId" id="manufacturerId" value="${loginEmp.empId }" disabled/>
-  		<input type="hidden" name="manufacturerId" value="${loginEmp.empId }"/>
-  	</div>
-  </c:if>
-  <!-- 로그인된 회원이 전체 관리자일 경우 -->
-  <c:if test="${loginEmp.status eq 0 }">
+
   	<label for="empId">제조사 :</label>
   	<select name="manufacturerId" id="empId" required>
   	<option value="" disabled selected>제조사를 선택해 주세요</option>
@@ -165,10 +147,9 @@ div#form-container label.custom-file-label{text-align:left;}
 	  		</c:if>
 	  	</c:forEach>
   	</select>
-  </c:if>
   
   
-  <button type="button" class="btn btn-primary" onclick="submitFrm();">등록</button>
+  <button type="submit" class="btn btn-primary" >등록</button>
   <button type="button" class="btn btn-danger" onclick="goBackWithDel();">취소</button>
   
 </form>
@@ -186,14 +167,6 @@ function goBackWithDel(){
 	
 }
 
-function submitFrm(){
-	var $enrollFrm = $("#productEnrollFrm");
-	//필요한 정규표현식 검사 진행 후
-	
-	$enrollFrm.submit();
-
-	
-}
 </script>
 </html>
 
