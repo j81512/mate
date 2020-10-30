@@ -22,13 +22,15 @@
 		p.manufacturer_id,
 		s.emp_id,
 		p.reg_date,
-		nvl(s.stock,0) stock
+		nvl(s.stock,0) stock,
+		e.emp_name
 			from product p left join stock s
-		on (p.product_no = s.product_no
-		)
+		on (p.product_no = s.product_no)
+			left join emp e
+		on (s.emp_id = e.emp_id)
 		<where>
-			<if test="emp.status != 0">
-				(emp_id = #{emp.empId} or emp_id is null)
+			<if test="emp.status != 2">
+				(s.emp_id = #{emp.empId} or s.emp_id is null)
 			</if>
 			<if test="category != null and !category.isempty">
 				 and p.category = #{category}
@@ -50,7 +52,8 @@
 				and s.stock <![CDATA[ >= ]]> #{uNum}
 			</if>
 			
-		</where>)A) B
+		</where>
+		order by p.product_name)A) B
         WHERE RN BETWEEN #{page.start} and #{page.end}
 	</select>
 	
@@ -382,7 +385,7 @@
 		from product p left join stock s
 		on (p.product_no = s.product_no)
 		<where>
-			<if test="emp.status != 0">
+			<if test="emp.status != 2">
 				(emp_id = #{emp.empId} or emp_id is null)
 			</if>
 			<if test="category != null and category != ''">
@@ -414,7 +417,7 @@
 		from product p left join stock s
 		on (p.product_no = s.product_no)
 		<where>
-			<if test="status != 0 and status != null">
+			<if test="status != 2">
 			s.emp_id = #{empId} or emp_id is null
 			</if>
 		</where>
@@ -422,6 +425,10 @@
 	<insert id="mStockInsert">
 		 insert into stock VALUES(#{ pro.productNo },#{emp.empId},default)
 	</insert>
+	
+	<select id="proLogList" resultType="Product">
+		select product_no,emp_id,confirm from request_log where emp_id = #{emp.empId}
+	</select>
 	
 	<resultMap type="map" id="stockLogMap">
 		<id column="product_no" property="productNo"/>

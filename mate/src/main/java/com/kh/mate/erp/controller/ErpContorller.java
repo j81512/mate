@@ -394,7 +394,6 @@ public class ErpContorller {
 		map.put("emp", emp);
 		List<Product> pList = erpService.selectAll();
 		List<Integer> cList = erpService.productCompare(emp);
-		
 		log.debug("emp= {}",emp);
 		
 		//누락상품검사
@@ -403,7 +402,7 @@ public class ErpContorller {
 //			log.debug("cTest = {}", cList.contains(pro.getProductNo()));
 //			log.debug("pro.no = {}",pro.getProductNo());
 			
-			if(!cList.contains(pro.getProductNo()) && emp.getStatus() != 0) {
+			if(!cList.contains(pro.getProductNo()) && emp.getStatus() != 2) {
 				map.put("pro", pro);
 				int result = erpService.mStockInsert(map);
 				log.debug("cTest = {}",pro);
@@ -453,10 +452,19 @@ public class ErpContorller {
 		log.debug("total = {}",total);
 
 		log.debug("size = {}",list.size());
-//		if(total <= 10 && Integer.parseInt(nowPage) == 1) {
-//			page.setEndPage(1);
-//		}
-		
+
+		List<Product> loList = erpService.proLogList(map);
+		for(Product pro : list) {
+			for(Product lopro : loList) {
+				if( pro.getProductNo() != 0 && pro.getProductNo() == lopro.getProductNo() && lopro.getConfirm() == 0) {
+					pro.setConfirm(0);
+				}else {
+					pro.setConfirm(-2);
+				}
+			}
+		}
+		log.debug("lolist = {}",loList);
+				
 		log.debug("list = {}",list);
 		model.addAttribute("page",page);		
 		model.addAttribute("map",map);		
