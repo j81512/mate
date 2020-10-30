@@ -121,8 +121,8 @@ $(function(){
 	</nav>
 	<!-- 게시글 검색 -->
 		<div class="form-group row justify-content-center">
-			<div class="w100" style="padding-right:10px">
-				<select  class="form-control-sm" data-live-search="true" name="searchType" id="searchType">
+			<div class="b-select-wrap col-1 row-2" style="padding-right:10px">
+				<select class="form-control b-select" data-live-search="true" name="searchType" id="searchType">
 					<option value="title" ${ searchType == 'title' ? 'selected' : ''}>제목</option>
 					<option value="emp_name" ${ searchType == 'emp_name' ? 'selected' : ''}>작성자</option>
 					<option value="category" ${ searchType == 'category' ? 'selected' : ''}>카테고리</option>
@@ -132,26 +132,38 @@ $(function(){
 		  <div id="search-title" class="search-type">
 	            <form action="${ pageContext.request.contextPath}/ERP/EmpBoardList.do" method="get">
 	                <input type="hidden" name="searchType" value="title"/>
-	                <input type="text" name="searchKeyword"  size="25" placeholder="검색할 제목 입력하세요." value="${ searchType eq 'title' ? searchKeyword : ''}" />
-	                <button type="submit"  class="btn btn-sm btn-primary">검색</button>			
+	               <div class="input-group">
+	                <input type="text" class="form-control" name="searchKeyword"  size="25" placeholder="검색할 제목 입력하세요." value="${ searchType eq 'title' ? searchKeyword : ''}" />             
+	                <div class="input-group-btn">
+	                <button type="submit"  class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-search"></i></button>			
+	           		</div>
+	           		</div>
 	            </form>	
 	        </div>
 	        <div id="search-emp_name" class="search-type">
 	            <form action="${ pageContext.request.contextPath}/ERP/EmpBoardList.do" method="get">
 	                <input type="hidden" name="searchType" value="emp_name"/>
-	                <input type="text" name="searchKeyword" size="25" placeholder="작성자 명을 입력하세요." value="${ searchType eq 'emp_name' ? searchKeyword : ''}"/>
-	                <button type="submit"  class="btn btn-sm btn-primary">검색</button>			
+	                  <div class="input-group">
+	                <input type="text"class="form-control"  name="searchKeyword" size="25" placeholder="작성자 명을 입력하세요." value="${ searchType eq 'emp_name' ? searchKeyword : ''}"/>
+	                 <div class="input-group-btn">
+	                <button type="submit"  class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-search"></i></button>			
+	                </div>
+	                </div>
 	            </form>	
 	        </div>
 			<div id="search-category" class="search-type">
-            <form action="${ pageContext.request.contextPath}/ERP/EmpBoardList.do" method="get">      
+            <form class="navbar-form" role="search" action="${ pageContext.request.contextPath}/ERP/EmpBoardList.do" method="get">      
                 <input type="hidden" name="searchType" value="category" />
+                 <div class="input-group">
                 <input type="radio"  name="searchKeyword" value="" ${ searchKeyword eq '' ? "checked" : ""}> 전체 
                 <input type="radio"  name="searchKeyword" value="ntc" ${ searchKeyword eq 'ntc' ? "checked" : ""}> 공지사항 
                 <input type="radio"  name="searchKeyword" value="req" ${ searchKeyword eq 'req' ? "checked" : ""}> 요청 
-                <input type="radio"  name="searchKeyword" value="adv" ${ searchKeyword eq 'adv' ? "checked" : ""}> 광고 
+                <input type="radio"   name="searchKeyword" value="adv" ${ searchKeyword eq 'adv' ? "checked" : ""}> 광고 
                 <input type="radio"  name="searchKeyword" value="def" ${ searchKeyword eq 'def' ? "checked" : ""}> 일반 
-                <button type="submit" class="btn btn-sm btn-primary">검색</button>
+               <div class="input-group-btn">
+                <button type="submit" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-search"></i></button>
+                </div>
+                </div>
             </form>
         	</div>
 		</div>
