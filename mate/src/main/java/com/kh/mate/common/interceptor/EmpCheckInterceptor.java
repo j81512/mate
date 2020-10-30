@@ -30,7 +30,6 @@ public class EmpCheckInterceptor extends HandlerInterceptorAdapter {
 			FlashMapManager manager = RequestContextUtils.getFlashMapManager(request);
 			manager.saveOutputFlashMap(map, request, response);
 
-
 			response.sendRedirect(request.getContextPath() + "/member/memberLogin.do");
 			return false;
 		}

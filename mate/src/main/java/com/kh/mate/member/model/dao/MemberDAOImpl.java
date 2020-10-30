@@ -82,6 +82,12 @@ public class MemberDAOImpl implements MemberDAO {
 		return sqlSession.selectOne("member.searchContent", map);
 	}
 
+	@Override
+	public int tempPassword(HashMap<String, String> map) {
+		
+		return sqlSession.update("member.tempPassword",map);
+	}
+
 	
 	
 	

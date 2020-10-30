@@ -60,9 +60,9 @@ public interface ErpService {
 
 	List<Product> erpProductList();
 
-	List<EmpBoard> searchBoard(String searchType, String searchKeyword, int cPage, int numPerPage);
+	List<EmpBoard> searchBoard(Map<String, Object> map, String searchType, String searchKeyword, int cPage, int numPerPage);
 
-	int getSearchContents(Map<String, String> map);
+	int getSearchContents(Map<String, Object> map);
 
 	List<IoLog> ioLogList();
 

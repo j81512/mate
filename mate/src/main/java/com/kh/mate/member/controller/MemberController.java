@@ -369,17 +369,18 @@ public class MemberController {
 		
 	}
 	
-	@RequestMapping("/member/checkPasswordDuplicate.do")
+	@GetMapping("/member/checkPasswordDuplicate.do")
 	@ResponseBody
-	public Map<String, Object> checkIdDuplicate(@RequestParam("memberId") String memberId, @RequestParam("memberPWD") String memberPWD){
+	public Map<String, Object> checkIdDuplicate(@RequestParam("pmemberId") String memberId, @RequestParam("phone") String phone){
 		Map<String, Object> map = new HashMap<>();
-		
+		log.debug("연결은 되냐?");
 		Member member = memberService.selectOneMember(memberId);
 		log.debug("member = {}", member);
 		
-		boolean isAvailable = member.getMemberPWD().equals(memberPWD) == true;
+		boolean isAvailable = member.getPhone().equals(phone) == true;
 		log.debug("isVailable ={}", isAvailable);
-		map.put("memeberId" , memberId);
+		map.put("memberId" , member.getMemberId());
+		map.put("phone" , member.getPhone());
 		map.put("isAvailable", isAvailable);
 				
 		return map;
@@ -530,5 +531,43 @@ public class MemberController {
 		return map;
 		
 	}
-	
+
+	@PostMapping("/member/sendPassword")
+	@ResponseBody
+	public String sendPassword(@RequestParam("memberId")String memberId,
+										  @RequestParam("receiver")String receiver){
+		log.debug("meberId={}", memberId);
+		log.debug("meberId={}", receiver);
+		String apiKey = "NCSZXRWYBWEC2I0X";
+		String apiSecret = "RHGHGCDLP8OWCBRQYCFEJPWORMDXAMO3";
+		Message coolsms = new Message(apiKey,apiSecret);
+		
+		HashMap<String, String> map = new HashMap<>();
+		Random rnd = new Random();
+		String checkNum = "";
+
+		for(int i = 0 ; i < 6 ; i++) {			
+			String ran = Integer.toString(rnd.nextInt(10));
+			checkNum += ran;
+		}
+		
+		map.put("memberId", memberId);
+		map.put("password", checkNum);
+		int result = memberService.tempPassword(map);
+		map.put("type", "SMS");
+		map.put("to", receiver);
+//		map.put("from", "01026596065");
+		map.put("text", "임시비밀번호"
+						+"(" + checkNum+ ")로 변경 되었습니다.");	
+		
+		log.debug("map = {}", map);
+		try {
+			JSONObject obj = (JSONObject) coolsms.send(map);
+		} catch (CoolsmsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return checkNum;
+	}
 }
