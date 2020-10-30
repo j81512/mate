@@ -14,13 +14,37 @@
 
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-<!-- 호근 헤더 처리-->
+
 <title>게시판 목록</title>
+<c:if test="${ searchType == null }">
 <style>
  	div#search-title {display:inline-block;}
-    div#search-content{display:none;} 
+    div#search-emp_name{display:none;} 
     div#search-category{display:none;}
 </style>
+</c:if>
+<c:if test="${ searchType == 'title' }">
+<style>
+ 	div#search-title {display:inline-block;}
+    div#search-emp_name{display:none;} 
+    div#search-category{display:none;}
+</style>
+</c:if>
+<c:if test="${ searchType == 'emp_name' }">
+<style>
+ 	div#search-title {display:none;}
+    div#search-emp_name{display:inline-block;} 
+    div#search-category{display:none;}
+</style>
+</c:if>
+<c:if test="${ searchType == 'category' }">
+<style>
+ 	div#search-title {display:none;}
+    div#search-emp_name{display:none;} 
+    div#search-category{display:inline-block;}
+</style>
+</c:if>
+
 <script>
 $(function(){
 	$("tr[data-no]").click(function(){
@@ -28,7 +52,6 @@ $(function(){
 		console.log(no);
 		location.href = "${ pageContext.request.contextPath }/ERP/EmpBoardDetail.do?no=" + no;
 		});
-
 	$("#searchType").change(function(){
 		console.log($(this).val());
 		
@@ -98,36 +121,49 @@ $(function(){
 	</nav>
 	<!-- 게시글 검색 -->
 		<div class="form-group row justify-content-center">
-			<div class="w100" style="padding-right:10px">
-				<select class="form-control form-control-sm" name="searchType" id="searchType">
-					<option value="title">제목</option>
-					<option value="emp_name">작성자</option>
-					<option value="category">카테고리</option>
+			<div class="b-select-wrap col-1 row-2" style="padding-right:10px">
+				<select class="form-control b-select" data-live-search="true" name="searchType" id="searchType">
+					<option value="title" ${ searchType == 'title' ? 'selected' : ''}>제목</option>
+					<option value="emp_name" ${ searchType == 'emp_name' ? 'selected' : ''}>작성자</option>
+					<option value="category" ${ searchType == 'category' ? 'selected' : ''}>카테고리</option>
+			
 				</select>
 			</div>
 		  <div id="search-title" class="search-type">
 	            <form action="${ pageContext.request.contextPath}/ERP/EmpBoardList.do" method="get">
 	                <input type="hidden" name="searchType" value="title"/>
-	                <input type="text" name="searchKeyword"  size="25" placeholder="검색할 제목 입력하세요." value="${ searchType eq 'title' ? searchKeyword : ''}" />
-	                <button type="submit"  class="btn btn-sm btn-primary">검색</button>			
+	               <div class="input-group">
+	                <input type="text" class="form-control" name="searchKeyword"  size="25" placeholder="검색할 제목 입력하세요." value="${ searchType eq 'title' ? searchKeyword : ''}" />             
+	                <div class="input-group-btn">
+	                <button type="submit"  class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-search"></i></button>			
+	           		</div>
+	           		</div>
 	            </form>	
 	        </div>
-	        <div id="search-content" class="search-type">
+	        <div id="search-emp_name" class="search-type">
 	            <form action="${ pageContext.request.contextPath}/ERP/EmpBoardList.do" method="get">
-	                <input type="hidden" name="searchType" value="content"/>
-	                <input type="text" name="searchKeyword" size="25" placeholder="검색할 내용을 입력하세요." value="${ searchType eq 'content' ? searchKeyword : ''}"/>
-	                <button type="submit"  class="btn btn-sm btn-primary">검색</button>			
+	                <input type="hidden" name="searchType" value="emp_name"/>
+	                  <div class="input-group">
+	                <input type="text"class="form-control"  name="searchKeyword" size="25" placeholder="작성자 명을 입력하세요." value="${ searchType eq 'emp_name' ? searchKeyword : ''}"/>
+	                 <div class="input-group-btn">
+	                <button type="submit"  class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-search"></i></button>			
+	                </div>
+	                </div>
 	            </form>	
 	        </div>
 			<div id="search-category" class="search-type">
-            <form action="${ pageContext.request.contextPath}/ERP/EmpBoardList.do" method="get">      
+            <form class="navbar-form" role="search" action="${ pageContext.request.contextPath}/ERP/EmpBoardList.do" method="get">      
                 <input type="hidden" name="searchType" value="category" />
+                 <div class="input-group">
                 <input type="radio"  name="searchKeyword" value="" ${ searchKeyword eq '' ? "checked" : ""}> 전체 
                 <input type="radio"  name="searchKeyword" value="ntc" ${ searchKeyword eq 'ntc' ? "checked" : ""}> 공지사항 
                 <input type="radio"  name="searchKeyword" value="req" ${ searchKeyword eq 'req' ? "checked" : ""}> 요청 
-                <input type="radio"  name="searchKeyword" value="adv" ${ searchKeyword eq 'adv' ? "checked" : ""}> 광고 
+                <input type="radio"   name="searchKeyword" value="adv" ${ searchKeyword eq 'adv' ? "checked" : ""}> 광고 
                 <input type="radio"  name="searchKeyword" value="def" ${ searchKeyword eq 'def' ? "checked" : ""}> 일반 
-                <button type="submit" class="btn btn-sm btn-primary">검색</button>
+               <div class="input-group-btn">
+                <button type="submit" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-search"></i></button>
+                </div>
+                </div>
             </form>
         	</div>
 		</div>
