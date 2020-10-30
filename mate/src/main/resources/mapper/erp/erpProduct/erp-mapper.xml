@@ -22,13 +22,15 @@
 		p.manufacturer_id,
 		s.emp_id,
 		p.reg_date,
-		nvl(s.stock,0) stock
+		nvl(s.stock,0) stock,
+		e.emp_name
 			from product p left join stock s
-		on (p.product_no = s.product_no
-		)
+		on (p.product_no = s.product_no)
+			left join emp e
+		on (s.emp_id = e.emp_id)
 		<where>
-			<if test="emp.status != 0">
-				(emp_id = #{emp.empId} or emp_id is null)
+			<if test="emp.status != 2">
+				(s.emp_id = #{emp.empId} or s.emp_id is null)
 			</if>
 			<if test="category != null and !category.isempty">
 				 and p.category = #{category}
@@ -50,7 +52,8 @@
 				and s.stock <![CDATA[ >= ]]> #{uNum}
 			</if>
 			
-		</where>)A) B
+		</where>
+		order by p.product_name)A) B
         WHERE RN BETWEEN #{page.start} and #{page.end}
 	</select>
 	
@@ -187,13 +190,10 @@
  			p.category,
  			(select emp_name from emp where emp_id = p.manufacturer_id) manufacturer_name
  		from
- 			product p 
+ 			stock S 
  		inner join
- 			stock s
- 		on p.product_no = s.product_no
- 		inner join 
- 			receive r
- 		on p.product_no = r.product_no
+ 			product P
+ 		on S.product_no = P.product_no
 		<where>
 			<if test="branchId != null and branchId != '' ">
 			s.emp_id = #{branchId}
@@ -222,15 +222,25 @@
  			product p
  		on rl.product_no = p.product_no
  			<where>
-	 			<if test="manufacturerId != null and manufacturerId != '' ">
-				rl.manufacturer_id = #{manufacturerId}
-				</if>
-				<if test="confirm != null and confirm != ''">
-				and rl.confirm = #{confirm}
-				</if>
-				<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
-				and p.${searchType} like '%' || #{searchKeyword} || '%'
-				</if>
+ 				<choose>
+ 					<when test="status == 1">
+						rl.emp_id = #{branchId} 					
+ 					</when>
+ 					<otherwise>
+ 					<if test="manufacturerId != null and manufacturerId != '' ">
+					rl.manufacturer_id = #{manufacturerId}
+					</if>
+					<if test="confirm != null and confirm != ''">
+					and rl.confirm = #{confirm}
+					</if>
+					<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
+					and p.${searchType} like '%' || #{searchKeyword} || '%'
+					</if>
+	 				<if test ="branchId != null and branchId != ''">
+					and rl.emp_id = #{branchId}
+ 					</if>
+ 					</otherwise>
+ 				</choose>
  			</where>
  	</select>
  	
@@ -381,7 +391,7 @@
 		from product p left join stock s
 		on (p.product_no = s.product_no)
 		<where>
-			<if test="emp.status != 0">
+			<if test="emp.status != 2">
 				(emp_id = #{emp.empId} or emp_id is null)
 			</if>
 			<if test="category != null and category != ''">
@@ -413,7 +423,7 @@
 		from product p left join stock s
 		on (p.product_no = s.product_no)
 		<where>
-			<if test="status != 0 and status != null">
+			<if test="status != 2">
 			s.emp_id = #{empId} or emp_id is null
 			</if>
 		</where>
@@ -421,6 +431,10 @@
 	<insert id="mStockInsert">
 		 insert into stock VALUES(#{ pro.productNo },#{emp.empId},default)
 	</insert>
+	
+	<select id="proLogList" resultType="Product">
+		select product_no,emp_id,confirm from request_log where emp_id = #{emp.empId}
+	</select>
 	
 	<resultMap type="map" id="stockLogMap">
 		<id column="product_no" property="productNo"/>
@@ -434,6 +448,7 @@
 		<result column="category" property="category"/>
 		<result column="amount" property="amount"/>
 		<result column="manufacturer_id" property="manufacturerId"/>
+		<result column="enabled" property="enabled"/>
 	</resultMap>
 	
 	<resultMap type="map" id="requestMap">
@@ -447,6 +462,7 @@
 		<result column="emp_id" property="empId"/>
 		<result column="manufacturer_name" property="manufacturerName"/>
 		<result column="branch_name" property="branchName"/>
+		<result column="enabled" property="enabled"/>
 	</resultMap>
 	
 </mapper>

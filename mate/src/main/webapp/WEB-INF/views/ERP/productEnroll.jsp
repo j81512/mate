@@ -36,23 +36,6 @@ jQuery(document).ready(function($){
 				
 		});
 
-	$("#priceValue").on("focus", function(){
-		var val = $("#priceValue").val();
-		if(!isEmpty(val)){
-			val = val.replace(/,/g,'');
-			$("#priceValue").val(val);
-		}
-
-	});
-
-	$("#pricaValue").on("blur", function(){
-		var val = $("#priceValue").val();
-		if(!isEmpty(val) && isNumeric(val)){
-			val = currencyFormatter(val);
-			$("#priceValue").val(val);
-		}
-	});
-
 
 });
 function isEmpty(value){
@@ -81,6 +64,7 @@ div#form-container{
 	border-radius: 10px;
 }
 div#form-container label.custom-file-label{text-align:left;}
+
 </style>
 </head>
 <body>

@@ -79,20 +79,13 @@ function orderProduct(empId,pNo,requestId){
 								  	<th>	
 									  	<select name="category" id="category">
 										    <option value="" selected disabled>카테고리</option>
-										    <option value="">전체</option>
+
+										    <option value="" ${ map.category eq "" ? "selected='selected'" : '' }>전체</option>
+
 										    <option value="pm" ${ map.category eq "pm" ? "selected='selected'" : '' }>프라모델</option>
 										    <option value="fg" ${ map.category eq "fg" ? "selected='selected'" : '' }>피규어</option>
 										    <option value="rc" ${ map.category eq "rc" ? "selected='selected'" : '' }>RC카</option>
 										    <option value="dr" ${ map.category eq "dr" ? "selected='selected'" : '' }>드론</option>
-										</select>
-									</th>
-									<th>		
-									  	<select name="product-brand" id="product-brand">
-										    <option value="">브랜드</option>
-										    <option value="">1</option>
-										    <option value="">2</option>
-										    <option value="">3</option>
-										    <option value="">4</option>
 										</select>
 									</th>
 									<th>
@@ -129,12 +122,12 @@ function orderProduct(empId,pNo,requestId){
 				</div>
 		  	</div>
 		</div>
-
 			<table id="purchaseLog-table" class="table">
 				<thead>
 					<tr>
 						<th scope="col">상품번호</th>
 						<th scope="col">상품명</th>
+						<th scope="col">지점명</th>
 						<th scope="col">카테고리</th>
 						<th scope="col">제조사</th>
 						<th scope="col">등록일</th>
@@ -151,30 +144,32 @@ function orderProduct(empId,pNo,requestId){
 					<tbody>
 						<c:forEach items="${ list }" var="product">
 						<tr>
+		
 							<td>${ product.productNo }</td>
 							<td><a href="${ pageContext.request.contextPath }/ERP/productUpdate.do?productNo=${product.productNo}">${ product.productName }</a></td>
+							<td>${ product.empName }</td>
 							<td>${ product.category }</td>
 							<td>${ product.manufacturerId }</td>
 							<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>
 							<td>${ product.stock eq 0 ? '재고가 없습니다' : product.stock }</td>
-							<td><button type="button" onclick="orderProduct('${ loginEmp.empId }',${ product.productNo },'${ product.manufacturerId }')">발주</button></td>
+							<c:choose>
+								<c:when test="${ product.confirm == 0 }">
+								<td>발주신청중</td>
+								</c:when>
+								<c:when test="${ product.confirm != 0 }">
+								<td><button type="button" onclick="orderProduct('${ loginEmp.empId }',${ product.productNo },'${ product.manufacturerId }')">발주</button></td>
+								</c:when>
+							</c:choose>
 							<c:if test="${loginEmp.status eq 0 }">
 							<td>
 								<!-- 상품 삭제 폼 -->
 								<button type="button" onclick="productDelete(${product.productNo});">상품 삭제</button>
 							</td>
-							
-							
-							
 						</c:if>
 						</tr>
 						</c:forEach>
-						<tr>
-						
-						</tr>
 					</tbody>
 				</c:if>
-				
 				<!-- 상품이 없을 경우 -->
 				<c:if test="${ empty list }">
 					<tr>
@@ -183,6 +178,7 @@ function orderProduct(empId,pNo,requestId){
 				</c:if>
 	
 		</table>
+		</div>
 		</div>
 	</div>
 	
@@ -227,7 +223,6 @@ function orderProduct(empId,pNo,requestId){
 		</nav>
 	</c:if>
 
-	</div>
 	</div>
 	
 	

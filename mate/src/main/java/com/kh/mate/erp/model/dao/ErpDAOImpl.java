@@ -265,8 +265,7 @@ public class ErpDAOImpl implements ErpDAO {
 
 
 	@Override
-	public List<EmpBoard> searchBoard(String searchType, String searchKeyword, int cPage, int numPerPage) {
-		Map<String, Object> map = new HashMap<>();
+	public List<EmpBoard> searchBoard(Map<String, Object> map,String searchType, String searchKeyword, int cPage, int numPerPage) {
 		
 		map.put("cPage", ((cPage-1)*numPerPage+1));
 		map.put("numPerPage", (cPage * numPerPage));
@@ -277,7 +276,7 @@ public class ErpDAOImpl implements ErpDAO {
 	}
 
 	@Override
-	public int getSearchContents(Map<String, String> map) {
+	public int getSearchContents(Map<String, Object> map) {
 		return sqlSession.selectOne("erpBoard.searchContents", map);
 	}
 	
@@ -384,6 +383,12 @@ public class ErpDAOImpl implements ErpDAO {
 	@Override
 	public List<Map<String, Object>> ioEmpList(Map<String, Object> param) {
 		return sqlSession.selectList("erpBoard.ioEmpList", param);
+	}
+
+	//발주검사
+	@Override
+	public List<Product> proLogList(Map<String, Object> map) {
+		return sqlSession.selectList("erp.proLogList",map);
 	}
 
 	

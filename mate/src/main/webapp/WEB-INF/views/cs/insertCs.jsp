@@ -59,6 +59,13 @@ function csValidate(){
 	return true;
 }
 
+
+function goBackWithDel(){
+
+	history.go(-1);
+	
+}
+
 </script>
 <form name="csFrm" action="${pageContext.request.contextPath}/cs/insertCs.do" method="post" enctype="multipart/form-data" onsubmit="return csValidate();">
 	<div class="search-div">
@@ -90,5 +97,7 @@ function csValidate(){
 				</div>
 			    <textarea class="form-control" name="content" placeholder="내용" required style="resize:none;height:260px;"></textarea>
 		</div>
+
 	</div>
 </form>
+

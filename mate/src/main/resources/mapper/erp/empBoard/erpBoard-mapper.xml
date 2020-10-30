@@ -175,14 +175,23 @@
                                  FROM board ba
                              ) 					
 						<where>
+							<if test="status != null and status == 2">
+								and category = 'adv'	
+							</if>
 							<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
 								and ${ searchType }  like '%' || #{ searchKeyword } || '%'
 							</if>
 						</where>
 						ORDER BY                
-                                    CASE WHEN enabled = 0  THEN enabled END asc,
+
+                                    CASE WHEN enabled = 0  THEN enabled END asc
+                                    <if test="status == null">
+                                    ,
                                     CASE WHEN category LIKE 'ntc' THEN category END asc,
-                                    CASE WHEN category LIKE 'req' THEN category END asc,
+                                    CASE WHEN category LIKE 'req' THEN category END asc
+                                    </if>
+                                    ,
+
                             		 reg_date DESC 
 						) B
 				)
@@ -199,6 +208,9 @@
 		        board b)
 		 ]]>
 		  <where>
+		  	<if test="status != null and status == 2">
+								and category = 'adv'	
+			</if>
 			<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
 				and  ${ searchType } like '%' || #{ searchKeyword } || '%'
 			</if>
