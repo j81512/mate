@@ -16,7 +16,8 @@
 			#{ empAddr3 },
 			#{ empPhone },
 			default,		
-			#{ status }
+			#{ status },
+			default
 		)
 	</insert>
 	
