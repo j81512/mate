@@ -24,12 +24,21 @@
 	crossorigin="anonymous">
 </script>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
+<style>
+.form-area{
+	height: 650px;
+	overflow:scroll;
+}
+.table-head th{
+	position: sticky;
+    top : 0;
+    background-color: #f7dd31;
+}
+.container .nevigate {
+	float : left;}
+</style>	  
 </head>
 	<body>
-<style>
-.contain .nevigate {
-float : left;}
-</style>	  
 <div class="container">
 <div class="nevigate">
 	<h2>지점/제조사 관리</h2>
@@ -37,6 +46,7 @@ float : left;}
 		<div class="col-md-15">
 		    <div class="form-area">  
 				<table id="purchaseLog-table" class="table">
+				<thead class="table-head">
 					<tr>
 						<th scope="col">계정명</th>
 						<th scope="col">사업명</th>
@@ -44,12 +54,14 @@ float : left;}
 						<th scope="col">연락처</th>
 						<th scope="col">등록일</th>
 						<th scope="col">상태</th>
+						<th></th>
 						<th>
 							<button type="button" 
 									onclick="location.href='${ pageContext.request.contextPath }/ERP/EmpEnroll.do';">지점/제조사 생성
 							</button>
 						</th>
 					</tr>
+				</thead>
 					<c:if test="${ not empty list }">
 						<c:forEach items="${ list }" var="emp">
 						<tr>
@@ -71,9 +83,9 @@ float : left;}
 						</c:if>
 						<!-- 상품이 없을 경우 -->
 						<c:if test="${ empty list }">
-							<li>
-								<span>목록이 존재하지 않습니다.</span>
-							</li>
+							<tr>
+								<td colspan="6">목록이 존재하지 않습니다.</td>
+							</tr>
 						</c:if>	
 				</table>
 			</div>

@@ -128,7 +128,6 @@ function orderProduct(empId,pNo,requestId){
 				</div>
 		  	</div>
 		</div>
-
 			<table id="purchaseLog-table" class="table">
 				<thead>
 					<tr>
@@ -162,18 +161,11 @@ function orderProduct(empId,pNo,requestId){
 								<!-- 상품 삭제 폼 -->
 								<button type="button" onclick="productDelete(${product.productNo});">상품 삭제</button>
 							</td>
-							
-							
-							
 						</c:if>
 						</tr>
 						</c:forEach>
-						<tr>
-						
-						</tr>
 					</tbody>
 				</c:if>
-				
 				<!-- 상품이 없을 경우 -->
 				<c:if test="${ empty list }">
 					<tr>
@@ -182,6 +174,7 @@ function orderProduct(empId,pNo,requestId){
 				</c:if>
 	
 		</table>
+		</div>
 		</div>
 	</div>
 	
@@ -226,7 +219,6 @@ function orderProduct(empId,pNo,requestId){
 		</nav>
 	</c:if>
 
-	</div>
 	</div>
 	
 	
