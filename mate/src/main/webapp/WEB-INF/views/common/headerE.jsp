@@ -24,8 +24,6 @@
 </head>
 <style>
 body{
-	background-image: url('${pageContext.request.contextPath}/resources/images/ERPBDG.jpg');
-	background-size: cover;
 }
 </style>
 <header>
