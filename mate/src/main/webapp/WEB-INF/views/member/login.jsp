@@ -6,7 +6,7 @@
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>   
 
 
-<jsp:include page="/WEB-INF/views/common/headerS.jsp" />
+
 
 <link rel="stylesheet"
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
@@ -19,7 +19,7 @@
 	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
 	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
 	crossorigin="anonymous"></script>
-
+<jsp:include page="/WEB-INF/views/common/headerS.jsp" />
 <style>
 .modal {
         text-align: center;
