@@ -190,13 +190,10 @@
  			p.category,
  			(select emp_name from emp where emp_id = p.manufacturer_id) manufacturer_name
  		from
- 			product p 
+ 			stock S 
  		inner join
- 			stock s
- 		on p.product_no = s.product_no
- 		inner join 
- 			receive r
- 		on p.product_no = r.product_no
+ 			product P
+ 		on S.product_no = P.product_no
 		<where>
 			<if test="branchId != null and branchId != '' ">
 			s.emp_id = #{branchId}
@@ -228,12 +225,16 @@
 	 			<if test="manufacturerId != null and manufacturerId != '' ">
 				rl.manufacturer_id = #{manufacturerId}
 				</if>
+				<if test="branchId != null and branchId != '' ">
+				and rl.emp_id = #{branchId}
+				</if>
 				<if test="confirm != null and confirm != ''">
 				and rl.confirm = #{confirm}
 				</if>
 				<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
 				and p.${searchType} like '%' || #{searchKeyword} || '%'
 				</if>
+				
  			</where>
  	</select>
  	
@@ -441,6 +442,7 @@
 		<result column="category" property="category"/>
 		<result column="amount" property="amount"/>
 		<result column="manufacturer_id" property="manufacturerId"/>
+		<result column="enabled" property="enabled"/>
 	</resultMap>
 	
 	<resultMap type="map" id="requestMap">
@@ -454,6 +456,7 @@
 		<result column="emp_id" property="empId"/>
 		<result column="manufacturer_name" property="manufacturerName"/>
 		<result column="branch_name" property="branchName"/>
+		<result column="enabled" property="enabled"/>
 	</resultMap>
 	
 </mapper>

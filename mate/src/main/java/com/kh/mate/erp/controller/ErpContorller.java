@@ -106,7 +106,7 @@ public class ErpContorller {
 	
 	//재고확인 진입
 	@RequestMapping("/ERP/StockLog.do")
-	public String StockLog(Model model) {	
+	public String StockLog(Model model,HttpSession session) {	
 //		List<IoLog> list = erpService.ioLogList();
 //		List<Product> list2 = erpService.productList();
 //		List<Receive> list3 = erpService.receiveList();
@@ -118,6 +118,7 @@ public class ErpContorller {
 //		model.addAttribute("list", list);
 //		model.addAttribute("list2", list2);
 //		model.addAttribute("list3", list3);
+		
 		Map<String, String> temp = new HashMap<>();
 		List<EMP> empList = erpService.empList();
 		List<Map<String, Object>> mapList = erpService.StockLogMapList(temp);
@@ -137,11 +138,18 @@ public class ErpContorller {
 //		model.addAttribute("list", list);
 //		model.addAttribute("list2", list2);
 //		model.addAttribute("list3", list3);
+		EMP loginEmp = (EMP)session.getAttribute("loginEmp");
+		String empId = loginEmp.getEmpId();
 		Map<String,Object> temp = new HashMap<>();
-		List<EMP> empList = erpService.empList();
+		//로그인 회원이 관리자 아이디가 아닐 경우
+//		if(!empId.equals("admin")) {
+//			temp.put("manufacturerId", empId);
+//		}else {
+//		}
 		List<Map<String, Object>> mapList = erpService.selectRequestMapList(temp);
-		model.addAttribute("list", mapList);
+		List<EMP> empList = erpService.empList();
 		model.addAttribute("empList", empList);
+		model.addAttribute("list", mapList);
 		return "ERP/OrderLog";
 	}
 	
@@ -236,7 +244,7 @@ public class ErpContorller {
 	}
 	
 	//박도균 지점/제조사 정보 삭제
-	@RequestMapping("/ERP/infoDelete.do")
+	@PostMapping("/ERP/infoDelete.do")
 	public String infoDelete(EMP emp, 
 							 RedirectAttributes redirectAttr) {
 		log.debug("emp = {}", emp);
@@ -249,6 +257,7 @@ public class ErpContorller {
 			log.debug("result = {}", result);
 			log.debug("map = {}", map);
 			String msg = "삭제가 완료 되었습니다.";
+			redirectAttr.addFlashAttribute("msg",msg);
 			
 
 		}catch(Exception e) {
@@ -945,6 +954,7 @@ public class ErpContorller {
 	@PostMapping("/ERP/searchRequest.do")
 	@ResponseBody
 	public ResponseEntity<?> searchRequest(@RequestParam(value = "manufacturerId", required = false) String manufacturerId,
+										   @RequestParam(value= "branchId", required = false) String branchId,
 										   @RequestParam(value = "searchType", required = false) String searchType,
 										   @RequestParam(value = "searchKeyword", required = false) String searchKeyword,
 										   @RequestParam(value = "confirm", required = false) String confirm){
@@ -957,6 +967,7 @@ public class ErpContorller {
 		
 		Map<String, Object> param = new HashMap<>();
 		param.put("manufacturerId", manufacturerId);
+		param.put("branchId", branchId);
 		param.put("searchType", searchType);
 		param.put("searchKeyword", searchKeyword);
 		param.put("confirm", confirm);
@@ -992,7 +1003,7 @@ public class ErpContorller {
 				m.setMemberName(loginEmp.getEmpName());
 				model.addAttribute("loginMember", m);
 			}
-			location = "redirect:/ERP/menu.do";
+			location = "redirect:/ERP/erpMain.do";
 		}
 		else {
 			location = "redirect:/member/memberLogin.do";
