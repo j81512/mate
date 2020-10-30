@@ -49,6 +49,7 @@
 				</thead>
 					<c:if test="${ not empty list }">
 						<c:forEach items="${ list }" var="emp">
+						<c:if test="${emp.status ne 0 }">
 						<tr>
 							<td>${ emp.empId }</td>
 							<td><a href="${ pageContext.request.contextPath }/ERP/empInfoDetail.do?empId=${ emp.empId }">${ emp.empName }</a></td>
@@ -64,6 +65,7 @@
 								</c:if>
 							</td>		
 						</tr>
+						</c:if>
 						</c:forEach>
 						</c:if>
 						<!-- 상품이 없을 경우 -->
