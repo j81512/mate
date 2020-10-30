@@ -1,5 +1,6 @@
 package com.kh.mate.member.model.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -74,6 +75,11 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public int getSearchContents(Map<String, String> map) {
 		return memberDAO.getSearchContent(map);
+	}
+
+	@Override
+	public int tempPassword(HashMap<String, String> map) {
+		return memberDAO.tempPassword(map);
 	}
 
 	
