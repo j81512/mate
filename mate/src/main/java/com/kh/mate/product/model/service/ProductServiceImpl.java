@@ -89,7 +89,9 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Product selectProductOne(String productNo) {
 		Product product = productDAO.selectProductOne(productNo);
-		return productDAO.selectProductOne(productNo);
+		List<ProductMainImages> pmi = productDAO.selectProductMainImages(productNo);
+		product.setPmiList(pmi);
+		return product;
 	}
 
 	@Override

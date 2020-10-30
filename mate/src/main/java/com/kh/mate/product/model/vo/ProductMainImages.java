@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 public class ProductMainImages {
 
-	private int productImageNo;
+	private int productMainImageNo;
 	private String originalFilename;
 	private String renamedFilename;
 	private int productNo;

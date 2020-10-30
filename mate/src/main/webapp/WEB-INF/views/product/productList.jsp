@@ -63,11 +63,6 @@
 	padding-bottom: 10px;
 	border-top: 1px solid black;
 }
-.name{
-	text-transform: uppercase;
-	font-size: 24px;
-	color: #333;
-}
 .chk-label{
 	background-color: rgba(54,54,54,0.2);
 	color: white;
