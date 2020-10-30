@@ -99,7 +99,7 @@ $(function(){
 	<!-- 게시글 검색 -->
 		<div class="form-group row justify-content-center">
 			<div class="w100" style="padding-right:10px">
-				<select class="form-control form-control-sm" name="searchType" id="searchType">
+				<select  class="form-control" data-live-search="true" name="searchType" id="searchType">
 					<option value="title">제목</option>
 					<option value="emp_name">작성자</option>
 					<option value="category">카테고리</option>

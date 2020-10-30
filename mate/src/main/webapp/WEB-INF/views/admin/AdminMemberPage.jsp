@@ -52,7 +52,7 @@ function memberDelete(memberId){
 					var result = data.result;
 					if(result == "1"){                
 		                alert("회원 삭제를 성공하였습니다.");
-		                location.href = "${ pageContext.request.contextPath }/Member/MemberList.do";                             
+		                location.href = "${ pageContext.request.contextPath }/member/MemberList.do";                             
 		            } 	
 				},
 				error : function(xhr, status, err){
@@ -79,21 +79,21 @@ function memberDelete(memberId){
 				</select>
 			</div>
 		  <div id="search-member_id" class="search-type">
-	            <form action="${ pageContext.request.contextPath}/Member/MemberList.do" method="get">
+	            <form action="${ pageContext.request.contextPath}/member/MemberList.do" method="get">
 	                <input type="hidden" name="searchType" value="member_id"/>
 	                <input type="text" name="searchKeyword"  size="25" placeholder="검색할 아이디를 입력하세요." value="${ searchType eq 'title' ? searchKeyword : ''}" />
 	                <button type="submit"  class="btn btn-sm btn-primary">검색</button>			
 	            </form>	
 	        </div>
 	        <div id="search-member_name" class="search-type">
-	            <form action="${ pageContext.request.contextPath}/Member/MemberList.do" method="get">
+	            <form action="${ pageContext.request.contextPath}/member/MemberList.do" method="get">
 	                <input type="hidden" name="searchType" value="member_name"/>
 	                <input type="text" name="searchKeyword" size="25" placeholder="검색할 이름을 입력하세요." value="${ searchType eq 'content' ? searchKeyword : ''}"/>
 	                <button type="submit"  class="btn btn-sm btn-primary">검색</button>			
 	            </form>	
 	        </div>
 			<div id="search-gender" class="search-type">
-            <form action="${ pageContext.request.contextPath}/Member/MemberList.do" method="get">      
+            <form action="${ pageContext.request.contextPath}/member/MemberList.do" method="get">      
                 <input type="hidden" name="searchType" value="gender" />
                 <input type="radio"  name="searchKeyword" value="M" ${ searchKeyword eq 'M' ? "checked" : ""}> 남자 
                 <input type="radio"  name="searchKeyword" value="F" ${ searchKeyword eq 'F' ? "checked" : ""}> 여자 
