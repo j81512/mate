@@ -14,13 +14,37 @@
 
 <!-- bootstrap css -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-<!-- 호근 헤더 처리-->
+
 <title>게시판 목록</title>
+<c:if test="${ searchType == null }">
 <style>
  	div#search-title {display:inline-block;}
-    div#search-content{display:none;} 
+    div#search-emp_name{display:none;} 
     div#search-category{display:none;}
 </style>
+</c:if>
+<c:if test="${ searchType == 'title' }">
+<style>
+ 	div#search-title {display:inline-block;}
+    div#search-emp_name{display:none;} 
+    div#search-category{display:none;}
+</style>
+</c:if>
+<c:if test="${ searchType == 'emp_name' }">
+<style>
+ 	div#search-title {display:none;}
+    div#search-emp_name{display:inline-block;} 
+    div#search-category{display:none;}
+</style>
+</c:if>
+<c:if test="${ searchType == 'category' }">
+<style>
+ 	div#search-title {display:none;}
+    div#search-emp_name{display:none;} 
+    div#search-category{display:inline-block;}
+</style>
+</c:if>
+
 <script>
 $(function(){
 	$("tr[data-no]").click(function(){
@@ -28,7 +52,6 @@ $(function(){
 		console.log(no);
 		location.href = "${ pageContext.request.contextPath }/ERP/EmpBoardDetail.do?no=" + no;
 		});
-
 	$("#searchType").change(function(){
 		console.log($(this).val());
 		
@@ -99,10 +122,11 @@ $(function(){
 	<!-- 게시글 검색 -->
 		<div class="form-group row justify-content-center">
 			<div class="w100" style="padding-right:10px">
-				<select  class="form-control" data-live-search="true" name="searchType" id="searchType">
-					<option value="title">제목</option>
-					<option value="emp_name">작성자</option>
-					<option value="category">카테고리</option>
+				<select  class="form-control-sm" data-live-search="true" name="searchType" id="searchType">
+					<option value="title" ${ searchType == 'title' ? 'selected' : ''}>제목</option>
+					<option value="emp_name" ${ searchType == 'emp_name' ? 'selected' : ''}>작성자</option>
+					<option value="category" ${ searchType == 'category' ? 'selected' : ''}>카테고리</option>
+			
 				</select>
 			</div>
 		  <div id="search-title" class="search-type">
@@ -112,10 +136,10 @@ $(function(){
 	                <button type="submit"  class="btn btn-sm btn-primary">검색</button>			
 	            </form>	
 	        </div>
-	        <div id="search-content" class="search-type">
+	        <div id="search-emp_name" class="search-type">
 	            <form action="${ pageContext.request.contextPath}/ERP/EmpBoardList.do" method="get">
-	                <input type="hidden" name="searchType" value="content"/>
-	                <input type="text" name="searchKeyword" size="25" placeholder="검색할 내용을 입력하세요." value="${ searchType eq 'content' ? searchKeyword : ''}"/>
+	                <input type="hidden" name="searchType" value="emp_name"/>
+	                <input type="text" name="searchKeyword" size="25" placeholder="작성자 명을 입력하세요." value="${ searchType eq 'emp_name' ? searchKeyword : ''}"/>
 	                <button type="submit"  class="btn btn-sm btn-primary">검색</button>			
 	            </form>	
 	        </div>

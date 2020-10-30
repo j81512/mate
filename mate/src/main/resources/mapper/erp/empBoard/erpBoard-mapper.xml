@@ -191,13 +191,19 @@
 	
 	<select id="searchContents" resultType="_Int">
 		<![CDATA[
-			select count(*) total_contents from board
+			select  count(*) from
+		  	  ( select
+		            b.*,
+		       		 (select e.emp_name from emp e  where b.emp_id = e.emp_id ) emp_name
+		         from 
+		        board b)
 		 ]]>
 		  <where>
 			<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
 				and  ${ searchType } like '%' || #{ searchKeyword } || '%'
 			</if>
 		</where>
+		order by reg_date
 	</select>
 	
 	<select id="selectEmpStock"  resultMap="empBoardCollection">
