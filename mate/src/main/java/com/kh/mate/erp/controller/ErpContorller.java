@@ -457,8 +457,11 @@ public class ErpContorller {
 		List<Product> loList = erpService.proLogList(map);
 		for(Product pro : list) {
 			for(Product lopro : loList) {
-				if( pro.getProductNo() != 0 && pro.getProductNo() == lopro.getProductNo() && lopro.getConfirm() == 0) {
+//				log.debug("productNo = {}",pro.getProductNo());
+//				log.debug("logProductNo = {}",lopro.getProductNo());
+				if(pro.getProductNo() == lopro.getProductNo() && lopro.getConfirm() == 0) {
 					pro.setConfirm(0);
+					break;
 				}else {
 					pro.setConfirm(-2);
 				}
