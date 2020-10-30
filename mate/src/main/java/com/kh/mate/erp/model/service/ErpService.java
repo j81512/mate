@@ -120,6 +120,9 @@ public interface ErpService {
 	List<Map<String, Object>> ioEmpList(Map<String, Object> param);
 
 	int UpdateProductToDelete(String productNo);
+
+	//발주검사
+	List<Product> proLogList(Map<String, Object> map);
 	
 	
 
