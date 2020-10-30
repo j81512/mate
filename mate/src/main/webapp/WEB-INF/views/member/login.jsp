@@ -4,15 +4,16 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%> 
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>   
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <link rel="stylesheet"
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
 	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
 	crossorigin="anonymous">
-	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 <link
 	href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
 	rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet"
+	href="${ pageContext.request.contextPath }/resources/css/loginForm.css" />
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
 	integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
@@ -21,18 +22,25 @@
 	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
 	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
 	crossorigin="anonymous"></script>
-<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/stove99/jquery-modal-sample@v1.4/css/animate.min.css" />
-<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/stove99/jquery-modal-sample@v1.4/css/jquery.modal.css" />
-<script src="//cdn.jsdelivr.net/gh/stove99/jquery-modal-sample@v1.4/js/jquery.modal.js"></script>
-<script src="//cdn.jsdelivr.net/gh/stove99/jquery-modal-sample@v1.4/js/modal.js"></script>
 <link rel="stylesheet"
 	href="${ pageContext.request.contextPath }/resources/css/loginForm.css" />
 <jsp:include page="/WEB-INF/views/common/headerS.jsp" />
 <style>
-.modal-dialog{
-	position : relative;
-	float: left;
-	display:inline-block;
+.modal {
+        text-align: center;
+}
+ 
+ .modal-dialog{
+		position : relative;
+		float: left;
+		display:block;
+		margin-left: 0 auto;
+		margin-right: 0 auto;
+		vertical-align: middle;
+} 
+.modal-content{
+	margin-top : 30%;
+	margin-left : -50%;
 }
 </style>
 <script>
@@ -102,12 +110,13 @@
 	function openModal(phoneCheck){
 		console.log("호출됨?");
 		$("#MocheckNum_").val(Number(phoneCheck));
-		$("#MophoneNum_").val(Number(phoneCheck));
+	/* 	$("#MophoneNum_").val(Number(phoneCheck)); */
 		$("#myModal").fadeIn(300);
+		
 	}
 
 	function closeReturnModal(){
-		$("#myModal").fadeOut(300);
+		$("#myModal").hide();
 	}
 
 	$(document).ready(function(){
@@ -185,6 +194,17 @@
 			closeReturnModal();
 		}
 	};
+
+	function check(){
+		 var $frm = $("#register-form");
+		 var $phone = $("#phone-send").val();
+
+		 if($phone == '문자인증'){
+			alert("핸드폰 인증을 해주세요");
+		}else{
+			$frm.submit();
+		}
+	}
 </script>
 
 
@@ -293,7 +313,7 @@
 					<div class="form-group">
 						<div class="row">
 							<div class="col-sm-6 col-sm-offset-3">
-								<button class="btn btn-lg btn-block purple-bg" type="submit">
+								<button class="btn btn-lg btn-block purple-bg" type="button" onclick="check();">
 									가입하기</button>
 							</div>
 						</div>
@@ -335,7 +355,7 @@
 </div>
 
 		<!-- 핸드폰 인증 -->
-<div class="modal active" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade in" id="myModal" tabindex="-1"  aria-hidden="true">
 					  <div class="modal-dialog">
 					    <div class="modal-content">
 					      <div class="modal-head">
@@ -344,7 +364,7 @@
 					      </div>
 					      <div class="modal-body">
 						        인증번호 : 
-						     <input type="password" class="form-control" name="MophoneNum" id="MophoneNum_" >
+						     <input type="text" class="form-control" name="MophoneNum" id="MophoneNum_" >
 						     <input type="hidden" class="form-control" name="MocheckNum" id="MocheckNum_" >
 					      </div>
 					      <div class="modal-footer">
