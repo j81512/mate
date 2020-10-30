@@ -434,6 +434,7 @@
 		<result column="category" property="category"/>
 		<result column="amount" property="amount"/>
 		<result column="manufacturer_id" property="manufacturerId"/>
+		<result column="enabled" property="enabled"/>
 	</resultMap>
 	
 	<resultMap type="map" id="requestMap">
@@ -447,6 +448,7 @@
 		<result column="emp_id" property="empId"/>
 		<result column="manufacturer_name" property="manufacturerName"/>
 		<result column="branch_name" property="branchName"/>
+		<result column="enabled" property="enabled"/>
 	</resultMap>
 	
 </mapper>
