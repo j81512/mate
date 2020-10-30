@@ -127,5 +127,6 @@ $RECYCLE.BIN/
 *.lnk
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,java,eclipse,web,maven,java-web
 
+config.properties
 .classpath
 .project

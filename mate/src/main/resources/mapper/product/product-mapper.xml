@@ -322,24 +322,6 @@
  		<result column="member_id" property="memberId"/>
  	</resultMap>
  	
- 	<resultMap type="product" id="productMap">
- 		<id column="product_no" property="productNo"/>
- 		<result column="product_name" property="productName"/>
- 		<result column="reg_date" property="regDate"/>
- 		<result column="category" property="category"/>
- 		<result column="content" property="content"/>
- 		<result column="price" property="price"/>
- 		<result column="emp_id" property="empId"/>
- 		<result column="enabled" property="enabled"/>
- 		
- 		<collection property="productMainImages" ofType="productMainImages">
-	 		<id column="product_main_image_no" property="productMainImageNo"/>
-	 		<result column="original_filename" property="originalFilename"/>
-	 		<result column="renamed_filename" property="renamedFilename"/>
-	 		<result column="product_no" property="productNo"/>
- 		</collection>
- 	</resultMap>
- 	
  	<resultMap type="cart" id="cartMap">
  		<id column="member_id" property="memberId"/>
  		<result column="product_no" property="productNo"/>
