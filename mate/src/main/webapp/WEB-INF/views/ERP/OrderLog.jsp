@@ -61,6 +61,7 @@
 												    <option value="product_no">상품번호</option>
 												    <option value="product_name">상품명</option>
 												</select>
+
 												</th>
 												<th>
 												    <input type="text" class="form-control" name="searchKeyword" placeholder="내용을 입력해주세요">
@@ -103,6 +104,7 @@
 											</c:if>
 										</tfoot>
 									<c:if test="${ empty list }">
+
 										<tr>
 											<td colspan="6">검색결과 없음</td>
 										</tr>

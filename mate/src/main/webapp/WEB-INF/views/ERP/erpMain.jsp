@@ -24,7 +24,15 @@
 	crossorigin="anonymous"></script>
 
 <jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
+<style>
+body{
+	background-image: url('${pageContext.request.contextPath}/resources/images/ERPBDG.jpg');
+	background-size: cover;
 
+}
+
+
+</style>
 <div class="container">
 	<div id="buy" class="tab-pane fade active show in">
 		<div class="col-md-15">

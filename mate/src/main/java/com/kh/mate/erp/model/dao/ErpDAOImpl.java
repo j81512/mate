@@ -102,6 +102,11 @@ public class ErpDAOImpl implements ErpDAO {
 	}
 
 	@Override
+	public int UpdateProductToDelete(String productNo) {
+		return sqlSession.update("erp.UpdateProductToDelete", productNo);
+	}
+
+	@Override
 	public int productImageEnroll(ProductImages pigs) {
 		return sqlSession.insert("erp.productImageEnroll", pigs);
 	}

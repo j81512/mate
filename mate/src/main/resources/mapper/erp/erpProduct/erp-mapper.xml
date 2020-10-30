@@ -367,6 +367,15 @@
 			receive_no = {receiveNo}
 	</update>
 	
+	<update id="UpdateProductToDelete">
+		update
+			product
+		set
+			enabled = 1
+		where
+			product_no = #{productNo}
+	</update>
+	
 	<select id="countProduct" resultType="_int">
 	    select COUNT(*)
 		from product p left join stock s
