@@ -125,7 +125,7 @@ CREATE TABLE EMP (
     constraint pk_emp primary key (emp_id)
 );
 
---DROP TABLE PRODUCT;
+--DROP TABLE PRODUCT cascade constraints;
 CREATE TABLE PRODUCT (
 	product_no	number	NOT NULL	,
 	product_name	varchar2(256)		NOT NULL,

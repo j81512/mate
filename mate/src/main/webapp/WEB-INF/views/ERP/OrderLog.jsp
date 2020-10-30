@@ -27,86 +27,91 @@
 </head>
 	<body>  
 		<div class="container">
-			<div id="buy" class="tab-pane fade active show in">
-				<div class="col-md-15">
-				    <div class="form-area">  
-						<table id="purchaseLog-table" class="table">
-							<thead>
-								<form id="searchFrm" method="POST">
-										<tr>
-											<th>
-											  	<select name="manufacturerId" id="manufacturerId">
-											    	<option value="" disabled selected>제조사 선택</option>
-												    <c:forEach items="${empList}" var="list">
-													    <c:if test="${list.status eq 2 }">
-													    <option value="${list.empId}">${list.empName}</option>
-													    </c:if>
-												    </c:forEach>
+			<div>
+			<h2>발주 관리</h2>
+				<div id="buy" class="tab-pane fade active show in">
+					<div class="col-md-15">
+					    <div class="form-area">
+						    <form id="searchFrm" method="POST">  
+								<table id="purchaseLog-table" class="table">
+									<thead>
+											<tr>
+												<th>
+												  	<select name="manufacturerId" id="manufacturerId">
+												    	<option value="" disabled selected>제조사 선택</option>
+													    <c:forEach items="${empList}" var="list">
+														    <c:if test="${list.status eq 2 }">
+														    <option value="${list.empId}">${list.empName}</option>
+														    </c:if>
+													    </c:forEach>
+													</select>
+												</th>
+												<th>
+												  	<select name="confirm" id="confirm">
+													    <option value="" disabled selected>발주 현황</option>
+													    <option value="">전체</option>
+													    <option value="0">처리중</option>
+													    <option value="-1">취소</option>
+													    <option value="1">처리완료</option>
+													</select>
+												</th>
+												<th>
+													<select name="searchType" id="searchType">
+												    <option value="" disabled selected>검색 타입 선택</option>
+												    <option value="product_no">상품번호</option>
+												    <option value="product_name">상품명</option>
 												</select>
-											</th>
-											<th>
-											  	<select name="confirm" id="confirm">
-												    <option value="" disabled selected>발주 현황</option>
-												    <option value="">전체</option>
-												    <option value="0">처리중</option>
-												    <option value="-1">취소</option>
-												    <option value="1">처리완료</option>
-												</select>
-											</th>
-											<th>
-												<select name="searchType" id="searchType">
-											    <option value="" disabled selected>검색 타입 선택</option>
-											    <option value="product_no">상품번호</option>
-											    <option value="product_name">상품명</option>
-											</select>
-											</th>
-											<th>
-											    <input type="text" class="form-control" name="searchKeyword" placeholder="내용을 입력해주세요">
-											</th>
-											<th>
-											  	<button type="button" class="btn btn-default" id="searchRequest">검색</button>
-											</th>
-										</tr>
-									</form>
-								</thead>
-									<tbody class="thead-dark">
+
+												</th>
+												<th>
+												    <input type="text" class="form-control" name="searchKeyword" placeholder="내용을 입력해주세요">
+												</th>
+												<th>
+												  	<button type="button" class="btn btn-default" id="searchRequest">검색</button>
+												</th>
+											</tr>
+									</thead>
+										<tbody class="thead-dark">
+											<tr>
+												<th scope="col">발주번호</th>
+												<th scope="col">상품명</th>
+												<th scope="col">상품 번호</th>
+												<th scope="col">제조사</th>
+												<th scope="col">발주 요청 지점</th>
+												<th scope="col">발주 날짜</th>
+												<th scope="col">발주량</th>
+												<th scope="col">상태</th>
+											</tr>
+										</tbody>	
+										<tfoot class="requestInfo">
+											<c:if test="${ not empty list }">
+												<c:forEach items="${ list }" var="request">
+													<tr>
+														<td>${ request.requestNo }</td>
+														<td>${ request.productName }</td>
+														<td>${ request.productNo }</td>
+														<td>${ request.manufacturerName }</td>
+														<td>${ request.branchName }</td>
+														<td><${request.requestDate }</td>
+														<td>${ request.amount }</td>
+														<td>
+															<c:if test="${ request.confirm eq 0}">발주 대기</c:if>
+															<c:if test="${ request.confirm eq 1}">발주 완료</c:if>
+															<c:if test="${ request.confirm eq -1}">발주 취소</c:if>
+														</td>
+													</tr>
+												</c:forEach>
+											</c:if>
+										</tfoot>
+									<c:if test="${ empty list }">
+
 										<tr>
-											<th scope="col">발주번호</th>
-											<th scope="col">상품명</th>
-											<th scope="col">상품 번호</th>
-											<th scope="col">제조사</th>
-											<th scope="col">발주 요청 지점</th>
-											<th scope="col">발주 날짜</th>
-											<th scope="col">발주량</th>
-											<th scope="col">상태</th>
+											<td colspan="6">검색결과 없음</td>
 										</tr>
-									</tbody>	
-									<tfoot class="requestInfo">
-										<c:if test="${ not empty list }">
-											<c:forEach items="${ list }" var="request">
-												<tr>
-													<td>${ request.requestNo }</td>
-													<td>${ request.productName }</td>
-													<td>${ request.productNo }</td>
-													<td>${ request.manufacturerName }</td>
-													<td>${ request.branchName }</td>
-													<td><${request.requestDate }</td>
-													<td>${ request.amount }</td>
-													<td>
-														<c:if test="${ request.confirm eq 0}">발주 대기</c:if>
-														<c:if test="${ request.confirm eq 1}">발주 완료</c:if>
-														<c:if test="${ request.confirm eq -1}">발주 취소</c:if>
-													</td>
-												</tr>
-											</c:forEach>
-										</c:if>
-									</tfoot>
-							<c:if test="${ empty list }">
-								<tr>
-									<td colspan="6">검색결과 없음</td>
-								</tr>
-							</c:if>
-						</table>
+									</c:if>
+								</table>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -25,9 +25,14 @@
 </script>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
 </head>
-	<body>  
+	<body>
+<style>
+.contain .nevigate {
+float : left;}
+</style>	  
 <div class="container">
-
+<div class="nevigate">
+	<h2>지점/제조사 관리</h2>
 	<div id="buy" class="tab-pane fade active show in">
 		<div class="col-md-15">
 		    <div class="form-area">  
@@ -71,6 +76,7 @@
 							</li>
 						</c:if>	
 				</table>
+			</div>
 			</div>
 		</div>
 	</div>
