@@ -5,7 +5,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%> 
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>   
 
+
 <jsp:include page="/WEB-INF/views/common/headerS.jsp" />
+
 <link rel="stylesheet"
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
 	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
@@ -13,11 +15,11 @@
 <link
 	href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
 	rel="stylesheet" id="bootstrap-css">
-
 <script
 	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
 	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
 	crossorigin="anonymous"></script>
+
 <style>
 .modal {
         text-align: center;
@@ -219,6 +221,7 @@
 		}
 	}
 
+
 	$(document).ready(function(){
 		
 		$(".guide").hide();
@@ -311,6 +314,7 @@
 		});
 
 	}	
+
 </script>
 
 

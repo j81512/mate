@@ -154,5 +154,8 @@ public interface ErpDAO {
 
 	int UpdateProductToDelete(String productNo);
 
+	List<Product> proLogList(Map<String, Object> map);
+
+
 
 }

@@ -432,6 +432,12 @@ public class ErpServiceImpl implements ErpService {
 	public List<Map<String, Object>> ioEmpList(Map<String, Object> param) {
 		return erpDAO.ioEmpList(param);
 	}
+
+	@Override
+	public List<Product> proLogList(Map<String, Object> map) {
+		return erpDAO.proLogList(map);
+	}
+		
 	
 	
 

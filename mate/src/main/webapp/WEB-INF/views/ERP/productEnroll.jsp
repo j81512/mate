@@ -29,23 +29,6 @@ jQuery(document).ready(function($){
 				
 		});
 
-	$("#priceValue").on("focus", function(){
-		var val = $("#priceValue").val();
-		if(!isEmpty(val)){
-			val = val.replace(/,/g,'');
-			$("#priceValue").val(val);
-		}
-
-	});
-
-	$("#pricaValue").on("blur", function(){
-		var val = $("#priceValue").val();
-		if(!isEmpty(val) && isNumeric(val)){
-			val = currencyFormatter(val);
-			$("#priceValue").val(val);
-		}
-	});
-
 
 });
 function isEmpty(value){
@@ -74,6 +57,7 @@ div#form-container{
 	border-radius: 10px;
 }
 div#form-container label.custom-file-label{text-align:left;}
+
 </style>
 </head>
 <body>
@@ -168,7 +152,7 @@ div#form-container label.custom-file-label{text-align:left;}
   </c:if>
   
   
-  <button type="button" class="btn btn-primary" onclick="submitFrm();">등록</button>
+  <button type="submit" class="btn btn-primary" >등록</button>
   <button type="button" class="btn btn-danger" onclick="goBackWithDel();">취소</button>
   
 </form>
@@ -186,14 +170,6 @@ function goBackWithDel(){
 	
 }
 
-function submitFrm(){
-	var $enrollFrm = $("#productEnrollFrm");
-	//필요한 정규표현식 검사 진행 후
-	
-	$enrollFrm.submit();
-
-	
-}
 </script>
 </html>
 

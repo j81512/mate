@@ -30,14 +30,6 @@ public class EmpCheckInterceptor extends HandlerInterceptorAdapter {
 			FlashMapManager manager = RequestContextUtils.getFlashMapManager(request);
 			manager.saveOutputFlashMap(map, request, response);
 
-			String next = request.getRequestURL().toString();
-//		    log.debug("next@url= " + next);
-			if(request.getQueryString() != null) 
-				next += "?" + request.getQueryString();
-				log.debug("next@url + queryString= " + next);
-				//그리고 이걸 session에 저장해야한다.
-				session.setAttribute("next", next);
-
 			response.sendRedirect(request.getContextPath() + "/member/memberLogin.do");
 			return false;
 		}
