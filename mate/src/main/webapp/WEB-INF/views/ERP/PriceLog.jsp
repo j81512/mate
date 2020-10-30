@@ -156,22 +156,25 @@ function chart(){
 </script>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
 </head>
-	<body>  
+	<body>  	
 		<div class="container">
-			<form action="${ pageContext.request.contextPath }/ERP/PriceLog.do" method="GET">
-				<select name="year" required>
-					<option value="" selected disabled>년도 설정</option>
-					<c:forEach items="${ yearList }" var="years">
-						<option value="${ years }">${ years }년</option>
-					</c:forEach>
-				</select>
-				<select name="month" id="select-month">
-					<option value="" selected>월 전체</option>					
-				</select>
-				<input type="submit" value="검색" />
-			</form>
-			<p id="ioDate"></p>
-			<canvas id="myChart"></canvas>
+			<div class="nav">
+			<h2>매출 현황 조회</h2>
+			</div>	
+				<form action="${ pageContext.request.contextPath }/ERP/PriceLog.do" method="GET">
+					<select name="year" required>
+						<option value="" selected disabled>년도 설정</option>
+						<c:forEach items="${ yearList }" var="years">
+							<option value="${ years }">${ years }년</option>
+						</c:forEach>
+					</select>
+					<select name="month" id="select-month">
+						<option value="" selected>월 전체</option>					
+					</select>
+					<input type="submit" value="검색" />
+				</form>
+				<p id="ioDate"></p>
+				<canvas id="myChart"></canvas>
 			
 		</div>			
 	</body>

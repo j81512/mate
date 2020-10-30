@@ -151,5 +151,7 @@ public interface ErpDAO {
 
 	List<Map<String, Object>> ioEmpList(Map<String, Object> param);
 
+	int UpdateProductToDelete(String productNo);
+
 
 }
