@@ -245,8 +245,8 @@ public class ErpContorller {
 	}
 	
 	//박도균 지점/제조사 정보 삭제
-	@PostMapping("/ERP/infoDelete.do")
-	public String infoDelete(EMP emp, 
+	//@PostMapping("/ERP/infoDelete.do")
+	public String infoDeleteNotUse(EMP emp, 
 							 RedirectAttributes redirectAttr) {
 		log.debug("emp = {}", emp);
 		try {
@@ -268,6 +268,23 @@ public class ErpContorller {
 		}
 		return "redirect:/ERP/empManage.do";
 	}
+	
+	@PostMapping("/ERP/infoDelete.do")
+	public String infoDelete(EMP emp, 
+			 RedirectAttributes redirectAttr) {
+		
+		String empId = emp.getEmpId();
+		try {
+			int result = erpService.updateEmpDelete(empId);
+			
+		}catch(Exception e) {
+			
+		}
+		
+		return "redirect:/ERP/empManage.do";
+		
+	}
+	
 	
 
 	@RequestMapping(value="/ERP/EmpBoardList.do", method=RequestMethod.GET)
