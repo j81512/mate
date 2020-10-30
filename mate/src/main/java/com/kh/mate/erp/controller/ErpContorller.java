@@ -278,12 +278,19 @@ public class ErpContorller {
 		List<EMP> list = erpService.empList();
 		//page map처리
 //		log.debug("list = {} ", list);
-		Map<String, String> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("searchType", searchType);
 		map.put("searchKeyword", searchKeyword);
 		
+		HttpSession session = request.getSession();
+		EMP emp = (EMP)session.getAttribute("loginEmp");
+		if(emp != null && emp.getStatus() == 2) {
+			
+			map.put("status", emp.getStatus());
+		}
+		
 //		log.debug("map = {}", map);
-		List<EmpBoard> empBoardList = erpService.searchBoard(searchType,searchKeyword,cPage, numPerPage);
+		List<EmpBoard> empBoardList = erpService.searchBoard(map,searchType,searchKeyword,cPage, numPerPage);
 		int totalContents = erpService.getSearchContents(map);
 		String url = request.getRequestURI() + "?";
 		if(searchType != null && !"".equals(searchType) && searchType != null && !"".equals(searchType)) {

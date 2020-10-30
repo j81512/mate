@@ -188,6 +188,5 @@
 		update member
 			set member_PWD = #{ password }
 		where member_id = #{ memberId }
-	
 	</update>
 </mapper>

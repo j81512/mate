@@ -39,6 +39,11 @@ $(function(){
 		else $label.html(file.name);
 	});
 });
+function goBackWithDel(){
+
+	history.go(-1);
+	
+}
 </script>
 
 <div id="cs-container">	
@@ -65,5 +70,6 @@ $(function(){
 		<input type="checkbox" id="notice" name="notice" value="1"/>
 		</c:if>		
 		<input type="submit" class="btn btn-outline-success" value ="등록하기">
+		<button type="button" class="btn btn-danger" onclick="goBackWithDel();">취소</button>
 	</form>
 </div>

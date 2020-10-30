@@ -319,12 +319,12 @@ public class ErpServiceImpl implements ErpService {
 	}
 
 	@Override
-	public List<EmpBoard> searchBoard(String searchType, String searchKeyword, int cPage, int numPerPage) {
-		return erpDAO.searchBoard(searchType, searchKeyword, cPage, numPerPage);
+	public List<EmpBoard> searchBoard(Map<String, Object> map,String searchType, String searchKeyword, int cPage, int numPerPage) {
+		return erpDAO.searchBoard(map,searchType, searchKeyword, cPage, numPerPage);
 	}
 
 	@Override
-	public int getSearchContents(Map<String, String> map) {
+	public int getSearchContents(Map<String, Object> map) {
 
 		int totalContents = erpDAO.getSearchContents(map);
 
