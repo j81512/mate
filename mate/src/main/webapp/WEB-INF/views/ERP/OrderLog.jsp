@@ -61,7 +61,19 @@
 												    <option value="product_no">상품번호</option>
 												    <option value="product_name">상품명</option>
 												</select>
-
+												</th>
+												<th>
+													<select name="branchId" id="branchId">
+														<option value="" disabled selected>지점 선택</option>
+														<c:forEach items="${empList}" var="list">
+														    <c:if test="${list.status eq 0 }">
+														    <option value="${list.empId}">온라인</option>
+														    </c:if>
+														    <c:if test="${list.status eq 1 }">
+														    <option value="${list.empId}">${list.empName}</option>
+														    </c:if>
+													    </c:forEach>
+													</select>
 												</th>
 												<th>
 												    <input type="text" class="form-control" name="searchKeyword" placeholder="내용을 입력해주세요">
@@ -92,7 +104,7 @@
 														<td>${ request.productNo }</td>
 														<td>${ request.manufacturerName }</td>
 														<td>${ request.branchName }</td>
-														<td><${request.requestDate }</td>
+														<td>${request.requestDate }</td>
 														<td>${ request.amount }</td>
 														<td>
 															<c:if test="${ request.confirm eq 0}">발주 대기</c:if>

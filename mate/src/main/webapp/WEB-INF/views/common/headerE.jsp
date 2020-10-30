@@ -22,7 +22,12 @@
 	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
 	crossorigin="anonymous"></script>
 </head>
-
+<style>
+body{
+	background-image: url('${pageContext.request.contextPath}/resources/images/ERPBDG.jpg');
+	background-size: cover;
+}
+</style>
 <header>
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
   <a class="navbar-brand" href="#">Mate</a>
@@ -33,7 +38,7 @@
   <div class="collapse navbar-collapse" id="navbarsExample03">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item ">
-        <a class="nav-link" href="${pageContext.request.contextPath }/ERP/menu.do">ERP_Main <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="${pageContext.request.contextPath }/ERP/erpMain.do">ERP_Main <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item ">
         <a class="nav-link" href="javascript:window.history.back();">Back</a>

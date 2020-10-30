@@ -4,40 +4,32 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<link rel="stylesheet"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
-	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
-	crossorigin="anonymous">
-<link
-	href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
-	rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet"
-	href="${ pageContext.request.contextPath }/resources/css/loginForm.css" />
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-	integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-	crossorigin="anonymous"></script>
-<script
-	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-	crossorigin="anonymous">
-</script>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
+<style>
+.scroll-area{
+	height: 700px;
+	overflow: auto;
+}
+.thead-dark *{
+	position: sticky;
+    top : 0;
+}
+</style>
 </head>
  	<body>  
 		<div class="container">
 			<h2>재고관리</h2>
 			<div id="buy" class="tab-pane fade active show in">
-				<div class="col-md-15">
-				    <div class="form-area">  
+			    <div class="form-area">
+				    <div class="scroll-area">  
 						<form id="searchFrm" method="POST">
 							<table id="purchaseLog-table" class="table">
-								<thead>
+								<thead class="thead-dark">
 									<tr>
 										<th>
 										  	<select name="branchId" id="branchId">
-											    <option value="" disabled selected>지점 선택</option>
+											    <option value="" id="branch-default" disabled selected>지점 선택</option>
+											    <option value="" >전체</option>
 											    <c:forEach items="${empList}" var="list">
 											    <c:if test="${list.status eq 1 }">
 											    <option value="${list.empId}">${list.empName}</option>
@@ -50,7 +42,7 @@
 										</th>
 										<th>
 										  	<select name="searchType" id="searchType">
-											    <option value="" disabled selected>검색 타입 선택</option>
+											    <option value="" id="searchType-default" disabled selected>검색 타입 선택</option>
 											    <option value="product_no">상품번호</option>
 											    <option value="product_name">상품명</option>
 											</select>
@@ -58,12 +50,15 @@
 										<th>	
 										    <input type="text" name="searchKeyword" class="form-control" placeholder="내용을 입력해주세요">
 										</th>
-										<th>
+										<th colspan="">
 										  <button type="button" class="btn btn-default" id="searchStock">검색</button>
 										</th>
+										<th colspan="2">
+										  <button type="button" class="btn btn-default" id="strike">검색 초기화</button>
+										</th>
 									</tr>
-								
 								</thead>
+								
 								<tbody class="thead-dark">
 									<tr>
 										<th scope="col">보유점</th>
@@ -96,10 +91,10 @@
 								</c:if>
 							</table>
 						</form>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
 	</body>
 
 <jsp:include page="/WEB-INF/views/common/footerE.jsp"/>
@@ -143,6 +138,12 @@ function displayStock(data){
 	}
 	$container.html(html);
 }
+$("#strike").click(function(){
+
+	$("#branch-default").prop("selected", true);
+	$("#searchType-default").prop("selected", true);
+	
+});
 
 </script>	
 </html>
