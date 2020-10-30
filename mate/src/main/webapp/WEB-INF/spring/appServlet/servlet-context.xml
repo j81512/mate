@@ -46,7 +46,7 @@
 			<exclude-mapping path="/ERP/erpLogin.do"/>
 			<beans:bean class="com.kh.mate.common.interceptor.EmpCheckInterceptor"/>
 		</interceptor>
-	</interceptors> 
+</interceptors> 
 	
 	<aop:aspectj-autoproxy/>
 	

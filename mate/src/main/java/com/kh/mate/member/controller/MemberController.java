@@ -480,7 +480,7 @@ public class MemberController {
 	}
 	
 	//호근 어드민용 멤버리스트 추가
-	@GetMapping("/Member/MemberList.do")
+	@GetMapping("/member/MemberList.do")
 	public String AdminMemberList(Model model, HttpServletRequest request, HttpServletResponse response
 								,@RequestParam(required=false) String searchType, @RequestParam(required=false) String searchKeyword) {
 		
