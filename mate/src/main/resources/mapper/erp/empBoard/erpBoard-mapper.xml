@@ -179,7 +179,11 @@
 								and ${ searchType }  like '%' || #{ searchKeyword } || '%'
 							</if>
 						</where>
-						ORDER BY reg_date DESC 
+						ORDER BY                
+                                    CASE WHEN enabled = 0  THEN enabled END asc,
+                                    CASE WHEN category LIKE 'ntc' THEN category END asc,
+                                    CASE WHEN category LIKE 'req' THEN category END asc,
+                            		 reg_date DESC 
 						) B
 				)
 			 where rnum BETWEEN #{ cPage } AND #{ numPerPage }
@@ -187,13 +191,19 @@
 	
 	<select id="searchContents" resultType="_Int">
 		<![CDATA[
-			select count(*) total_contents from board
+			select  count(*) from
+		  	  ( select
+		            b.*,
+		       		 (select e.emp_name from emp e  where b.emp_id = e.emp_id ) emp_name
+		         from 
+		        board b)
 		 ]]>
 		  <where>
 			<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
 				and  ${ searchType } like '%' || #{ searchKeyword } || '%'
 			</if>
 		</where>
+		order by reg_date
 	</select>
 	
 	<select id="selectEmpStock"  resultMap="empBoardCollection">
@@ -279,4 +289,43 @@
 		where board_no = #{ no }
 		and product_no =  #{ productNo }
 	</update>
+	
+	<select id="ioEmpList" resultType="map">
+		select
+				    *
+				from ( 
+				        select 
+				            b.*
+				           from( 
+				                select 
+				                         e.emp_name as "empName",
+				                       	 e.status as "empStatus",
+				                       	 e.emp_id as "empId",
+				                         io.io_no as "ioNo",
+				                         io.product_no as "productNo",
+				                         io.amount as "amount",
+				                         p.product_name as "productName",
+				                         io.status as "status", 
+				                         io.io_date as "ioDate",
+				                         <if test="monthday != null and monthday != ''">
+		                                 io.io_date as "checkDate",
+		                                 </if>
+				                         (select emp_name from emp where emp_id = p.manufacturer_id ) as "manufacturerName" 
+				                     from  
+				                       emp  e 
+				                     join io_log io on e.emp_id = io.emp_id          
+				                     join product p on p.product_no = io.product_no
+				                     <where>
+								  	  <if test="monthday != null and monthday != ''">   
+								  		and to_char(io.io_date, 'yyyyMMdd') = #{ monthday }
+								  	 </if>
+				                     </where>
+		                             order by io_date desc
+				                 )b
+				        ) d
+				        
+				  
+				
+	</select>
+
 </mapper>

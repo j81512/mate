@@ -215,8 +215,16 @@ public class ErpServiceImpl implements ErpService {
 		return erpDAO.selectRequestMapList(temp);
 	}
 	
+	@Override
+	public int UpdateProductToDelete(String productNo) {
+		return erpDAO.UpdateProductToDelete(productNo);
+	}
+	
+	
 
 	// 호근 emp 게시판 추가
+
+
 
 
 
@@ -419,5 +427,12 @@ public class ErpServiceImpl implements ErpService {
 	public List<String> yearList() {
 		return erpDAO.yearList();
 	}
+
+	@Override
+	public List<Map<String, Object>> ioEmpList(Map<String, Object> param) {
+		return erpDAO.ioEmpList(param);
+	}
+	
+	
 
 }

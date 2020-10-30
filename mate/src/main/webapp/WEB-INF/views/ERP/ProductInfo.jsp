@@ -1,32 +1,17 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<link rel="stylesheet"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
-	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
-	crossorigin="anonymous">
-<link
-	href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
-	rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet"
-	href="${ pageContext.request.contextPath }/resources/css/loginForm.css" />
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-	integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-	crossorigin="anonymous"></script>
-<script
-	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-	crossorigin="anonymous">
-</script>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
 <c:if test="${not empty msg }">
 <script>
-	alert("${msg}");$("#search-btn").click();
+	alert("${msg}");
+$(function(){
+	$("#search-btn").click();
+});
 </script>
 </c:if>
 <c:if test="${not empty click }">
@@ -36,27 +21,29 @@
 </c:if>
 </head>
 <style>
-.navbar-form .form-control {
+.navbar-form .form-control-custom {
     display: inline-block;
     width: 100px;
     hight: 50px;
     vertical-align: middle;
+
 }
 .form-control2 {
     display: inline-block;
     width: 200px;
     vertical-align: middle;
 }
-.form-group {
-    display:table;
+#search-group {
 }
 .child {
 	display:table-cell;
 }
-div{
-	float: left;
-	margin : 5px;
-
+.nav-container *{
+	float: none;
+	margin-left: 5px;
+	margin-top: 10px;
+    vertical-align: middle;
+    
 }
 
 </style>
@@ -77,131 +64,125 @@ function orderProduct(empId,pNo,requestId){
 	
 }
 
-function erpSReset(){
-	location.href="${ pageContext.request.contextPath }/ERP/searchInfo.do";
-}
-
 </script>
   <body>
-	<section id="info-container" class="container">
-	  <div class="form-group"
-	  	   style="width: 1280px">
-		<form class="navbar-form navbar-left" 
-			  role="search"
-			  action="${pageContext.request.contextPath}/ERP/searchInfo.do">
-			  <div class="child">
-			  	<select name="category" id="category">
-				    <option value="">카테고리</option>
-				    <option value="pm" ${ map.category eq "pm" ? "selected='selected'" : '' }>프라모델</option>
-				    <option value="fg" ${ map.category eq "fg" ? "selected='selected'" : '' }>피규어</option>
-				    <option value="rc" ${ map.category eq "rc" ? "selected='selected'" : '' }>RC카</option>
-				    <option value="dr" ${ map.category eq "dr" ? "selected='selected'" : '' }>드론</option>
-				</select>
-			  </div>
-			  <div class="child">
-			  	<select name="product-brand" id="product-brand">
-				    <option value="">브랜드</option>
-				    <option value="">1</option>
-				    <option value="">2</option>
-				    <option value="">3</option>
-				    <option value="">4</option>
-				</select>
-			  </div>
-			  <div class="child">
-			    <input type="number" class="form-control" name="upper" placeholder="재고 수량" value="${ map.uNum }">
-			  </div>
-			  <div class="child">
-				<p>이상</p>			
-			  </div>
-			  <div class="child">
-			    <input type="number" class="form-control" name="lower" placeholder="재고 수량" value="${ map.lNum }" >
-			  </div>
-			  <div class="child">
-				<p>이하</p>			
-			  </div>
-			  <div class="child">
-			  	<select name="select">
-				    <option value="">검색 분류</option>
-				    <option value="product_name" ${ map.select eq "product_name" ? "selected='selected'" : '' }>상품명</option>
-				    <option value="product_no" ${ map.select eq "product_no" ? "selected='selected'" : '' }>상품번호</option>
-				</select>
-			  </div>
-			  <div class="child">
-			    <input type="text" class="form-control2" name="search" placeholder="상품명/상품번호 조회" value="${ map.search }">
-			  </div>
-			  <button type="submit" class="btn btn-default" onclick="checkNum('${ map.uNum }','${ map.lNum }')">검색</button>
-				<input type="button" class="btn btn-default" value="검색초기화" onclick="erpSReset()"/>
-		</form>
-	  </div>
-	</section>
-	
+	<div class="container">
+		<div class="name">
+		<h2>상품 관리</h2>
+			<div class="nav-container">
+				<div class="form-group" id="search-group">
+					<form class="navbar-form navbar-left" 
+						  role="search"
+						  action="${pageContext.request.contextPath}/ERP/searchInfo.do">
+						  <table>
+							  	<tr>
+								  	<th>	
+									  	<select name="category" id="category">
+										    <option value="">카테고리</option>
+										    <option value="pm" ${ map.category eq "pm" ? "selected='selected'" : '' }>프라모델</option>
+										    <option value="fg" ${ map.category eq "fg" ? "selected='selected'" : '' }>피규어</option>
+										    <option value="rc" ${ map.category eq "rc" ? "selected='selected'" : '' }>RC카</option>
+										    <option value="dr" ${ map.category eq "dr" ? "selected='selected'" : '' }>드론</option>
+										</select>
+									</th>
+									<th>		
+									  	<select name="product-brand" id="product-brand">
+										    <option value="">브랜드</option>
+										    <option value="">1</option>
+										    <option value="">2</option>
+										    <option value="">3</option>
+										    <option value="">4</option>
+										</select>
+									</th>
+									<th>
+							    		<input type="number" class="form-control-custom" name="upper" placeholder="재고 수량" value="${ map.uNum }">
+									</th>
+									<th>
+										<p>이상</p>			
+									</th>
+									<th>
+									    <input type="number" class="form-control-custom" name="lower" placeholder="재고 수량" value="${ map.lNum }" >
+									</th>
+									<th>
+										<p>이하</p>			
+									</th>
+									<th>
+									  	<select name="select">
+										    <option value="">검색 분류</option>
+										    <option value="product_name" ${ map.select eq "product_name" ? "selected='selected'" : '' }>상품명</option>
+										    <option value="product_no" ${ map.select eq "product_no" ? "selected='selected'" : '' }>상품번호</option>
+										</select>
+									</th>
+									<th>
+									    <input type="text" class="form-control2" name="search" placeholder="상품명/상품번호 조회" value="${ map.search }">
+									</th>
+									<th>
+									  <button type="submit" class="btn btn-default" id="search-btn" onclick="checkNum('${ map.uNum }','${ map.lNum }')">검색</button>
+									</th>
+									<th>
+										<button type="button" class="btn btn-dark" onclick="productEnroll();">상품 등록</button>								
+									</th>
+							  </tr>
+					  </table>	
+					</form>
+				</div>
+		  	</div>
+		</div>
 
-	
-	
-
-	<div id="buy" class="tab-pane fade active show in">
-		<div class="col-md-15">
-		    <div class="form-area">  
-		    	<section id="product-enroll-btn">
-					<div class="form-group">
-						<button type="button" class="btn btn-light" onclick="history.go(-1)">뒤로 가기</button>
-						<button type="button" class="btn btn-dark" onclick="productEnroll();">상품 등록</button>
-					</div>
-				</section>	
-				<table id="purchaseLog-table" class="table">
-			<thead>
-				<tr>
-					<th scope="col">상품번호</th>
-					<th scope="col">상품명</th>
-					<th scope="col">카테고리</th>
-					<th scope="col">제조사</th>
-					<th scope="col">등록일</th>
-					<th scope="col">재고</th>
-					<th scope="col">상태</th>
-					<!-- 로그인 상태가 관리자인 경우 상품 삭제 버튼 추가 -->
-					<c:if test="${loninEmp.status eq 0 }">
-					상품 삭제
-					</c:if>
-				</tr>
-			</thead>
-		
-			<c:if test="${ not empty list }">
-				<tbody>
-					<c:forEach items="${ list }" var="product">
+			<table id="purchaseLog-table" class="table">
+				<thead>
 					<tr>
-						<td>${ product.productNo }</td>
-						<td><a href="${ pageContext.request.contextPath }/ERP/productUpdate.do?productNo=${product.productNo}">${ product.productName }</a></td>
-						<td>${ product.category }</td>
-						<td>${ product.manufacturerId }</td>
-						<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>
-						<td>${ product.stock eq 0 ? '재고가 없습니다' : product.stock }</td>
-						<td><button type="button" onclick="orderProduct('${ loginEmp.empId }',${ product.productNo },'${ product.manufacturerId }')">발주</button></td>
-						<c:if test="${loginEmp.status eq 0 }">
-						<td>
-							<!-- 상품 삭제 폼 -->
-							<button type="button" onclick="productDelete(${product.productNo});">상품 삭제</button>
-						</td>
-						
-						
-						
-					</c:if>
+						<th scope="col">상품번호</th>
+						<th scope="col">상품명</th>
+						<th scope="col">카테고리</th>
+						<th scope="col">제조사</th>
+						<th scope="col">등록일</th>
+						<th scope="col">재고</th>
+						<th scope="col">상태</th>
+						<!-- 로그인 상태가 관리자인 경우 상품 삭제 버튼 추가 -->
+						<c:if test="${loninEmp.status eq 0 }">
+						상품 삭제
+						</c:if>
 					</tr>
-					</c:forEach>
-					<tr>
-					
-					</tr>
-				</tbody>
-			</c:if>
+				</thead>
 			
-			<!-- 상품이 없을 경우 -->
-			<c:if test="${ empty list }">
-				<tr>
-					<td colspan="8">등록된 상품이 없습니다.</td>
-				</tr>
-			</c:if>
-
-	</table>
-	</div>
+				<c:if test="${ not empty list }">
+					<tbody>
+						<c:forEach items="${ list }" var="product">
+						<tr>
+							<td>${ product.productNo }</td>
+							<td><a href="${ pageContext.request.contextPath }/ERP/productUpdate.do?productNo=${product.productNo}">${ product.productName }</a></td>
+							<td>${ product.category }</td>
+							<td>${ product.manufacturerId }</td>
+							<td><fmt:formatDate value="${ product.regDate }" pattern="yyyy년MM월dd일"/></td>
+							<td>${ product.stock eq 0 ? '재고가 없습니다' : product.stock }</td>
+							<td><button type="button" onclick="orderProduct('${ loginEmp.empId }',${ product.productNo },'${ product.manufacturerId }')">발주</button></td>
+							<c:if test="${loginEmp.status eq 0 }">
+							<td>
+								<!-- 상품 삭제 폼 -->
+								<button type="button" onclick="productDelete(${product.productNo});">상품 삭제</button>
+							</td>
+							
+							
+							
+						</c:if>
+						</tr>
+						</c:forEach>
+						<tr>
+						
+						</tr>
+					</tbody>
+				</c:if>
+				
+				<!-- 상품이 없을 경우 -->
+				<c:if test="${ empty list }">
+					<tr>
+						<td colspan="8">등록된 상품이 없습니다.</td>
+					</tr>
+				</c:if>
+	
+		</table>
+		</div>
 	</div>
 	
 	<form action="${pageContext.request.contextPath}/ERP/orderERP.do" name="order">
@@ -246,7 +227,7 @@ function erpSReset(){
 	</c:if>
 
 	</div>
-	
+	</div>
 	
 	
 <script>
@@ -270,4 +251,6 @@ function productDelete(no){
 }
 </script>
 	</body>
+
+
 </html>

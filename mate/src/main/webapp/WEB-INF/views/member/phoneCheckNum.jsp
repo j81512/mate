@@ -67,7 +67,7 @@ function closed(){
 		<div class="row">
 			<div class="col-sm-6 col-sm-offset-3">
 				<input type="submit"  class="btn btn-lg btn-block purple-bg" value="인증하기"/>
-				 <input type="button" class="btn btn-lg btn-block purple-bg" value="창닫기" onclick="window.close()">
+				 <input type="button" class="btn btn-lg btn-block purple-bg" value="창닫기" >
 			</div>
 		</div>
 	</div>			

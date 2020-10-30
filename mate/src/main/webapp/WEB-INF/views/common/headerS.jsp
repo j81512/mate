@@ -188,7 +188,7 @@ $(function(){
 	       			</a>
 	       		</c:if>
 	       		<c:if test='${ ! empty loginMember && loginMember.memberId eq "admin" }'>
-	       			<a class=" " href="${ pageContext.request.contextPath }/Member/MemberList.do">
+	       			<a class=" " href="${ pageContext.request.contextPath }/member/MemberList.do">
 	       				<span class=" font-cookie nav-span">Manage</span>
 	       			</a>
 	       		</c:if>

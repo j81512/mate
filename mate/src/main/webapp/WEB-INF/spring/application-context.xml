@@ -65,8 +65,5 @@
 		  <property name="redirectUri"
 		    value="http://localhost:9090/mate/googlecallback.do" />
 		</bean>
-		<bean id="memberController" class="com.kh.mate.member.controller.MemberController">
-			<property name="googleConnectionFactory" ref="googleConnectionFactory"/>
-			<property name="googleOAuth2Parameters" ref="googleOAuth2Parameters"/>
-		</bean>
+		
 </beans>

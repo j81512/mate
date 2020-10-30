@@ -85,14 +85,13 @@ CREATE TABLE MEMBER (
 	member_id 	varchar2(100)		NOT NULL,
 	member_pwd	varchar2(300)		NOT NULL,
 	member_name	varchar2(128)		NOT NULL,
-   	 gender	char(1)		NOT NULL,
+    gender	char(1)		NOT NULL,
 	phone	char(11)		NOT NULL,
 	enroll_date	date	DEFAULT sysdate	NOT NULL,
     
     constraint pk_member primary key (member_id),
     constraint chk_member_gender check (gender in ('M','F'))
 );
-
 
 --DROP TABLE Address;
 CREATE TABLE Address (
@@ -342,7 +341,10 @@ CREATE TABLE CS_REPLY (
 	content	varchar2(300)		NOT NULL,
 	reg_date	date	DEFAULT sysdate	NOT NULL,
 	cs_no	number		NOT NULL,
-    
+    member_id  varchar2(30) not null ,
+    constraint fk_cs_reply_member_id foreign key (member_id)
+                                              references member(member_id)
+                                              on delete cascade,
     constraint pk_cs_reply primary key (cs_reply_no),
     constraint fk_cs_reply_cs_no foreign key (cs_no)
                                           references cs (cs_no)
@@ -374,7 +376,10 @@ CREATE TABLE PURCHASE (
     constraint pk_purchase primary key (purchase_no),
     constraint fk_purchase_member_id foreign key (member_id)
                                                 references member (member_id)
-                                                on delete cascade
+                                                on delete cascade,
+    constraint fk_purchase_product_no foreign key (product_no)
+                                                references product (product_no)
+                                                on delete set null;
 );
 
 --DROP TABLE PURCHASE_LOG;
@@ -516,6 +521,11 @@ create sequence seq_purchase_log_no;
 create sequence seq_return_no;
 create sequence seq_return_image_no;
 create sequence seq_review_no;
+
+
+
+
+
 
 --======================================
 -- 트리거
@@ -670,19 +680,9 @@ create or replace trigger trg_return
     update on return
     for each row
 declare    
-    v_manufacturer_id emp.emp_id%type;
-    v_purchase_log_no purchase_log.purchase_log_no%type;
     v_product_no product.product_no%type;
 begin
     if :new.confirm = 1 and :new.status = 'R' then
-        select
-            purchase_log_no
-        into
-            v_purchase_log_no
-        from
-            return
-        where
-            purchase_log_no = :new.purchase_log_no;
     
         select 
             product_no
@@ -691,16 +691,7 @@ begin
         from 
             purchase_log
         where
-            purchase_log_no = v_purchase_log_no;
-            
-        select
-            manufacturer_id
-        into
-            v_manufacturer_id
-        from 
-            product
-        where
-            product_no = v_product_no;
+            purchase_log_no = :new.purchase_log_no;
             
         insert into
             io_log
@@ -710,19 +701,12 @@ begin
             :new.amount,
             default,
             v_product_no,
-            v_manufacturer_id,
+            'admin',
             '온라인 - 환불'
         );
     end if;
+    
     if :new.confirm = 1 and :new.status = 'E' then
-        select
-            purchase_log_no
-        into
-            v_purchase_log_no
-        from
-            return
-        where
-            purchase_log_no = :new.purchase_log_no;
     
         select 
             product_no
@@ -731,16 +715,7 @@ begin
         from 
             purchase_log
         where
-            purchase_log_no = v_purchase_log_no;
-            
-        select
-            manufacturer_id
-        into
-            v_manufacturer_id
-        from 
-            product
-        where
-            product_no = v_product_no;
+            purchase_log_no = :new.purchase_log_no;
             
         insert into
             io_log
@@ -750,7 +725,7 @@ begin
             :new.amount,
             default,
             v_product_no,
-            v_manufacturer_id,
+            'admin',
             '온라인 - 교환'
         );
             
@@ -762,7 +737,7 @@ begin
             :new.amount,
             default,
             v_product_no,
-            v_manufacturer_id,
+            'admin',
             '불량품 교환'
         );
     end if;
@@ -802,19 +777,30 @@ begin
 end;
 /
 
--- 입출고 로그에 입고insert시 재고 반영 관련 트리거
+-- 입출고 로그에 입고/출고시 재고 반영 관련 트리거
 create or replace trigger trg_io_log
     before
     insert on io_log
     for each row
 begin
-    update
-        stock
-    set
-        stock = stock + :new.amount
-    where
-        product_no = :new.product_no and
-        emp_id = :new.emp_id;
+    if :new.status = 'I' then
+        update
+            stock
+        set
+            stock = stock + :new.amount
+        where
+            product_no = :new.product_no and
+            emp_id = :new.emp_id;
+    end if;
+    if :new.status = 'O' then
+           update
+            stock
+        set
+            stock = stock - :new.amount
+        where
+            product_no = :new.product_no and
+            emp_id = :new.emp_id;
+    end if;
 end;
 /
 
@@ -864,14 +850,28 @@ create or replace trigger trg_stock
     before
     insert on request_log
     for each row
+declare
+    cnt number;
 begin
-    insert into
+    select 
+        count(*)
+    into
+        cnt
+    from
         stock
-    values(
-        :new.product_no,
-        :new.emp_id,
-        0
-    );
+    where
+        product_no = :new.product_no
+        and emp_id = :new.emp_id;
+        
+    if cnt = 0 then
+        insert into
+            stock
+        values(
+            :new.product_no,
+            :new.emp_id,
+            0
+        );
+    end if;
 end;
 /
 
@@ -881,6 +881,7 @@ end;
 --상품 카테고리별로 10개씩 대표사진 3개
 --회원 15명 -> 배송지 한사람당 0개 이상 마음 내키는 대로 한사함당 최대 3개만
 --지점 5개
+
 insert into mate.EMP values ('toy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '강남점', 06234, '서울특별시 강남구 테헤란로14길 8(역삼동)', '1층', '07012341234', default, 1);
 insert into mate.EMP values ('toy2', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '역삼점', 06220, '서울특별시 강남구 역삼동 테헤란로 212', '2층', '07013246432', default, 1);
 insert into mate.EMP values ('toy3', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '부산점', 47216, '부산광역시 부산진구 연수로11번길 1(양정동)', '1층', '07085321234', default, 1);
@@ -925,11 +926,1490 @@ insert into member values
 
 --게시판 카테고리별로 3개씩
 
---(요청글은 완료된거 2개 안된거 1개)       
-commit; 
-        
-        
-        
+--(요청글은 완료된거 2개 안된거 1개)  
+INSERT into board VALUES(seq_board_no.nextval,'req','강남점 프라모델요청','강남점 새로나온 프라모델 어제부터 손님들이 찾으십니다 요청합니다','toy1',default,1,default);
+INSERT into board VALUES(seq_board_no.nextval,'req','역삼점 홍보용깃발 요청','역삼점 홍보용깃발 요청드립니다.','toy2',default,1,default);
+INSERT into board VALUES(seq_board_no.nextval,'req','부산점 신규 RC카요청 ','부산점 신규RC카 요청합니다.','toy3',default,default,default);
+
+--===================================
+--샘플데이터
+--===================================
+--상품 카테고리별로 10개씩 대표사진 3개
+
+--회원 15명 -> 배송지 한사람당 0개 이상 마음 내키는 대로 한사함당 최대 3개만
+
+insert into MEMBER values
+('honggd','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','홍길동','M','01012341234',default);
+insert into MEMBER values
+('sinsa','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','신사임당','F','01098765432',default);
+insert into MEMBER values
+('leesin','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','이순신','M','01023456789',default);
+insert into MEMBER values
+('sukb','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','한석봉','M','01065439876',default);
+insert into MEMBER values
+('mrhang','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','황희','M','01034567815',default);
+insert into MEMBER values
+('Eliza','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','앨리자베스','F','01065127895',default);
+insert into MEMBER values
+('nobel','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','노벨','M','01063216321',default);
+insert into MEMBER values
+('keanu','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','키아누리브스','M','01042657854',default);
+insert into MEMBER values
+('nolan','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','크리스토퍼놀란','M','01085456585',default);
+insert into MEMBER values
+('matt','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','맷데이먼','M','01064216321',default);
+insert into MEMBER values
+('smith','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','윌스미스','M','01056215475',default);
+insert into MEMBER values
+('watson','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','엠마왓슨','F','01021452145',default);
+insert into MEMBER values
+('cruise','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','톰크루즈','M','01095153575',default);
+insert into MEMBER values
+('nicole','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','니콜키드먼','F','01032568754',default);
+insert into MEMBER values
+('james','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','제임스카메론','M','01056278954',default);
+insert into MEMBER values
+('suzy','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','수지','F','01021598756',default);
+
+
+
+
+--지점 5개
+insert into EMP values 
+('matetoy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '강남점', 06234, '서울특별시 강남구 테헤란로14길 8(역삼동)', '1층', '07012341234', default, 1);
+insert into EMP values 
+('matetoy2', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '역삼점', 06220, '서울특별시 강남구 역삼동 테헤란로 212', '2층', '07013246432', default, 1);
+insert into EMP values 
+('matetoy3', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '부산점', 47216, '부산광역시 부산진구 연수로11번길 1(양정동)', '1층', '07085321234', default, 1);
+insert into EMP values 
+('matetoy4', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '광주점', 61937, '광주광역시 서구 무진대로 904(광천동)', '1층', '07057328628', default, 1);
+insert into EMP values 
+('matetoy5', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '대구점', 41931, '대구광역시 중구 달성로 22(동산동)', '1층', '07085767552', default, 1);
+
+--제조사 10개
+insert into EMP values
+('alter',1234, '알터',01693,'서울특별시 노원구 상계2동 603-8', '1층', '0265653535', default,2);
+insert into EMP values
+('bookia',1234, '고토부키아',04044,'서울특별시 마포구 서교동 신촌로6길 17', '6층', '0317133010', default,2);
+insert into EMP values
+('wave',1234, '웨이브',02830,'서울특별시 성북구 동소문동6가 동소문로15길 8', '4층', '029048899', default,2);
+insert into EMP values
+('smiles',1234, '굿스마일즈',05116,'서울특별시 광진구 구의3동 광나루로56길 85', '1층', '024347799', default,2);
+insert into EMP values
+('megahouse',1234, '메가하우스',06014,'서울특별시 강남구 청담동 선릉로158길 3', '4층', '027974466', default,2);
+insert into EMP values
+('okidsid',1234, '오키드시드',04039,'서교동 370-24 KR 서울특별시 마포구 홍익로 5안길 50', '2층', '0315597851', default,2);
+insert into EMP values
+('kidoyo',1234, '카이도요',05253,'서울특별시 강동구 암사동 472-21', '1층', '025845959', default,2);
+insert into EMP values
+('die',1234, '반다이',05028,'KR 서울특별시 광진구 자양동 224-9', ' 건흥빌딩 건프라샵 사이드7 2층', '029987585', default,2);
+insert into EMP values
+('nami',1234, '코나미',03120,'서울특별시 종로구 창신1동 종로52길 44', '2층', '029978426', default,2);
+insert into EMP values
+('gigafalse',1234, '기가펄스',01136,'서울특별시 강북구 번동 430-1', '4층', '0706659745', default,2);
+insert into EMP values
+('claze',1234, '클레이즈',07782,'서울특별시 강서구 화곡2동 855-13', '1 층 아카데미 과학', '024496566', default,2);
+insert into EMP values
+('bird',1234, '그리폰',06734,'서울특별시 서초구 서초동 서운로 18', '영진빌딩 16층', '027033321', default,2);
+insert into EMP values
+('sega',1234, 'SEGA',06168,'서울특별시 강남구 삼성동 157-18', '하남빌딩 13층', '024439933', default,2);
+insert into EMP values
+('freeing',1234, 'FREEing',04377,'서울특별시 용산구 한강로3가 한강대로23길 55', '9층', '0226482345', default,2);
+
+--관리자 1
+insert into EMP values
+('admin', '1234', '본사관리자', '06234', '서울특별시 강남구 테헤란로14길 6', '남도빌딩', '01012341234', default, 0);
+insert into member values
+('admin', '1234', '본사관리자', 'M', '01012341234', default);
+
+--고객센터 공지 2개 
+insert into CS values
+('1','Mate에 오신것을 환영합니다','Mate에서는 어른들을 위한 다양한 장난감들이 준비되어 있습니다. 많은 관심부탁드립니다.','admin',default,0,1);
+insert into CS values
+('2','Mate 서버 점검 안내','Mate에서 정기적인 서버점검이 이루어 지려고 합니다. 11월 22일 예정입니다. 이용에 불편함을 드려 죄송합니다.','admin',default,0,1);
+
+--문의글 답변된거 4개 
+insert into CS values
+('5','문의글입니다','내용입니다','sukb',default,0,0);
+insert into CS_REPLY values
+('1','답변내용입니다',default,'5');
+insert into CS values
+('6','문의글입니다','내용입니다','Eliza',default,0,0);
+insert into CS_REPLY values
+('1','답변내용입니다',default,'6');
+insert into CS values
+('7','문의글입니다','내용입니다','smith',default,0,0);
+insert into CS_REPLY values
+('1','답변내용입니다',default,'7');
+insert into CS values
+('8','문의글입니다','내용입니다','cruise',default,0,0);
+insert into CS_REPLY values
+('1','답변내용입니다',default,'8');
+
+--안된거 3개 
+insert into CS values
+('9', '문의글입니다','내용입니다','watson',default,0,0);
+insert into CS values
+('10', '문의글입니다','내용입니다','suzy',default,0,0);
+insert into CS values
+('11', '문의글입니다','내용입니다','leesin',default,0,0);
+
+--비밀글 2개
+insert into CS values
+('3', '비밀문의글1입니다','내용입니다','james',default,1,0);
+insert into CS values
+('4', '비밀문의글2입니다','내용입니다','nicole',default,1,0);
+
+--게시판 카테고리별로 3개씩
+--상품카테고리명 프라모델 :pl , 피규어 :pg , RC카 :rc , 드론 :dr 
+-- 게시판 카테고리명 요청 : req , 일반 : def, 공지 : not, 홍보 adv
+insert into BOARD values
+(1,'not','공지1','내용1','admin',default,default,default);
+
+insert into BOARD values
+(2,'req','요청1','내용2','matetoy1',default,default,default);
+insert into BOARD values
+(3,'req','요청2','내용3','matetoy3',default,default,default);
+insert into BOARD values
+(4,'req','요청3','내용4','matetoy4',default,default,default);
+
+insert into BOARD values
+(5,'def','일반1','내용5','matetoy5',default,default,default);
+
+--(요청글은 완료된거 2개 안된거 1개)
+
+--io_log 샘플데이터 상태 I = 입고 O = 출고 / 
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-30, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-30, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-30, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-30, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-30, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-30, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-30, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-30, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-30, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-30, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-29, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-29, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-29, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-29, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-29, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-29, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-29, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-29, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-29, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-29, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-28, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-28, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-28, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-28, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-28, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-28, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-28, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-28, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-28, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-28, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-27, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-27, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-27, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-27, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-27, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-27, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-27, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-27, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-27, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-27, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-25, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-25, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-25, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-25, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-25, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-25, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-25, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-25, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-25, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-25, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-24, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-24, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-24, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-24, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-24, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-24, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-24, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-24, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-24, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-24, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-23, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-23, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-23, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-23, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-23, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-23, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-23, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-23, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-23, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-23, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-22, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-22, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-22, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-22, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-22, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-22, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-22, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-22, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-22, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-22, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-21, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-21, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-21, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-21, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-21, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-21, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-20, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-20, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-20, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-20, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-19, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-19, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-18, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-18, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-18, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-18, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-17, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-17, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-17, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-17, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-17, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-17, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-16, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-16, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-16, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-16, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-16, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-16, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-16, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-16, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-15, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-15, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-15, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-15, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-15, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-15, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-15, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-15, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-15, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-15, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-14, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-14, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-14, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-13, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-13, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-13, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-13, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-13, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-13, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-13, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-12, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-12, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-11, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-11, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-11, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-11, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-10, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-10, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-10, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-10, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-9, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-9, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-9, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-8, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-8, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-8, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-8, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-8, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-8, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-8, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-7, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-7, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-7, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-7, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-7, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-7, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-7, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-7, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-7, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-7, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-6, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-6, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-6, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-6, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-6, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-6, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-6, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-6, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-6, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-6, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-5, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-5, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-5, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-5, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-5, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-5, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-5, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-5, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-5, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-5, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-4, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-4, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-4, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-4, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-3, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-3, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-3, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-3, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-3, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-3, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-2, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-2, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-2, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-2, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-2, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-2, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-2, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-2, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-2, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-2, 5, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-1, 1, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-1, 1, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-1, 2, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-1, 2, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-1, 3, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-1, 3, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate, 4, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate, 4, 'matetoy1', '1호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate, 5, 'matetoy1', '1호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate, 5, 'matetoy1', '1호점-출고');
+
+--============
+
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-30, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 2, sysdate-30, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-30, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-30, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-30, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-30, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-30, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 8, sysdate-30, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-30, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-30, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-30, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-30, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-30, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-30, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-30, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-30, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-30, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-30, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-30, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-30, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-29, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-29, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-29, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-29, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-29, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-29, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-29, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-29, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-29, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-29, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-28, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-28, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-28, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-28, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-28, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-28, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-28, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-28, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-28, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-28, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-27, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-27, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-27, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-27, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-27, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-27, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-27, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-27, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-27, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-27, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-25, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-25, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-25, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-25, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-25, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-25, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-25, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-25, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-25, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-25, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-24, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-24, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-24, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-24, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-24, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-24, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-24, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-24, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-24, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-24, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-23, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-23, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-23, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-23, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-23, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-23, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-23, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-23, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-23, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-23, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-22, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-22, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-22, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-22, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-22, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-22, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-22, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-22, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-22, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-22, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-21, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-21, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-21, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-21, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-21, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-21, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-20, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-20, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-20, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-20, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-19, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-19, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-18, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-18, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-18, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-18, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-17, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-17, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-17, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-17, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-17, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-17, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-16, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-16, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-16, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-16, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-16, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-16, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-16, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-16, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-15, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-15, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-15, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-15, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-15, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-15, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-15, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-15, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-15, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-15, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-14, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-14, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-14, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-13, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-13, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-13, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-13, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-13, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-13, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-13, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-12, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-12, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-11, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-11, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-11, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-11, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-10, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-10, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-10, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-10, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-9, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-9, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-9, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-8, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-8, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-8, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-8, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-8, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-8, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-8, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-7, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-7, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-7, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-7, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-7, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-7, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-7, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-7, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-7, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-7, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-6, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-6, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-6, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-6, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-6, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-6, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-6, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-6, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-6, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-6, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-5, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-5, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-5, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-5, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-5, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-5, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-5, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-5, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-5, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-5, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-4, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-4, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-4, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-4, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-3, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-3, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-3, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-3, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-3, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-3, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-2, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-2, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-2, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-2, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-2, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-2, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-2, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-2, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-2, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-2, 5, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-1, 1, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-1, 1, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-1, 2, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-1, 2, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-1, 3, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-1, 3, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate, 4, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate, 4, 'matetoy2', '2호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate, 5, 'matetoy2', '2호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate, 5, 'matetoy2', '2호점-출고');
+
+
+--=========
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-30, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 2, sysdate-30, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-30, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-30, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-30, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-30, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-30, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 8, sysdate-30, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-30, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-30, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-30, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 2, sysdate-30, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-30, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-30, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-30, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-30, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-30, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 8, sysdate-30, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-30, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-30, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-30, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-30, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-30, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-30, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-30, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-30, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-30, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-30, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-30, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-30, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-29, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-29, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-29, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-29, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-29, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-29, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-29, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-29, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-29, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-29, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-28, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-28, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-28, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-28, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-28, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-28, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-28, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-28, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-28, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-28, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-27, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-27, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-27, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-27, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-27, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-27, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-27, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-27, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-27, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-27, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-25, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-25, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-25, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-25, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-25, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-25, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-25, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-25, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-25, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-25, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-24, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-24, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-24, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-24, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-24, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-24, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-24, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-24, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-24, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-24, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-23, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 5, sysdate-23, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-23, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 3, sysdate-23, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-23, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 1, sysdate-23, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-23, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 15, sysdate-23, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 5, sysdate-23, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 4, sysdate-23, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-22, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-22, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-22, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-22, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-22, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-22, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-22, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-22, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-22, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-22, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-21, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-21, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-21, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-21, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-21, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-21, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-20, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-20, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-20, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-20, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-19, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-19, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-18, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-18, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-18, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-18, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-17, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-17, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-17, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-17, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-17, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-17, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-16, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-16, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-16, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-16, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-16, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-16, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-16, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-16, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-15, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-15, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-15, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-15, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-15, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-15, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-15, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-15, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-15, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-15, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-14, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-14, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-14, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-13, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-13, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-13, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-13, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-13, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-13, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-13, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-12, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-12, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-11, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-11, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-11, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-11, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-10, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-10, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-10, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-10, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-9, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-9, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-9, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-8, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-8, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-8, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-8, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-8, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-8, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-8, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-7, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-7, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-7, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-7, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-7, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-7, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-7, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-7, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-7, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-7, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-6, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-6, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-6, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-6, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-6, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-6, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-6, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-6, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-6, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-6, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-5, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-5, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-5, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-5, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-5, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-5, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-5, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-5, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-5, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-5, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-4, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-4, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-4, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-4, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-3, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-3, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-3, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-3, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-3, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-3, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-2, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-2, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-2, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-2, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-2, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-2, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate-2, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate-2, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-2, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-2, 5, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 20, sysdate-1, 1, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate-1, 1, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 14, sysdate-1, 2, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 10, sysdate-1, 2, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate-1, 3, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 7, sysdate-1, 3, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 15, sysdate, 4, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 14, sysdate, 4, 'matetoy3', '3호점-출고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'I', 10, sysdate, 5, 'matetoy3', '3호점-입고');
+insert into IO_LOG values
+(seq_io_no.nextval, 'O', 6, sysdate, 5, 'matetoy3', '3호점-출고');
+
+commit;
+
+
+    
         
         
         

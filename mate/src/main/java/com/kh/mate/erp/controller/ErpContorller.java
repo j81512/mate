@@ -8,7 +8,9 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -146,8 +148,8 @@ public class ErpContorller {
 	//매출확인 진입
 	@RequestMapping("/ERP/PriceLog.do")
 	public String PriceLog(Model model,
-						   @RequestParam(value = "year", required = false) String year,
-						   @RequestParam(value = "month", required = false) String month,
+			@RequestParam(value = "year", required = false) String year,
+			   @RequestParam(value = "month", required = false) String month,
 						   HttpServletRequest request) {
 
 		Map<String, Object> param = new HashMap<>();
@@ -185,14 +187,27 @@ public class ErpContorller {
 	
 	//입출고 확인 진입
 	@RequestMapping("/ERP/ReceiveLog.do")
-	public String ReceiveLog(Model model) {	
+	public String ReceiveLog(Model model,
+							@RequestParam(value = "monthday", required = false) String monthday,
+						    HttpServletRequest request) {	
 		List<IoLog> list = erpService.ioLogList();
 		List<Product> list2 = erpService.productList();
 		List<EMP> list3 = erpService.empList();
 		
-		model.addAttribute("list", list);
-		model.addAttribute("list2", list2);
-		model.addAttribute("list3", list3);
+		Map<String, Object> param = new HashMap<>();
+		
+		log.debug("monthday = {}", monthday );
+		if(monthday != null) {
+			model.addAttribute("monthday", monthday);
+			monthday = monthday.replaceAll("-", "");
+			log.debug("monthday = {}", monthday );
+			param.put("monthday", monthday);
+		}
+		
+		List<Map<String,Object>> ioList = erpService.ioEmpList(param);
+		log.debug("ioList = {}", ioList);
+		model.addAttribute("ioList", ioList);
+		
 		return "ERP/ReceiveLog";
 	}
 	
@@ -582,7 +597,7 @@ public class ErpContorller {
 			redirectAttr.addFlashAttribute("msg", "상품 추가 실패");
 		}
 		
-		return "redirect:/ERP/ProductInfo.do";
+		return "redirect:/ERP/searchInfo.do";
 	}
 	
 	//뒤로가기 클릭 시 파일 삭제
@@ -738,13 +753,13 @@ public class ErpContorller {
 			Utils.fileDelete(folder1.toString());
 		}
 		
-		return "redirect:/";
+		return "redirect:/ERP/searchInfo.do";
 	}
 	
-	//상품 삭제
-	@RequestMapping(value = "/ERP/productDelete.do",
-					method = RequestMethod.GET)
-	public String productDelete(@RequestParam("productNo") String productNo,
+	
+//	@RequestMapping(value = "/ERP/productDelete.do",
+//					method = RequestMethod.GET)
+	public String productDeleteNotUse(@RequestParam("productNo") String productNo,
 								HttpServletRequest request,
 								RedirectAttributes redirectAtttis) {
 		
@@ -772,8 +787,28 @@ public class ErpContorller {
 		}else {
 			redirectAtttis.addFlashAttribute("msg", "상품삭제에 실패하였습니다.");
 		}
-		return "redirect:/ERP/ProductInfo.do";
+		return "redirect:/ERP/searchInfo.do";
 	}
+	
+	//상품삭제 -> enabled 1로 업데이트
+	@RequestMapping(value = "/ERP/productDelete.do",
+			method = RequestMethod.GET)
+	public String productDelete(@RequestParam("productNo") String productNo,
+			HttpServletRequest request,
+			RedirectAttributes redirectAttr) {
+		
+		try {
+			int result = erpService.UpdateProductToDelete(productNo);
+			redirectAttr.addFlashAttribute("msg", "판매 목록에서 상품이 삭제되었습니다.");
+		}catch(Exception e) {
+			log.error("상품 삭제 업데이트 실패");
+			redirectAttr.addFlashAttribute("msg", "상품 삭제에 실패하였습니다.");
+			
+		}
+				
+		return "redirect:/ERP/searchInfo.do";
+	}
+	
 	
 	//발주 요청 가져오기
 	@RequestMapping("/ERP/ProductRequestList.do")

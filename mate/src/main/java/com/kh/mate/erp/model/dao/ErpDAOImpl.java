@@ -102,6 +102,11 @@ public class ErpDAOImpl implements ErpDAO {
 	}
 
 	@Override
+	public int UpdateProductToDelete(String productNo) {
+		return sqlSession.update("erp.UpdateProductToDelete", productNo);
+	}
+
+	@Override
 	public int productImageEnroll(ProductImages pigs) {
 		return sqlSession.insert("erp.productImageEnroll", pigs);
 	}
@@ -376,4 +381,11 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.selectList("emp.yearList");
 	}
 
+	@Override
+	public List<Map<String, Object>> ioEmpList(Map<String, Object> param) {
+		return sqlSession.selectList("erpBoard.ioEmpList", param);
+	}
+
+	
+	
 }

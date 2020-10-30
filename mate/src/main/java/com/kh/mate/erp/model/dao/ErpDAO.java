@@ -149,5 +149,9 @@ public interface ErpDAO {
 
 	List<Map<String, Object>> selectRequestMapList(Map<String, Object> temp);
 
+	List<Map<String, Object>> ioEmpList(Map<String, Object> param);
+
+	int UpdateProductToDelete(String productNo);
+
 
 }

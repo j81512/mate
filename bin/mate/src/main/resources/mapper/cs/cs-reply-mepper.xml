@@ -10,7 +10,7 @@
 		from
 			cs
 		order by
-			reg_date desc
+		notice desc, cs_no desc
 	</select>
 	<select id="selectOneCs" resultType="cs">
 		select 
@@ -18,12 +18,14 @@
 		from 
 			cs 
 		 where cs_no = #{ csNo }
+		order by
+		notice desc, cs_no desc
 	</select>
 	
 	<select id="selectReplyList" resultType="CsReply">
 		select 
 		    * 
-		from  (select r.* ,e.member_id memberId from cs e join cs_reply r on e.member_id = r.member_id) 
+		from  cs_reply c left join member m on c.member_id = m.member_id
 		where  cs_no = #{ csNo }
 		order by reg_date desc
 			
