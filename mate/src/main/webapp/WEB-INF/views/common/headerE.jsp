@@ -1,80 +1,55 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<!DOCTYPE html>
-<html>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-<!-- bootstrap css -->
 <link rel="stylesheet"
-	href="${ pageContext.request.contextPath }/resources/css/headerS.css" />
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-<c:if test="${ not empty msg }">
-<script>
-	alert("${ msg }");
-</script>
-</c:if>
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+	crossorigin="anonymous">
+<link
+	href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
+	rel="stylesheet" id="bootstrap-css">
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+	integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+	crossorigin="anonymous"></script>
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+	crossorigin="anonymous"></script>
 </head>
-<body>
+
 <header>
-<div class="container-fluid">
-    <!-- Second navbar for categories -->
-    <nav class="navbar navbar-default">
-      <div class="container">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1">
-          <span class="sr-only"><img src="${ pageContext.request.contextPath }/resources/images/play.png"  width="50px" class="menuImg"/></span>
-          </button>
-          <a class="navbar-brand" href="${ pageContext.request.contextPath }">Mate</a>
-        </div>
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="navbar-collapse-1">
-          <ul class="nav navbar-nav navbar-right">
-              <a class="btn btn-default btn-outline btn-circle"  data-toggle="collapse" href="#nav-collapse1" aria-expanded="false" aria-controls="nav-collapse1">
-              	<img src="${ pageContext.request.contextPath }/resources/images/play.png" width="50px" class="menuImg"/>
-              </a>
-          </ul>
-          <ul class="collapse nav navbar-nav nav-collapse" id="nav-collapse1">
-            <li><a href="${ pageContext.request.contextPath }/Member/MemberList.do">회원관리</a></li>
-            <li><a href="${pageContext.request.contextPath}/cs/cs.do">C/S</a></li>
-            <li><a href="${ pageContext.request.contextPath }/company/location.do">Location</a></li>
-            <!-- 1. 추가 : 판매 상품 보기 -> toy -->
-            <li class="nav-item dropdown">
-		        <a class="nav-link dropdown-toggle" href="#"
-		           id="products" role="button"
-		           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		          	Toy
-		        </a>
-	        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-	        <!-- 종완 수정 - 주소추가 -->
-	          <a class="dropdown-item" href="${ pageContext.request.contextPath }/product/productList.do">전체 상품 보기</a>
-	          <div class="dropdown-divider"></div>
-	           <!-- 김찬희 헤더 카테고리검색 추가함 -->
-	          <a class="dropdown-item" onclick="category('PM')">프라모델</a>
-	          <a class="dropdown-item" onclick="category('FG')">피규어</a>
-	          <a class="dropdown-item" onclick="category('RC')">RC카</a>
-	         <a class="dropdown-item" onclick="category('DR')">드론</a>
-	        </div>
-	   	 	</li>
-   	 	
-   	 		<c:if test="${not empty loginEmp }" >
-			${ loginEmp.empName }님, 반갑습니다.	
-			<button class="btn btn-outline-success my-2 my-sm-0"
-	               type="button"
-	               onclick="location.href='${ pageContext.request.contextPath}/ERP/logout.do'"><img src="${ pageContext.request.contextPath }/resources/images/cart.png" width="80px" class="loginImg"/>로그아웃</button>
-			</c:if>
-	   	 	</ul>
-  		</div><!-- /.navbar-collapse -->
-      </div><!-- /.container -->
-    </nav><!-- /.navbar -->
-</div><!-- /.container-fluid -->
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">Mate</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarsExample03">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item ">
+        <a class="nav-link" href="${pageContext.request.contextPath }/ERP/menu.do">ERP_Main <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="javascript:window.history.back();">Back</a>
+      </li>
+      <c:if test="${loginEmp.status eq 0 }">
+	      <li class="nav-item">
+	        <a class="nav-link " href="${pageContext.request.contextPath}">쇼핑몰 전환</a>
+	      </li>
+      </c:if>
+      <li class="nav-item">
+      	<a class="nav-link active" href="#">${loginEmp.empName }님 반갑습니다.</a>
+      </li>
+      <li class="nav-item">
+		<a class="nav-link " href="${pageContext.request.contextPath }/ERP/logout.do">logout</a>        
+      </li>
+    </ul>
+  </div>
+</nav>
 </header>
-<section id="content-sec">

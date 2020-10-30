@@ -22,26 +22,35 @@
 	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
 	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
 	crossorigin="anonymous"></script>
+<style>
+
+</style>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
 
 <div class="container">
 	<div id="buy" class="tab-pane fade active show in">
 		<div class="col-md-15">
 		    <div class="form-area">
-		    	<li>
-			    	<button type="button" 
-			    			class="btn btn-default btn-lg"
-			    			onclick="location.href='${ pageContext.request.contextPath }/.do';">
-					  <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>쇼핑몰
-					</button>
-		    	</li>
-		    	<li>
-			    	<button type="button" 
-			    			class="btn btn-default btn-lg"
-			    			onclick="location.href='${ pageContext.request.contextPath }/ERP/erpMain.do';">
-					  <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>ERP
-					</button>
-		    	</li>
+			    <div class="text-center" style="width: 20%; height: 50%; float:none; margin:10 auto">
+			    	<table id="purchaseLog-table" class="table table-bordered ">
+			    		<tr>
+					    	<th	>
+						    	<button type="button" 
+						    			class="btn btn-default btn-lg"
+						    			onclick="location.href='${ pageContext.request.contextPath }'">
+								  <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>쇼핑몰
+								</button>
+					    	</th>
+					    	<th>
+						    	<button type="button" 
+						    			class="btn btn-default btn-lg"
+						    			onclick="location.href='${ pageContext.request.contextPath }/ERP/erpMain.do';">
+								  <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>ERP
+								</button>
+					    	</th>
+			    		</tr>
+		    		</table>
+			    </div>
     		</div>
 		</div>
 	</div>
