@@ -111,6 +111,11 @@ public class ErpServiceImpl implements ErpService {
 	}
 
 	@Override
+	public int updateEmpDelete(String empId) {
+		return erpDAO.updateEmpDelete(empId);
+	}
+
+	@Override
 	public Product selectProductOne(String productNo) {
 		return erpDAO.selectProductOne(productNo);
 	}

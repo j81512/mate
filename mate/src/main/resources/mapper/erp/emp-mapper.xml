@@ -68,6 +68,15 @@
 			emp_id = #{ empId }
 	</update>
 	
+	<update id="updateEmpDelete">
+		update
+			emp
+		set
+			enable = 1
+		where
+			emp_id = #{empId}
+	</update>
+	
 	<delete id="infoDelete">
 		delete
 		from

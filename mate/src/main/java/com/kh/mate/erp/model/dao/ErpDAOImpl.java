@@ -196,6 +196,11 @@ public class ErpDAOImpl implements ErpDAO {
 	public List<Map<String, Object>> selectRequestMapList(Map<String, Object> temp) {
 		return sqlSession.selectList("erp.selectRequestMapList", temp);
 	}
+
+	@Override
+	public int updateEmpDelete(String empId) {
+		return sqlSession.update("emp.updateEmpDelete", empId);
+	}
 	
 	//호근 추가
 
