@@ -26,11 +26,22 @@
 	href="${ pageContext.request.contextPath }/resources/css/loginForm.css" />
 <jsp:include page="/WEB-INF/views/common/headerS.jsp" />
 <style>
+.modal {
+        text-align: center;
+}
+ 
  .modal-dialog{
-	position : relative;
-	float: left;
-	display:inline-block;
+		position : relative;
+		float: left;
+		display:block;
+		margin-left: 0 auto;
+		margin-right: 0 auto;
+		vertical-align: middle;
 } 
+.modal-content{
+	margin-top : 30%;
+	margin-left : -50%;
+}
 </style>
 <script>
 	$(function() {
@@ -101,10 +112,11 @@
 		$("#MocheckNum_").val(Number(phoneCheck));
 	/* 	$("#MophoneNum_").val(Number(phoneCheck)); */
 		$("#myModal").fadeIn(300);
+		
 	}
 
 	function closeReturnModal(){
-		$("#myModal").fadeOut(300);
+		$("#myModal").hide();
 	}
 
 	$(document).ready(function(){
@@ -182,6 +194,17 @@
 			closeReturnModal();
 		}
 	};
+
+	function check(){
+		 var $frm = $("#register-form");
+		 var $phone = $("#phone-send").val();
+
+		 if($phone == '문자인증'){
+			alert("핸드폰 인증을 해주세요");
+		}else{
+			$frm.submit();
+		}
+	}
 </script>
 
 
@@ -290,7 +313,7 @@
 					<div class="form-group">
 						<div class="row">
 							<div class="col-sm-6 col-sm-offset-3">
-								<button class="btn btn-lg btn-block purple-bg" type="submit">
+								<button class="btn btn-lg btn-block purple-bg" type="button" onclick="check();">
 									가입하기</button>
 							</div>
 						</div>
@@ -332,7 +355,7 @@
 </div>
 
 		<!-- 핸드폰 인증 -->
-<div class="modal active" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade in" id="myModal" tabindex="-1"  aria-hidden="true">
 					  <div class="modal-dialog">
 					    <div class="modal-content">
 					      <div class="modal-head">
