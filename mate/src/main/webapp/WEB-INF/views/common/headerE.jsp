@@ -27,7 +27,6 @@
 list-style:inherit;
 position:relative;
 left:1300px;
-}
 </style>
 <header>
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
