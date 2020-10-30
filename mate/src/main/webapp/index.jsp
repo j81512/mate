@@ -13,12 +13,7 @@
 
 <jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
 <style>
-@font-face {
-    font-family: 'SangSangShin';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_three@1.0/SangSangShin.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
+
 .blur-div{
 	display: inline-block;
 	width: 13%;
@@ -61,18 +56,9 @@
 	min-width: 100%;
 	height: 100%;
 }
-#catchphrase{
-    font-family: 'SangSangShin';
-	position: fixed;
-	top: 20%;
-	font-size: 100px;
-	min-width: 585px;
-}
-#catchphrase b{
-	color: rgb(13,58,97);
-}
+
 #best-p{
-	position: fixed;
+	position: absolute;
 	bottom: 17%;
 	right: 10%;
 	width: 27%;
@@ -177,11 +163,8 @@ $(function(){
 	<div class="blur-div third-div best-div"></div>
 </div>
 
-<p id="catchphrase">어른이 아이가 되는 공간 <b>MATE</b></p>
+
 <p id="best-p">─────────────── BEST 5 ───────────────</p>
 <br />
-</div>
-</section>
-</div>
-</body>
-</html>
+<jsp:include page="/WEB-INF/views/common/footerS.jsp"></jsp:include>
+

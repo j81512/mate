@@ -30,6 +30,12 @@ html{
 	font-weight: normal;
 	font-style: normal;
 }
+@font-face {
+    font-family: 'SangSangShin';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_three@1.0/SangSangShin.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
 .font-uhbee{
 	font-family: 'UhBeeSe_hyun';
 }
@@ -57,7 +63,7 @@ html{
 	width: 20%;
 	position: relative;
 	text-align: left;
-	padding-top: 15px;
+	padding-top: 5px;
 	min-width: 130px;
 }
 .loginMember-span{
@@ -71,12 +77,14 @@ html{
 	padding-top: 18px;
 }
 #background-img{
-	position: fixed;
+	position: absolute;
 	z-index: -1;
 	width: 100%;
+	height: 100%;
 }
 .search-div{
-	height: 320px;
+	min-height: 58vh;
+	position: relative;
 }
 #header-nav a{
 	color: rgba(54,54,54,0.6);
@@ -85,7 +93,44 @@ html{
 	text-decoration: none;
 	color: rgb(164,80,68);
 }
-
+#header-nav>.nav{
+	display: flex;
+}
+.search-div>*{
+	position: absolute;
+	bottom: 0;
+}
+#content-sec{
+	min-height: 110vh;
+}
+#goTop-btn{
+	position:fixed;
+	height: 30px;
+	width: 30px;
+	right: 15px;
+	bottom: 15px;
+}
+#catchphrase{
+    font-family: 'SangSangShin';
+	position: absolute;
+	top: 20%;
+	left:10%;
+	font-size: 100px;
+	min-width: 585px;
+}
+#catchphrase b{
+	color: rgb(13,58,97);
+}
+.content-div{
+	margin-top: 5vh;
+	min-height: 58vh;
+    position: relative;
+}
+#goErp-btn{
+	background: none;
+	font-family: 'CookieRunOTF-Bold';
+	margin-left: 15px;
+}
 </style>
 <script>
 $(function(){
@@ -98,11 +143,16 @@ $(function(){
 	}
 
 });
+$(function(){
+	$('#goTop-btn').on('click',function(e){
+// 		e.preventDefault();
+		$('html,body').animate({scrollTop:0},700);
+	});
+});
 </script>
 </head>
 <body>
 <img id="background-img" src="${ pageContext.request.contextPath }/resources/images/background.png" alt="" />
-<header>
 	 <nav id="header-nav">
 		<div class="nav">
 			<div class="brand-div" >
@@ -155,15 +205,19 @@ $(function(){
 		       	<c:if test="${! empty loginMember }">
 					<span class="font-cookie loginMember-span" ><b class="font-cookie ">${ loginMember.memberName }</b> 님, 반갑습니다.</span>
 					<c:if test='${ loginMember.memberId eq "admin" }'>
-						<input type="button" value="erp" onclick="location.href='${pageContext.request.contextPath}/ERP/erpMain.do';" />
+						<input id="goErp-btn" type="button" value="ERP ->" onclick="location.href='${pageContext.request.contextPath}/ERP/erpMain.do';" />
 					</c:if>
 				</c:if>
 			</div>
 	 	</div>
 	</nav>
+	
+	<img src="${ pageContext.request.contextPath }/resources/images/goTop.png" alt="" id="goTop-btn"/>
+	
 </header>
-<br />
+
 <section id="content-sec">
+<p id="catchphrase">어른이 아이가 되는 공간 <b>MATE</b></p>
 <div class="container">
 
 
