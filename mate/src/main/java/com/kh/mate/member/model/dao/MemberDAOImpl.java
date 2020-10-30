@@ -88,6 +88,11 @@ public class MemberDAOImpl implements MemberDAO {
 		return sqlSession.update("member.tempPassword",map);
 	}
 
+	@Override
+	public int deleteAddress(Map<String, String> param) {
+		return sqlSession.delete("member.deleteAddress",param);
+	}
+
 	
 	
 	

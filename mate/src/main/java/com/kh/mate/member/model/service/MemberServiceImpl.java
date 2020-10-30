@@ -82,6 +82,11 @@ public class MemberServiceImpl implements MemberService {
 		return memberDAO.tempPassword(map);
 	}
 
+	@Override
+	public int deleteAddress(Map<String, String> param) {
+		return memberDAO.deleteAddress(param);
+	}
+
 	
 	
 }

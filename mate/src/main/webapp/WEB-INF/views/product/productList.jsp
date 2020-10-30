@@ -124,6 +124,7 @@ input[name=search]{
 .product-info-a:active{
 	text-decoration: none;
 }
+
 </style>
 <script>
  function pageing(now,cnt){
@@ -148,7 +149,7 @@ function sReset(){
 		<form class="form-inline"
 				action="${pageContext.request.contextPath}/product/searchProduct.do">
 			<br />
-			<div class="btn-group-toggle btn-group" data-toggle="buttons">
+			<div class="radio-div btn-group-toggle btn-group" data-toggle="buttons">
 				<label for="pm" class="btn chk-label ${ sCategory.contains('pm') ? 'active' : '' }">
 					<input type="checkbox" name="category" id="pm" value="pm" ${ sCategory.contains("pm") ? 'checked' : '' }/>
 					프라모델

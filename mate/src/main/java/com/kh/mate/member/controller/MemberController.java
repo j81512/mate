@@ -570,4 +570,19 @@ public class MemberController {
 		
 		return checkNum;
 	}
+	
+	@ResponseBody
+	@PostMapping("/member/deleteAddress.do")
+	public Map<String, Object> deleteAddress(@RequestParam("memberId") String memberId,
+								@RequestParam("addressName") String addressName) {
+		
+		Map<String, String> param = new HashMap<>();
+		param.put("memberId", memberId);
+		param.put("addressName", addressName);
+		int result = memberService.deleteAddress(param);
+		String msg = result > 0 ? "배송지 삭제 성공!" : "삭제 실패! 배송지 삭제를 다시 해주세요.";
+		Map<String, Object> map = new HashMap<>();
+		map.put("msg", msg);
+		return map;
+	}
 }

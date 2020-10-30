@@ -35,4 +35,6 @@ public interface MemberDAO {
 
 	int tempPassword(HashMap<String, String> map);
 
+	int deleteAddress(Map<String, String> param);
+
 }
