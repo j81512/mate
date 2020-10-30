@@ -61,7 +61,7 @@
 											</select>
 											</th>
 											<th>
-											    <input type="text" class="form-control" name="searchKeyword" placeholder="내용을 입력해주세요">
+											    <input type="text" class="form-control" name="searchKeyword" placeholder="내용을 입력해주세요"/>
 											</th>
 											<th>
 											  	<button type="button" class="btn btn-default" id="searchRequest">검색</button>

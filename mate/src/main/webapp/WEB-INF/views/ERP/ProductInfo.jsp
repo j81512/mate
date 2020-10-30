@@ -120,7 +120,7 @@ function erpSReset(){
 			  <div class="child">
 			    <input type="text" class="form-control2" name="search" placeholder="상품명/상품번호 조회" value="${ map.search }">
 			  </div>
-			  <button type="submit" class="btn btn-default" onclick="checkNum('${ map.uNum }','${ map.lNum }')">검색</button>
+			  <button id="search-btn" type="submit" class="btn btn-default" onclick="checkNum('${ map.uNum }','${ map.lNum }')">검색</button>
 				<input type="button" class="btn btn-default" value="검색초기화" onclick="erpSReset()"/>
 		</form>
 	  </div>
