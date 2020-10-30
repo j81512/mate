@@ -445,18 +445,25 @@ public class ErpContorller {
 		log.debug("size = {}",list.size());
 
 		List<Product> loList = erpService.proLogList(map);
-		for(Product pro : list) {
-			for(Product lopro : loList) {
+		if(!loList.isEmpty() && loList != null) {
+			for(Product pro : list) {
+				for(Product lopro : loList) {
 //				log.debug("productNo = {}",pro.getProductNo());
 //				log.debug("logProductNo = {}",lopro.getProductNo());
-				if(pro.getProductNo() == lopro.getProductNo() && lopro.getConfirm() == 0) {
-					pro.setConfirm(0);
-					break;
-				}else {
-					pro.setConfirm(-2);
+					if(pro.getProductNo() == lopro.getProductNo() && lopro.getConfirm() == 0) {
+						pro.setConfirm(0);
+						break;
+					}else {
+						pro.setConfirm(-2);
+					}
 				}
 			}
+		}else {
+			for(Product pro : list) {
+				pro.setConfirm(-2);
+			}
 		}
+		
 		log.debug("lolist = {}",loList);
 				
 		log.debug("list = {}",list);
