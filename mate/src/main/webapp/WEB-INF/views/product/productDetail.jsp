@@ -70,11 +70,7 @@
 	height: 30px;
 }
 </style>
-<c:if test="${ not empty msg }">
-	<script>
-		alert("${msg}");
-	</script>
-</c:if>
+
 <script>
 $(function(){
 	$(".imgNav-img").click(function(){

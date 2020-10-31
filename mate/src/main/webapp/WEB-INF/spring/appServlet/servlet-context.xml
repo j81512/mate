@@ -35,7 +35,7 @@
 			<exclude-mapping path="/product/productList.do"/>
 			<exclude-mapping path="/member/memberLogin.do"/>
 			<exclude-mapping path="/member/loginCheck.do"/>
-
+			<exclude-mapping path="/product/getBest.do"/>
 			<exclude-mapping path="/member/checkPasswordDuplicate.do"/>
 			<exclude-mapping path="/member/sendPassword"/>
 
