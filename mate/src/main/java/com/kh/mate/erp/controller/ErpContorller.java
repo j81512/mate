@@ -1004,6 +1004,21 @@ public class ErpContorller {
 		return new ResponseEntity<List<Map<String,Object>>>(mapList, HttpStatus.OK);
 	}
 	
+	//emp활성화
+	@RequestMapping("/ERP/vitalEMP.do")
+	public String vitalEmp(@RequestParam("empId")String empId,RedirectAttributes redirectAttr) {
+		
+		try {
+			int result = erpService.vitalEmp(empId);
+			redirectAttr.addFlashAttribute("msg", "해당 지점/제조사가 활성화 되었습니다.");
+			
+		}catch(Exception e) {
+			redirectAttr.addFlashAttribute("msg", "해당 지점/제조사 활성화에 실패하였습니다. 확인 후 다시 시도하여주세요");
+		}
+		
+		return "redirect:/ERP/empManage.do";
+	}
+	
 	// 호근 관리자 로그인 및 로그인 세션 추가 
 	@PostMapping("/ERP/erpLogin.do")
 	public String memberLogin(@RequestParam("empId") String empId

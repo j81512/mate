@@ -63,6 +63,20 @@
 								</c:if>
 								<c:if test="${ emp.status == 2}">제조사
 								</c:if>
+							</td>
+							<td>
+								<c:if test="${emp.status eq 1 && emp.enabled eq 0 }">
+									운영중
+								</c:if>
+								<c:if test="${emp.status eq 1 && emp.enabled eq 1 }">
+									<button type="button" onclick="vitalEMP('${emp.empId}');">매장 활성화</button>
+								</c:if>
+								<c:if test="${emp.status eq 2 && emp.enabled eq 0 }">
+									거래중
+								</c:if>
+								<c:if test="${emp.status eq 2 && emp.enabled eq 1 }">
+									<button type="button" onclick="vitalEMP('${emp.empId}');">거래 활성화</button>
+								</c:if>
 							</td>		
 						</tr>
 						</c:if>
@@ -80,6 +94,14 @@
 		</div>
 	</div>
 </div>
-<jsp:include page="/WEB-INF/views/common/footerE.jsp"/>	
-	</body>
+
+<script>
+function vitalEMP(empId){
+
+	location.href="${pageContext.request.contextPath}/ERP/vitalEMP.do?empId="+empId;
+
+}
+
+</script>
+</body>
 </html>

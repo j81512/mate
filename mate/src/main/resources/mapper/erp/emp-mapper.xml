@@ -73,7 +73,16 @@
 		update
 			emp
 		set
-			enable = 1
+			enabled = 1
+		where
+			emp_id = #{empId}
+	</update>
+	
+	<update id="vitalEmp">
+		update
+			emp
+		set
+			enabled = 0
 		where
 			emp_id = #{empId}
 	</update>
@@ -102,7 +111,8 @@
 			addr2 AS empAddr2,
 			phone AS empPhone,
 			enroll_date AS empEnrollDate,
-			status AS status
+			status AS status,
+			enabled AS enabled
 		from
 			EMP
 		order by
