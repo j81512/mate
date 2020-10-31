@@ -58,6 +58,17 @@
 			<exclude-mapping path="/ERP/erpLogin.do"/>
 			<beans:bean class="com.kh.mate.common.interceptor.EmpCheckInterceptor"/>
 		</interceptor>
+		<interceptor>
+			<mapping path="/ERP/productEnroll.do"/>
+			<mapping path="/ERP/productDelete.do"/>
+			<mapping path="/ERP/EmpEnroll.do"/>
+			<mapping path="/ERP/empInfoDetail.do"/>
+			<mapping path="/cs/csReplyEnroll.do"/>
+			<exclude-mapping path="/member/memberLogin.do"/>
+			<exclude-mapping path="/member/loginCheck.do"/>
+			<exclude-mapping path="/ERP/erpLogin.do"/>
+			<beans:bean class="com.kh.mate.common.interceptor.AdminInterceptor"/>
+		</interceptor>
 </interceptors> 
 	
 	<aop:aspectj-autoproxy/>
