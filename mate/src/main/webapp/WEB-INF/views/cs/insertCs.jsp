@@ -5,9 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8" />
 <%--한글깨짐 방지 --%>
-<jsp:include page="/WEB-INF/views/common/headerS.jsp">
-	<jsp:param value="문의글 등록" name="csInsert" />
-</jsp:include>
+<jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
 <style>
 div#cs-container {
 	width: 400px;
@@ -17,19 +15,9 @@ div#cs-container {
 
 div#cs-container input {
 	margin-bottom: 15px;
-
-div#cs-container{
-	width:400px; margin:0 auto; text-align:center;
-}
-div#cs-container input{
-	margin-bottom:15px;
-
 }
 /* 부트스트랩 : 파일라벨명 정렬*/
 
-div#cs-container label.custom-file-label {
-	text-align: left;
-}
 div#cs-container label.custom-file-label{
 	text-align:left;
 }
@@ -81,9 +69,6 @@ div#cs-container label.custom-file-label{
 			var file = $(this).prop('files')[0];
 			var $label = $(this).next(".custom-file-label");
 
-
-
-
 			if (file == undefined)
 				$label.html("파일을 선택하세요.");
 			else
@@ -92,12 +77,9 @@ div#cs-container label.custom-file-label{
 	});
 	function goBackWithDel() {
 
-
-
 		history.go(-1);
 
 	}
-
 </script>
 <form name="csFrm" action="${pageContext.request.contextPath}/cs/insertCs.do" method="post" enctype="multipart/form-data" onsubmit="return csValidate();">
 	<div class="search-div">
@@ -132,3 +114,5 @@ div#cs-container label.custom-file-label{
 
 	</div>
 </form>
+
+<jsp:include page="/WEB-INF/views/common/footerS.jsp"/>
