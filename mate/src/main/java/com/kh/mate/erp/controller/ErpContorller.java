@@ -276,9 +276,10 @@ public class ErpContorller {
 		String empId = emp.getEmpId();
 		try {
 			int result = erpService.updateEmpDelete(empId);
+			redirectAttr.addFlashAttribute("msg", "삭제가 완료되었습니다.");
 			
 		}catch(Exception e) {
-			
+			redirectAttr.addFlashAttribute("msg", "삭제에 실패하였습니다. 확인 후 다시 시도하여주세요");
 		}
 		
 		return "redirect:/ERP/empManage.do";
