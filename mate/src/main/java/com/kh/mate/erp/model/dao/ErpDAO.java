@@ -158,7 +158,11 @@ public interface ErpDAO {
 
 	int updateEmpDelete(String empId);
 
+
+	int vitalEmp(String empId);
+
 	int productResale(int productNo);
+
 
 
 

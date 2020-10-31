@@ -126,7 +126,11 @@ public interface ErpService {
 
 	int updateEmpDelete(String empId);
 
+
+	int vitalEmp(String empId);
+
 	int productResale(int productNo);
+
 	
 	
 

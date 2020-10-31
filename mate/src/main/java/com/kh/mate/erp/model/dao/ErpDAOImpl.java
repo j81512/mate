@@ -102,6 +102,11 @@ public class ErpDAOImpl implements ErpDAO {
 	}
 
 	@Override
+	public int vitalEmp(String empId) {
+		return sqlSession.update("emp.vitalEmp", empId);
+	}
+
+	@Override
 	public int UpdateProductToDelete(String productNo) {
 		return sqlSession.update("erp.UpdateProductToDelete", productNo);
 	}
