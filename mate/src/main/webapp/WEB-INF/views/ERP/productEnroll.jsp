@@ -169,7 +169,6 @@ function goBackWithDel(){
 	$enrollFrm.attr("action", "${ pageContext.request.contextPath }/ERP/fileDelMethod.do");
 	$enrollFrm.attr("method", "get");
 	$enrollFrm.submit();
-	history.go(-1);
 
 	
 }

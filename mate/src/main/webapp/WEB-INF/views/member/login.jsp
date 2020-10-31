@@ -129,7 +129,7 @@
 			console.log($phone);
 			if(typeof $phone == "undefined" || $phone == ""){
 				alert("핸드폰 번호를 입력하세요");
-				return;
+				return false;
 			}
 			$.ajax({
 				url:"${ pageContext.request.contextPath}/member/phoneSend.do",
@@ -547,11 +547,11 @@
 
 
 <!-- 핸드폰 인증 -->
-<div class="modal fade in" id="myModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade in" id="myModal"
+ data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-head">
-				<a href="javascript:closeReturnModal();" class="modal-close">X</a>
 				<h4 class="modal-title" id="myModalLabel">인증번호를 입력하세요</h4>
 			</div>
 			<div class="modal-body">
