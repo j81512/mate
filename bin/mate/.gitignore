@@ -126,6 +126,12 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,java,eclipse,web,maven,java-web
+<<<<<<< HEAD
+config.properties
+#config
+=======
 
+config.properties
+>>>>>>> branch 'master' of https://github.com/j81512/mate.git
 .classpath
 .project

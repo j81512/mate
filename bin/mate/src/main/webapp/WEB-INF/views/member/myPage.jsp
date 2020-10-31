@@ -342,13 +342,13 @@ function openKakao(purchaseNo, sum){
 	<div class="col-sm-6">
 	  <ul class="nav nav-pills" >
 	    <li class="" style="width:50%"><a class="btn btn-lg btn-default nav-link active" data-toggle="tab" href="#buy" aria-selected="true">구매내역</a></li> 
-	    <li class=" " style="width:48%"><a class=" btn btn-lg btn-default nav-link" data-toggle="tab" href="#menu1" aria-selected="false">정보수정</a></li>
+	    <li class="" style="width:48%"><a class="btn btn-lg btn-default nav-link " data-toggle="tab" href="#menu1" aria-selected="true">정보수정</a></li>
 	  </ul>
 	</div>
 </div>
 <br />
 <div class="tab-content">
-	<div id="menu1" class="tab-pane fade">
+	<div id="menu1" class="tab-pane fade in">
 		<div class="col-md-15">
 		    <div class="form-area">  
 				<form action="${ pageContext.request.contextPath}/member/memberUpdate.do" method="post" id="memberFrm">

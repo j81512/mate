@@ -62,7 +62,7 @@ div#board-container label.custom-file-label {
 				onclick="fileDownload(${ cs.csNo });">첨부파일 - ${ csImage.originalFilename }
 			</button>
 		</c:if>
-	
+
 		<textarea class="form-control" name="content" placeholder="내용" readonly
 			required>${ cs.content }</textarea>
 		<input type="datetime-local" class="form-control" name="regDate"

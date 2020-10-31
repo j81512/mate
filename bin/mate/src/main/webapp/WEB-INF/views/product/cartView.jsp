@@ -4,11 +4,19 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>    
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<jsp:include page="/WEB-INF/views/common/headerS.jsp"></jsp:include>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+	crossorigin="anonymous">
 <link
 	href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
 	rel="stylesheet" id="bootstrap-css">
-<jsp:include page="/WEB-INF/views/common/headerS.jsp"></jsp:include>
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+	crossorigin="anonymous"></script>
 
 
 <style>
@@ -86,9 +94,13 @@
 .center{
 	text-align: center;
 }
-
+.container{
+	height: 500px;
+}
+th{
+	position:sticky; top:0;
+}
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <!-- 주소API -->
 <!-- 주소검색용 스크립트 -->
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
@@ -137,85 +149,87 @@ function execPostCode() {
 }
 </script>
 
-<c:if test="${ not empty msg }">
-	<script>
-		alert("${msg}");
-	</script>
-</c:if>
-<div class="container">
-
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">상품 이미지</th>
-      <th scope="col">상품명</th>
-      <th scope="col">카테고리</th>
-      <th scope="col">가격</th>
-      <th scope="col">수량</th>
-      <th scope="col">총 가격</th>
-      <th scope="col">삭제</th>
-    </tr>
-  </thead>
-  <tbody>
-    <c:if test="${ not empty cart }">
-    <c:forEach items="${cart}" var="c" varStatus="vs">
-    	<tr>
-    		<th scope="row">
-    			<input type="checkbox" class="cart-chk"/>
-    			<input type="hidden" class="hidden-price" value="${c.amount * c.selectedProduct.price}" />
-    			<input type="hidden" class="hidden-no" value="${c.productNo}" />
-    			<input type="hidden" class="hidden-amount" value="${c.amount}" />
-    			${vs.count }
-    		</th>
-    		<td>
-    			<img src="${ pageContext.request.contextPath }/resources/upload/mainimages/${ c.selectedProduct.pmiList.get(0).renamedFilename }" 
-    				 alt="상품이미지" width="50px"/>
-    		</td>
-    		<td>${ c.selectedProduct.productName }</td>
-    		<td>
-	    		<c:if test="${ c.selectedProduct.category eq 'fg' }">
-	    		피규어
-	    		</c:if>
-	    		<c:if test="${ c.selectedProduct.category eq 'pm' }">
-	    		프라모델
-	    		</c:if>
-	    		<c:if test="${ c.selectedProduct.category eq 'rc' }">
-	    		RC카
-	    		</c:if>
-	    		<c:if test="${ c.selectedProduct.category eq 'dr' }">
-	    		드론
-	    		</c:if>
-    		</td>
-    		<td>
-    			<fmt:formatNumber value="${ c.selectedProduct.price }" pattern="#,###"/>원
-    		</td>
-    		<td>${ c.amount }</td>
-    		<td>
-    			<fmt:formatNumber value="${c.amount * c.selectedProduct.price}" pattern="#,###" />원
-    		</td>
-    		
-    		<td>
-    			<div class="btn btn-group">
-    				<button type="button" class="btn btn-danger" onclick="deletFromCart(${c.productNo});">삭제</button>
-    			</div>
-    		</td>
-    	</tr>
-    </c:forEach>
-    </c:if>
-  </tbody>
-</table>
-
-<div class="container center">
-	<div class="row">
-		<div class="col-3 border"><b>선택 상품 합계금액 : ￦</b><b id="cart-sum">0</b></div>
-		<div class="col-2"><button type="button" class="btn btn-primary" onclick="openAddressModal();">배송지 선택하기</button></div>
-		<div class="col-7" id="selectAddress-div"></div>
+<div class="search-div"></div>
+<div class="content-div">
+	<c:if test="${ not empty msg }">
+		<script>
+			alert("${msg}");
+		</script>
+	</c:if>
+	<div class="container" style="overflow-y:scroll; overflow-x:hidden;">
+	<table class="table table-hover">
+	  <thead>
+	    <tr>
+	      <th scope="col">#</th>
+	      <th scope="col">상품 이미지</th>
+	      <th scope="col">상품명</th>
+	      <th scope="col">카테고리</th>
+	      <th scope="col">가격</th>
+	      <th scope="col">수량</th>
+	      <th scope="col">총 가격</th>
+	      <th scope="col">삭제</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <c:if test="${ not empty cart }">
+	    <c:forEach items="${cart}" var="c" varStatus="vs">
+	    	<tr>
+	    		<th scope="row">
+	    			<input type="checkbox" class="cart-chk"/>
+	    			<input type="hidden" class="hidden-price" value="${c.amount * c.selectedProduct.price}" />
+	    			<input type="hidden" class="hidden-no" value="${c.productNo}" />
+	    			<input type="hidden" class="hidden-amount" value="${c.amount}" />
+	    			${vs.count }
+	    		</th>
+	    		<td>
+	    			<img src="${ pageContext.request.contextPath }/resources/upload/mainimages/${ c.selectedProduct.pmiList.get(0).renamedFilename }" 
+	    				 alt="상품이미지" width="50px"/>
+	    		</td>
+	    		<td>${ c.selectedProduct.productName }</td>
+	    		<td>
+		    		<c:if test="${ c.selectedProduct.category eq 'fg' }">
+		    		피규어
+		    		</c:if>
+		    		<c:if test="${ c.selectedProduct.category eq 'pm' }">
+		    		프라모델
+		    		</c:if>
+		    		<c:if test="${ c.selectedProduct.category eq 'rc' }">
+		    		RC카
+		    		</c:if>
+		    		<c:if test="${ c.selectedProduct.category eq 'dr' }">
+		    		드론
+		    		</c:if>
+	    		</td>
+	    		<td>
+	    			<fmt:formatNumber value="${ c.selectedProduct.price }" pattern="#,###"/>원
+	    		</td>
+	    		<td>${ c.amount }</td>
+	    		<td>
+	    			<fmt:formatNumber value="${c.amount * c.selectedProduct.price}" pattern="#,###" />원
+	    		</td>
+	    		
+	    		<td>
+	    			<div class="btn btn-group">
+	    				<button type="button" class="btn btn-danger" onclick="deletFromCart(${c.productNo});">삭제</button>
+	    			</div>
+	    		</td>
+	    	</tr>
+	    </c:forEach>
+	    </c:if>
+	  </tbody>
+	</table>
+	
+	<div class="center">
+		<div class="row">
+			<div class="col-3 border"><b>선택 상품 합계금액 : ￦</b><b id="cart-sum">0</b></div>
+			<div class="col-2"><button type="button" class="btn btn-primary" onclick="openAddressModal();">배송지 선택하기</button></div>
+			<div class="col-7" id="selectAddress-div"></div>
+		</div>
 	</div>
-</div>
-<div class="container center my-5"><button class="btn btn-warning" type="button" id="purchase-btn" >결제하기</button></div>
-<div id="selectProduct-div-hidden"></div>
-<div id="selectAddress-div-hidden"></div>
+	<div class="center"><button class="btn btn-warning" type="button" id="purchase-btn" >결제하기</button></div>
+	<div id="selectProduct-div-hidden"></div>
+	<div id="selectAddress-div-hidden"></div>
+	</div>
 </div>
 <script>
 $("#purchase-btn").click(function(){
@@ -414,7 +428,7 @@ function openAddressModal(){
 			}
 			else{
 				html += "<tr>"
-					  + "<td colspan='7'>등록된 배송지가 없습니다. 새로운 배송지를 등록해주세요.</td>"
+					  + "<td colspan='8'>등록된 배송지가 없습니다. 새로운 배송지를 등록해주세요.</td>"
 					  + "</tr>";
 				
 			}

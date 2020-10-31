@@ -2,28 +2,49 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>    
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%> 
+<fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>   
+<script src="http://code.jquery.com/jquery-latest.min.js"></script><!--문자 인증 때문에 필요함  -->
 
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+	crossorigin="anonymous">
 <link
 	href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
 	rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet"
-	href="${ pageContext.request.contextPath }/resources/css/loginForm.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+	crossorigin="anonymous"></script>
 <jsp:include page="/WEB-INF/views/common/headerS.jsp" />
+<style>
+.modal {
+        text-align: center;
+}
+ 
+ .modal-dialog{
+		position : relative;
+		float: left;
+		display:block;
+		margin-left: 0 auto;
+		margin-right: 0 auto;
+		vertical-align: middle;
+} 
+.modal-content{
+	margin-top : 30%;
+	margin-left : -50%;
+}
+</style>
 <script>
 	$(function() {
 
 		$('#login-form-link').click(function(e) {
 			$("#login-form").delay(100).fadeIn(100);
 			$("#register-form").fadeOut(100);
+			$("#passwordForm").fadeOut(100);
 			$('#register-form-link').removeClass('active');
 			$(this).addClass('active');
 			e.preventDefault();
@@ -31,14 +52,31 @@
 		$('#register-form-link').click(function(e) {
 			$("#register-form").delay(100).fadeIn(100);
 			$("#login-form").fadeOut(100);
+			$("#passwordForm").fadeOut(100);
 			$('#login-form-link').removeClass('active');
 			$(this).addClass('active');
 			e.preventDefault();
 		});
 
+		$('#passwordFinderA').click(function(e) {
+			$("#passwordForm").delay(100).fadeIn(100);
+			$("#register-form").fadeOut(100);
+			$("#login-form").fadeOut(100);
+			$('#login-form-link').removeClass('active');	
+			$(this).addClass('active');
+			e.preventDefault();
+		});
+		$('#password-form-link').click(function(e) {
+			$("#login-form").delay(100).fadeIn(100);
+			$("#passwordForm").fadeOut(100);
+			$("#register-form").fadeOut(100);
+			$('#login-form-link').removeClass('active');
+			$(this).addClass('active');
+			e.preventDefault();
+		});
+		
 		if(${ not empty snsMember }){
 			
-			console.log("${ NaverMember }");
 			$("#register-form").delay(100).fadeIn(100);
 			$("#login-form").fadeOut(100);
 			$('#login-form-link').removeClass('active');
@@ -52,9 +90,11 @@
 	
 		$("#phone-send").click(function(){
 			var $phone = $("#phone").val();
-		    var popUrl ="${ pageContext.request.contextPath }/member/pCheck.do";
-		    var popOption = "width=650px, height=550px, resizable=no, location=no, top=300px, left=300px;";
 			console.log($phone);
+			if(typeof $phone == "undefined" || $phone == ""){
+				alert("핸드폰 번호를 입력하세요");
+				return;
+			}
 			$.ajax({
 				url:"${ pageContext.request.contextPath}/member/phoneSend.do",
 				data:{
@@ -63,21 +103,34 @@
 				dataType:"json",
 				method: "post",
 				success: function(data){
-						console.log(data);
-						var $num = data;		
-						phoneCheckNum(data);
-						window.open(popUrl + "/" +  $num ,"휴대폰 인증 ",popOption);		
+						var $num = $("#MocheckNum_").html(data);
+						console.log(data);						
+						openModal(data);		
 				},
 				error: function(xhr, status, err){
 						console.log(xhr);
 						console.log(status);
 						console.log(err);
-					
 				}
 			}); 
 			
 		});
+
+		
 	});
+	function closeReturnModal(){
+		$("#myModal").modal('hidden');
+	}
+	
+	function openModal(phoneCheck){
+		console.log("호출됨?");
+		$("#MocheckNum_").val(Number(phoneCheck));
+	/* 	$("#MophoneNum_").val(Number(phoneCheck)); */
+		$("#myModal").fadeIn(300);
+		
+	}
+
+	
 
 	$(document).ready(function(){
 		var key = getCookie("key");	
@@ -109,7 +162,9 @@
 				$remember.prop("checked", false)
 			}	
 		});
-		
+		if($("#phone-send").val() == '인증완료'){
+			$("#myModal").fadeOut(300);
+		}
 	});
 
 	function setCookie(cookieName, value, exdays){
@@ -140,14 +195,125 @@
 	    }
 	    return unescape(cookieValue);
 	}
-
-	function phoneCheckNum(num){
-		console.log(" 여기 호출되냐?");
-		var num = num;
-		console.log(num);
-	
+	function phoneCheck(){
 		
+		var num = $("#MophoneNum_").val();
+		var num2 = 	$("#MocheckNum_").val();
+		console.log(num);
+		if(num != num2){
+			alert("인증번호가 다릅니다.");
+			return;
+		}else {
+			alert("인증 되었습니다.");
+			$("#phone-send").val("인증완료");
+			$("#myModal").modal('hide');
+			return;
+		}
+	};
+
+	function check(){
+		 var $frm = $("#register-form");
+		 var $phone = $("#phone-send").val();
+
+		 if($phone == '문자인증'){
+			alert("핸드폰 인증을 해주세요");
+		}else{
+			$frm.submit();
+		}
 	}
+
+	$(document).ready(function(){
+		
+		$(".guide").hide();
+
+		$("#phoneFinder_").blur(function(){
+			var $this = $(this).val();
+			console.log($this);
+			var $pmemberId = $("#findeMemberId_");
+			console.log($pmemberId.val());
+			if(typeof $this == 'undefined' || $this == ''){
+				$(".guide").hide();
+				$("#idValid").val(0);
+				alert("입력해주세요");
+				return;
+			}
+ 
+ 		
+			$.ajax({
+				url : "${ pageContext.request.contextPath }/member/checkPasswordDuplicate.do",
+				data : {
+					 "pmemberId" : $pmemberId.val(),
+					 "phone" : $this
+				},
+				method : "get",
+				dataType : "json",
+				success : function(data){
+					console.log(data);
+					var $ok = $(".guide.ok");
+					var $error = $(".guide.error");
+					var $idValid = $("#idValid");
+					var $sendPasswordPhone = $("#sendPasswordPhone");
+					var $sendPasswordMemberId = $("#sendPasswordMemberId");
+				 	if(data.isAvailable){
+						$ok.show();
+						$error.hide();
+						$idValid.val(1);
+						$sendPasswordPhone.val(data.phone);
+						$sendPasswordMemberId.val(data.memberId);			
+					}else{
+						$ok.hide();
+						$error.show();
+						$idValid.val(0);				
+					} 
+					
+				},
+				error : function(xhr, status, err){
+						console.log(xhr);
+						console.log( status);
+						console.log( err);
+					
+				}
+					
+
+			});
+		
+		});
+		
+	});
+
+	function passwordSend(){
+		var $idValid = $("#idValid");
+		var $sendPasswordPhone = $("#sendPasswordPhone");
+		var $sendPasswordMemberId = $("#sendPasswordMemberId");
+		if($idValid.val() == 0){
+			alert("아이디 및 핸드폰 번호를 입력해주세요");
+			return;
+		}
+		console.log($sendPasswordPhone.val());
+
+		$.ajax({
+			url : "${ pageContext.request.contextPath}/member/sendPassword",
+			data:{
+				receiver: $sendPasswordPhone.val(),
+				memberId: $sendPasswordMemberId.val()
+			},
+			dataType:"json",
+			method: "post",
+			success: function(data){
+					console.log(data);
+					alert("임시비밀번호가 전송되었습니다. 임시비밀번호로 로그인 해주세요");
+					location.href = '${ pageContext.request.contextPath }/member/memberLogin.do';
+
+			},
+			error: function(xhr, status, err){
+					console.log(xhr);
+					console.log(status);
+					console.log(err);
+				
+			}
+		});
+
+	}	
 </script>
 
 
@@ -176,7 +342,7 @@
 					<label class="checkbox"> 
 						<input type="checkbox" name="remember" id="remember_"  /> 아이디저장
 					</label> 
-					<a class="forgotLnk" href="#" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modalPassword">비밀번호를 잊어 버리셨나요 ?</a>
+					<a class="forgotLnk"class="btn btn-primary btn-lg" href="#" id="passwordFinderA" data-toggle="tab">비밀번호를 잊어 버리셨나요 ?</a>
 					<button class="btn btn-lg btn-block purple-bg" type="submit">
 						로그인</button>
 						<div class="or-box">
@@ -251,13 +417,12 @@
 						<input type="tel" class="form-control" 
 						placeholder="(-없이)01012345678" name="phone" id="phone" maxlength="11" required>
 						<div class="form-check form-check-inline">
-						<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg"id="phone-send" onclick="return phoneCheckNum('${ receiver}');">문자인증</button>
-						</div>
+						<input type="button" class="btn btn-primary"data-target="#myModal" data-toggle="modal"id="phone-send" value="문자인증"/>						</div>
 					</div>
 					<div class="form-group">
 						<div class="row">
 							<div class="col-sm-6 col-sm-offset-3">
-								<button class="btn btn-lg btn-block purple-bg" type="submit">
+								<button class="btn btn-lg btn-block purple-bg" type="button" onclick="check();">
 									가입하기</button>
 							</div>
 						</div>
@@ -270,6 +435,33 @@
 						</div>
 					</div>
 				</form>
+					<!-- 비밀번호 찾기 -->
+                      <form id="passwordForm" method="get"
+                      role="form" style="display: none;">
+                     	<h3 class="heading-desc">비밀번호 찾기</h3>
+                     	<div class="form-group">
+	                       <!--  <label for="empId_">아이디</label> -->
+	                     <input type="text" placeholder="아이디를 입력하세요" name="finderEmpId" id="findeMemberId_" class="form-control">
+	                    </div>
+	                    <div class="form-group">   
+	                     <!--    <label for="empPassword_">비밀번호</label> -->
+	                     <input type="text" placeholder="핸드폰번호를 입력하세요" name="phoneFinder" id="phoneFinder_"  class="form-control">
+                       	<input type="hidden" name="sendPasswordPhone" id="sendPasswordPhone" />
+                       	<input type="hidden" name="sendPasswordMemberId" id="sendPasswordMemberId" />
+                       	<span class="guide ok" style="color:blue;">확인 되었습니다.</span> 
+						<span class="guide error"style="color:red;">잘못 입력하셨습니다.</span>
+						<input type="hidden" id="idValid" value="0"/> 
+                       	</div>
+                        <div>
+                          <button type="button" class="btn btn-lg" id="buttonFinder" onclick="passwordSend();">확인</button>
+                        </div>
+                        <div class="row">
+							<div class="col-md-12 row-block">
+								<a href="#" id="password-form-link">이전 페이지</a>
+							</div>
+						</div>
+                      </form>
+				
 					</div>
 				</div>
 					<!-- 관리자용 로그인 화면 -->
@@ -279,24 +471,46 @@
                       <form id="admin" action="${ pageContext.request.contextPath }/ERP/erpLogin.do" method="post">
                      	<h3 class="heading-desc">관리자 로그인</h3>
                      	<div class="form-group">
-	                        <label for="empId_">아이디</label>
-	                        <input type="text" name="empId" id="empId" class="input-xlarge">
+	                       <!--  <label for="empId_">아이디</label> -->
+	                        <input type="text" placeholder="아이디를 입력하세요" name="empId" id="empId" class="form-control">
 	                    </div>
 	                    <div class="form-group">   
-	                        <label for="empPassword_">비밀번호</label>
-	                        <input type="password" name="empPwd"  class="input-xlarge">
+	                     <!--    <label for="empPassword_">비밀번호</label> -->
+	                        <input type="password" placeholder="비밀번호를 입력하세요" name="empPwd"  class="form-control">
                        	</div>
                         <div>
-                          <button type="submit" class="btn btn-primary">로그인</button>
+                          <button type="submit" class="btn btn-lg btn-block purple-bg" >로그인</button>
                         </div>
                       </form>
 				  </div>
 				</div>
+			
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
-<!-- 비밀번호 찾기용 모달 창 -->
+
+		<!-- 핸드폰 인증 -->
+<div class="modal fade in" id="myModal" tabindex="-1"  aria-hidden="true">
+					  <div class="modal-dialog">
+					    <div class="modal-content">
+					      <div class="modal-head">
+							<a href="javascript:closeReturnModal();" class="modal-close">X</a>
+					        <h4 class="modal-title" id="myModalLabel">인증번호를 입력하세요</h4>
+					      </div>
+					      <div class="modal-body">
+						        인증번호 : 
+						     <input type="text" class="form-control" name="MophoneNum" id="MophoneNum_" >
+						     <input type="hidden" class="form-control" name="MocheckNum" id="MocheckNum_" >
+					      </div>
+					      <div class="modal-footer">
+					        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="closeReturnModal();">닫기</button>
+					        <input type="button" class="btn btn-primary btn-delete" id="infoSubmit" name="infoSubmit" onclick="phoneCheck();" value="확인" >
+					      </div>
+					    </div>
+					  </div>
+</div>	
+
 
 <jsp:include page="/WEB-INF/views/common/footerS.jsp" />

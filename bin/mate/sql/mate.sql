@@ -121,11 +121,12 @@ CREATE TABLE EMP (
 	phone   char(11)		NOT NULL,
 	enroll_date	date	DEFAULT sysdate	NOT NULL,
 	status	number		NOT NULL,
+    enabled number default 0 not null,
     
     constraint pk_emp primary key (emp_id)
 );
 
---DROP TABLE PRODUCT;
+--DROP TABLE PRODUCT cascade constraints;
 CREATE TABLE PRODUCT (
 	product_no	number	NOT NULL	,
 	product_name	varchar2(256)		NOT NULL,
@@ -369,24 +370,21 @@ CREATE TABLE CART (
 --DROP TABLE PURCHASE;
 CREATE TABLE PURCHASE (
 	purchase_no	number		NOT NULL,
-	member_id	varchar2(100)		NOT NULL,
+	member_id	varchar2(100),
 	purchase_date	date	DEFAULT sysdate	NOT NULL,
     address_name varchar2(128) NOT NULL,
     
     constraint pk_purchase primary key (purchase_no),
     constraint fk_purchase_member_id foreign key (member_id)
                                                 references member (member_id)
-                                                on delete cascade,
-    constraint fk_purchase_product_no foreign key (product_no)
-                                                references product (product_no)
-                                                on delete set null;
+                                                on delete cascade
 );
 
 --DROP TABLE PURCHASE_LOG;
 CREATE TABLE PURCHASE_LOG (
 	purchase_log_no	number		NOT NULL,
 	purchase_no	number		NOT NULL,
-	product_no	number		NOT NULL,
+	product_no	number,
 	amount	number		NOT NULL,
     status number DEFAULT 0 NOT NULL,
     purchased number DEFAULT 0 NOT NULL,
@@ -394,7 +392,10 @@ CREATE TABLE PURCHASE_LOG (
     constraint pk_purchase_log primary key (purchase_log_no),
     constraint fk_purchase_log_purchase_no foreign key (purchase_no)
                                                       references purchase (purchase_no)
-                                                      on delete cascade
+                                                      on delete cascade,
+    constraint fk_purchase_log_product_no foreign key (product_no)
+                                                references product (product_no)
+                                                on delete set null;
 );
 
 --DROP TABLE RETURN;
@@ -473,31 +474,7 @@ CREATE TABLE DELETE_BOARD (
 	delete_date	date	DEFAULT sysdate	NOT NULL
 );
 
---DROP TABLE DELETE_PRODUCT;
-CREATE TABLE DELETE_PRODUCT (
-	product_no	number		NOT NULL,
-	product_name	varchar2(256)		NOT NULL,
-	reg_date	date	NOT NULL,
-	category	varchar2(128)		NOT NULL,
-	content	varchar2(4000)		NOT NULL,
-	price	number		NOT NULL,
-    emp_id varchar2(15) NOT NULL,
-	delete_date	date	DEFAULT sysdate	NOT NULL
-);
 
---DROP TABLE DELETE_EMP;
-CREATE TABLE DELETE_EMP (
-	emp_id	varchar2(15)		NOT NULL,
-	emp_pwd	varchar2(300)		NOT NULL,
-	emp_name	varchar2(256)		NOT NULL,
-	addr1	varchar2(512)		NOT NULL,
-	addr2	varchar2(512)		NOT NULL,
-	addr3	varchar2(512)		NOT NULL,
-	phone	char(11)		NOT NULL,
-	enroll_date	date	NOT NULL,
-	status	char(1)		NOT NULL,
-	delete_date	date	DEFAULT sysdate	NOT NULL
-);
 
 --======================================
 -- 시퀀스
@@ -591,49 +568,6 @@ begin
 end;
 /
 
--- 삭제 지점/제조사 관련 트리거
-create or replace trigger trg_delete_emp
-    before
-    delete on emp
-    for each row
-begin
-    insert into 
-        delete_emp
-    values(
-        :old.emp_id, 
-        :old.emp_pwd, 
-        :old.emp_name, 
-        :old.addr1,
-        :old.addr2,
-        :old.addr3,
-        :old.phone,
-        :old.enroll_date,
-        :old.status,
-        default
-    );
-end;
-/
-
--- 삭제 상품 관련 트리거
-create or replace trigger trg_delete_product
-    before
-    delete on product
-    for each row
-begin
-    insert into 
-        delete_product
-    values(
-        :old.product_no, 
-        :old.product_name, 
-        :old.reg_date, 
-        :old.category, 
-        :old.content,
-        :old.price,
-        :old.manufacturer_id,
-        default
-    );
-end;
-/
 
 -- 주문 로그에 결제 컬럼 update시 입출고 로그에 출고로 insert 되고 cart에 삭제하는 트리거
 create or replace trigger trg_purchase_log
@@ -878,6 +812,13 @@ end;
  --===================================
 --샘플데이터
 --===================================
+
+--관리자 1
+insert into EMP values
+('admin', '1234', '본사관리자', '06234', '서울특별시 강남구 테헤란로14길 6', '남도빌딩', '01012341234', default, 0);
+insert into member values
+('admin', '1234', '본사관리자', 'M', '01012341234', default);
+
 --상품 카테고리별로 10개씩 대표사진 3개
 --회원 15명 -> 배송지 한사람당 0개 이상 마음 내키는 대로 한사함당 최대 3개만
 --지점 5개
@@ -917,11 +858,7 @@ insert into mate.EMP values
 insert into mate.EMP values
 ('freeing',1234, 'FREEing',04377,'서울특별시 용산구 한강로3가 한강대로23길 55', '9층', '0226482345', default,2);
 
---관리자 1
-insert into EMP values
-('admin', '1234', '본사관리자', '06234', '서울특별시 강남구 테헤란로14길 6', '남도빌딩', '01012341234', default, 0);
-insert into member values
-('admin', '1234', '본사관리자', 'M', '01012341234', default);
+
 --고객센터 공지 2개 문의글 답변된거 4개 안된거 3개 비밀글 2개
 
 --게시판 카테고리별로 3개씩
@@ -972,55 +909,6 @@ insert into MEMBER values
 ('suzy','$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q','수지','F','01021598756',default);
 
 
-
-
---지점 5개
-insert into EMP values 
-('matetoy1', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '강남점', 06234, '서울특별시 강남구 테헤란로14길 8(역삼동)', '1층', '07012341234', default, 1);
-insert into EMP values 
-('matetoy2', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '역삼점', 06220, '서울특별시 강남구 역삼동 테헤란로 212', '2층', '07013246432', default, 1);
-insert into EMP values 
-('matetoy3', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '부산점', 47216, '부산광역시 부산진구 연수로11번길 1(양정동)', '1층', '07085321234', default, 1);
-insert into EMP values 
-('matetoy4', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '광주점', 61937, '광주광역시 서구 무진대로 904(광천동)', '1층', '07057328628', default, 1);
-insert into EMP values 
-('matetoy5', '$2a$10$k.3/YgT3TnTn0gGODrslJOQvQhOuvZlnAYlbCqmryMjlMllziCM2q', '대구점', 41931, '대구광역시 중구 달성로 22(동산동)', '1층', '07085767552', default, 1);
-
---제조사 10개
-insert into EMP values
-('alter',1234, '알터',01693,'서울특별시 노원구 상계2동 603-8', '1층', '0265653535', default,2);
-insert into EMP values
-('bookia',1234, '고토부키아',04044,'서울특별시 마포구 서교동 신촌로6길 17', '6층', '0317133010', default,2);
-insert into EMP values
-('wave',1234, '웨이브',02830,'서울특별시 성북구 동소문동6가 동소문로15길 8', '4층', '029048899', default,2);
-insert into EMP values
-('smiles',1234, '굿스마일즈',05116,'서울특별시 광진구 구의3동 광나루로56길 85', '1층', '024347799', default,2);
-insert into EMP values
-('megahouse',1234, '메가하우스',06014,'서울특별시 강남구 청담동 선릉로158길 3', '4층', '027974466', default,2);
-insert into EMP values
-('okidsid',1234, '오키드시드',04039,'서교동 370-24 KR 서울특별시 마포구 홍익로 5안길 50', '2층', '0315597851', default,2);
-insert into EMP values
-('kidoyo',1234, '카이도요',05253,'서울특별시 강동구 암사동 472-21', '1층', '025845959', default,2);
-insert into EMP values
-('die',1234, '반다이',05028,'KR 서울특별시 광진구 자양동 224-9', ' 건흥빌딩 건프라샵 사이드7 2층', '029987585', default,2);
-insert into EMP values
-('nami',1234, '코나미',03120,'서울특별시 종로구 창신1동 종로52길 44', '2층', '029978426', default,2);
-insert into EMP values
-('gigafalse',1234, '기가펄스',01136,'서울특별시 강북구 번동 430-1', '4층', '0706659745', default,2);
-insert into EMP values
-('claze',1234, '클레이즈',07782,'서울특별시 강서구 화곡2동 855-13', '1 층 아카데미 과학', '024496566', default,2);
-insert into EMP values
-('bird',1234, '그리폰',06734,'서울특별시 서초구 서초동 서운로 18', '영진빌딩 16층', '027033321', default,2);
-insert into EMP values
-('sega',1234, 'SEGA',06168,'서울특별시 강남구 삼성동 157-18', '하남빌딩 13층', '024439933', default,2);
-insert into EMP values
-('freeing',1234, 'FREEing',04377,'서울특별시 용산구 한강로3가 한강대로23길 55', '9층', '0226482345', default,2);
-
---관리자 1
-insert into EMP values
-('admin', '1234', '본사관리자', '06234', '서울특별시 강남구 테헤란로14길 6', '남도빌딩', '01012341234', default, 0);
-insert into member values
-('admin', '1234', '본사관리자', 'M', '01012341234', default);
 
 --고객센터 공지 2개 
 insert into CS values

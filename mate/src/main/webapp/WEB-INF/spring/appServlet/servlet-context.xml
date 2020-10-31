@@ -33,11 +33,19 @@
 			<mapping path="/product/**/*.do"/>
 			<mapping path="/cs/**.do"/>
 			<exclude-mapping path="/product/productList.do"/>
+			<exclude-mapping path="/product/searchProduct.do"/>
+			<exclude-mapping path="/product/productDetail.do"/>
 			<exclude-mapping path="/member/memberLogin.do"/>
 			<exclude-mapping path="/member/loginCheck.do"/>
+
+
+			<exclude-mapping path="/member/memberEnroll.do"/>
+
 			<exclude-mapping path="/product/getBest.do"/>
+
 			<exclude-mapping path="/member/checkPasswordDuplicate.do"/>
 			<exclude-mapping path="/member/sendPassword"/>
+			<exclude-mapping path="/member/phoneSend.do"/>
 
 			<exclude-mapping path="/cs/selectList.do"/>
 			<exclude-mapping path="/company/**/*.do"/>

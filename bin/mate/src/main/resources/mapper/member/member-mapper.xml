@@ -162,11 +162,12 @@
                             SELECT mm.*
                                  FROM member mm
                              ) 					
-						<where>
+						where
+							member_id != 'admin'
 							<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
 								and ${ searchType }  like '%' || #{ searchKeyword } || '%'
 							</if>
-						</where>
+						
 						ORDER BY enroll_date DESC 
 						) M
 				)
@@ -183,4 +184,10 @@
 		</where>
 		
 	</select>
+	
+	<update id="tempPassword">
+		update member
+			set member_PWD = #{ password }
+		where member_id = #{ memberId }
+	</update>
 </mapper>
