@@ -254,6 +254,7 @@ public class MemberController {
 				EMP e = new EMP();
 				e.setEmpId(loginMember.getMemberId());
 				e.setEmpName(loginMember.getMemberName());
+				e.setStatus(0);
 				model.addAttribute("loginEmp", e);
 				
 			}
