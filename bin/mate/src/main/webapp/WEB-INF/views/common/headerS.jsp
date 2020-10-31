@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -132,16 +131,18 @@ html{
 	margin-left: 15px;
 }
 </style>
+
+<c:if test="${! empty msg}">
+<script>
+	alert('${msg}');
+</script>
+</c:if>
+
 <script>
 $(function(){
 	$("#back-img").click(function(){
 		window.history.go(-1);
 	});	
-
-	if(${! empty msg}){
-		alert('${msg}');
-	}
-
 });
 $(function(){
 	$('#goTop-btn').on('click',function(e){

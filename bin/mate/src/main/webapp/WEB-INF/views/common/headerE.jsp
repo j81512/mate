@@ -23,21 +23,20 @@
 	crossorigin="anonymous"></script>
 </head>
 <style>
-body{
-}
+.empInfo{
+list-style:inherit;
+position:relative;
+left:1300px;
 </style>
 <header>
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">Mate</a>
+  <a class="navbar-brand" href="${pageContext.request.contextPath }/ERP/erpMain.do">Mate</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
   <div class="collapse navbar-collapse" id="navbarsExample03">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item ">
-        <a class="nav-link" href="${pageContext.request.contextPath }/ERP/erpMain.do">ERP_Main <span class="sr-only">(current)</span></a>
-      </li>
       <li class="nav-item ">
         <a class="nav-link" href="javascript:window.history.back();">Back</a>
       </li>
@@ -46,12 +45,14 @@ body{
 	        <a class="nav-link " href="${pageContext.request.contextPath}">쇼핑몰 전환</a>
 	      </li>
       </c:if>
+      <div class="empInfo">
       <li class="nav-item">
       	<a class="nav-link active" href="#">${loginEmp.empName }님 반갑습니다.</a>
       </li>
       <li class="nav-item">
 		<a class="nav-link " href="${pageContext.request.contextPath }/ERP/logout.do">logout</a>        
       </li>
+      </div>
     </ul>
   </div>
 </nav>

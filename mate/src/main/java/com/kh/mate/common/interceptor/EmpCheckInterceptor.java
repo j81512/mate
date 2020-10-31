@@ -26,7 +26,7 @@ public class EmpCheckInterceptor extends HandlerInterceptorAdapter {
 			
 			FlashMap map = new FlashMap();
 
-			map.put("msg", "관리자만 이용가능한 페이지입니다.");
+			map.put("msg", "관리자 회원만 이용가능한 페이지입니다.");
 			FlashMapManager manager = RequestContextUtils.getFlashMapManager(request);
 			manager.saveOutputFlashMap(map, request, response);
 

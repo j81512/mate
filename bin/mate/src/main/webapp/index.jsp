@@ -16,37 +16,37 @@
 
 .blur-div{
 	display: inline-block;
-	width: 13%;
-	height: 15%;
+	width: 160px;
+	height: 110px;
 	position: absolute;
 }
 .main-div{
 	display: inline-block;
-	width: 36%;
-	height: 42.5%;
+	width: 500px;
+	height: 320px;
 	border: 20px solid white;
 	position: absolute;
-	bottom: 0;
-	left: 27%;
+	bottom: 38vh;
+	left: 230px;
 	
 }
 .first-div{
-	left: 13%;
-	bottom: 24.5%;
+	left: 50px;
+	bottom: 63vh;
 	filter: blur(5px) grayscale(80%);
 }
 .first-div:hover, .second-div:hover, .third-div:hover{
 	filter: blur(0px);
 }
 .second-div, .third-div{
-	bottom: 2.5%;
+	bottom: 41vh;
 	filter: blur(5px) grayscale(80%);
 }
 .second-div{
-	right: 23%;
+	right: 205px;
 }
 .third-div{
-	right: 9%;
+	right: 15px;
 }
 .img-none{
 	display:none;
@@ -59,13 +59,16 @@
 
 #best-p{
 	position: absolute;
-	bottom: 17%;
-	right: 10%;
-	width: 27%;
+	bottom: 27vh;
+	right: 170px;
+	width: 27vw;
+	font-family: 'UhBeeSe_hyun';
+	font-weight: bold;
 }
 .best-div:hover{
 	cursor: pointer;
 }
+
 </style>
 <script>
 $(function(){
@@ -164,7 +167,7 @@ $(function(){
 </div>
 
 
-<p id="best-p">─────────────── BEST 5 ───────────────</p>
+<p id="best-p"><────────── BEST 5 ───────────</p>
 <br />
 <jsp:include page="/WEB-INF/views/common/footerS.jsp"></jsp:include>
 

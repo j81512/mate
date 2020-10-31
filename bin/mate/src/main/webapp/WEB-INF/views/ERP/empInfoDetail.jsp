@@ -35,10 +35,10 @@ $(function(){
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
         <form action="${ pageContext.request.contextPath }/ERP/infoUpdate.do"
         	  method="POST"
         	  id="infoFrm">
+      <div class="modal-body">
           <table class="mx-auto">
 			<tr>
 				<th>아이디</th>
@@ -90,6 +90,7 @@ $(function(){
 			</tr>
 		</table>
       </div>
+		</form>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
         <button type="submit" class="btn btn-primary" id="infoSubmit">정보 수정</button>
@@ -98,7 +99,6 @@ $(function(){
     </div>
   </div>
 </div>
-</form>
 <!-- 주소API -->
 <!-- 주소검색용 스크립트 -->
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>

@@ -5,6 +5,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
 <script src="${ pageContext.request.contextPath }/resources/ckeditor/ckeditor.js"></script>
+<style>
+
+</style>
 <script>
 
 $(function(){
@@ -63,8 +66,12 @@ div#form-container{
 	border:1px solid lightgray;
 	border-radius: 10px;
 }
-div#form-container label.custom-file-label{text-align:left;}
-
+div#form-container label.custom-file-label{
+	text-align:left;
+}
+.upfile-div{
+	width:100% !important;
+}
 </style>
 </head>
 <body>
@@ -103,7 +110,7 @@ div#form-container label.custom-file-label{text-align:left;}
    <div class="input-group-prepend" style="padding:0px;">
      <span class="input-group-text">섬네일 사진 1</span>
    </div>
-   <div class="custom-file">
+   <div class="custom-file upfile-div">
      <input type="file" class="custom-file-input" name="upFile" id="upFile1"  required>
      <label class="custom-file-label" for="upFile1">파일을 선택하세요</label>
    </div>
@@ -112,7 +119,7 @@ div#form-container label.custom-file-label{text-align:left;}
    <div class="input-group-prepend" style="padding:0px;">
      <span class="input-group-text">섬네일 사진 2</span>
    </div>
-   <div class="custom-file">
+   <div class="custom-file upfile-div">
      <input type="file" class="custom-file-input" name="upFile" id="upFile1" required>
      <label class="custom-file-label" for="upFile1">파일을 선택하세요</label>
    </div>
@@ -121,7 +128,7 @@ div#form-container label.custom-file-label{text-align:left;}
    <div class="input-group-prepend" style="padding:0px;">
      <span class="input-group-text">섬네일 사진 3</span>
    </div>
-   <div class="custom-file">
+   <div class="custom-file upfile-div">
      <input type="file" class="custom-file-input" name="upFile" id="upFile1" required>
      <label class="custom-file-label" for="upFile1">파일을 선택하세요</label>
    </div>

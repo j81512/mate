@@ -81,9 +81,23 @@
 	</select>
  
  	<select id="selectProductListAll" resultType="product">
-		select * from ( select ROWNUM RN, A.*
-        from (select *from product) A)
-        WHERE RN BETWEEN #{start} and #{end}
+		select 
+			* 
+		from ( 
+			select 
+				ROWNUM RN, 
+				A.*
+        	from 
+        		(select 
+        			*
+        		 from 
+        		 	product
+        		 where
+        		 	enabled != 1
+        	) A
+        )
+        WHERE 
+        	RN BETWEEN #{start} and #{end}
  	
  	</select>
  	
