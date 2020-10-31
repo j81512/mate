@@ -156,6 +156,14 @@ public interface ErpDAO {
 
 	List<Product> proLogList(Map<String, Object> map);
 
+	int updateEmpDelete(String empId);
+
+
+	int vitalEmp(String empId);
+
+	int productResale(int productNo);
+
+
 
 
 }

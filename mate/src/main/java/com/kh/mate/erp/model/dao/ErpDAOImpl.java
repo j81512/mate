@@ -102,6 +102,11 @@ public class ErpDAOImpl implements ErpDAO {
 	}
 
 	@Override
+	public int vitalEmp(String empId) {
+		return sqlSession.update("emp.vitalEmp", empId);
+	}
+
+	@Override
 	public int UpdateProductToDelete(String productNo) {
 		return sqlSession.update("erp.UpdateProductToDelete", productNo);
 	}
@@ -195,6 +200,11 @@ public class ErpDAOImpl implements ErpDAO {
 	@Override
 	public List<Map<String, Object>> selectRequestMapList(Map<String, Object> temp) {
 		return sqlSession.selectList("erp.selectRequestMapList", temp);
+	}
+
+	@Override
+	public int updateEmpDelete(String empId) {
+		return sqlSession.update("emp.updateEmpDelete", empId);
 	}
 	
 	//호근 추가
@@ -389,6 +399,11 @@ public class ErpDAOImpl implements ErpDAO {
 	@Override
 	public List<Product> proLogList(Map<String, Object> map) {
 		return sqlSession.selectList("erp.proLogList",map);
+	}
+
+	@Override
+	public int productResale(int productNo) {
+		return sqlSession.update("erp.productResale", productNo);
 	}
 
 	

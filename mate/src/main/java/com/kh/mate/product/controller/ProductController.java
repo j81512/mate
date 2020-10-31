@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,18 +69,23 @@ public class ProductController {
 		
 		log.debug("amount = {}",amount);
 		log.debug("productNo={}",productNo);
-		Map<String, Object> param = new HashMap<>();
-		param.put("amount", amount);
-		param.put("productNo", productNo);
-		param.put("memberId", memberId);
-		
-		int result = productService.insertCart(param);
-		log.debug("result = {}", result);
-		
-		if(result > 0) {
-			redirectAttribute.addFlashAttribute("msg", "장바구니 저장 성공");
-		}else {
-			redirectAttribute.addFlashAttribute("msg", "장바구니 저장 실패");
+		try {
+			
+			Map<String, Object> param = new HashMap<>();
+			param.put("amount", amount);
+			param.put("productNo", productNo);
+			param.put("memberId", memberId);
+			
+			int result = productService.insertCart(param);
+			log.debug("result = {}", result);
+			
+			if(result > 0) {
+				redirectAttribute.addFlashAttribute("msg", "장바구니 저장 성공");
+			}else {
+				redirectAttribute.addFlashAttribute("msg", "장바구니 저장 실패");
+			}
+		} catch( DataIntegrityViolationException e) {
+			redirectAttribute.addFlashAttribute("msg", "이미 담겨있는 상품입니다.");
 		}
 		
 		String redUrl = "product/productDetail.do?productNo="+productNo;
@@ -129,19 +135,23 @@ public class ProductController {
 		
 		log.debug("amount = {}",amount);
 		log.debug("productNo={}",productNo);
-		Map<String, Object> param = new HashMap<>();
-		param.put("amount", amount);
-		param.put("productNo", productNo);
-		param.put("memberId", memberId);
-		
-		int result = productService.insertCart(param);
-		log.debug("result = {}", result);
-		
-		if(result > 0) {
-			redirectAttribute.addFlashAttribute("msg", "결제를 진행해 주세요.");
-		}else {
-			redirectAttribute.addFlashAttribute("msg", "결제오류...");
-		}
+		try {
+			Map<String, Object> param = new HashMap<>();
+			param.put("amount", amount);
+			param.put("productNo", productNo);
+			param.put("memberId", memberId);
+			
+			int result = productService.insertCart(param);
+			log.debug("result = {}", result);
+			
+			if(result > 0) {
+				redirectAttribute.addFlashAttribute("msg", "결제를 진행해 주세요.");
+			}else {
+				redirectAttribute.addFlashAttribute("msg", "결제오류...");
+			}
+		} catch( DataIntegrityViolationException e) {
+			redirectAttribute.addFlashAttribute("msg", "이미 담겨있는 상품입니다.");
+		}	
 		
 		return "redirect:/product/selectCart.do?memberId=" + memberId;
 	}

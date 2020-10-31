@@ -27,5 +27,6 @@ public class EMP implements Serializable{
 	private Date empEnrollDate;
 	//호근 이름 status로 수정
 	private int status;
+	private int enabled;
 
 }

@@ -123,6 +123,14 @@ public interface ErpService {
 
 	//발주검사
 	List<Product> proLogList(Map<String, Object> map);
+
+	int updateEmpDelete(String empId);
+
+
+	int vitalEmp(String empId);
+
+	int productResale(int productNo);
+
 	
 	
 

@@ -4,24 +4,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<link rel="stylesheet"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
-	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
-	crossorigin="anonymous">
-<link
-	href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
-	rel="stylesheet" id="bootstrap-css">
-<link rel="stylesheet"
-	href="${ pageContext.request.contextPath }/resources/css/loginForm.css" />
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-	integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-	crossorigin="anonymous"></script>
-<script
-	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-	crossorigin="anonymous"></script>
+
 
 <jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
 <style>
@@ -60,11 +43,15 @@
 
 .modal-head{
 	padding: 1%; 
-	background-color : gold;
+	background-color : rgb(164,80,68,0.8);
 	border: 1px solid #000;
 	min-height: 45px;
 	border-radius: 25px 25px 0px 0px;
 	
+}
+.modal-title{
+	font-family: 'UhBeeSe_hyun';
+	padding: 2%;
 }
 .modal-body{
 	padding: 3%;
@@ -77,6 +64,19 @@
 }
 .modal-inbody-div{
 	display: inline-block;
+}
+th{
+	position: sticky;
+	top:0;
+	background: white;
+}
+.content-div{
+	overflow-y: scroll;
+	overflow-x: none;
+	height: 15px;
+}
+tr{
+	cursor: pointer;
 }
 </style>
 
@@ -130,7 +130,9 @@ function returnSubmit(confirm){
 }
 </script>
 
-<div class="container">
+<div class="search-div">
+</div>
+<div class="content-div">
 
 	<div id="buy" class="tab-pane fade active show in">
 		<div class="col-md-15">
@@ -170,6 +172,7 @@ function returnSubmit(confirm){
 		</div>
 	</div>
 </div>
+
 <div class="modal" id="return-modal">
 	<div class="modal-section">
 		<div class="modal-head">

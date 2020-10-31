@@ -245,8 +245,8 @@ public class ErpContorller {
 	}
 	
 	//박도균 지점/제조사 정보 삭제
-	@PostMapping("/ERP/infoDelete.do")
-	public String infoDelete(EMP emp, 
+	//@PostMapping("/ERP/infoDelete.do")
+	public String infoDeleteNotUse(EMP emp, 
 							 RedirectAttributes redirectAttr) {
 		log.debug("emp = {}", emp);
 		try {
@@ -268,6 +268,24 @@ public class ErpContorller {
 		}
 		return "redirect:/ERP/empManage.do";
 	}
+	
+	@PostMapping("/ERP/infoDelete.do")
+	public String infoDelete(EMP emp, 
+			 RedirectAttributes redirectAttr) {
+		
+		String empId = emp.getEmpId();
+		try {
+			int result = erpService.updateEmpDelete(empId);
+			redirectAttr.addFlashAttribute("msg", "삭제가 완료되었습니다.");
+			
+		}catch(Exception e) {
+			redirectAttr.addFlashAttribute("msg", "삭제에 실패하였습니다. 확인 후 다시 시도하여주세요");
+		}
+		
+		return "redirect:/ERP/empManage.do";
+		
+	}
+	
 	
 
 	@RequestMapping(value="/ERP/EmpBoardList.do", method=RequestMethod.GET)
@@ -986,6 +1004,21 @@ public class ErpContorller {
 		return new ResponseEntity<List<Map<String,Object>>>(mapList, HttpStatus.OK);
 	}
 	
+	//emp활성화
+	@RequestMapping("/ERP/vitalEMP.do")
+	public String vitalEmp(@RequestParam("empId")String empId,RedirectAttributes redirectAttr) {
+		
+		try {
+			int result = erpService.vitalEmp(empId);
+			redirectAttr.addFlashAttribute("msg", "해당 지점/제조사가 활성화 되었습니다.");
+			
+		}catch(Exception e) {
+			redirectAttr.addFlashAttribute("msg", "해당 지점/제조사 활성화에 실패하였습니다. 확인 후 다시 시도하여주세요");
+		}
+		
+		return "redirect:/ERP/empManage.do";
+	}
+	
 	// 호근 관리자 로그인 및 로그인 세션 추가 
 	@PostMapping("/ERP/erpLogin.do")
 	public String memberLogin(@RequestParam("empId") String empId
@@ -1382,6 +1415,17 @@ public class ErpContorller {
 		map.put("isAvailable", Available);
 		log.debug("map = {}", map);
 		
+		return map;
+	}
+	
+	@ResponseBody
+	@PostMapping("/ERP/productResale.do")
+	public Map<String, Object> productResale(@RequestParam("productNo") int productNo){
+		
+		int result = erpService.productResale(productNo);
+		Map<String, Object> map = new HashMap<>();
+		String msg = result > 0 ? "성공" : "실패";
+		map.put("msg", msg);
 		return map;
 	}
 	

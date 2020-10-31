@@ -111,6 +111,16 @@ public class ErpServiceImpl implements ErpService {
 	}
 
 	@Override
+	public int vitalEmp(String empId) {
+		return erpDAO.vitalEmp(empId);
+	}
+
+	@Override
+	public int updateEmpDelete(String empId) {
+		return erpDAO.updateEmpDelete(empId);
+	}
+
+	@Override
 	public Product selectProductOne(String productNo) {
 		return erpDAO.selectProductOne(productNo);
 	}
@@ -436,6 +446,11 @@ public class ErpServiceImpl implements ErpService {
 	@Override
 	public List<Product> proLogList(Map<String, Object> map) {
 		return erpDAO.proLogList(map);
+	}
+
+	@Override
+	public int productResale(int productNo) {
+		return erpDAO.productResale(productNo);
 	}
 		
 	
