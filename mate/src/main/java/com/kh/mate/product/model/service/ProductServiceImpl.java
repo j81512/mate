@@ -94,6 +94,22 @@ public class ProductServiceImpl implements ProductService {
 		return product;
 	}
 
+
+	@Override
+	public Map<String, Object> selectProductAndReview(String productNo) {
+		
+		Map<String, Object> map = new HashMap<>();
+		
+		Product product = productDAO.selectProductOne(productNo);
+		List<ProductMainImages> pmi = productDAO.selectProductMainImages(productNo);
+		product.setPmiList(pmi);
+		
+		List<Map<String, Object>> reviewList = productDAO.selectReview(productNo);
+		map.put("product", product);
+		map.put("reviewList", reviewList);
+		return map;
+	}
+	
 	@Override
 	public int productImageEnroll(ProductImages productImage) {
 		return productDAO.productImageEnroll(productImage);
@@ -223,6 +239,8 @@ public class ProductServiceImpl implements ProductService {
 		
 		return mapList;
 	}
+
+
 	
 
 	

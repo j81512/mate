@@ -17,7 +17,7 @@
 	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
 	crossorigin="anonymous"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <style>
 .border{
 	border: 1px solid black;
@@ -249,7 +249,14 @@ function execPostCode() {
 $("#purchase-btn").click(function(){
 	var $productNos = $(".hidden-productNo");
 	var $productAmounts = $(".hidden-productAmount");
-
+	if(!$("#hidden-addr").val()){
+		alert("배송지를 입력해주세요.");
+		return false;
+	}
+	if($productNos.length == 0 || !$productNos){
+		alert("상품을 선택해주세요.");
+		return false;
+	}
 	var param=[];
 	$productNos.each(function(i, productNo){
 		var dataId = $(productNo).data("id");

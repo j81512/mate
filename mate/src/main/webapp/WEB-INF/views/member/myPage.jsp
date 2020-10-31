@@ -195,7 +195,7 @@ ul.nav>li,ul.nav>li>a{
 				return;
 			}
 			$.ajax({
-				url : "${ pageContext.request.contextPath}/member/checkPasswordDuplicate.do",
+				url : "${ pageContext.request.contextPath}/member/chPasswordDuplicate.do",
 				data : {
 					memberId : $memberId.val(),
 					memberPWD : $this.val()

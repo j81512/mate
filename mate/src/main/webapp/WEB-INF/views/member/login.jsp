@@ -155,13 +155,15 @@
 		
 	});
 	function closeReturnModal(){
-		$("#myModal").modal('hidden');
+		$("#myModal").fadeOut(300);
+		$("#myModal").removeClass("show");
+		$(".modal-backdrop").removeClass("show");
+		$(".modal-backdrop").fadeOut();
 	}
 	
 	function openModal(phoneCheck){
 		console.log("호출됨?");
 		$("#MocheckNum_").val(Number(phoneCheck));
-	/* 	$("#MophoneNum_").val(Number(phoneCheck)); */
 		$("#myModal").fadeIn(300);
 		
 	}
@@ -238,13 +240,14 @@
 		console.log(num);
 		if(num != num2){
 			alert("인증번호가 다릅니다.");
-			return;
+
 		}else {
 			alert("인증 되었습니다.");
 			$("#phone-send").val("인증완료");
-			$("#myModal").modal('hide');
-			return;
+			$("#myModal").removeClass("show");
+			closeReturnModal();
 		}
+		
 	};
 
 	function check(){
@@ -350,6 +353,8 @@
 		});
 
 	}	
+
+
 </script>
 
 
@@ -547,7 +552,7 @@
 
 
 <!-- 핸드폰 인증 -->
-<div class="modal fade in" id="myModal"
+<div class="modal fade " id="myModal"
  data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -562,9 +567,8 @@
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal"
 					onclick="closeReturnModal();">닫기</button>
-				<input type="button" class="btn btn-primary btn-delete"
-					id="infoSubmit" name="infoSubmit" onclick="phoneCheck();"
-					value="확인">
+				<button type="button" class="btn btn-primary btn-delete"
+					id="infoSubmit" name="infoSubmit" onclick="phoneCheck();">확인</button>
 			</div>
 		</div>
 	</div>

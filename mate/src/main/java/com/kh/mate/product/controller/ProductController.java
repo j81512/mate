@@ -52,9 +52,9 @@ public class ProductController {
 								Model model) {
 		log.debug("productNo = {}", productNo);
 		//DB에 저장되어있는 데이터를 가져와서 넘겨주기.
-		Product product = productService.selectProductOne(productNo);
-		log.debug("product = {}", product);
-		model.addAttribute("product", product);
+		Map<String, Object> map = productService.selectProductAndReview(productNo);
+		log.debug("product&review = {}", map);
+		model.addAttribute("map", map);
 		
 		return "product/productDetail";
 	}

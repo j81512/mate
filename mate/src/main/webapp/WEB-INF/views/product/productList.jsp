@@ -25,12 +25,13 @@
 .card{
 	padding:0;
 	margin:0;
-	min-width: 25%;
-	max-width: 25%;
+	min-width: 24%;
+	max-width: 24%;
 	background : #F1F1F1;
 	display:inline-block;
 	border: 1px solid black;
 	min-height: 130px;
+	max-height: 130px;
 }
 .top-section{
 	height: 180px;
@@ -62,6 +63,10 @@
 	padding-top: 10px;
 	padding-bottom: 10px;
 	border-top: 1px solid black;
+	overflow-y: scroll;
+	overflow-x: none;
+	max-height: 121px;
+	min-height: 121px;
 }
 .chk-label{
 	background-color: rgba(54,54,54,0.2);

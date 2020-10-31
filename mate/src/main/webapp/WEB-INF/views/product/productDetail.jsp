@@ -69,6 +69,12 @@
 	width: 30px;
 	height: 30px;
 }
+th{
+	text-align: center;
+	position:sticky;
+	top:0;
+	background-color: rgb(164,80,68,0.6);
+}
 </style>
 
 <script>
@@ -101,12 +107,12 @@ $(function(){
 	<img src="${ pageContext.request.contextPath }/resources/images/left.png" alt="" id="left-btn" class="card-toggle-btn"/>
 	<div class="card">
 		<div class="top-section">
-			<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${product.pmiList[0].renamedFilename}"
+			<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${map.product.pmiList[0].renamedFilename}"
 				 alt="대표이미지" class="mainImg"
 				 width="200px"/>
 		</div>
 		<div class="imgNav">
-			<c:forEach items="${product.pmiList }" var="Thumbs" varStatus="vs">
+			<c:forEach items="${map.product.pmiList }" var="Thumbs" varStatus="vs">
 				<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${Thumbs.renamedFilename}"
 					 alt="thums${vs.count}"
 					 width="50px" class="imgNav-img"/>
@@ -116,32 +122,32 @@ $(function(){
 			<form id="productDetailFrm">
 
 				<!-- 상품 번호 -->
-				<input type="hidden" name="productNo" value="${ product.productNo }" />
+				<input type="hidden" name="productNo" value="${ map.product.productNo }" />
 				<input type="hidden" name="memberId" value="${ loginMember.memberId }" />
 				<div class="product-detail">
 					<div class="product-name">
-						상품명 : <span>${ product.productName }</span>
+						상품명 : <span>${ map.product.productName }</span>
 					</div>
 					
 					<div class="product-category">
 						카테고리 : <span>
-							<c:if test="${ product.category eq 'fg' }">
+							<c:if test="${ map.product.category eq 'fg' }">
 				    		피규어
 				    		</c:if>
-				    		<c:if test="${ product.category eq 'pm' }">
+				    		<c:if test="${ map.product.category eq 'pm' }">
 				    		프라모델
 				    		</c:if>
-				    		<c:if test="${ product.category eq 'rc' }">
+				    		<c:if test="${ map.product.category eq 'rc' }">
 				    		RC카
 				    		</c:if>
-				    		<c:if test="${ product.category eq 'dr' }">
+				    		<c:if test="${ map.product.category eq 'dr' }">
 				    		드론
 				    		</c:if>
 						</span>
 					</div>
 					
 					<div class="product-price">
-						가격 : <span><fmt:formatNumber value="${ product.price }" pattern="#,###"></fmt:formatNumber></span>원
+						가격 : <span><fmt:formatNumber value="${ map.product.price }" pattern="#,###"></fmt:formatNumber></span>원
 					</div>
 					
 					<!-- 구입 수량 입력  -->
@@ -163,9 +169,27 @@ $(function(){
 <div class="content-div">
 	<!-- 내용이 입력될 자리 -->
 	<div class="product-content">
-	${ product.content }
+	${ map.product.content }
 	</div>
+	<div class="review-div" style="overflow-y:scroll; overflow-x:hidden; min-height: 500px; max-height: 500px;">
+	<table class="table table-hover">
+		<tr>
+			<th scope="col">작성자</th>
+			<th scope="col">내용</th>
+			<th scope="col">평점</th>
+			<th scope="col">작성일</th>
+		</tr>
 	
+		<c:forEach items="${ map.reviewList }" var="review">
+			<tr>
+				<td>${ review.memberId }</td>
+				<td>${ review.comments }</td>
+				<td>${ review.score }</td>
+				<td>${ review.regDate }</td>
+			</tr>
+		</c:forEach>
+	</table>
+	</div>
 </div>
 <script>
 function saveCart(){

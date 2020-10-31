@@ -75,6 +75,8 @@ public interface ProductDAO {
 
 	List<Map<String, Object>> getBestImg(Integer productNo);
 
+	List<Map<String, Object>> selectReview(String productNo);
+
 
 
 }

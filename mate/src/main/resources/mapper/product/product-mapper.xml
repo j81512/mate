@@ -4,6 +4,31 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="product">
 
+	<select id="selectReview" resultMap="reviewMap">
+		select 
+			*
+		from(
+			select
+			    R.*,
+			    PL.product_no,
+			    P.member_id
+			from
+			    review R
+			    join purchase_log PL on R.purchase_log_no = PL.purchase_log_no
+			    join purchase P on PL.purchase_no = P.purchase_no
+		)
+		where
+		    product_no = #{productNo}
+	</select>
+	<resultMap id="reviewMap" type="map">
+		<result column="review_no" property="reviewNo"/>
+		<result column="purchase_log_no" property="purchaseLogNo"/>
+		<result column="comments" property="comments"/>
+		<result column="score" property="score"/>
+		<result column="reg_date" property="regDate"/>
+		<result column="product_no" property="productNo"/>
+		<result column="member_id" property="memberId"/>
+	</resultMap>
 	<select id="getBestList" resultType="int">
 		select 
 			product_no

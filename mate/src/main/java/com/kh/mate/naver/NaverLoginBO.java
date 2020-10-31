@@ -17,7 +17,7 @@ import com.github.scribejava.core.oauth.OAuth20Service;
 public class NaverLoginBO {
 	private final static String CLIENT_ID = "xRwmBKO5xFu5Z3LqMpMT";
 	private final static String CLIENT_SECRET = "M9HjLCzzwT";
-	private final static String REDIRECT_URI = "http://localhost:9090/mate/callback.do";
+	private final static String REDIRECT_URI = "http://mate.matetoy.kro.kr/mate/callback.do";
 	private final static String SESSION_STATE = "oauth_state";
 	
 	 /* 프로필 조회 API URL => 이건 아직 모르겠음*/

@@ -59,6 +59,8 @@ public interface ProductService {
 
 	List<Map<String, Object>> getBest();
 
+	Map<String, Object> selectProductAndReview(String productNo);
+
 
 
 

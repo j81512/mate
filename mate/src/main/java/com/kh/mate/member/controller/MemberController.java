@@ -14,11 +14,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.google.connect.GoogleConnectionFactory;
-import org.springframework.social.oauth2.AccessGrant;
-import org.springframework.social.oauth2.GrantType;
-import org.springframework.social.oauth2.OAuth2Operations;
-import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -192,8 +187,8 @@ public class MemberController {
 	@PostMapping("/member/phoneSend.do")
 	public String PhoneSend(@RequestParam("receiver") String phone) {
 		log.debug("phone = {}", phone);
-		String apiKey = "NCSZXRWYBWEC2I0X";
-		String apiSecret = "RHGHGCDLP8OWCBRQYCFEJPWORMDXAMO3";
+		String apiKey = "NCSMEQ9SPX8T4FEH";
+		String apiSecret = "RXFWNUW0XYKAATDX5WPNYE0PGPL9VOHH";
 		Message coolsms = new Message(apiKey,apiSecret);
 		
 		HashMap<String, String> map = new HashMap<>();
@@ -207,7 +202,7 @@ public class MemberController {
 		
 		map.put("type", "SMS");
 		map.put("to", phone);
-		map.put("from", "01026596065");
+		map.put("from", "01041747596");
 		map.put("text", "본인확인"
 						+"인증번호(" + checkNum+ ")입력시 정상처리 됩니다.");	
 		
@@ -313,7 +308,8 @@ public class MemberController {
 	}
 	
 	@PostMapping("/member/memberUpdate.do")
-	public String memberUpdate(Member member,RedirectAttributes redirectAttr) {
+	public String memberUpdate(Member member,RedirectAttributes redirectAttr,
+							   HttpServletRequest request) {
 		
 			log.debug("member = {}", member);
 			try {
@@ -328,7 +324,9 @@ public class MemberController {
 				int result = memberService.updateMember(map);
 				log.debug("result = {}", result);
 				log.debug("map = {}", map);
-				String msg = "정보 변경에 성공하였습니다.";
+				String msg = "정보 변경에 성공하였습니다. 다시 로그인해주세요.";
+				HttpSession session = request.getSession();
+				session.invalidate();
 				redirectAttr.addFlashAttribute("msg", msg);
 			
 				
@@ -338,7 +336,10 @@ public class MemberController {
 				redirectAttr.addFlashAttribute("msg", msg);
 			}
 			
-			return "redirect:/member/myPage.do";
+			
+			
+			
+			return "redirect:/member/memberLogin.do";
 		
 	}
 	
@@ -539,8 +540,8 @@ public class MemberController {
 										  @RequestParam("receiver")String receiver){
 		log.debug("meberId={}", memberId);
 		log.debug("meberId={}", receiver);
-		String apiKey = "NCSZXRWYBWEC2I0X";
-		String apiSecret = "RHGHGCDLP8OWCBRQYCFEJPWORMDXAMO3";
+		String apiKey = "NCSMEQ9SPX8T4FEH";
+		String apiSecret = "RXFWNUW0XYKAATDX5WPNYE0PGPL9VOHH";
 		Message coolsms = new Message(apiKey,apiSecret);
 		
 		HashMap<String, String> map = new HashMap<>();
@@ -557,7 +558,7 @@ public class MemberController {
 		int result = memberService.tempPassword(map);
 		map.put("type", "SMS");
 		map.put("to", receiver);
-		map.put("from", "01026596065");
+		map.put("from", "01041747596");
 		map.put("text", "임시비밀번호"
 						+"(" + checkNum+ ")로 변경 되었습니다.");	
 		
@@ -584,6 +585,22 @@ public class MemberController {
 		String msg = result > 0 ? "배송지 삭제 성공!" : "삭제 실패! 배송지 삭제를 다시 해주세요.";
 		Map<String, Object> map = new HashMap<>();
 		map.put("msg", msg);
+		return map;
+	}
+	
+	@GetMapping("/member/chPasswordDuplicate.do")
+	@ResponseBody
+	public Map<String, Object> checkDuplicate(@RequestParam("memberId") String memberId, @RequestParam("memberPWD") String password){
+		Map<String, Object> map = new HashMap<>();
+		log.debug("연결은 되냐?");
+		Member member = memberService.selectOneMember(memberId);
+		log.debug("member = {}", member);
+		
+		boolean isAvailable = member.getMemberPWD().equals(password) == true;
+		log.debug("isVailable ={}", isAvailable);
+		map.put("memberId" , member.getMemberId());;
+		map.put("isAvailable", isAvailable);
+				
 		return map;
 	}
 }
