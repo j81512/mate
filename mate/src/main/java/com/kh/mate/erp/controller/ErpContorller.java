@@ -1402,4 +1402,15 @@ public class ErpContorller {
 		return map;
 	}
 	
+	@ResponseBody
+	@PostMapping("/ERP/productResale.do")
+	public Map<String, Object> productResale(@RequestParam("productNo") int productNo){
+		
+		int result = erpService.productResale(productNo);
+		Map<String, Object> map = new HashMap<>();
+		String msg = result > 0 ? "성공" : "실패";
+		map.put("msg", msg);
+		return map;
+	}
+	
 }
