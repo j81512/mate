@@ -72,6 +72,10 @@
 </style>
 
 <script>
+	<c:if test="${! empty msg}">alert(msg);</c:if>
+</script>
+
+<script>
 $(function(){
 	$(".imgNav-img").click(function(){
 		
