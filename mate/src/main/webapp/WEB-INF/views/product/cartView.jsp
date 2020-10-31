@@ -173,11 +173,7 @@ function execPostCode() {
 
 <div class="search-div"></div>
 <div class="content-div">
-	<c:if test="${ not empty msg }">
-		<script>
-			alert("${msg}");
-		</script>
-	</c:if>
+
 	<div class="container" style="overflow-y:scroll; overflow-x:hidden;">
 	<table class="table table-hover">
 	  <thead>
