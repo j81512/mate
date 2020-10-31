@@ -96,7 +96,7 @@ $(function(){
 	   <div class="custom-file">
 	     <input type="file" class="custom-file-input" name="upFile" id="upFile${ vs.count }" >
 	     <label class="custom-file-label" for="upFile${ vs.count }">${ mainImage.originalFilename }</label>
-	     <input type="hidden" name="productImageNo" value="${ mainImage.productImageNo }"/>
+	     <input type="hidden" name="productImageNo" value="${ mainImage.productMainImageNo }"/>
 	   </div>
 	  </div>
 	</c:forEach>
@@ -109,12 +109,8 @@ $(function(){
   			<!-- 가격 -->
   <div class="form-group">
 	<label for="price">가격</label>
-	<input type="range" id="priceRange" class="custom-range" min="0" max="30000000" step="1000"/>
 	<input type="text" name="price" id="priceValue" value="${ product.price }" required/> 원
   </div>
-  
-  <!-- 등록자  -->
-  <input type="hidden" name="empId" value="testId"/>
 
   <!-- 상품 번호 -->
   <input type="hidden" name="productNo" value="${ product.productNo }" />

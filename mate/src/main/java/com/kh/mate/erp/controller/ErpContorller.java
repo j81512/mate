@@ -656,14 +656,12 @@ public class ErpContorller {
 	//뒤로가기 클릭 시 파일 삭제
 	@RequestMapping(value = "/ERP/fileDelMethod.do",
 					method = RequestMethod.GET)
-	public String fileDelete(HttpServletRequest request) {
+	public void fileDelete(HttpServletRequest request) {
 		//파일 삭제
 		String tempDir = request.getServletContext().getRealPath("/resources/upload/temp");
 		File folder1 = new File(tempDir);
 		Utils.fileDelete(folder1.toString());
-		
-		return "redirect:/";
-		
+			
 	}
 	
 	@RequestMapping(value = "/ERP/imageFileUpload.do", method = RequestMethod.POST)
