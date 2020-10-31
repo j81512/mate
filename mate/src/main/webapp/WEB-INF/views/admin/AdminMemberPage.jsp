@@ -83,10 +83,7 @@ div#search-category {
 </style>
 </c:if>
 <style>
-.content-div {
-	overflow-y: scroll;
-	overflow-x: none;
-}
+
 
 th {
 	position: sticky;
