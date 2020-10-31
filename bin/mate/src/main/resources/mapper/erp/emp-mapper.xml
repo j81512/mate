@@ -16,7 +16,8 @@
 			#{ empAddr3 },
 			#{ empPhone },
 			default,		
-			#{ status }
+			#{ status },
+			default
 		)
 	</insert>
 	
@@ -68,6 +69,24 @@
 			emp_id = #{ empId }
 	</update>
 	
+	<update id="updateEmpDelete">
+		update
+			emp
+		set
+			enabled = 1
+		where
+			emp_id = #{empId}
+	</update>
+	
+	<update id="vitalEmp">
+		update
+			emp
+		set
+			enabled = 0
+		where
+			emp_id = #{empId}
+	</update>
+	
 	<delete id="infoDelete">
 		delete
 		from
@@ -92,7 +111,8 @@
 			addr2 AS empAddr2,
 			phone AS empPhone,
 			enroll_date AS empEnrollDate,
-			status AS status
+			status AS status,
+			enabled AS enabled
 		from
 			EMP
 		order by

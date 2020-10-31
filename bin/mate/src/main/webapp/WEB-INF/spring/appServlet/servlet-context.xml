@@ -38,7 +38,11 @@
 			<exclude-mapping path="/member/memberLogin.do"/>
 			<exclude-mapping path="/member/loginCheck.do"/>
 
+
 			<exclude-mapping path="/member/memberEnroll.do"/>
+
+			<exclude-mapping path="/product/getBest.do"/>
+
 			<exclude-mapping path="/member/checkPasswordDuplicate.do"/>
 			<exclude-mapping path="/member/sendPassword"/>
 			<exclude-mapping path="/member/phoneSend.do"/>
