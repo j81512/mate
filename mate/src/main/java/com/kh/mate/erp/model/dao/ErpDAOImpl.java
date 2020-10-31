@@ -396,6 +396,11 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.selectList("erp.proLogList",map);
 	}
 
+	@Override
+	public int productResale(int productNo) {
+		return sqlSession.update("erp.productResale", productNo);
+	}
+
 	
 	
 }
