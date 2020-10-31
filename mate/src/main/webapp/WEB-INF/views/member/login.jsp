@@ -4,8 +4,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%> 
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>   
+<script src="http://code.jquery.com/jquery-latest.min.js"></script><!--문자 인증 때문에 필요함  -->
 
-<jsp:include page="/WEB-INF/views/common/headerS.jsp" />
 
 <link rel="stylesheet"
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
@@ -19,7 +19,7 @@
 	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
 	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
 	crossorigin="anonymous"></script>
-
+<jsp:include page="/WEB-INF/views/common/headerS.jsp" />
 <style>
 .modal {
         text-align: center;
@@ -62,8 +62,7 @@
 			$("#passwordForm").delay(100).fadeIn(100);
 			$("#register-form").fadeOut(100);
 			$("#login-form").fadeOut(100);
-			$('#login-form-link').removeClass('active');
-			
+			$('#login-form-link').removeClass('active');	
 			$(this).addClass('active');
 			e.preventDefault();
 		});
@@ -91,7 +90,6 @@
 	
 		$("#phone-send").click(function(){
 			var $phone = $("#phone").val();
-	
 			console.log($phone);
 			if(typeof $phone == "undefined" || $phone == ""){
 				alert("핸드폰 번호를 입력하세요");
@@ -106,21 +104,23 @@
 				method: "post",
 				success: function(data){
 						var $num = $("#MocheckNum_").html(data);
-						console.log(data);
-						openModal(data);
-
+						console.log(data);						
+						openModal(data);		
 				},
 				error: function(xhr, status, err){
 						console.log(xhr);
 						console.log(status);
 						console.log(err);
-					
 				}
 			}); 
 			
 		});
+
+		
 	});
-	
+	function closeReturnModal(){
+		$("#myModal").modal('hidden');
+	}
 	
 	function openModal(phoneCheck){
 		console.log("호출됨?");
@@ -130,9 +130,7 @@
 		
 	}
 
-	function closeReturnModal(){
-		$("#myModal").hide();
-	}
+	
 
 	$(document).ready(function(){
 		var key = getCookie("key");	
@@ -164,7 +162,9 @@
 				$remember.prop("checked", false)
 			}	
 		});
-		
+		if($("#phone-send").val() == '인증완료'){
+			$("#myModal").fadeOut(300);
+		}
 	});
 
 	function setCookie(cookieName, value, exdays){
@@ -203,10 +203,11 @@
 		if(num != num2){
 			alert("인증번호가 다릅니다.");
 			return;
-		}else{
+		}else {
 			alert("인증 되었습니다.");
 			$("#phone-send").val("인증완료");
-			closeReturnModal();
+			$("#myModal").modal('hide');
+			return;
 		}
 	};
 
