@@ -442,13 +442,11 @@ function openAddressModal(){
 			}
 			else{
 				html += "<tr>"
-<<<<<<< HEAD
-					  + "<td colspan='8'>등록된 배송지가 없습니다. 새로운 배송지를 등록해주세요.</td>"
-=======
+
 
 					  + "<td colspan='9'>등록된 배송지가 없습니다. 새로운 배송지를 등록해주세요.</td>"
 
->>>>>>> branch 'master' of https://github.com/j81512/mate.git
+
 					  + "</tr>";
 				
 			}
