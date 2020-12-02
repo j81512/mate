@@ -84,6 +84,7 @@
 			$('#register-form-link').removeClass('active');
 			$(this).addClass('active');
 			e.preventDefault();
+			location.href = "http://park.jh92.kro.kr/mate/member/memberLogin.do";
 		});
 		$('#register-form-link').click(function(e) {
 			$("#register-form").delay(100).fadeIn(100);

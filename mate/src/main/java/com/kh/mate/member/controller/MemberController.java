@@ -153,7 +153,7 @@ public class MemberController {
 		// 사용자 정보
 		JsonNode userInfo = KakaoRESTAPI.getKakaoUserInfo(accessToken);
 		// 확인 하기
-		log.debug("userInfo = {}", userInfo);
+		log.info("userInfo = {}", userInfo);
 		// 유저 정보 카카오에 가져오기 Get properties
 		JsonNode properties = userInfo.path("properties");
 		JsonNode kakaoAccount = userInfo.path("kakao_account");
