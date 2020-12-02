@@ -135,7 +135,7 @@ html{
 
 <c:if test="${! empty msg}">
 <script>
-	alert(${msg});
+	alert('${msg}');
 </script>
 </c:if>
 
