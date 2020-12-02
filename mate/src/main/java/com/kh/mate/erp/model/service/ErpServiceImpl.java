@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.mate.common.Pagebar;
 import com.kh.mate.erp.model.dao.ErpDAO;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
@@ -71,8 +72,8 @@ public class ErpServiceImpl implements ErpService {
 	}
 
 	@Override
-	public int productOrder(Product product) {
-		return erpDAO.productOrder(product);
+	public int productOrder(Map<String, Object> param) {
+		return erpDAO.productOrder(param);
 	}
 
 	// 김종완
@@ -121,12 +122,12 @@ public class ErpServiceImpl implements ErpService {
 	}
 
 	@Override
-	public Product selectProductOne(String productNo) {
+	public Product selectProductOne(int productNo) {
 		return erpDAO.selectProductOne(productNo);
 	}
 
 	@Override
-	public List<ProductMainImages> selectProductMainImages(String productNo) {
+	public List<ProductMainImages> selectProductMainImages(int productNo) {
 		return erpDAO.selectProductMainImages(productNo);
 	}
 
@@ -216,13 +217,23 @@ public class ErpServiceImpl implements ErpService {
 	}
 	
 	@Override
-	public List<Map<String, Object>> StockLogMapList(Map<String,String> param) {
+	public List<Map<String, Object>> StockLogMapList(Pagebar pb) {
+		int totalContents = erpDAO.stockTotalCount(pb);
+		pb.setTotalContents(totalContents);
+		return erpDAO.StockLogMapList(pb);
+	}
+	
+	@Override
+	public List<Map<String, Object>> StockLogMapList(Map<String, String> param) {
 		return erpDAO.StockLogMapList(param);
 	}
 	
 	@Override
-	public List<Map<String, Object>> selectRequestMapList(Map<String, Object> temp) {
-		return erpDAO.selectRequestMapList(temp);
+	public List<Map<String, Object>> selectRequestMapList(Pagebar pb) {
+		
+		int totalContents = erpDAO.requestCount(pb);
+		pb.setTotalContents(totalContents);
+		return erpDAO.selectRequestMapList(pb);
 	}
 	
 	@Override
@@ -234,7 +245,10 @@ public class ErpServiceImpl implements ErpService {
 
 	// 호근 emp 게시판 추가
 
-
+	@Override
+	public List<Map<String, Object>> selectRequestMapList(Map<String, Object> param) {
+		return erpDAO.selectRequestMapList(param);
+	}
 
 
 
@@ -329,14 +343,14 @@ public class ErpServiceImpl implements ErpService {
 	}
 
 	@Override
-	public List<EmpBoard> searchBoard(Map<String, Object> map,String searchType, String searchKeyword, int cPage, int numPerPage) {
-		return erpDAO.searchBoard(map,searchType, searchKeyword, cPage, numPerPage);
+	public List<EmpBoard> searchBoard(Pagebar pb) {
+		return erpDAO.searchBoard(pb);
 	}
 
 	@Override
-	public int getSearchContents(Map<String, Object> map) {
+	public int getSearchContents(Pagebar pb) {
 
-		int totalContents = erpDAO.getSearchContents(map);
+		int totalContents = erpDAO.getSearchContents(pb);
 
 		return totalContents;
 	}
@@ -439,8 +453,10 @@ public class ErpServiceImpl implements ErpService {
 	}
 
 	@Override
-	public List<Map<String, Object>> ioEmpList(Map<String, Object> param) {
-		return erpDAO.ioEmpList(param);
+	public List<Map<String, Object>> ioEmpList(Pagebar pb) {
+		int totalCount = erpDAO.coutnIOEmp(pb);
+		pb.setTotalContents(totalCount);
+		return erpDAO.ioEmpList(pb);
 	}
 
 	@Override
@@ -452,8 +468,27 @@ public class ErpServiceImpl implements ErpService {
 	public int productResale(int productNo) {
 		return erpDAO.productResale(productNo);
 	}
-		
 	
+	@Override
+	public List<Map<String, Object>> empList(Pagebar pb) {
+		int totalContents = erpDAO.countEMP(pb);
+		pb.setTotalContents(totalContents);
+		List<Map<String, Object>> list = erpDAO.empList(pb);
+		return list;
+	}
+	
+	@Override
+	public List<EMP> empList(Map<String, Object> param) {
+		return erpDAO.empList(param);
+	}
+
+	@Override
+	public List<Map<String, Object>> getProductList(Pagebar pb) {
+		
+		int totalContents = erpDAO.getProductTotalContents(pb);
+		pb.setTotalContents(totalContents);
+		return erpDAO.getProductList(pb);
+	}
 	
 
 }

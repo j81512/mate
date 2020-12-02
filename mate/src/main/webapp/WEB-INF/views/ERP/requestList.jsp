@@ -4,7 +4,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>
-<jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
+<jsp:include page="/WEB-INF/views/common/headerE.jsp">
+	<jsp:param value="MATE-ERP" name="headTitle"/>
+</jsp:include>
 <c:if test="${not empty msg }">
 	<script>
 		alert("${msg}");

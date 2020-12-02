@@ -4,7 +4,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>    
-<jsp:include page="/WEB-INF/views/common/headerS.jsp"></jsp:include>
+<jsp:include page="/WEB-INF/views/common/headerS.jsp">
+	<jsp:param value="MATE-장바구니" name="headTitle"/>
+</jsp:include>
 <link rel="stylesheet"
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
 	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
@@ -113,11 +115,25 @@ th{
 	height: 100%;
 	color: white;
 }
+.table-div{
+	overflow-y:scroll; 
+	overflow-x:hidden;
+	min-height: 380px;
+	max-height: 380px;
+}
+.table-div th[scope=col]{
+	z-index: 100;
+	background-color: white;
+}
 </style>
 <!-- 주소API -->
 <!-- 주소검색용 스크립트 -->
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
 <script>
+$(function(){
+	$(".cart-chk").click();
+});
+
 function execPostCode() {
     new daum.Postcode({
         oncomplete: function(data) {
@@ -170,69 +186,70 @@ function execPostCode() {
 <div class="search-div"></div>
 <div class="content-div">
 
-	<div class="container" style="overflow-y:scroll; overflow-x:hidden;">
-	<table class="table table-hover">
-	  <thead>
-	    <tr>
-	      <th scope="col">#</th>
-	      <th scope="col">상품 이미지</th>
-	      <th scope="col">상품명</th>
-	      <th scope="col">카테고리</th>
-	      <th scope="col">가격</th>
-	      <th scope="col">수량</th>
-	      <th scope="col">총 가격</th>
-	      <th scope="col">삭제</th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	    <c:if test="${ not empty cart }">
-	    <c:forEach items="${cart}" var="c" varStatus="vs">
-	    	<tr>
-	    		<th scope="row">
-	    			<input type="checkbox" class="cart-chk"/>
-	    			<input type="hidden" class="hidden-price" value="${c.amount * c.selectedProduct.price}" />
-	    			<input type="hidden" class="hidden-no" value="${c.productNo}" />
-	    			<input type="hidden" class="hidden-amount" value="${c.amount}" />
-	    			${vs.count }
-	    		</th>
-	    		<td>
-	    			<img src="${ pageContext.request.contextPath }/resources/upload/mainimages/${ c.selectedProduct.pmiList.get(0).renamedFilename }" 
-	    				 alt="상품이미지" width="50px"/>
-	    		</td>
-	    		<td>${ c.selectedProduct.productName }</td>
-	    		<td>
-		    		<c:if test="${ c.selectedProduct.category eq 'fg' }">
-		    		피규어
-		    		</c:if>
-		    		<c:if test="${ c.selectedProduct.category eq 'pm' }">
-		    		프라모델
-		    		</c:if>
-		    		<c:if test="${ c.selectedProduct.category eq 'rc' }">
-		    		RC카
-		    		</c:if>
-		    		<c:if test="${ c.selectedProduct.category eq 'dr' }">
-		    		드론
-		    		</c:if>
-	    		</td>
-	    		<td>
-	    			<fmt:formatNumber value="${ c.selectedProduct.price }" pattern="#,###"/>원
-	    		</td>
-	    		<td>${ c.amount }</td>
-	    		<td>
-	    			<fmt:formatNumber value="${c.amount * c.selectedProduct.price}" pattern="#,###" />원
-	    		</td>
-	    		
-	    		<td>
-	    			<div class="btn btn-group">
-	    				<button type="button" class="btn btn-danger" onclick="deletFromCart(${c.productNo});">삭제</button>
-	    			</div>
-	    		</td>
-	    	</tr>
-	    </c:forEach>
-	    </c:if>
-	  </tbody>
-	</table>
-	
+	<div class="container">
+		<div class="table-div">
+			<table class="table table-hover">
+			  <thead>
+			    <tr>
+			      <th scope="col">#</th>
+			      <th scope="col">상품 이미지</th>
+			      <th scope="col">상품명</th>
+			      <th scope="col">카테고리</th>
+			      <th scope="col">가격</th>
+			      <th scope="col">수량</th>
+			      <th scope="col">총 가격</th>
+			      <th scope="col">삭제</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			    <c:if test="${ not empty cart }">
+			    <c:forEach items="${cart}" var="c" varStatus="vs">
+			    	<tr>
+			    		<th scope="row">
+			    			<input type="checkbox" class="cart-chk"/>
+			    			<input type="hidden" class="hidden-price" value="${c.amount * c.selectedProduct.price}" />
+			    			<input type="hidden" class="hidden-no" value="${c.productNo}" />
+			    			<input type="hidden" class="hidden-amount" value="${c.amount}" />
+			    			${vs.count }
+			    		</th>
+			    		<td>
+			    			<img src="${ pageContext.request.contextPath }/resources/upload/mainimages/${ c.selectedProduct.pmiList.get(0).renamedFilename }" 
+			    				 alt="상품이미지" width="50px"/>
+			    		</td>
+			    		<td>${ c.selectedProduct.productName }</td>
+			    		<td>
+				    		<c:if test="${ c.selectedProduct.category eq 'fg' }">
+				    		피규어
+				    		</c:if>
+				    		<c:if test="${ c.selectedProduct.category eq 'pm' }">
+				    		프라모델
+				    		</c:if>
+				    		<c:if test="${ c.selectedProduct.category eq 'rc' }">
+				    		RC카
+				    		</c:if>
+				    		<c:if test="${ c.selectedProduct.category eq 'dr' }">
+				    		드론
+				    		</c:if>
+			    		</td>
+			    		<td>
+			    			<fmt:formatNumber value="${ c.selectedProduct.price }" pattern="#,###"/>원
+			    		</td>
+			    		<td>${ c.amount }</td>
+			    		<td>
+			    			<fmt:formatNumber value="${c.amount * c.selectedProduct.price}" pattern="#,###" />원
+			    		</td>
+			    		
+			    		<td>
+			    			<div class="btn btn-group">
+			    				<button type="button" class="btn btn-danger" onclick="deletFromCart(${c.productNo});">삭제</button>
+			    			</div>
+			    		</td>
+			    	</tr>
+			    </c:forEach>
+			    </c:if>
+			  </tbody>
+			</table>
+		</div>
 	<div class="center">
 		<div class="row">
 			<div class="col-3 border"><b>선택 상품 합계금액 : ￦</b><b id="cart-sum">0</b></div>

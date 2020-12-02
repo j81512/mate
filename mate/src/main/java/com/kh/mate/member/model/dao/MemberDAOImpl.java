@@ -8,6 +8,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.kh.mate.common.Pagebar;
 import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.member.model.vo.Member;
 @Repository
@@ -67,19 +68,14 @@ public class MemberDAOImpl implements MemberDAO {
 	}
 
 	@Override
-	public List<Member> searchMember(String searchKeyword, String searchType, int cPage, int numPerPage) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("cPage", ((cPage-1)*numPerPage+1));
-		map.put("numPerPage", (cPage * numPerPage));
-		map.put("searchType", searchType);
-		map.put("searchKeyword", searchKeyword);
+	public List<Member> searchMember(Pagebar pb) {
 		
-		return sqlSession.selectList("member.searchMember", map);
+		return sqlSession.selectList("member.searchMember", pb);
 	}
 
 	@Override
-	public int getSearchContent(Map<String, String> map) {
-		return sqlSession.selectOne("member.searchContent", map);
+	public int getSearchContent(Pagebar pb) {
+		return sqlSession.selectOne("member.searchContent", pb);
 	}
 
 	@Override

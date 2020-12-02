@@ -3,25 +3,30 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
-<script src="${ pageContext.request.contextPath }/resources/ckeditor/ckeditor.js"></script>
-<style>
+<jsp:include page="/WEB-INF/views/common/headerE.jsp">
+	<jsp:param value="MATE-ERP" name="headTitle"/>
+</jsp:include>
 
-</style>
+<script src="${ pageContext.request.contextPath }/resources/ckeditor/ckeditor.js"></script>
 <script>
 
+//textarea-[name=content] 영역에 CKEDITOR 적용
 $(function(){
 	CKEDITOR.replace('content',{
-				filebrowserUploadUrl : "${ pageContext.request.contextPath }/ERP/imageFileUpload.do"
-	});
+		//CKEDITOR 파일 업로드 기능 추가
+		toolbar : 'MyToolbar',
+		filebrowserUploadUrl : "${ pageContext.request.contextPath }/ck/imageFileUpload.do"
+		
+	}); 
 
+	
 
 });
 
 
 
 
-jQuery(document).ready(function($){
+jQuery(document).ready(function(){
 	
 	//파일 선택 | 취소 파일라벨명을 변경한다.
 	$("[name=upFile]").on("change", function(){
@@ -38,25 +43,7 @@ jQuery(document).ready(function($){
 			}
 				
 		});
-
-
 });
-function isEmpty(value){
-	if(value.length == 0 || value == null){
-		return true;
-	}else{
-		return false;
-	}
-}
-
-function isNumeric(value){
-	var regExp = /^[0-9]+$/g;
-	return regExp.test(value);
-}
-
-function currencyFormatter(amount){
-	return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
-}
 
 </script>
 <style>
@@ -135,7 +122,7 @@ div#form-container label.custom-file-label{
   </div>
   			<!-- 내용 -->
   <div class="form-group">
-   <textarea  name="content"></textarea>
+   <textarea  name="content" ></textarea>
   </div>
   
   			<!-- 가격 -->
@@ -154,8 +141,8 @@ div#form-container label.custom-file-label{
 	  		</c:if>
 	  	</c:forEach>
   	</select>
-  
-  
+  	
+  <input type="hidden" name="imgDir" value="images"/>  
   <button type="submit" class="btn btn-primary" >등록</button>
   <button type="button" class="btn btn-danger" onclick="goBackWithDel();">취소</button>
   

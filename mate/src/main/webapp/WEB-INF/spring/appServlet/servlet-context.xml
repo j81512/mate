@@ -46,8 +46,8 @@
 			<exclude-mapping path="/member/checkPasswordDuplicate.do"/>
 			<exclude-mapping path="/member/sendPassword"/>
 			<exclude-mapping path="/member/phoneSend.do"/>
-
-			<exclude-mapping path="/cs/selectList.do"/>
+			<exclude-mapping path="/cs/cs.do"/>
+			<!-- <exclude-mapping path="/cs/selectList.do"/> -->
 			<exclude-mapping path="/company/**/*.do"/>
 			<beans:bean class="com.kh.mate.common.interceptor.LoginCheckInterceptor"/>
 		</interceptor>
@@ -63,7 +63,6 @@
 			<mapping path="/ERP/productDelete.do"/>
 			<mapping path="/ERP/EmpEnroll.do"/>
 			<mapping path="/ERP/empInfoDetail.do"/>
-			<mapping path="/cs/csReplyEnroll.do"/>
 			<exclude-mapping path="/member/memberLogin.do"/>
 			<exclude-mapping path="/member/loginCheck.do"/>
 			<exclude-mapping path="/ERP/erpLogin.do"/>

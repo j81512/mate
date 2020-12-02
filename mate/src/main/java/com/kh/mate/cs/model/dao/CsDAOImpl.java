@@ -7,9 +7,10 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.kh.mate.common.Pagebar;
+import com.kh.mate.cs.model.vo.Cs;
 import com.kh.mate.cs.model.vo.CsImages;
 import com.kh.mate.cs.model.vo.CsReply;
-import com.kh.mate.cs.model.vo.Cs;
 
 
 
@@ -20,15 +21,12 @@ public class CsDAOImpl implements CsDAO {
 	private SqlSessionTemplate sqlSession;
 	
 	@Override
-	public List<Cs> selectCsList(Map<String, Object> map, int cPage, int numPerPage) {
-		map.put("cPage", ((cPage-1)*numPerPage+1));
-		map.put("numPerPage", (cPage * numPerPage));
-		return sqlSession.selectList("cs.selectCsList", map);
+	public List<Cs> selectCsList(Pagebar pb) {
+		return sqlSession.selectList("cs.selectCsList", pb);
 	}
 	
 	@Override
 	public int insertCs(Cs cs) {
-		
 		return sqlSession.insert("cs.insertCs", cs);
 	}
 
@@ -83,7 +81,7 @@ public class CsDAOImpl implements CsDAO {
 	@Override
 	public int csDeleteReply(int csReplyNo) {
 		
-		return sqlSession.delete("cs.csDeleteReply", csReplyNo);
+		return sqlSession.delete("csReply.csDeleteReply", csReplyNo);
 	}
 
 	@Override
@@ -93,8 +91,8 @@ public class CsDAOImpl implements CsDAO {
 	}
 
 	@Override
-	public int getSearchContent() {
-		return sqlSession.selectOne("cs.getSearchContents");
+	public int getSearchContent(Pagebar pb) {
+		return sqlSession.selectOne("cs.getSearchContents", pb);
 	}
 
 

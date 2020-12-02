@@ -8,7 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.kh.mate.common.paging.PagingVo;
+import com.kh.mate.common.Pagebar;
 import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.product.model.dao.ProductDAO;
 import com.kh.mate.product.model.vo.Cart;
@@ -30,32 +30,13 @@ public class ProductServiceImpl implements ProductService {
 	public int countProduct() {
 		return productDAO.countProduct();
 	}
-	
 
 	@Override
-	public int countProduct(Map<String, Object> map) {
-		return productDAO.countProduct(map);
-	}
-
-
-	@Override
-	public List<Product> selectProductListAll(PagingVo page) {
+	public List<Product> searchProductList(Pagebar pb) {
 		
-		List<Product> list = productDAO.selectProductListAll(page);
-		
-		if(list != null) {
-			for(Product p : list) {
-				List<ProductMainImages> imgs =  productDAO.selectProductMainImages(p.getProductNo());
-				p.setPmiList(imgs);
-			}
-		}
-		return list;
-	}
-
-	@Override
-	public List<Product> searchProductList(Map<String, Object> map) {
-		
-		List<Product> list = productDAO.searchProductList(map);
+		int totalContents = productDAO.countProduct(pb);
+		pb.setTotalContents(totalContents);
+		List<Product> list = productDAO.searchProductList(pb);
 		
 		if(list != null) {
 			for(Product p : list) {
@@ -238,6 +219,13 @@ public class ProductServiceImpl implements ProductService {
 		}
 		
 		return mapList;
+	}
+
+
+	@Override
+	public int countProduct(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 

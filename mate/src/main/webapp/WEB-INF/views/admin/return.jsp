@@ -5,8 +5,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>
 
-
-<jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
+<jsp:include page="/WEB-INF/views/common/headerS.jsp">
+	<jsp:param value="MATE-반품 관리" name="headTitle"/>
+</jsp:include>
 <style>
 .modal{
 	display:none;

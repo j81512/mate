@@ -213,7 +213,9 @@ $('#category_').change(function() {
 	
 	
 </script>
-<jsp:include page="/WEB-INF/views/common/headerE.jsp" />
+<jsp:include page="/WEB-INF/views/common/headerE.jsp">
+	<jsp:param value="MATE-ERP" name="headTitle"/>
+</jsp:include>
 
 
 <div class="container">

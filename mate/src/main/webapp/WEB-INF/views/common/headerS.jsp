@@ -6,10 +6,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>${ param.headTitle }</title>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<link rel="icon" type="image/png"  href="${ pageContext.request.contextPath }/resources/images/favicon.ico"/>
 <style>
 html{
 	overflow-y: scroll;
@@ -134,7 +135,7 @@ html{
 
 <c:if test="${! empty msg}">
 <script>
-	alert('${msg}');
+	alert(${msg});
 </script>
 </c:if>
 

@@ -14,8 +14,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +34,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.kh.mate.common.Paging;
+import com.kh.mate.common.Pagebar;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.kakao.KakaoRESTAPI;
 import com.kh.mate.member.model.service.MemberService;
@@ -49,6 +51,9 @@ import net.nurigo.java_sdk.exceptions.CoolsmsException;
 @SessionAttributes({"loginMember", "loginEmp"})
 public class MemberController {
 
+	@Autowired
+	private BCryptPasswordEncoder bcryptPasswordEncoder;
+	
 	private NaverLoginBO naverLoginBO;
 	private String apiResult = null;
 	
@@ -242,7 +247,7 @@ public class MemberController {
 		log.debug("loginMember = {}", loginMember);
 		String location = "/";
 		
-		if(	loginMember != null && (loginMember.getMemberPWD().equals(password))
+		if(	loginMember != null && (bcryptPasswordEncoder.matches(password, loginMember.getMemberPWD()))
 				&& (loginMember.getMemberId().equals(userId))) {
 			model.addAttribute("loginMember", loginMember);
 			if(loginMember.getMemberId().equals("admin")) {
@@ -291,6 +296,7 @@ public class MemberController {
 	@PostMapping("/member/memberEnroll.do")
 	public String memberEnroll(Member member, RedirectAttributes redirectAttr) {
 		log.debug("member = {}", member);
+		member.setMemberPWD(bcryptPasswordEncoder.encode(member.getMemberPWD()));
 		Map<String, Object> map = new HashMap<>();
 		try {
 			
@@ -313,7 +319,7 @@ public class MemberController {
 		
 			log.debug("member = {}", member);
 			try {
-				
+				member.setMemberPWD(bcryptPasswordEncoder.encode(member.getMemberPWD()));
 				Map<String, Object> map = new HashMap<>();
 				map.put("memberId", member.getMemberId());
 				map.put("memberPWD", member.getMemberPWD());
@@ -484,37 +490,27 @@ public class MemberController {
 	
 	//호근 어드민용 멤버리스트 추가
 	@GetMapping("/member/MemberList.do")
-	public String AdminMemberList(Model model, HttpServletRequest request, HttpServletResponse response
-								,@RequestParam(required=false) String searchType, @RequestParam(required=false) String searchKeyword) {
+	public String AdminMemberList(Model model, HttpServletRequest request
+								,@RequestParam(required=false) String searchType
+								,@RequestParam(required=false) String searchKeyword
+								,@RequestParam(required=false, defaultValue = "1") int cPage) {
 		
+		int numPerPage = 8;
+		int pageBarSize = 5;
 		
-		int numPerPage = 4;
-		int cPage = 1;
-		try {
-			
-			cPage = Integer.parseInt(request.getParameter("cPage"));
-		}catch(NumberFormatException e) {
-			
-		}
+		Pagebar pb = new Pagebar(cPage, numPerPage, request.getRequestURI(), pageBarSize);
 		
-		Map<String, String> map = new HashMap<>();
-		map.put("searchType", searchType);
-		map.put("searchKeyword", searchKeyword);
+		Map<String, Object> options = new HashMap<>();
+		options.put("searchType", searchType);
+		options.put("searchKeyword", searchKeyword);
+		pb.setOptions(options);
+
+		List<Member> memberList = memberService.searchMember(pb);
 		
-//		log.debug("map = {}", map);
-		List<Member> memberList = memberService.searchMember(searchType,searchKeyword,cPage, numPerPage);
-		int totalContents = memberService.getSearchContents(map);
-	
-		String url = request.getRequestURI() + "?";
-		if(searchType != null && !"".equals(searchType) && searchType != null && !"".equals(searchType)) {
-			url += "&" + "searchType" + "=" + searchType + "&searchKeyword=" + searchKeyword;
-		}
-		String pageBar = Paging.getPageBarHtml(cPage, numPerPage, totalContents, url);
-		
+		String pageBar = pb.getPagebar();
 		log.debug("member = {}", memberList);
+		
 		model.addAttribute("memberList", memberList);
-		model.addAttribute("searchType",searchType);
-		model.addAttribute("searchKeyword",searchKeyword);
 		model.addAttribute("pageBar", pageBar);
 		
 		return "admin/AdminMemberPage";
@@ -552,9 +548,10 @@ public class MemberController {
 			String ran = Integer.toString(rnd.nextInt(10));
 			checkNum += ran;
 		}
+		String checkNumEncode = bcryptPasswordEncoder.encode(checkNum);
 		
 		map.put("memberId", memberId);
-		map.put("password", checkNum);
+		map.put("password", checkNumEncode);
 		int result = memberService.tempPassword(map);
 		map.put("type", "SMS");
 		map.put("to", receiver);
@@ -596,11 +593,18 @@ public class MemberController {
 		Member member = memberService.selectOneMember(memberId);
 		log.debug("member = {}", member);
 		
-		boolean isAvailable = member.getMemberPWD().equals(password) == true;
+		boolean isAvailable = bcryptPasswordEncoder.matches(password, member.getMemberPWD());
 		log.debug("isVailable ={}", isAvailable);
 		map.put("memberId" , member.getMemberId());;
 		map.put("isAvailable", isAvailable);
 				
 		return map;
+	}
+	
+	
+	@ExceptionHandler({Exception.class}) 
+	public String error(Exception e) { 
+		log.error("exception = {}", e);
+		return "common/error"; 
 	}
 }

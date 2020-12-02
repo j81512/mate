@@ -4,17 +4,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>
-<!DOCTYPE html>
-<html lang="ko">
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<jsp:include page="/WEB-INF/views/common/headerE.jsp">
+	<jsp:param value="MATE-ERP" name="headTitle"/>
+</jsp:include>
 <script src="${ pageContext.request.contextPath }/resources/ckeditor/ckeditor.js"></script>
-<!-- bootstrap js: jquery load 이후에 작성할것.-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-
-<!-- bootstrap css -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-<!-- 호근 헤더 처리-->
 <title>emp게시판</title>
 <style>
 .review-modal{
@@ -91,14 +84,25 @@
 .changeColor {
 background-color: #bff0ff;
 }
-
+div#form-container{
+	width:650px;
+	padding:15px;
+	border:1px solid lightgray;
+	border-radius: 10px;
+}
+div#form-container label.custom-file-label{
+	text-align:left;
+}
+.upfile-div{
+	width:100% !important;
+}
 </style>
 <script>
 
 $(function(){
 
 	CKEDITOR.replace("content",{
-		filebrowserUploadUrl : "${ pageContext.request.contextPath }/ERP/empBoardimageFileUpload.do"
+		filebrowserUploadUrl : "${ pageContext.request.contextPath }/ck/imageFileUpload.do"
 	});
 
 
@@ -206,25 +210,25 @@ $('#category_').change(function() {
 		$('.productLayer').hide();
 	}
 });
-
-	
-	
 </script>
-<jsp:include page="/WEB-INF/views/common/headerE.jsp" />
 
-
+<div id="form-container" class="mx-auto">
 		<form action="${ pageContext.request.contextPath }/ERP/empBoardCkEnroll.do"
 			  method="POST"
 			  id="erpBoardFrm"
 			  enctype="multipart/form-data">
-			   <div class="form-group">
-			   	<input type="text" name="title"  id="title_" />
-			   	<input type="hidden" name="empId"  id="empId_" value="${loginEmp.empId }" readOnly/>
-			   	<input type="hidden" name="empName"  id="empName" value="${loginEmp.empName}" readOnly/>
+			   <div class="form-group row">
+			   <label for="title_" class="col-sm-2 col-form-label">제목</label>
+			   <div class="col-sm-10">
+			   	<input type="text" name="title"  id="title_" class="form-control"/>
 			   </div>
-			   <div class="form-group">
-			   	<select class="form-control" name="category" id="category_">
-				  <option selected="selected" disabled>카테고리를 선택하세요</option>
+			   </div>
+			   
+			   <div class="form-group">	
+			    <div class="col-sm-10">
+			   <label for="category_" class="form-check-label">카테고리 </label>
+			   	<select class="col" name="category" id="category_">
+				  <option selected="selected" disabled selected>카테고리를 선택하세요</option>
 				  <option value="ntc">공지</option>
 				  <option value="req">요청</option>
 				  <option value="adv">홍보</option>
@@ -232,25 +236,42 @@ $('#category_').change(function() {
 				  <option value="evt">이벤트</option>
 				</select>
 			   </div>
-			   <div class="product" id="productList"></div>
-			  <div class="custom-file">
-			  	<input type="file" class="custom-file-input" name="upFile" id="upFile1">
-     			<label class="custom-file-label" for="upFile1">파일을 선택하세요</label>
-			  </div>
-			   <div class="custom-file">
-			     <input type="file" class="custom-file-input" name="upFile" id="upFile1">
+				</div>
+				
+			  <div class="input-group mb-3" style="padding:0px;">
+			   <div class="input-group-prepend" style="padding:0px;">
+			     <span class="input-group-text">첨부 파일1</span>
+			   </div>
+			   <div class="custom-file upfile-div">
+			     <input type="file" class="custom-file-input" name="upFile" id="upFile1" >
 			     <label class="custom-file-label" for="upFile1">파일을 선택하세요</label>
 			   </div>
+			  </div>
+			  
+			  <div class="input-group mb-3" style="padding:0px;">
+			   <div class="input-group-prepend" style="padding:0px;">
+			     <span class="input-group-text">첨부 파일2</span>
+			   </div>
+			   <div class="custom-file upfile-div">
+			     <input type="file" class="custom-file-input" name="upFile" id="upFile2" >
+			     <label class="custom-file-label" for="upFile2">파일을 선택하세요</label>
+			   </div>
+			  </div>
+			  
 			  <div class="form-group">
 			  	<textarea name="content" id="content_">
 			  	</textarea>
 			  </div>
+			  
+			  <input type="hidden" name="imgDir" value="empBoardImages"/>
+			  <input type="hidden" name="empId"  id="empId_" value="${loginEmp.empId }" readOnly/>
+			  <input type="hidden" name="empName"  id="empName" value="${loginEmp.empName}" readOnly/>
 				
 			 <div class="button-gruop">
-			 	<input type="submit"  value="등록하기"/>
-			 	<input type="button"  value="취소" onclick="revoke();"/>
+			 	<button type="submit" class="btn btn-primary">등록하기</button>
+			 	<button type="button" class="btn btn-danger" onclick="revoke();">취소</button>
 			 </div>
 		</form>
-
+</div>
  <!--호근 푸터 처리  -->
 <jsp:include page="/WEB-INF/views/common/footerE.jsp" />

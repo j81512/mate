@@ -3,9 +3,10 @@ package com.kh.mate.cs.model.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.kh.mate.common.Pagebar;
+import com.kh.mate.cs.model.vo.Cs;
 import com.kh.mate.cs.model.vo.CsImages;
 import com.kh.mate.cs.model.vo.CsReply;
-import com.kh.mate.cs.model.vo.Cs;
 
 
 public interface CsDAO {
@@ -32,9 +33,9 @@ public interface CsDAO {
 
 	int csDeleteReply(int csReplyNo);
 
-	List<Cs> selectCsList(Map<String, Object> map, int cPage, int numPerPage);
+	List<Cs> selectCsList(Pagebar pb);
 
-	int getSearchContent();
+	int getSearchContent(Pagebar pb);
 
 
 }

@@ -4,7 +4,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>   
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<jsp:include page="/WEB-INF/views/common/headerS.jsp" />
+<jsp:include page="/WEB-INF/views/common/headerS.jsp">
+	<jsp:param value="MATE-마이페이지" name="headTitle"/>
+</jsp:include>
 <style>
 .form-area{
 	padding: 10px 40px 60px;
@@ -137,8 +139,8 @@ ul.nav>li,ul.nav>li>a{
 		$("#memberFrm .btn-delete").click(function(){
 			var $memberId = $("#memberId_");
 			var $frm = $("#memberFrm");
-			var $memberPWD = $frm.find("[name=memberPWD]").val();
-			var $memberPCK = $frm.find("[name=memberPCK]").val();
+			var $memberPWD = $frm.find("[name=PWD]").val();
+			var $memberPCK = $frm.find("[name=PCK]").val();
 			
 			var member = {
 					memberId : $memberId.val(),
@@ -170,23 +172,41 @@ ul.nav>li,ul.nav>li>a{
 	});
 
 	$(function(){
-		$("#memberFrm").submit(function(){
+		$("#memberUpdate").click(function(){
 			var $frm = $("#memberFrm");
+			var $PWD = $frm.find("[name=PWD]");
+			var $PCK = $frm.find("[name=PCK]");
 			var $memberPWD = $frm.find("[name=memberPWD]");
 			var $memberPCK = $frm.find("[name=memberPCK]");
+			var $memberName = $frm.find("[name=memberName]");
+			var $phone = $frm.find("[name=phone]");
 			
 		    if($memberPWD.val() != $memberPCK.val() ){
-				alert("비밀 번호가 일치 하지 않습니다.");
+				alert("변경할 비밀 번호가 일치 하지 않습니다.");
 				$memberPCK.select();
 				return false;
-			}
+			}else if($PWD.val() != $PCK.val() || $("#idValid").val() == 0){
+				alert("비밀 번호가 일치 하지 않습니다.");
+				$PWD.select();
+				return false;
+			}else if($memberName.val() == "" || $memberName.val() == null){
+				alert("이름을 입력하세요");
+				$memberName.select();
+				return false;
 
+			}else if( $phone.val() == "" || $phone.val() == null){
+				alert("핸드폰 번호를 입력하세요");
+				$phone.select();
+				return false;
+			}
+			
+			$frm.submit();
 			return true;
 		});
 		
 		$(".guide").hide();
 
-		$("#memberPWD_").keyup(function(){
+		$("#PWD_").keyup(function(){
 			var $this = $(this);
 			var $memberId = $("#memberId_");
 			if($this.val().length < 2){
@@ -358,16 +378,24 @@ function openKakao(purchaseNo, sum){
 							<input type="text" class="form-control" placeholder="아이디 (4글자이상)"name="memberId" id="memberId_" readonly value="${ loginMember.memberId }" required> 
 						</div>
 						<div class="form-group">
-						  	<label class="control-label" for="memberPCK">비밀번호:</label>
-							<input type="hidden" class="form-control" name="memberPCK" id="memberPCK_"  value="${ loginMember.memberPWD}" required> 
-							<input type="password" class="form-control" name="memberPWD" id="memberPWD_"  value="" required> 
+						  	<label class="control-label" for="PCK">비밀번호:</label>
+							<input type="hidden" class="form-control" name="PCK" id="PCK_"  value="${ loginMember.memberPWD}" required> 
+							<input type="password" class="form-control" name="PWD" id="PWD_"  value="" required> 
 							<span class="guide ok" style="color:blue;">비밀 번호가 일치 합니다.</span> 
 							<span class="guide error" style="color:red;">비밀 번호가 일치하지 않습니다.</span>
 							<input type="hidden" id="idValid" value="0"/> 
 						</div>
 						<div class="form-group">
+						<label class="control-label" for="memberPWD">비밀번호 변경:</label>
+						<input type="password" class="form-control" name="memberPCK" id="memberPCK_"  value="" >
+						</div>
+						<div class="form-group">
+						<label class="control-label" for="memberPWD">비밀번호 변경 확인:</label>
+						<input type="password" class="form-control" name="memberPWD" id="memberPWD_"  value="" >
+						</div>
+						<div class="form-group">
 						  	<label class="control-label" for="memberName_">이름:</label>
-							<input type="text" class="form-control" placeholder="이름" name="memberName" id="memberName_" value="${ loginMember.memberName}" required> 
+							<input type="text" class="form-control" placeholder="이름" name="memberName" id="memberName_" value="${ loginMember.memberName}" > 
 						</div>
 						<div class="form-group">
 						  	<label class="control-label " for="phone_">전화번호:</label>
@@ -516,4 +544,5 @@ function openKakao(purchaseNo, sum){
 		</form>
 	</div>
 </div>
-<jsp:include page="/WEB-INF/views/common/footerS.jsp" />
+</body>
+</html>

@@ -8,6 +8,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.kh.mate.common.Pagebar;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.erp.model.vo.EmpBoardImage;
@@ -88,8 +89,8 @@ public class ErpDAOImpl implements ErpDAO {
 	
 	
 	@Override
-	public int productOrder(Product product) {
-		return sqlSession.insert("erp.productOrder",product);
+	public int productOrder(Map<String, Object> param) {
+		return sqlSession.insert("erp.productOrder", param);
 	}
 	
 
@@ -117,12 +118,12 @@ public class ErpDAOImpl implements ErpDAO {
 	}
 
 	@Override
-	public Product selectProductOne(String productNo) {
+	public Product selectProductOne(int productNo) {
 		return sqlSession.selectOne("erp.selectProductOne", productNo);
 	}
 
 	@Override
-	public List<ProductMainImages> selectProductMainImages(String productNo) {
+	public List<ProductMainImages> selectProductMainImages(int productNo) {
 		return sqlSession.selectList("erp.selectProductMainImages", productNo);
 	}
 	
@@ -273,22 +274,6 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.update("erpBoard.increaseReadCount", no);
 	}
 
-
-	@Override
-	public List<EmpBoard> searchBoard(Map<String, Object> map,String searchType, String searchKeyword, int cPage, int numPerPage) {
-		
-		map.put("cPage", ((cPage-1)*numPerPage+1));
-		map.put("numPerPage", (cPage * numPerPage));
-		map.put("searchType", searchType);
-		map.put("searchKeyword", searchKeyword);
-		
-		return sqlSession.selectList("erpBoard.searchBoard", map);
-	}
-
-	@Override
-	public int getSearchContents(Map<String, Object> map) {
-		return sqlSession.selectOne("erpBoard.searchContents", map);
-	}
 	
 	//김찬희 페이징작업
 	@Override
@@ -390,11 +375,6 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.selectList("emp.yearList");
 	}
 
-	@Override
-	public List<Map<String, Object>> ioEmpList(Map<String, Object> param) {
-		return sqlSession.selectList("erpBoard.ioEmpList", param);
-	}
-
 	//발주검사
 	@Override
 	public List<Product> proLogList(Map<String, Object> map) {
@@ -406,6 +386,67 @@ public class ErpDAOImpl implements ErpDAO {
 		return sqlSession.update("erp.productResale", productNo);
 	}
 
-	
-	
+	@Override
+	public List<Map<String, Object>> getProductList(Pagebar pb) {
+		return sqlSession.selectList("emp.getProductList", pb);
+	}
+
+	@Override
+	public int getProductTotalContents(Pagebar pb) {
+		return sqlSession.selectOne("emp.getProductTotalContents", pb);
+	}
+	@Override
+	public List<Map<String, Object>> selectRequestMapList(Pagebar pb) {
+		return sqlSession.selectList("erp.selectRequestPage", pb);
+	}
+	@Override
+	public int requestCount(Pagebar pb) {
+		return sqlSession.selectOne("erp.requestCount", pb);
+	}
+
+	@Override
+	public List<Map<String, Object>> StockLogMapList(Pagebar pb) {
+		return sqlSession.selectList("erp.StockLogMapListCount", pb);
+	}
+
+	@Override
+	public int stockTotalCount(Pagebar pb) {
+		return sqlSession.selectOne("erp.StockCount", pb);
+	}
+
+	@Override
+	public List<EmpBoard> searchBoard(Pagebar pb) {
+		
+		return sqlSession.selectList("erpBoard.searchBoard", pb);
+	}
+
+	@Override
+	public int getSearchContents(Pagebar pb) {
+		return sqlSession.selectOne("erpBoard.searchContents", pb);
+	}
+
+	@Override
+	public List<Map<String, Object>> ioEmpList(Pagebar pb) {
+		return sqlSession.selectList("erpBoard.ioEmpList", pb);
+	}
+
+	@Override
+	public int coutnIOEmp(Pagebar pb) {
+		return sqlSession.selectOne("erpBoard.countIOEMP", pb);
+	}
+	@Override
+	public List<Map<String, Object>> empList(Pagebar pb) {
+		return sqlSession.selectList("emp.erpSearchList", pb);
+	}
+
+	@Override
+	public int countEMP(Pagebar pb) {
+		return sqlSession.selectOne("emp.countEMP", pb);
+	}
+
+	@Override
+	public List<EMP> empList(Map<String, Object> param) {
+		return sqlSession.selectList("emp.erpParamList",param);
+	}
+
 }

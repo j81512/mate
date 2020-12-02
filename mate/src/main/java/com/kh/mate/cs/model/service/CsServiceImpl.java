@@ -1,7 +1,6 @@
 package com.kh.mate.cs.model.service;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +8,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kh.mate.common.Pagebar;
 import com.kh.mate.cs.model.dao.CsDAO;
 import com.kh.mate.cs.model.vo.Cs;
 import com.kh.mate.cs.model.vo.CsImages;
@@ -27,8 +27,10 @@ public class CsServiceImpl implements CsService {
 	private CsDAO csDAO;
 
 	@Override
-	public List<Cs> selectCsList(Map<String, Object> map, int cPage, int numPerPage) {
-		return csDAO.selectCsList(map, cPage, numPerPage);
+	public List<Cs> selectCsList(Pagebar pb) {
+		int totalContents = csDAO.getSearchContent(pb);
+		pb.setTotalContents(totalContents);
+		return csDAO.selectCsList(pb);
 	}
 	
 	@Override
@@ -95,13 +97,6 @@ public class CsServiceImpl implements CsService {
 	public int csDeleteReply(int csReplyNo) {
 		
 		return csDAO.csDeleteReply(csReplyNo);
-	}
-
-
-	@Override
-	public int getSearchContents() {
-		// TODO Auto-generated method stub
-		return csDAO.getSearchContent();
 	}
 
 	@Override

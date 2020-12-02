@@ -29,8 +29,11 @@ $(function(){
 
 	//ckEditor적용
 	CKEDITOR.replace('content',{
-				filebrowserUploadUrl : "${ pageContext.request.contextPath }/ERP/imageFileUpload.do"
-		});
+		//CKEDITOR 파일 업로드 기능 추가
+		toolbar : 'MyToolbar',
+		filebrowserUploadUrl : "${ pageContext.request.contextPath }/ck/imageFileUpload.do"
+		
+	}); 
 
 	//파일 선택 | 취소 파일라벨명을 변경한다.
 	$("[name=upFile]").on("change", function(){
@@ -114,12 +117,13 @@ $(function(){
 
   <!-- 상품 번호 -->
   <input type="hidden" name="productNo" value="${ product.productNo }" />
+  <input type="hidden" name="imgDir" value="images" />
   
   <div class="form-group col">
     <div class="col-sm-10">
       <button type="submit" class="btn btn-primary" >수정 하기</button>
-      <button type="button" class="btn btn-primary" onclick="return delProduct();">삭제 하기</button>
-      <button type="button" class="btn btn-danger" onclick="return goBackWithDel();">뒤로 가기</button>
+      <button type="button" class="btn btn-primary" onclick="delProduct(${ product.productNo });">삭제 하기</button>
+      <button type="button" class="btn btn-danger" onclick="goBackWithDel();">뒤로 가기</button>
     </div>
   </div>
 </form>
@@ -136,12 +140,16 @@ function goBackWithDel(){
 	
 }
 
-function delProduct(){
-	var $updateFrm = $("#productUpdateFrm");
+function delProduct(no){
+	var $frm = $("#productUpdateFrm");
 
-	$updateFrm.attr("action", "${ pageContext.request.contextPath }/ERP/productDelete.do");
-	$updateFrm.attr("method", "post");
-	$updateFrm.submit();
+	var confirm_val = confirm("정말로 상품을 삭제하시겠습니까?");
+
+	if(confirm_val){
+		location.href="${pageContext.request.contextPath}/ERP/productDelete.do?productNo="+no
+	}
+	else{return false;}
+
 }
 </script>
 </body>

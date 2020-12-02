@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -28,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.FlashMapManager;
@@ -36,14 +36,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import com.kh.mate.common.Paging;
+import com.kh.mate.common.Pagebar;
 import com.kh.mate.common.Utils;
 import com.kh.mate.cs.model.service.CsService;
 import com.kh.mate.cs.model.vo.Cs;
 import com.kh.mate.cs.model.vo.CsImages;
 import com.kh.mate.cs.model.vo.CsReply;
-import com.kh.mate.erp.model.vo.EmpBoardImage;
-import com.kh.mate.member.model.vo.Member;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,47 +61,36 @@ public class CsController {
 	@ResponseBody
 	public ModelAndView boardList(ModelAndView mav,
 								  @RequestParam(required=false, name="memberId") String memberId,
-								  @RequestParam(required=false, name="secret") String secret
+								  @RequestParam(required=false, name="secret") String secret,
+								  @RequestParam(required=false, defaultValue = "1") int cPage
 								  ,HttpServletRequest request) {
 		int numPerPage = 10;
-		int cPage = 1;
-		try {
-			
-			cPage = Integer.parseInt(request.getParameter("cPage"));
-		}catch(NumberFormatException e) {
-			
-		}
+		int pageBarSize = 5;
 		
+		Pagebar pb = new Pagebar(cPage, numPerPage, request.getRequestURI(), pageBarSize);
 		
+		Map<String, Object> options = new HashMap<>();
+		options.put("memberId", memberId);
+		options.put("secret", secret);
+		pb.setOptions(options);
 		
-		Map<String, Object> map = new HashMap<String, Object>();
-		log.debug("memberId = {}", memberId);
-		
-		map.put("memberId", memberId);
-		map.put("secret", secret);
-		
-		String url = request.getRequestURI();
-		int totalContents = csService.getSearchContents();
-		
-		
-		String pageBar = Paging.getPageBarHtml(cPage, numPerPage, totalContents, url);
-		
-		List<Cs> list = csService.selectCsList(map,cPage, numPerPage);
+		List<Cs> list = csService.selectCsList(pb);
 		log.debug("list = {}", list);
 	
-		
+		String pageBar = pb.getPagebar();
+		log.debug("pageBar = {}", pageBar);
 		mav.addObject("memberId", memberId);
 		mav.addObject("pageBar", pageBar);
 		mav.addObject("list", list);
 		mav.setViewName("cs/cs");
 		return mav;
 	}
-	@RequestMapping("/selectList.do")
-	@ResponseBody
-	public ResponseEntity<?> selectList(){
-		List<Cs> list = csService.selectCsList();
-		return new ResponseEntity<>(list, HttpStatus.OK);
-	}
+//	@RequestMapping("/selectList.do")
+//	@ResponseBody
+//	public ResponseEntity<?> selectList(){
+//		List<Cs> list = csService.selectCsList();
+//		return new ResponseEntity<>(list, HttpStatus.OK);
+//	}
 
 	@RequestMapping(value = "/insertCs.do", method = RequestMethod.GET)
 	public String insertCs() {
@@ -141,7 +128,6 @@ public class CsController {
 			log.debug("csImage@controller = {}", csImage);
 			
 			int result = csService.insertCs(cs);
-			redirectAttr.addFlashAttribute("msg", "게시글 등록 성공하였습니다");
 
 			cs.setContent(content);
 			cs.setTitle(title);
@@ -151,7 +137,7 @@ public class CsController {
 		
 			String msg = (result > 0 ) ? "문의글이 등록되었습니다" : "문의글 등록에 실패했습니다";
 		
-			redirectAttr.addFlashAttribute("msg", "게시글 등록 성공!");
+			redirectAttr.addFlashAttribute("msg", msg);
 		
 		return "redirect:/cs/cs.do";
 	}
@@ -164,7 +150,7 @@ public class CsController {
 	int csNo = Integer.parseInt(csNo_);
 	try {
 		int result = csService.deleteCs(csNo);
-		String msg = (result > 0) ? "문의글 등록에 성공했습니다" : "문의글 삭제에 실패했습니다";
+		String msg = (result > 0) ? "문의글 삭제에 성공했습니다" : "문의글 삭제에 실패했습니다";
 		redirectAttr.addFlashAttribute("msg", msg);
 	} catch(Exception e) {
 		log.error("문의글 삭제 오류", e);
@@ -291,7 +277,7 @@ public class CsController {
 		return "redirect:/cs/csDetail.do?csNo=" + csReply.getCsNo();
 	}
 	
-	@PostMapping("/csReply.do")
+	@PostMapping("/csReplyDelete.do")
 	@ResponseBody
 	public Map<String, Object> replydelete(@RequestParam("csReplyNo") int csReplyNo, RedirectAttributes redirectAttr, Model model) {
 		
@@ -305,5 +291,10 @@ public class CsController {
 		return map;
 	}
 	
+	@ExceptionHandler({Exception.class}) 
+	public String error(Exception e) { 
+		log.error("exception = {}", e);
+		return "common/error"; 
+	}
 
 }

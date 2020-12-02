@@ -20,22 +20,19 @@ SELECT *
                                  	FROM cs ba  
                                  	left join cs_images ci on ba.cs_no = ci.cs_no )c 			
 	                             	 <where>
-										<if test="memberId != null and memberId != ''">
-											and  member_id like  #{ memberId }
+										<if test="options.memberId != null and options.memberId != ''">
+											and  member_id like  #{ options.memberId }
 										</if>
-										<if test="secret != null and secret != ''">
-											and  secret  =  #{ secret }
+										<if test="options.secret != null and options.secret != ''">
+											and  secret  =  #{ options.secret }
 										</if>
 									</where>
 	                                 order by
 							notice desc, cs_no desc
 							) B
 					)
-			 where rnum BETWEEN #{ cPage } AND #{ numPerPage }
+			 where rnum BETWEEN #{ start } AND #{ end }
 	</select>
-	<resultMap type="cs" id="csMap">
-	
-	</resultMap>
 	
 	<insert id="insertCs">
 		insert into
@@ -83,8 +80,6 @@ SELECT *
 			cs
 		where
 			cs_no = #{ csNo }
-		order by
-		notice desc, cs_no desc
 	</select>
 	
 	<select id="selectCsImage" resultType="CsImages">
@@ -109,7 +104,14 @@ SELECT *
 		select
 			count(*)
 		from cs
-	
+		<where>
+			<if test="options.memberId != null">
+				and member_id = #{options.memberId}
+			</if>
+			<if test="options.secret != null">
+				and secret = #{secret}
+			</if>
+		</where>
 	</select>
 	
 </mapper>

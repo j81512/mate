@@ -3,6 +3,7 @@ package com.kh.mate.erp.model.service;
 import java.util.List;
 import java.util.Map;
 
+import com.kh.mate.common.Pagebar;
 import com.kh.mate.erp.model.vo.EMP;
 import com.kh.mate.erp.model.vo.EmpBoard;
 import com.kh.mate.erp.model.vo.EmpBoardImage;
@@ -28,9 +29,9 @@ public interface ErpService {
 
 	int productEnroll(Product product);
 
-	Product selectProductOne(String productNo);
+	Product selectProductOne(int productNo);
 
-	List<ProductMainImages> selectProductMainImages(String productNo);
+	List<ProductMainImages> selectProductMainImages(int i);
 
 	int productUpdate(Product product);
 
@@ -38,7 +39,7 @@ public interface ErpService {
 
 	List<ProductImages> selectProductImages(String productNo);
 
-	int productOrder(Product product);
+	int productOrder(Map<String, Object> param);
 
 	EmpBoard selectOneEmpBoard(int no, boolean hasRead);
 
@@ -60,9 +61,9 @@ public interface ErpService {
 
 	List<Product> erpProductList();
 
-	List<EmpBoard> searchBoard(Map<String, Object> map, String searchType, String searchKeyword, int cPage, int numPerPage);
-
-	int getSearchContents(Map<String, Object> map);
+	List<EmpBoard> searchBoard(Pagebar pb);
+	
+	int getSearchContents(Pagebar pb);
 
 	List<IoLog> ioLogList();
 
@@ -113,11 +114,11 @@ public interface ErpService {
 
 	List<String> yearList();
 
-	List<Map<String, Object>> StockLogMapList(Map<String, String> param);
+	List<Map<String, Object>> StockLogMapList(Pagebar pb);
 
-	List<Map<String, Object>> selectRequestMapList(Map<String, Object> temp);
+	List<Map<String, Object>> selectRequestMapList(Pagebar pb);
 
-	List<Map<String, Object>> ioEmpList(Map<String, Object> param);
+	List<Map<String, Object>> ioEmpList(Pagebar pb);
 
 	int UpdateProductToDelete(String productNo);
 
@@ -131,7 +132,15 @@ public interface ErpService {
 
 	int productResale(int productNo);
 
-	
+	List<Map<String, Object>> empList(Pagebar pb);
+
+	List<EMP> empList(Map<String, Object> param);
+
+	List<Map<String, Object>> selectRequestMapList(Map<String, Object> param);
+
+	List<Map<String, Object>> StockLogMapList(Map<String, String> param);
+
+	List<Map<String, Object>> getProductList(Pagebar pb);
 	
 
 }	

@@ -5,7 +5,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8" />
 <%--한글깨짐 방지 --%>
-<jsp:include page="/WEB-INF/views/common/headerS.jsp"/>
+<jsp:include page="/WEB-INF/views/common/headerS.jsp">
+	<jsp:param value="MATE-고객센터-등록" name="headTitle"/>
+</jsp:include>
 <style>
 div#cs-container {
 	width: 400px;

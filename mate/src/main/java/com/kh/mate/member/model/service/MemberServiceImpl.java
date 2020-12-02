@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.mate.common.Pagebar;
 import com.kh.mate.member.model.dao.MemberDAO;
 import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.member.model.vo.Member;
@@ -68,13 +69,16 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<Member> searchMember(String searchType, String searchKeyword, int cPage, int numPerPage) {
-		return memberDAO.searchMember(searchKeyword,searchType,cPage,numPerPage);
+	public List<Member> searchMember(Pagebar pb) {
+		int totalContents = memberDAO.getSearchContent(pb);
+		pb.setTotalContents(totalContents);
+		return memberDAO.searchMember(pb);
 	}
 
 	@Override
 	public int getSearchContents(Map<String, String> map) {
-		return memberDAO.getSearchContent(map);
+//		return memberDAO.getSearchContent(map);
+		return 0;
 	}
 
 	@Override
@@ -86,6 +90,7 @@ public class MemberServiceImpl implements MemberService {
 	public int deleteAddress(Map<String, String> param) {
 		return memberDAO.deleteAddress(param);
 	}
+
 
 	
 	

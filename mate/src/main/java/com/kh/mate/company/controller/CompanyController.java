@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -24,20 +25,20 @@ public class CompanyController {
 					method = RequestMethod.GET)
 	public String location(Model model) {
 		
-		try {
 			List<Map<String, Object>> mapList = companyService.getAllCompany();
 			log.debug("mapList@controller = {}", mapList);
 			
 			model.addAttribute("mapList", mapList);
 			
 			return "company/location";
-		} catch(Exception e) {
-			log.error("CompanyController = {}", e);
-			return "redirect:/";
-		}
-		
+
 		
 	}
 	
 	
+	@ExceptionHandler({Exception.class}) 
+	public String error(Exception e) { 
+		log.error("exception = {}", e);
+		return "common/error"; 
+	}
 }

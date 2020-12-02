@@ -210,7 +210,9 @@ $(document).ready(function(){
 	}
 	
 </script>
-<jsp:include page="/WEB-INF/views/common/headerE.jsp" />
+<jsp:include page="/WEB-INF/views/common/headerE.jsp">
+	<jsp:param value="MATE-ERP" name="headTitle"/>
+</jsp:include>
 <div class="container">
 	<div id="board-container" class="mx-auto text-center">
 		<input type="text" class="form-control" placeholder="번호" name="boardNo" id="boardNo" value="${empBoard.boardNo }"  readonly>

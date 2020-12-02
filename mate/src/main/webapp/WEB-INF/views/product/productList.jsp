@@ -9,7 +9,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>
 
-<jsp:include page="/WEB-INF/views/common/headerS.jsp"></jsp:include>
+<jsp:include page="/WEB-INF/views/common/headerS.jsp">
+	<jsp:param value="MATE-상품 리스트" name="headTitle"/>
+</jsp:include>
 
 <style>
 @-webkit-keyframes rotation{
@@ -30,8 +32,9 @@
 	background : #F1F1F1;
 	display:inline-block;
 	border: 1px solid black;
-	min-height: 130px;
-	max-height: 130px;
+	min-height: 320px;
+	max-height: 320px;
+	overflow: hidden;
 }
 .top-section{
 	height: 180px;
@@ -58,15 +61,13 @@
 	border-color: #6AB04C;
 }
 .product-info{
-	padding-left: 25px;
-	padding-right: 25px;
 	padding-top: 10px;
 	padding-bottom: 10px;
 	border-top: 1px solid black;
-	overflow-y: scroll;
-	overflow-x: none;
-	max-height: 121px;
-	min-height: 121px;
+	max-height: 80px;
+	min-height: 80px;
+	text-align: center;
+	font-weight: bold;
 }
 .chk-label{
 	background-color: rgba(54,54,54,0.2);
@@ -129,7 +130,23 @@ input[name=search]{
 .product-info-a:active{
 	text-decoration: none;
 }
+.product-info-title{
 
+}
+.product-info-price{
+
+}
+
+#soldProduct{
+	background-color: gray;
+}
+#soldProduct img{
+filter : grayscale(100%);
+-webkit-filter : grayscale(100%);
+}
+#soldProduct a{
+	color: black;
+}
 </style>
 <script>
  function pageing(now,cnt){
@@ -147,39 +164,54 @@ function sReset(){
 	 $("[type=checkbox][name=category]").prop("checked", "");
 	 $("[type=text][name=search]").val("");
 }
+$(function(){
+	$("#search-btn").click(function(){
+		var $category = $(".product-search [name=category]:checked");
+		var category = "";
+		$.each($category,function(i, ct){
+			category += $(ct).val();
+			if(i != $category.length-1) category += ",";
+		});
+		var search = $(".product-search [name=search]").val();
+		var loc = "${ pageContext.request.contextPath }/product/productList.do?";
+		if(category != null && category != "" ) loc += "&category=" + category;
+		if(search != null && search != "") loc += "&search=" + search;
+	
+		location.href = loc;
+		
+	});
+});
+
 </script>
 <div class="search-div">
 <!-- ajax처리 -->
 	 <div class="product-search">
-		<form class="form-inline"
-				action="${pageContext.request.contextPath}/product/searchProduct.do">
-			<br />
-			<div class="radio-div btn-group-toggle btn-group" data-toggle="buttons">
-				<label for="pm" class="btn chk-label ${ sCategory.contains('pm') ? 'active' : '' }">
-					<input type="checkbox" name="category" id="pm" value="pm" ${ sCategory.contains("pm") ? 'checked' : '' }/>
-					프라모델
-				</label>
-				<label for="fg" class="btn chk-label ${ sCategory.contains('fg') ? 'active' : '' }">
-					<input type="checkbox" name="category" id="fg" value="fg" ${ sCategory.contains("fg") ? 'checked' : '' }/>
-					피규어
-				</label>
-				<label for="rc" class="btn chk-label ${ sCategory.contains('rc') ? 'active' : '' }">
-					<input type="checkbox" name="category" id="rc" value="rc" ${ sCategory.contains("rc") ? 'checked' : '' }/>
-					RC카
-				</label>
-				<label for="dr" class="btn chk-label ${ sCategory.contains('dr') ? 'active' : '' }">
-					<input type="checkbox" name="category" id="dr" value="dr" ${ sCategory.contains("dr") ? 'checked' : '' }/>
-					드론
-				</label>
-			</div>
-			<img id="refresh-btn" src="${ pageContext.request.contextPath }/resources/images/refresh.png" onclick="sReset();" alt="" />
-			<br />
-		    <input class="mr-sm-2" type="text" placeholder="-- 뭐 찾아? --" name="search" value="${ search }">
-		    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
-			<input type="hidden" name="category" value="${ category }" />
-			<input type="hidden" name="nowPage" value="1" />
-			<input type="hidden" name="cntPerPage" value="4" />
-		</form>
+		<br />
+		<div class="radio-div btn-group-toggle btn-group" data-toggle="buttons">
+			<label for="pm" class='btn chk-label ${ fn:contains(category, "pl") ? "active" : "" }'>
+				<input type="checkbox" name="category" id="pl" value="pl" ${ fn:contains(category, "pl") ? 'checked' : '' }/>
+				프라모델
+			</label>
+			<label for="fg" class='btn chk-label ${ fn:contains(category, "fg") ? "active" : "" }'>
+				<input type="checkbox" name="category" id="fg" value="fg" ${ fn:contains(category, "fg") ? 'checked' : '' }/>
+				피규어
+			</label>
+			<label for="rc" class='btn chk-label  ${ fn:contains(category, "rc") ? "active" : "" }'>
+				<input type="checkbox" name="category" id="rc" value="rc" ${ fn:contains(category, "rc") ? 'checked' : '' }/>
+				RC카
+			</label>
+			<label for="dr" class='btn chk-label  ${ fn:contains(category, "dr") ? "active" : "" }'>
+				<input type="checkbox" name="category" id="dr" value="dr" ${ fn:contains(category, "dr") ? 'checked' : '' }/>
+				드론
+			</label>
+		</div>
+		<img id="refresh-btn" src="${ pageContext.request.contextPath }/resources/images/refresh.png" onclick="sReset();" alt="" />
+		<br />
+	    <input class="mr-sm-2" type="text" placeholder="" name="search" value="${ param.search }">
+	    <button class="btn btn-outline-success my-2 my-sm-0" type="button" id="search-btn">검색</button>
+		<input type="hidden" name="category" value="${ category }" />
+		<input type="hidden" name="nowPage" value="1" />
+		<input type="hidden" name="cntPerPage" value="4" />
 	</div>
 </div>
 	
@@ -188,7 +220,8 @@ function sReset(){
 		<!-- 상품이 있을 경우 -->
 		<c:if test="${ not empty list }">
 			<c:forEach items="${ list }" var="product">
-			<div class="card">
+			<c:if test="${product.stock >= 0}">
+			<div class="card" ${product.stock eq 0 ? "id='soldProduct'" : "" }>
 				<div class="top-section">
 				<a href="${pageContext.request.contextPath}/product/productDetail.do?productNo=${product.productNo}">
 					<img src="${pageContext.request.contextPath}/resources/upload/mainimages/${product.pmiList[0].renamedFilename}"
@@ -205,33 +238,12 @@ function sReset(){
 				</div>
 				<a class="product-info-a" href="${pageContext.request.contextPath}/product/productDetail.do?productNo=${product.productNo}">
 					<div class="product-info">
-						<div class="productName">
-							상품명 : ${product.productName}
-						</div>
-						<div class="price">
-							가격 : ${product.price}원
-						</div>
-						<div class="category">
-							카테고리 :
-							<c:if test="${ product.category eq 'fg' }">
-				    		피규어
-				    		</c:if>
-				    		<c:if test="${ product.category eq 'pm' }">
-				    		프라모델
-				    		</c:if>
-				    		<c:if test="${ product.category eq 'rc' }">
-				    		RC카
-				    		</c:if>
-				    		<c:if test="${ product.category eq 'dr' }">
-				    		드론
-				    		</c:if>
-						</div>
-						<div class="manufac">
-							제조사 : ${product.manufacturerId}
-						</div>
+						<p class="product-info-title">${ product.productName }</p>
+						<p class="product-info-price"><fmt:formatNumber value="${ product.price }" pattern="###,###"/>원</p>
 					</div>
 				</a>
 			</div>
+			</c:if>
 			</c:forEach>
 		</c:if>
 		<!-- 상품이 없을 경우 -->
@@ -239,26 +251,18 @@ function sReset(){
 				<span>상품이 존재하지 않습니다.</span>
 		</c:if>
 	</div>
-	<nav aria-label="Page navigation example" id="pl-pageBar">
-		<ul class="pagination justify-content-center">
-			<c:if test="${ page.nowPage != 1 }">
-		     	<a class="page-link" href="${pageContext.request.contextPath}/product/searchProduct.do?nowPage=${page.nowPage-1 }&cntPerPage=${page.cntPerPage}&search=${ search }&category=${ sCategory }" tabindex="-1" aria-disabled="true">Previous</a>
-			</c:if>
-			<c:forEach begin="${page.startPage }" end="${page.endPage}" var="p">
-				<c:choose>
-				<c:when test="${ p == page.nowPage }">
-		    		<li class="page-item"><a class="page-link" href="#" style="color: black">${p }</a></li>
-				</c:when>
-				<c:when test="${ p != page.nowPage }">
-		    		<li class="page-item"><a class="page-link" href="${pageContext.request.contextPath}/product/searchProduct.do?nowPage=${p }&cntPerPage=${page.cntPerPage}&search=${ search }&category=${ sCategory }">${p }</a></li>
-				</c:when>
-				</c:choose>
-			</c:forEach>
-			<c:if test="${ page.nowPage != page.endPage }">
-		    	<a class="page-link" href="${pageContext.request.contextPath}/product/searchProduct.do?nowPage=${page.nowPage+1 }&cntPerPage=${page.cntPerPage}&search=${ search }&category=${ sCategory }">Next</a>
-			</c:if>
-		</ul>
+	
+	<!-- 페이징 바 -->
+	<nav aria-label="..." style="text-align: center;">
+		<div class="pageBar">
+			<ul class="pagination">
+				<c:if test="${not empty pageBar }">
+						<li>${ pageBar }</li>
+				</c:if>
+			</ul>
+		</div>
 	</nav>
+	
 </div>
 <script>
 $(".imgNav-img").click(function(){

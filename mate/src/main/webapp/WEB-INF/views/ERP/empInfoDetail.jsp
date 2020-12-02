@@ -35,68 +35,70 @@ $(function(){
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-        <form action="${ pageContext.request.contextPath }/ERP/infoUpdate.do"
-        	  method="POST"
-        	  id="infoFrm">
-      <div class="modal-body">
-          <table class="mx-auto">
-			<tr>
-				<th>아이디</th>
-				<td>
-					<div id="empId-container">
-						<input type="text" 
-							   class="form-control" 
-							   name="empId" 
-							   id="empId_"
-							   value="${ emp.empId }"
-							   readonly="readonly">
+				<form
+					action="${ pageContext.request.contextPath }/ERP/infoUpdate.do"
+					method="POST" id="infoFrm">
+					<div class="modal-body">
+						<table class="mx-auto">
+							<tr>
+								<th>아이디</th>
+								<td>
+									<div id="empId-container">
+										<input type="text" class="form-control" name="empId"
+											id="empId_" value="${ emp.empId }" readonly="readonly">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th>패스워드</th>
+								<td><input type="text" class="form-control" name="empPwd"
+									id="password_" value="${ emp.empPwd }"></td>
+							</tr>
+							<tr>
+								<th>지점/업체 선택</th>
+								<td><input type="radio" name="status" id="status" value="1"
+									${ emp.status eq "1" ? "checked" : "" }>지점 <input
+									type="radio" name="status" id="status" value="2"
+									${ emp.status eq "2" ? "checked" : "" }>제조사</td>
+							</tr>
+							<tr>
+								<th>지점/업체명</th>
+								<td><input type="text" class="form-control" name="empName"
+									id="empName" value="${ emp.empName }" required></td>
+							</tr>
+							<tr>
+								<th>전화번호</th>
+								<td><input type="tel" class="form-control"
+									placeholder="(-없이)01012345678" name="empPhone" id="empPhone"
+									value="${ emp.empPhone }" maxlength="11" required></td>
+							</tr>
+							<tr>
+								<th>주소</th>
+								<td><input class="form-control"
+									style="width: 40%; display: inline;" placeholder="우편번호"
+									name="empAddr1" id="empAddr1" type="text"
+									value="${ emp.empAddr1 }" readonly="readonly">
+									<button type="button" class="btn btn-default"
+										onclick="execPostCode();">
+										<i class="fa fa-search"></i> 우편번호 찾기
+									</button> <input class="form-control" style="top: 5px;"
+									placeholder="도로명 주소" name="empAddr2" id="empAddr2" type="text"
+									value="${ emp.empAddr2 }" readonly="readonly" /> <input
+									class="form-control" placeholder="상세주소" name="empAddr3"
+									id="empAddr3" value="${ emp.empAddr3 }" type="text" /></td>
+							</tr>
+						</table>
 					</div>
-				</td>
-			</tr>
-			<tr>
-				<th>패스워드</th>
-				<td>
-					<input type="text" class="form-control" name="empPwd" id="password_" value="${ emp.empPwd }">
-					
-				</td>
-			</tr>
-			<tr>
-				<th>지점/업체 선택</th>
-				<td>	
-					<input type="radio" name="status" id="status" value="1" ${ emp.status eq "1" ? "checked" : "" }>지점
-					<input type="radio" name="status" id="status" value="2" ${ emp.status eq "2" ? "checked" : "" }>제조사				
-				</td>
-			</tr>  	
-			<tr>
-				<th>지점/업체명</th>
-				<td>	
-					<input type="text" class="form-control" name="empName" id="empName" value="${ emp.empName }" required>
-				</td>
-			</tr>
-			<tr>
-				<th>전화번호</th>
-				<td>	
-					<input type="tel" class="form-control" placeholder="(-없이)01012345678" name="empPhone" id="empPhone" value="${ emp.empPhone }" maxlength="11" required>
-				</td>
-			</tr>
-			<tr>
-				<th>주소</th>
-				<td>
-					<input class="form-control" style="width: 40%; display: inline;" placeholder="우편번호" name="empAddr1" id="empAddr1" type="text" value="${ emp.empAddr1 }"readonly="readonly" >
-    				<button type="button" class="btn btn-default" onclick="execPostCode();"><i class="fa fa-search"></i> 우편번호 찾기</button> 	
-					<input class="form-control" style="top: 5px;" placeholder="도로명 주소" name="empAddr2" id="empAddr2" type="text" value="${ emp.empAddr2 }"readonly="readonly" />
-					<input class="form-control" placeholder="상세주소" name="empAddr3" id="empAddr3" value="${ emp.empAddr3 }"type="text"  />
-				</td>
-			</tr>
-		</table>
-      </div>
-		</form>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-        <button type="submit" class="btn btn-primary" id="infoSubmit">정보 수정</button>
-        <button type="button" class="btn btn-danger" id="deleteBtn">지점/제조사 삭제</button>
-      </div>
-    </div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">닫기</button>
+						<button type="submit" class="btn btn-primary" id="infoSubmit">정보
+							수정</button>
+						<button type="button" class="btn btn-danger" id="deleteBtn">지점/제조사
+							삭제</button>
+					</div>
+				</form>
+			</div>
   </div>
 </div>
 <!-- 주소API -->

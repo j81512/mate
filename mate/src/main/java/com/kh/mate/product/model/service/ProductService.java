@@ -3,9 +3,8 @@ package com.kh.mate.product.model.service;
 import java.util.List;
 import java.util.Map;
 
-import com.kh.mate.common.paging.PagingVo;
+import com.kh.mate.common.Pagebar;
 import com.kh.mate.member.model.vo.Address;
-import com.kh.mate.member.model.vo.Member;
 import com.kh.mate.product.model.vo.Cart;
 import com.kh.mate.product.model.vo.Product;
 import com.kh.mate.product.model.vo.ProductImages;
@@ -14,7 +13,6 @@ import com.kh.mate.product.model.vo.ProductMainImages;
 public interface ProductService {
 	//ch
 	
-	List<Product> selectProductListAll(PagingVo page);
 
 	List<Product> productCategory(String category);
 	
@@ -23,7 +21,7 @@ public interface ProductService {
 	
 	//jw
 
-	List<Product> searchProductList(Map<String, Object> map);
+	List<Product> searchProductList(Pagebar pb);
 
 	Product selectProductOne(String productNo);
 

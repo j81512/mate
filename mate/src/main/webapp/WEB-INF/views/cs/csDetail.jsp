@@ -5,7 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <jsp:include page="/WEB-INF/views/common/headerS.jsp">
-	<jsp:param value="게시판상세보기" name="csDetail" />
+	<jsp:param value="MATE-고객센터-${ cs.title }" name="headTitle" />
 </jsp:include>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <style>
@@ -40,6 +40,16 @@ div#board-container label.custom-file-label {
 .chk-label.active{
 	background-color: rgb(164,80,68);
 	color: white;
+}
+.replyList-container{
+	max-height: 331px;
+	overflow-y: scroll;
+}
+.reply-th{
+	position:sticky; 
+	top:0; 
+	background:rgb(13,58,97); 
+	color:white;
 }
 </style>
 
@@ -90,7 +100,7 @@ div#board-container label.custom-file-label {
 			<div class="form-group">
 				<textarea rows="3" cols="30" id="content_" name="content"
 					class="form-control" aria-describedby="basic-addon1"
-					placeholder="댓글을 입력하세요."></textarea>
+					placeholder="댓글을 입력하세요." required></textarea>
 			</div>
 			<div class="button-group">
 				<input type="submit" class="btn btn-primary" value="등록하기" />
@@ -127,22 +137,28 @@ div#board-container label.custom-file-label {
 	        success : function(data){
 	            var html ='<table id="tbl-cs-reply" class="table table-striped table-hover">'
 			        	+'<tr>'
-						+'<th>번호</th>'
-						+'<th>답변</th>'
-						+'<th>작성일</th>'
-						+'<th>작성자</th>'
+						+'<th class="reply-th" style="width: 5%;">번호</th>'
+						+'<th class="reply-th" style="width: 60%;">답변</th>'
+						+'<th class="reply-th" style="width: 20%;">작성일</th>'
+						+'<th class="reply-th" style="width: 10%;">작성자</th>'
+						+'<th class="reply-th" style="width: 5%;"></th>'
 						+'</tr>'; 
 	      		 console.log(data);
 	      		 var vs = 1;
-	      		 
+	      		 var thAdmin = 'style="background-color: rgba(164, 80, 68, 0.2);';
 	            $.each(data, function(key, value){   
-	            		html +=  '<tr data-no="'+ value.csNo+'" >';         
+	            		html += '<tr ';
+	            		if(value.memberId == 'admin') html += thAdmin;
+	            		html += ' data-no="'+ value.csNo+'" >';         
 		       		 	html += '<th>'+ vs++ +'</th>';
 		            	html += "<th>" + value.content + "</th>";
-		            	html += '<th>'+ moment(value.regDate).format("YYYY-MM-DD")+'</th>';
-		            	html += '<th>'+ value.memberName +'</th>'; 
-		            	html += '</tr>';
-		     
+		            	html += '<th>'+ moment(value.regDate).format("YY/MM/DD HH:mm:ss")+'</th>';
+		            	html += '<th>'+ value.memberId +'</th>'; 
+		            	
+		     			if(value.memberId == '${loginMember.memberId}')
+			     			html += '<td><input type="button" value="삭제" onclick="csReplyDelete('+value.csReplyNo+');"/></td>';
+			     		else html += '<td></td>';
+		     			html += '</tr>';
 	            });
 	            html += '</table>';
 	          $(".replyList-container").html(html);  
@@ -151,12 +167,11 @@ div#board-container label.custom-file-label {
 	    });
 	}
 
-	
 	function csReplyDelete(csReplyNo) {
 		var csReplyNo = csReplyNo;
 
 		$.ajax({
-			url : "${ pageContext.request.contextPath }/cs/csReply.do",
+			url : "${ pageContext.request.contextPath }/cs/csReplyDelete.do",
 			method : "POST",
 			dataType: 'json',
 			data : {
@@ -176,5 +191,9 @@ div#board-container label.custom-file-label {
 			}	
 		});
 	}
+	$(function(){
+		
+	    $("th").parent().css("background", "rgba(164, 80, 68, 0.2)");
+	});
 </script>
 

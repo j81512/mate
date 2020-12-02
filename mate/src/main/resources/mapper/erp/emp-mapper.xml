@@ -4,6 +4,168 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="emp">
 
+	<select id="erpSearchList" resultMap="empMap">
+		select * from ( select ROWNUM RN, A.*
+        from (select * from emp 
+		<where>
+	 		<if test="options.status != null and options.status != ''">
+	 			status in  
+	 				<foreach collection="options.status"
+				    		 item="arr"
+				    		 open="("
+				    		 close=")"
+				    		 separator=",">
+				    	#{ arr }
+				    </foreach>
+	 		</if>
+	 		<if test="options.searchType != null and options.searchType != '' and options.searchKeyword != null and options.searchkeyword != ''">
+		 		and ${ options.searchType } like '%' || #{options.searchKeyword} || '%'
+	 		</if>
+ 		</where>) A)
+ 		 WHERE RN BETWEEN #{start} and #{end}
+	</select>
+	
+	<select id="countEMP" resultType='_int'>
+		select
+			count(*)
+		from 
+			emp
+		<where>
+	 		<if test="options.status != null and options.status != ''">
+	 			status in  
+	 				<foreach collection="options.status"
+				    		 item="arr"
+				    		 open="("
+				    		 close=")"
+				    		 separator=",">
+				    	#{ arr }
+				    </foreach>
+	 		</if>
+	 		<if test="options.searchType != null and options.searchType != '' and options.searchKeyword != null and options.searchkeyword != ''">
+		 		and ${ options.searchType } like '%' || #{options.searchKeyword} || '%'
+	 		</if>
+ 		</where>
+	</select>
+
+	<select id="getProductList" resultMap="productMap">
+		select
+			*
+		from(
+				select
+					P.*,
+					rownum rnum
+				from (	select 
+						    P.product_no product_no,
+						    P.product_name product_name,
+						    P.reg_date reg_date,
+						    P.category category,
+						    (select emp_name from emp where emp_id = P.manufacturer_id) manufacturer_name,
+						    P.manufacturer_id manufacturer_id,
+						    nvl((select stock from stock S where emp_id = #{options.loginEmp} and S.product_no = P.product_no), -1) stock,
+						    nvl((select confirm from request_log where product_no = P.product_no and emp_id = #{options.loginEmp} and confirm = 0), -2) request,
+						    P.enabled enabled
+						from 
+						    product P
+						order by 
+							P.product_no desc
+				) P
+				<where>
+					<if test="options.category != null">
+			 			and category in  
+		 				<foreach collection="options.category" item="arr" open="(" close=")" separator=",">
+					    	#{ arr }
+					    </foreach>
+			 		</if>
+			 		<if test="options.min != null">
+			 			<if test="options.min == 0">
+			 				and stock <![CDATA[>=]]> -1
+			 			</if>
+			 			<if test="options.min != 0">
+				 			and stock <![CDATA[>=]]> #{options.min}
+			 			</if>
+			 		</if>
+			 		<if test="options.max != null">
+			 			and stock <![CDATA[<=]]> #{options.max}
+			 		</if>
+			 		<if test="options.search != null">
+			 			and product_name like '%' || #{options.search} || '%'
+			 			<if test="options.productNo != null">
+			 				or  product_no = #{options.productNo}
+			 			</if>
+			 		</if>
+			 		<if test="options.enabled != null">
+			 			and enabled = #{options.enabled}
+			 		</if>
+				</where>
+		)
+		where
+			rnum <![CDATA[>=]]> #{start} and
+			rnum <![CDATA[<=]]> #{end}
+	</select>
+
+	<resultMap type="map" id="productMap">
+		<result column="product_no" property="productNo"/>
+		<result column="manufacturer_id" property="manufacturerId"/>
+		<result column="product_name" property="productName"/>
+		<result column="stock" property="stock"/>
+		<result column="request" property="request"/>
+		<result column="category" property="category"/>
+		<result column="reg_date" property="regDate"/>
+		<result column="manufacturer_name" property="manufacturerName"/>
+		<result column="enabled" property="enabled"/>
+	</resultMap>
+	
+	<select id="getProductTotalContents" resultType="_int">
+		select
+			count(*)
+		from (	select
+					P.*,
+					rownum rnum
+				from (	select 
+						    P.product_no product_no,
+						    P.product_name product_name,
+						    P.reg_date reg_date,
+						    P.category category,
+						    (select emp_name from emp where emp_id = P.manufacturer_id) manufacturer_name,
+							nvl((select stock from stock S where emp_id = #{options.loginEmp} and S.product_no = P.product_no), -1) stock,
+						    nvl((select confirm from request_log where product_no = P.product_no and emp_id = #{options.loginEmp} and confirm = 0), -2) request,
+						    P.enabled enabled
+						from 
+						    product P
+						order by 
+							P.product_no desc
+				) P
+				<where>
+					<if test="options.category != null">
+			 			and category in  
+		 				<foreach collection="options.category" item="arr" open="(" close=")" separator=",">
+					    	#{ arr }
+					    </foreach>
+			 		</if>
+			 		<if test="options.min != null">
+			 			<if test="options.min == 0">
+			 				and stock <![CDATA[>=]]> -1
+			 			</if>
+			 			<if test="options.min != 0">
+				 			and stock <![CDATA[>=]]> #{options.min}
+			 			</if>
+			 		</if>
+			 		<if test="options.max != null">
+			 			and stock <![CDATA[<=]]> #{options.max}
+			 		</if>
+			 		<if test="options.search != null">
+			 			and product_name like '%' || #{options.search} || '%'
+			 			<if test="options.productNo != null">
+			 				or  product_no = #{options.productNo}
+			 			</if>
+			 		</if>
+			 		<if test="options.enabled != null">
+			 			and enabled = #{options.enabled}
+			 		</if>
+				</where>
+		) 
+	</select>
+
 	<insert id="insertEmp">
 		insert into
 			EMP
@@ -96,13 +258,12 @@
 	</delete>
 	
 	<resultMap type="emp" id="empMap">
-	
+		<result column="addr1" property="empAddr1"/>
+		<result column="addr2" property="empAddr2"/>
+		<result column="addr3" property="empAddr3"/>
+		<result column="enroll_date" property="empEnrollDate"/>
+		<result column="phone" property="empPhone"/>
 	</resultMap>
-	
-	<resultMap type="Product" id="productMap">
-	
-	</resultMap>
-	
 
 	<select id="empList" resultType="EMP">
 		select
@@ -214,5 +375,14 @@
 		from
 			Request_Log
 	</select>
-
+	
+	<select id="erpParamList" resultType="EMP">
+		select * from emp
+		<where>
+			<if test="empId != null and empId == 'admin'">
+			and status != 2
+			</if>
+		</where>
+	
+	</select>
 </mapper>

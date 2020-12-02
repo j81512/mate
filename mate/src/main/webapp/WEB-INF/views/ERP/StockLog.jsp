@@ -4,7 +4,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>
-<jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
+<jsp:include page="/WEB-INF/views/common/headerE.jsp">
+	<jsp:param value="MATE-ERP" name="headTitle"/>
+</jsp:include>
 <style>
 .scroll-area{
 	height: 700px;
@@ -91,6 +93,16 @@
 								</c:if>
 							</table>
 						</form>
+			<!-- 페이징 바 -->
+			<nav aria-label="..." style="text-align: center;">
+				<div class="pageBar">
+					<ul class="pagination">
+						<c:if test="${not empty pageBar }">
+								<li>${ pageBar }</li>
+						</c:if>
+					</ul>
+				</div>
+			</nav>
 						</div>
 					</div>
 				</div>

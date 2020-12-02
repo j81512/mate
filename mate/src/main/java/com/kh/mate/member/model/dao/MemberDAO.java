@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.kh.mate.common.Pagebar;
 import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.member.model.vo.Member;
 
@@ -29,9 +30,9 @@ public interface MemberDAO {
 
 	int failPurchase(int purchaseNo);
 
-	List<Member> searchMember(String searchKeyword, String searchType, int cPage, int numPerPage);
+	List<Member> searchMember(Pagebar pb);
 
-	int getSearchContent(Map<String, String> map);
+	int getSearchContent(Pagebar pb);
 
 	int tempPassword(HashMap<String, String> map);
 

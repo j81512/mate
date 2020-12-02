@@ -7,8 +7,6 @@
 <fmt:requestEncoding value="utf-8"/><%-- 한글 깨짐 방지 --%>   
 <script src="http://code.jquery.com/jquery-latest.min.js"></script><!--문자 인증 때문에 필요함  -->
 
-
-
 <link rel="stylesheet"
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
 	integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
@@ -21,7 +19,9 @@
 	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
 	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
 	crossorigin="anonymous"></script>
-<jsp:include page="/WEB-INF/views/common/headerS.jsp" />
+<jsp:include page="/WEB-INF/views/common/headerS.jsp">
+	<jsp:param value="MATE-로그인" name="headTitle"/>
+</jsp:include>
 <style>
 .modal {
 	text-align: center;
@@ -243,7 +243,7 @@
 
 		}else {
 			alert("인증 되었습니다.");
-			$("#phone-send").val("인증완료");
+			$("#phone-send").val("인증완료").prop("disabled", "disabled");
 			$("#myModal").removeClass("show");
 			closeReturnModal();
 		}

@@ -43,19 +43,19 @@
  		update
  			member
  		<set>
- 			<if test="memberId != null">
+ 			<if test="memberId != null and memberId != ''">
  				member_id = #{ memberId },
  			</if>
- 			<if test="memberPWD != null">
+ 			<if test="memberPWD != null and memberPWD != ''">
  				member_pwd = #{ memberPWD },
  			</if>
- 			<if test="memberName != null">
+ 			<if test="memberName != null and memberName != ''">
  				member_name = #{ memberName },
  			</if>
- 			<if test="gender != null">
+ 			<if test="gender != null and gender != ''">
  				gender = #{ gender },
  			</if>
- 			<if test="phone != null">
+ 			<if test="phone != null and phone != ''">
  				phone = #{ phone }
  			</if>
  		</set>
@@ -172,22 +172,22 @@
                              ) 					
 						where
 							member_id != 'admin'
-							<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
-								and ${ searchType }  like '%' || #{ searchKeyword } || '%'
+							<if test="options.searchType != null and options.searchType != '' and options.searchKeyword != null and options.searchKeyword != ''">
+								and ${ options.searchType }  like '%' || #{ options.searchKeyword } || '%'
 							</if>
 						
 						ORDER BY enroll_date DESC 
 						) M
 				)
-			 where rnum BETWEEN #{ cPage } AND #{ numPerPage }
+			 where rnum BETWEEN #{ start } AND #{ end }
 	</select>
 	<select id="searchContent" resultType="_int">
 			<![CDATA[
 			select count(*) total_contents from member
 			 ]]>
 		  <where>
-			<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
-				and  ${ searchType } like '%' || #{ searchKeyword } || '%'
+			<if test="options.searchType != null and options.searchKeyword != null">
+				and  ${ options.searchType } like '%' || #{ options.searchKeyword } || '%'
 			</if>
 		</where>
 		

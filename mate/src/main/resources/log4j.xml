@@ -50,7 +50,7 @@
 		<level value="INFO"/>
 	</logger>
 	<logger name="jdbc.resultsettable">
-		<level value="DEBUG"/>
+		<level value="INFO"/>
 	</logger>
 	<!-- Application Loggers -->
 	<!-- 패키지 또는 클래스명을 통해서 로그를 수집하는 주체  -->

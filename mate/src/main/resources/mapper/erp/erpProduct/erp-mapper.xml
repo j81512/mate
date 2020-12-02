@@ -4,6 +4,147 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="erp">
 
+<select id="StockLogMapListCount" resultMap="stockLogMap">
+			select
+			    *
+			from ( 
+ 		 		select 
+         		   ROWNUM RN,  b.*
+          		from( 
+					select
+			 			s.product_no,
+			 			(select emp_name from emp where emp_id = s.emp_id) emp_name,
+			 			s.emp_id,
+			 			s.stock,
+			 			p.product_name,
+			 			p.category,
+			 			(select emp_name from emp where emp_id = p.manufacturer_id) manufacturer_name
+			 		from
+			 			stock S 
+			 		inner join
+			 			product P
+			 		on S.product_no = P.product_no
+					<where>
+						<if test="options.branchId != null and options.branchId != '' ">
+						s.emp_id = #{options.branchId}
+						</if>
+						<if test="options.searchType != null and options.searchType != '' and options.searchKeyword != null and options.searchKeyword != ''">
+						and p.${options.searchType} like '%' || #{options.searchKeyword} || '%'
+						</if>
+					</where>
+					         )b
+				                 
+			        ) d
+			         WHERE RN BETWEEN #{start} and #{end}
+ 	</select>
+ 	
+ 	<select id="selectRequestPage" resultMap="requestMap">
+	 		select
+			    *
+			from ( 
+ 		 		select 
+         		   ROWNUM RN,  b.*
+           		from( 
+		 		select
+		 			rl.request_no,
+		 			rl.manufacturer_id,
+		 			rl.amount,
+		 			TO_CHAR(rl.request_date,'YYYY-MM-DD') request_date,
+		 			rl.confirm,
+		 			rl.product_no,
+		 			rl.emp_id,
+		 			p.product_name,
+		 			(select emp_name from emp where emp_id = rl.manufacturer_id) manufacturer_name,
+		 			(select emp_name from emp where emp_id = rl.emp_id) branch_name
+		 		from
+		 			request_log rl
+		 		inner join
+		 			product p
+		 		on rl.product_no = p.product_no
+		 			<where>
+		 				<choose>
+		 					<when test="options.status == 1">
+								rl.emp_id = #{options.branchId} 					
+		 					</when>
+		 					<otherwise>
+		 					<if test="options.manufacturerId != null and options.manufacturerId != '' ">
+							rl.manufacturer_id = #{options.manufacturerId}
+							</if>
+							<if test="options.confirm != null and options.confirm != ''">
+							and rl.confirm = #{options.confirm}
+							</if>
+							<if test="options.searchType != null and options.searchType != '' and options.searchKeyword != null and options.searchKeyword != ''">
+							and p.${options.searchType} like '%' || #{options.searchKeyword} || '%'
+							</if>
+			 				<if test ="options.branchId != null and options.branchId != ''">
+							and rl.emp_id = #{options.branchId}
+		 					</if>
+		 					</otherwise>
+		 				</choose>
+		 			</where>
+		                 )b
+				                 
+			        ) d
+			         WHERE RN BETWEEN #{start} and #{end}
+				  
+ 	</select>
+ 	
+ 	<select id="requestCount" resultType="_int">
+ 			select 
+         		 count(*)
+           		from( 
+		 		select
+		 			rl.request_no,
+		 			rl.manufacturer_id,
+		 			rl.amount,
+		 			TO_CHAR(rl.request_date,'YYYY-MM-DD') request_date,
+		 			rl.confirm,
+		 			rl.product_no,
+		 			rl.emp_id,
+		 			p.product_name,
+		 			(select emp_name from emp where emp_id = rl.manufacturer_id) manufacturer_name,
+		 			(select emp_name from emp where emp_id = rl.emp_id) branch_name
+		 		from
+		 			request_log rl
+		 		inner join
+		 			product p
+		 		on rl.product_no = p.product_no
+		 			<where>
+		 				<choose>
+		 					<when test="options.status == 1">
+								rl.emp_id = #{options.branchId} 					
+		 					</when>
+		 					<otherwise>
+		 					<if test="options.manufacturerId != null and options.manufacturerId != '' ">
+							rl.manufacturer_id = #{options.manufacturerId}
+							</if>
+							<if test="options.confirm != null and options.confirm != ''">
+							and rl.confirm = #{options.confirm}
+							</if>
+							<if test="options.searchType != null and options.searchType != '' and options.searchKeyword != null and options.searchKeyword != ''">
+							and p.${options.searchType} like '%' || #{options.searchKeyword} || '%'
+							</if>
+			 				<if test ="options.branchId != null and options.branchId != ''">
+							and rl.emp_id = #{options.branchId}
+		 					</if>
+		 					</otherwise>
+		 				</choose>
+		 			</where>
+		                 )b
+ 	</select>
+ 	
+<select id="StockCount" resultType="_int">
+ 			select count(*) from stock
+			<where>
+				<if test="options.branchId != null and options.branchId != '' ">
+				s.emp_id = #{options.branchId}
+				</if>
+				<if test="options.searchType != null and options.searchType != '' and options.searchKeyword != null and options.searchKeyword != ''">
+				and p.${ options.searchType} like '%' || #{ options.searchKeyword} || '%'
+				</if>
+			</where>
+ 	</select>
+
 	<update id="productResale">
 		update
 			product
@@ -32,7 +173,7 @@
 					s.emp_id,
 					p.enabled,
 					p.reg_date,
-					nvl(s.stock,0) stock,
+					nvl(s.stock,-1) stock,
 					e.emp_name
 				 from 
 					product p 
@@ -346,14 +487,16 @@
  	</select>
  	
  	<insert id="productOrder">
- 		insert into request_log values (
- 		seq_request_no.nextval,
- 		#{empId},
- 		#{stock},
- 		default,
- 		default,
- 		#{productNo},
- 		#{branchEmp}
+ 		insert into 
+ 			request_log 
+ 		values (
+	 		seq_request_no.nextval,
+	 		#{manufacturerId},
+	 		#{amount},
+	 		default,
+	 		default,
+	 		#{productNo},
+	 		#{empId}
  		)
  	</insert>
  	

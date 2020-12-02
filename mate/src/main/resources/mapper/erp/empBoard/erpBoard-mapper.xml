@@ -4,6 +4,102 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="erpBoard">
 
+<select id="ioEmpList" resultType="map">
+		select
+				    *
+				from ( 
+				        select 
+				            ROWNUM RN,  b.*
+				           from( 
+				                select 
+				                         e.emp_name as "empName",
+				                       	 e.status as "empStatus",
+				                       	 e.emp_id as "empId",
+				                         io.io_no as "ioNo",
+				                         io.product_no as "productNo",
+				                         io.amount as "amount",
+				                         p.product_name as "productName",
+				                         io.status as "status", 
+				                         io.io_date as "ioDate",
+				                         <if test="options.monthday != null and options.monthday != ''">
+		                                 io.io_date as "checkDate",
+		                                 </if>
+				                         (select emp_name from emp where emp_id = p.manufacturer_id ) as "manufacturerName" 
+				                     from  
+				                       emp  e 
+				                     join io_log io on e.emp_id = io.emp_id          
+				                     join product p on p.product_no = io.product_no
+				                     <where>
+				                      <if test="options.empId != null and !'admin'.equals(options.empId)">
+				                      	and e.emp_id = #{ options.empId }
+				                      </if>
+								  	  <if test="options.monthday != null and options.monthday != ''">   
+								  		and to_char(io.io_date, 'yyyyMMdd') = #{ options.monthday }
+								  	 </if>
+								  	  <if test="options.ioStatus != null and options.ioStatus != ''">   
+								  		and io.status = #{ options.ioStatus }
+								  	 </if>
+								  	  <if test="options.empName != null and options.empName != ''">   
+								  		and e.emp_name = #{ options.empName }
+								  	 </if>
+				                     </where>
+				                     
+		                             order by io_date desc
+				                 )b
+				                 
+				        ) d
+				         WHERE RN BETWEEN #{start} and #{end}
+				  
+				
+	</select>
+	
+	<select id="countIOEMP" resultType="_Int">
+		     select
+				    count(*)
+				from ( 
+				        select 
+				            ROWNUM RN,  b.*
+				           from( 
+				                select 
+				                         e.emp_name as "empName",
+				                       	 e.status as "empStatus",
+				                       	 e.emp_id as "empId",
+				                         io.io_no as "ioNo",
+				                         io.product_no as "productNo",
+				                         io.amount as "amount",
+				                         p.product_name as "productName",
+				                         io.status as "status", 
+				                         io.io_date as "ioDate",
+				                         <if test="options.monthday != null and options.monthday != ''">
+		                                 io.io_date as "checkDate",
+		                                 </if>
+				                         (select emp_name from emp where emp_id = p.manufacturer_id ) as "manufacturerName" 
+				                     from  
+				                       emp  e 
+				                     join io_log io on e.emp_id = io.emp_id          
+				                     join product p on p.product_no = io.product_no
+				                     <where>
+				                      <if test="options.empId != null and !'admin'.equals(options.empId)">
+				                      	and e.emp_id = #{ options.empId }
+				                      </if>
+								  	  <if test="options.monthday != null and options.monthday != ''">   
+								  		and to_char(io.io_date, 'yyyyMMdd') = #{ options.monthday }
+								  	 </if>
+								  	  <if test="options.ioStatus != null and options.ioStatus != ''">   
+								  		and io.status = #{ options.ioStatus }
+								  	 </if>
+								  	  <if test="options.empName != null and options.empName != ''">   
+								  		and e.emp_name = #{ options.empName }
+								  	 </if>
+				                     </where>
+				                     
+		                             order by io_date desc
+				                 )b
+				                 
+				        ) d
+				
+	</select>
+
 	<select id="selectOneEmpBoard" resultMap="empBoardCollection">
 		select
 		    B.*,
@@ -175,17 +271,17 @@
                                  FROM board ba
                              ) 					
 						<where>
-							<if test="status != null and status == 2">
+							<if test="options.status != null and options.status == 2">
 								and category = 'adv'	
 							</if>
-							<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
-								and ${ searchType }  like '%' || #{ searchKeyword } || '%'
+							<if test="options.searchType != null and options.searchType != '' and options.searchKeyword != null and options.searchKeyword != ''">
+								and ${ options.searchType }  like '%' || #{ options.searchKeyword } || '%'
 							</if>
 						</where>
 						ORDER BY                
 
                                     CASE WHEN enabled = 0  THEN enabled END asc
-                                    <if test="status == null">
+                                    <if test="options.status == null">
                                     ,
                                     CASE WHEN category LIKE 'ntc' THEN category END asc,
                                     CASE WHEN category LIKE 'req' THEN category END asc
@@ -195,7 +291,7 @@
                             		 reg_date DESC 
 						) B
 				)
-			 where rnum BETWEEN #{ cPage } AND #{ numPerPage }
+			 where rnum BETWEEN #{ start } AND #{ end }
 	</select>
 	
 	<select id="searchContents" resultType="_Int">
@@ -206,13 +302,13 @@
 		       		 (select e.emp_name from emp e  where b.emp_id = e.emp_id ) emp_name
 		         from 
 		        board b)
-		 ]]>
+	]]>
 		  <where>
-		  	<if test="status != null and status == 2">
+		  	<if test="options.status != null and options.status == 2">
 								and category = 'adv'	
 			</if>
-			<if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
-				and  ${ searchType } like '%' || #{ searchKeyword } || '%'
+			<if test="options.searchType != null and options.searchType != '' and options.searchKeyword != null and options.searchKeyword != ''">
+				and  ${ options.searchType } like '%' || #{ options.searchKeyword } || '%'
 			</if>
 		</where>
 		order by reg_date
@@ -302,42 +398,6 @@
 		and product_no =  #{ productNo }
 	</update>
 	
-	<select id="ioEmpList" resultType="map">
-		select
-				    *
-				from ( 
-				        select 
-				            b.*
-				           from( 
-				                select 
-				                         e.emp_name as "empName",
-				                       	 e.status as "empStatus",
-				                       	 e.emp_id as "empId",
-				                         io.io_no as "ioNo",
-				                         io.product_no as "productNo",
-				                         io.amount as "amount",
-				                         p.product_name as "productName",
-				                         io.status as "status", 
-				                         io.io_date as "ioDate",
-				                         <if test="monthday != null and monthday != ''">
-		                                 io.io_date as "checkDate",
-		                                 </if>
-				                         (select emp_name from emp where emp_id = p.manufacturer_id ) as "manufacturerName" 
-				                     from  
-				                       emp  e 
-				                     join io_log io on e.emp_id = io.emp_id          
-				                     join product p on p.product_no = io.product_no
-				                     <where>
-								  	  <if test="monthday != null and monthday != ''">   
-								  		and to_char(io.io_date, 'yyyyMMdd') = #{ monthday }
-								  	 </if>
-				                     </where>
-		                             order by io_date desc
-				                 )b
-				        ) d
-				        
-				  
-				
-	</select>
+	
 
 </mapper>

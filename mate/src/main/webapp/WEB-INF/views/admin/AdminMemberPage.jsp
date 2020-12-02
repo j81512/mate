@@ -5,7 +5,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <fmt:requestEncoding value="utf-8" />
 <%-- 한글 깨짐 방지 --%>
-<jsp:include page="/WEB-INF/views/common/headerS.jsp" />
+<jsp:include page="/WEB-INF/views/common/headerS.jsp">
+	<jsp:param value="MATE-멤버 관리" name="headTitle"/>
+</jsp:include>
 
 <style>
 div#search-member_id {
@@ -304,9 +306,7 @@ th {
 		<div class="pageBar">
 			<ul class="pagination">
 				<c:if test="${not empty pageBar }">
-					<c:forEach items="${ pageBar }" var="p">
-						<li>${ p }</li>
-					</c:forEach>
+						<li>${ pageBar }</li>
 				</c:if>
 			</ul>
 		</div>

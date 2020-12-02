@@ -5,6 +5,7 @@ import static com.kh.mate.common.Utils.getRenamedFileName;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,9 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.kh.mate.common.paging.PagingVo;
+import com.kh.mate.common.Pagebar;
 import com.kh.mate.member.model.vo.Member;
 import com.kh.mate.product.model.service.ProductService;
 import com.kh.mate.product.model.vo.Cart;
@@ -157,84 +160,33 @@ public class ProductController {
 	}
 	
 	
-	//CH
+	
 	@RequestMapping(value = "/productList.do",
 					method = RequestMethod.GET)
-	public String productList(Model model,PagingVo page,String nowPage, String cntPerPage) {
+	public String productList(Model model,
+			 				  HttpServletRequest request,
+			 				  @RequestParam(required = false, defaultValue = "1") int cPage,
+			 				  @RequestParam(required = false) String category,
+			 				  @RequestParam(required = false) String search) {
 		
-		int total = productService.countProduct(); 
+		int numPerPage = 8;
+		int pageBarSize = 5;
 		
-		log.debug("nowPage = {}", nowPage);
-		log.debug("cntPerPage = {}", cntPerPage);
-		
-		if(nowPage == null && cntPerPage == null) {
-			nowPage = "1";
-			cntPerPage="4";
-		} else if (nowPage == null) {
-			nowPage = "1";
-		} else if (cntPerPage == null) { 
-			cntPerPage = "4";
+		Pagebar pb = new Pagebar(cPage, numPerPage, request.getRequestURI(), pageBarSize);
+		Map<String, Object> options = new HashMap<>();
+		if(category != null && !category.equals("")) {
+			String[] cate = category.split(",");
+			options.put("category", cate);
 		}
-
-//		page = new PagingVo(total, nowPage, cntPerPage);
-		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
+		options.put("search", search);
+		pb.setOptions(options);
 		
-		List<Product> list = productService.selectProductListAll(page);
-		log.debug("list = {}", list);
-		log.debug("page = {}",page);
-		model.addAttribute("page",page);
+		List<Product> list = productService.searchProductList(pb);
+
+		String pageBar = pb.getPagebar();
+		model.addAttribute("category", category);
+		model.addAttribute("pageBar", pageBar);
 		model.addAttribute("list", list);
-		return "product/productList";
-	}
-	
-	@RequestMapping("/searchProduct.do")
-	public String searchProduct(String search, String category, PagingVo page,String nowPage, String cntPerPage ,Model model ) {
-		
-		Map<String,Object> map = new HashMap<String, Object>();
-		
-		log.debug("nowPage = {}",nowPage);
-		log.debug("cntPerPage = {}",cntPerPage);
-		
-		if(nowPage == null && cntPerPage == null) {
-			nowPage = "1";
-			cntPerPage="4";
-		} else if (nowPage == null) {
-			nowPage = "1";
-		} else if (cntPerPage == null) { 
-			cntPerPage = "4";
-		}
-		
-		
-		
-		log.debug("search = {}",search);
-		
-		if(!category.isEmpty()) {
-			String[] cateArr = category.split(",");
-			map.put("cateArr", cateArr);
-			log.debug("cateArr = {}",cateArr);
-			map.put("category", category);
-			log.debug("category = {}",category);
-			
-		}
-
-		map.put("search", search);
-		
-		int total = productService.countProduct(map); 
-		page = new PagingVo(total, Integer.parseInt(nowPage), Integer.parseInt(cntPerPage));
-		map.put("page", page);
-		
-		List<Product> list = productService.searchProductList(map);
-//		if(list.size() <= 8 && Integer.parseInt(nowPage) == 1) {
-//			page.setEndPage(1);
-//		}
-		log.debug("listSize = {}" , list.size());
-		
-		log.debug("page = {}",page);
-		model.addAttribute("search",search);
-		model.addAttribute("sCategory",category);
-		model.addAttribute("page",page);
-		model.addAttribute("list",list);
-		
 		return "product/productList";
 	}
 	
@@ -396,4 +348,11 @@ public class ProductController {
 		
 		return mapList;
 	}
+	
+	@ExceptionHandler({Exception.class}) 
+	public String error(Exception e) { 
+		log.error("exception = {}", e);
+		return "common/error"; 
+	}
+
 }

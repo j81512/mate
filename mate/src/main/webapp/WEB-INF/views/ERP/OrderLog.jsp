@@ -23,7 +23,9 @@
 	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
 	crossorigin="anonymous">
 </script>
-<jsp:include page="/WEB-INF/views/common/headerE.jsp"/>
+<jsp:include page="/WEB-INF/views/common/headerE.jsp">
+	<jsp:param value="MATE-ERP" name="headTitle"/>
+</jsp:include>
 </head>
 	<body>  
 		<div class="container">
@@ -39,8 +41,8 @@
 												<th>
 												  	<select name="manufacturerId" id="manufacturerId">
 												    	<option value="" disabled selected id="manufacturerId-default">제조사 선택</option>
-													    <c:forEach items="${empList}" var="list">
 														    <option value="">전체</option>
+													    <c:forEach items="${empList}" var="list">
 														    <c:if test="${list.status eq 2 }">
 														    <option value="${list.empId}">${list.empName}</option>
 														    </c:if>
@@ -66,8 +68,8 @@
 												<th>
 													<select name="branchId" id="branchId">
 														<option value="" disabled selected id="branchId-default">지점 선택</option>
-														    <option value="">전체</option>
 														<c:if test="${loginEmp.status eq 0 }">
+													    <option value="">전체</option>
 														<c:forEach items="${empList}" var="list">
 														    <c:if test="${list.status eq 0 }">
 														    <option value="${list.empId}">온라인</option>
@@ -92,17 +94,19 @@
 												  	<button type="button" class="btn btn-default" id="strike">검색어 초기화</button>
 												</th>
 											</tr>
-									</thead>
+										</thead>
+									</table>
+									<table id="purchaseLog-table" class="table">
 										<tbody class="thead-dark">
 											<tr>
-												<th scope="col">발주번호</th>
-												<th scope="col">상품명</th>
-												<th scope="col">상품 번호</th>
-												<th scope="col">제조사</th>
-												<th scope="col">발주 요청 지점</th>
-												<th scope="col">발주 날짜</th>
-												<th scope="col">발주량</th>
-												<th scope="col">상태</th>
+												<th scope="col" >발주번호</th>
+												<th scope="col" >상품명</th>
+												<th scope="col" >상품 번호</th>
+												<th scope="col" >제조사</th>
+												<th scope="col" >발주 요청 지점</th>
+												<th scope="col" >발주 날짜</th>
+												<th scope="col" >발주량</th>
+												<th scope="col" >상태</th>
 											</tr>
 										</tbody>	
 										<tfoot class="requestInfo">
@@ -136,6 +140,16 @@
 						</div>
 					</div>
 				</div>
+				<!-- 페이징 바 -->
+			<nav aria-label="..." style="text-align: center;">
+				<div class="pageBar">
+					<ul class="pagination">
+						<c:if test="${not empty pageBar }">
+								<li>${ pageBar }</li>
+						</c:if>
+					</ul>
+				</div>
+			</nav>
 			</div>
 		</div>
 	</body>

@@ -70,9 +70,11 @@ $(function(){
 
 
 </script>
-<jsp:include page="/WEB-INF/views/common/headerE.jsp" />
+<jsp:include page="/WEB-INF/views/common/headerE.jsp">
+	<jsp:param value="MATE-ERP" name="headTitle"/>
+</jsp:include>
 
-
+	<div class="nevigate">
 	<input type="button" value="글쓰기" id="btn-add" class="btn btn-outline-success" onclick="empBoardEnroll();"/>
 	<table id="tbl-board" class="table table-striped table-hover">
          <tr>
@@ -105,20 +107,8 @@ $(function(){
 		</c:forEach>
 		</c:if>
 	</table>
-	<!-- 페이징 바 -->
-	<nav aria-label="..." style="text-align: center;">
-	<div class="pageBar">
-		<ul class="pagination">
-		<c:if test="${not empty pageBar }">
-		<c:forEach items="${ pageBar }" var="p">
-			<li>
-			  	${ p }
-			</li>
-		</c:forEach>
-		</c:if>
-		</ul>
+	 
 	</div>
-	</nav>
 	<!-- 게시글 검색 -->
 		<div class="form-group row justify-content-center">
 			<div class="b-select-wrap col-1 row-2" style="padding-right:10px">
@@ -167,5 +157,18 @@ $(function(){
             </form>
         	</div>
 		</div>
+		       	<!-- 페이징 바 -->
+        	<div class="row justify-content-center"">
+			<nav aria-label="..." style="text-align: center;">
+				<div class="pageBar">
+					<ul class="pagination">
+						<c:if test="${not empty pageBar }">
+								<li>${ pageBar }</li>
+						</c:if>
+					</ul>
+				</div>
+			</nav>
+        	</div>
+
 
 <jsp:include page="/WEB-INF/views/common/footerE.jsp" />

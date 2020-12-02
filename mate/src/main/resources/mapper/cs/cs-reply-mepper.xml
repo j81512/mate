@@ -4,7 +4,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="csReply">
   
- <select id="cs" resultType="cs">
+ 	<select id="cs" resultType="cs">
 		select
 			*
 		from
@@ -22,13 +22,12 @@
 		notice desc, cs_no desc
 	</select>
 	
-	<select id="selectReplyList" resultType="CsReply">
+	<select id="selectReplyList" resultType="csReply">
 		select 
 		    * 
 		from  cs_reply c left join member m on c.member_id = m.member_id
 		where  cs_no = #{ csNo }
-		order by reg_date desc
-			
+		order by reg_date
 	</select>
 	
 	<insert id="csInsertReply">

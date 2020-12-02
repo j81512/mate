@@ -67,22 +67,24 @@
 		select 
 			COUNT(*) 
 		from 
-			product
+			product P left join Stock S on p.product_no = S.product_no
 		<where>
-	 		<if test="cateArr != null">
+	 		<if test="options.category != null">
 	 			category in  
-	 				<foreach collection="cateArr"
-				    		 item="cateArr"
+	 				<foreach collection="options.category"
+				    		 item="arr"
 				    		 open="("
 				    		 close=")"
 				    		 separator=",">
-				    	#{ cateArr }
+				    	#{ arr }
 				    </foreach>
 	 		</if>
-	 		<if test="search != null and !search.isempty">
-		 		and (product_name like '%' || #{search} || '%'
-	 			or content like '%' || #{search} || '%')
+	 		<if test="options.search != null">
+		 		and (product_name like '%' || #{options.search} || '%'
+	 			or content like '%' || #{options.search} || '%')
 	 		</if>
+	 		and s.stock is not null
+	 		and s.emp_id = 'admin'
  		</where>
 	</select>
 	
@@ -126,13 +128,17 @@
  	
  	</select>
  	
- 	<select id="selectProductOne" resultType="product">
+	<select id="selectProductOne" resultType="product">
  		select
- 			P.*
+ 			P.*,
+ 			S.Stock stock
  		from
- 			product P
+ 			product P inner join Stock S
+ 			on P.product_no = S.product_no
  		where
- 			product_no = #{ productNo }
+ 			P.product_no = #{ productNo }
+ 			and s.emp_id = 'admin'
+ 			
  	</select>
  	
  	<select id="selectProductMainImages" resultType="productMainImages">
@@ -147,25 +153,23 @@
  	
  	<select id="searchProductList" resultType="product">
  		select * from ( select ROWNUM RN, A.*
-        from (select * from product
+        from (select P.*, nvl(S.stock, -1) stock from product P left join Stock S on P.product_no = S.product_no
  		<where>
  		
- 		<if test="cateArr != null">
- 			category in  <foreach collection="cateArr"
-			    		 item="cateArr"
-			    		 open="("
-			    		 close=")"
-			    		 separator=",">
-			    	#{ cateArr }
-			    	</foreach>
+ 		<if test="options.category != null">
+ 			category in  
+ 			<foreach collection="options.category" item="arr" open="(" close=")" separator=",">
+			    	#{ arr }
+	    	</foreach>
  		</if>
- 		<if test="search != null and !search.isempty">
-	 		and (product_name like '%' || #{search} || '%'
- 			or content like '%' || #{search} || '%')
+ 		<if test="options.search != null">
+	 		and (product_name like '%' || #{options.search} || '%'
+ 			or content like '%' || #{options.search} || '%')
  		</if>
- 		
- 		</where>) A)
-        WHERE RN BETWEEN #{page.start} and #{page.end}
+ 		and s.emp_id = 'admin'
+ 		</where>) A )
+        WHERE RN BETWEEN #{start} and #{end}
+        order by stock desc
  	</select>
  	
  	<select id="productCategory" resultType="product">

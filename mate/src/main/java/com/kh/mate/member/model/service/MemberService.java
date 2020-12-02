@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.kh.mate.common.Pagebar;
 import com.kh.mate.member.model.vo.Address;
 import com.kh.mate.member.model.vo.Member;
 
@@ -29,12 +30,12 @@ public interface MemberService {
 
 	int failPurchase(int purchaseNo);
 
-	List<Member> searchMember(String searchType, String searchKeyword, int cPage, int numPerPage);
-
 	int getSearchContents(Map<String, String> map);
 
 	int tempPassword(HashMap<String, String> map);
 
 	int deleteAddress(Map<String, String> param);
+
+	List<Member> searchMember(Pagebar pb);
 
 }

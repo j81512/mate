@@ -23,8 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class KakaoRESTAPI {
 	
-	private final static String K_CLIENT_ID = "617c2f88246b220a1380f93783eacbd0";
-	private final static String K_REDIRECT_URI = "http://mate.matetoy.kro.kr/mate/kakaocallback.do";
+	private final static String K_CLIENT_ID = "d36df5a7d77a76106c5ce10dd331a41e";
+	private final static String K_REDIRECT_URI = "http://park.jh92.kro.kr/mate/kakaocallback.do";
 	
 	public static String getAuthorizationUrl(HttpSession session) {
 		String kakaoUrl = "https://kauth.kakao.com/oauth/authorize?" + "client_id=" + K_CLIENT_ID + "&redirect_uri="
@@ -40,8 +40,8 @@ public class KakaoRESTAPI {
 		final String RequestUrl = "https://kauth.kakao.com/oauth/token";
 		final List<NameValuePair> postList = new ArrayList<NameValuePair>();
 		postList.add(new BasicNameValuePair("grant_type", "authorization_code"));
-		postList.add(new BasicNameValuePair("client_id", "617c2f88246b220a1380f93783eacbd0"));
-		postList.add(new BasicNameValuePair("redirect_uri", "http://mate.matetoy.kro.kr/mate/kakaocallback.do"));
+		postList.add(new BasicNameValuePair("client_id", "d36df5a7d77a76106c5ce10dd331a41e"));
+		postList.add(new BasicNameValuePair("redirect_uri", "http://park.jh92.kro.kr/mate/kakaocallback.do"));
 		
 		log.debug("authorize_code = {}", authorize_code);
 		//로그인 과정중 얻은 code값		

@@ -22,13 +22,11 @@ public class Product {
 	private int stock;
 	private Date regDate;
 	private String category;
-//	private String brand;
 	private String content;
 	private int price;
 	private int enabled;
 	
 	
-//	private int imageCount;
 	private List<String> productImagesName;
 	private List<ProductImages> productImages;
 	private List<ProductMainImages> pmiList;
