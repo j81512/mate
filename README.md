@@ -30,7 +30,7 @@
 	<div class="blur-div third-div best-div"></div>
 </div>
 
-//1. ajax를 통해 구매량이 가장 많은 상위 5개의 상품 이미지를 가져온다.
+<!-- ajax를 통해 구매량이 가장 많은 상위 5개의 상품 이미지를 가져온다. -->
 $(function(){
 	$.ajax({
 		url: "${pageContext.request.contextPath}/product/getBest.do",
