@@ -21,8 +21,7 @@
 ---
 
 ### 핵심 기능 (작성자가 구현한 기능만 코드 설명)
-- Index 페이지의 Best 5 상품 추천 기능 
-###### &nbsp;&nbsp;&nbsp;&nbsp; <details><summary>코드 보기</summary><div markdown="1">
+- Index 페이지의 Best 5 상품 추천 기능 <details><summary></summary><div markdown="1">
 
 	```jsp
 
