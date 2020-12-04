@@ -518,6 +518,7 @@ function deleteAddress(addressName){
 > 매출 : chart.js 사용하여 월별/일별 매출 현황을 그래프를 통해 확인할 수 있다.<br>
 > 입출고, 재고, 발주 : 입출고, 재고, 발주 로그를 테이블을 통해 확인할 수 있다.<br>
 > sql트리거를 이용하여, 상품의 주문/결제/반품/입고/발주 등이 버튼 한두번의 클릭으로 가능하다.
+	
 ```sql
 -- 주문 로그에 결제 컬럼 update시 입출고 로그에 출고로 insert 되고 cart에 삭제하는 트리거
 create or replace trigger trg_purchase_log
