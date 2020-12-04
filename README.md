@@ -22,7 +22,7 @@
 
 ### 핵심 기능 (작성자가 구현한 기능만 코드 설명)
 - Index 페이지의 Best 5 상품 추천 기능
-<details>
+	- <details>
 <summary>코드 보기</summary>
 	
 ```jsp
