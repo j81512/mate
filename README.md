@@ -303,7 +303,7 @@
 ```
 
 ```javascript
-//주소 선택 모달 
+//주소 선택 모달 실행시
 function openAddressModal(){	
 	var memberId = "${loginMember.memberId}";
 	var html = "<tr><th>#</th><th>배송지명</th><th>수취인명</th><th>수취인 전화번호</th><th>우편번호</th><th>배송지 주소</th><th>배송지 상세주소</th><th>배송지 생성일</th><th>삭제</th></tr>";
@@ -380,7 +380,7 @@ function closeAddressEnrollModal(){
 	$(".guide").hide();
 }
 
-//주소 생성시 주소명 
+//주소 생성시 주소명 검사
 $("#addressName").keyup(function(){
 	var $this = $(this);
 
@@ -426,7 +426,7 @@ $("#addressName").keyup(function(){
 
 });
 
-//ajax를 통한 주소 
+//ajax를 통한 주소 생성
 function addressEnroll(){
 	var flag = 0;
 	$(".addressEnrollInput").each(function(i, input){
@@ -473,7 +473,7 @@ function addressEnroll(){
 	});
 }
 
-//ajax를 통한 주소 
+//ajax를 통한 주소 삭제
 function deleteAddress(addressName){
 	$.ajax({
 		url: '${pageContext.request.contextPath}/member/deleteAddress.do',
