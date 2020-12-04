@@ -28,7 +28,7 @@
 - 지점별 매출/입출고/재고/발주 관리 기능
 - ERP게시판을 통한 지점간의 상품 교환 기능
 - 유저의 각종 문의 및 건의, 관리자의 공지사항 및 답변을 위한 고객센터
-- open API를 사용한 로그인, 결제, 매장 위치확인, 상품 정보 입력, 핸드폰 인증 기능 
+- open API를 사용한 로그인, 결제, 매장 위치확인, 상품 정보 입력, 핸드폰 인증 기능 <br>
   (kakao login, kakao map, daum 주소, naver login, ckeditor, coolsms, iamport 사용)
 ---
 
