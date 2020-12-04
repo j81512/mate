@@ -23,9 +23,7 @@
 ### 핵심 기능 (작성자가 구현한 기능만 코드 설명)
 <details><summary>Index 페이지의 Best 5 상품 추천 기능</summary><div markdown="1">
 
-> 온라인 쇼핑몰의 index 페이지에<br>
-> 구매가 많은 상위 5개의 상품의 사진을<br>
-> 5초에 한번씩 변경되며 나타난다.
+> 온라인 쇼핑몰의 index 페이지에 구매가 많은 상위 5개의 상품의 사진들이 5초에 한번씩 변경되며 나타난다.
 
 ```html
 	<div class="content-div">
@@ -135,8 +133,8 @@
 
 <details><summary>장바구니를 통한 여러 상품 구매 기능</summary><div markdown="1">
 	
-> 상품 상세 페이지를 통해 상품을 장바구니에 담은 후 <br>
-> 장바구니에서 구매 할 상품의 체크박스를 선택하고 구매하기 버튼 클릭 시<br>
+> 상품 상세 페이지를 통해 상품을 장바구니에 담은 후, <br>
+> 장바구니에서 구매 할 상품의 체크박스를 선택하고 구매하기 버튼 클릭 시,<br>
 > 선택된 상품을 JSON과 ajax를 통해 한번에 구매가능하다.	
 
 ```javascript
@@ -225,7 +223,7 @@
 
 <details><summary>구매자들의 배송지 관리 기능</summary><div markdown="1">
 
-> 장바구니에서 상품 구매시 배송지를 선택할 때<br>
+> 장바구니에서 상품 구매시 배송지를 선택할 때,<br>
 > 배송지 선택하기 버튼을 클릭하여 모달창을 통해 배송지를 선택할 수 있다.<br>
 > 기존에 배송지가 없을 시, 나타난 배송지 선택창에서 배송지 생성하기 버튼을 클릭하여<br>
 > 새로 나타난 배송지 생성하기 모달창을 통해 배송지 생성 후 다시 배송지 선택을 할 수 있다.
@@ -518,7 +516,249 @@ function deleteAddress(addressName){
 
 <details><summary>지점별 매출/입출고/재고/발주 관리 기능</summary><div markdown="1">
 > 매출 : chart.js 사용하여 월별/일별 매출 현황을 그래프를 통해 확인할 수 있다.<br>
-> 입출고, 재고, 발주 : 입출고, 재고, 발주 로그를 테이블을 통해 확인할 수 있다.
+> 입출고, 재고, 발주 : 입출고, 재고, 발주 로그를 테이블을 통해 확인할 수 있다.<br>
+> sql트리거를 이용하여, 상품의 주문/결제/반품/입고/발주 등이 버튼 한두번의 클릭으로 가능하다.
+```sql
+-- 주문 로그에 결제 컬럼 update시 입출고 로그에 출고로 insert 되고 cart에 삭제하는 트리거
+create or replace trigger trg_purchase_log
+    before
+    update on purchase_log
+    for each row
+declare    
+    v_member_id member.member_id%type;
+begin
+    if :new.purchased = 1 then
+        insert into
+            io_log
+        values(
+            seq_io_no.nextval,
+            'O',
+            :new.amount,
+            default,
+            :new.product_no,
+            'admin',
+            '온라인 - 구매'
+        );
+        
+        select
+            member_id
+        into
+            v_member_id
+        from
+            purchase
+        where
+            purchase_no = :new.purchase_no;
+        
+        delete from
+            cart
+        where 
+            member_id = v_member_id
+            and product_no = :new.product_no;
+    end if;
+end;
+/
+
+-- 환불 수락시 입출고 로그에 입고로 insert 되는 트리거
+create or replace trigger trg_return
+    before
+    update on return
+    for each row
+declare    
+    v_product_no product.product_no%type;
+begin
+    if :new.confirm = 1 and :new.status = 'R' then
+    
+        select 
+            product_no
+        into
+            v_product_no
+        from 
+            purchase_log
+        where
+            purchase_log_no = :new.purchase_log_no;
+            
+        insert into
+            io_log
+        values(
+            seq_io_no.nextval,
+            'I',
+            :new.amount,
+            default,
+            v_product_no,
+            'admin',
+            '온라인 - 환불'
+        );
+    end if;
+    
+    if :new.confirm = 1 and :new.status = 'E' then
+    
+        select 
+            product_no
+        into
+            v_product_no
+        from 
+            purchase_log
+        where
+            purchase_log_no = :new.purchase_log_no;
+            
+        insert into
+            io_log
+        values(
+            seq_io_no.nextval,
+            'O',
+            :new.amount,
+            default,
+            v_product_no,
+            'admin',
+            '온라인 - 교환'
+        );
+            
+        insert into
+            io_log
+        values(
+            seq_io_no.nextval,
+            'I',
+            :new.amount,
+            default,
+            v_product_no,
+            'admin',
+            '불량품 교환'
+        );
+    end if;
+end;
+/
+
+-- 입고 수락(update)시 입출고 로그에 입고로 insert 되는 트리고
+create or replace trigger trg_receive
+    before
+    update on receive
+    for each row
+declare
+    v_emp_name emp.emp_name%type;
+begin
+    if :new.confirm = 1 then
+        select
+            emp_name
+        into
+            v_emp_name
+        from
+            emp
+        where
+            emp_id = :new.manufacturer_id;
+        
+        insert into
+            io_log
+        values(
+            seq_io_no.nextval,
+            'I',
+            :new.amount,
+            default,
+            :new.product_no,
+            :new.emp_id,
+            v_emp_name || ' - 입고'
+        );
+    end if;
+end;
+/
+
+-- 입출고 로그에 입고/출고시 재고 반영 관련 트리거
+create or replace trigger trg_io_log
+    before
+    insert on io_log
+    for each row
+begin
+    if :new.status = 'I' then
+        update
+            stock
+        set
+            stock = stock + :new.amount
+        where
+            product_no = :new.product_no and
+            emp_id = :new.emp_id;
+    end if;
+    if :new.status = 'O' then
+           update
+            stock
+        set
+            stock = stock - :new.amount
+        where
+            product_no = :new.product_no and
+            emp_id = :new.emp_id;
+    end if;
+end;
+/
+
+-- 제조사가 발주 로그 확인 후 수락(update) 시 입고테이블에 insert 관련 트리거
+create or replace trigger trg_request_log
+    before
+    update on request_log
+    for each row
+begin
+    if :new.confirm = 1 then
+        insert into
+            receive
+        values(
+            seq_receive_no.nextval,
+            :new.manufacturer_id,
+            :new.amount,
+            default,
+            default,
+            :new.product_no,
+            :new.emp_id
+        );
+    end if;
+end;
+/
+
+-- 반품신청에서 관리자가 승인/거절 하게되면 주문로그의 상태 변경
+create or replace trigger trg_return_purchase_log
+    before
+    update on return
+    for each row
+begin
+    if :new.confirm = 1 then
+        update purchase_log
+        set status = -2
+        where purchase_log_no = :new.purchase_log_no;
+    end if;
+    if :new.confirm = -1 then
+        update purchase_log
+        set status = -3
+        where purchase_log_no = :new.purchase_log_no;
+    end if;
+end;
+/
+
+-- 상품 발주시 재고테이블 insert
+create or replace trigger trg_stock
+    before
+    insert on request_log
+    for each row
+declare
+    cnt number;
+begin
+    select 
+        count(*)
+    into
+        cnt
+    from
+        stock
+    where
+        product_no = :new.product_no
+        and emp_id = :new.emp_id;
+        
+    if cnt = 0 then
+        insert into
+            stock
+        values(
+            :new.product_no,
+            :new.emp_id,
+            0
+        );
+    end if;
+end;
+/
+```
 </div>
 </details>
 
