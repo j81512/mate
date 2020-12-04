@@ -9,7 +9,8 @@
 > 관리자 : amin / 1234 (쇼핑몰 및 ERP 이용가능) <br>
 > 지점 : toy1 / 1234 (ERP만 이용가능) <br>
 > 제조사 : alter / 1234 (ERP만 이용가능) <br>
-
+> &nbsp;&nbsp;(회원가입시 포인트 부족으로 문자인증이 진행되지 않을 수 있습니다.)
+> &nbsp;&nbsp;(f12를 누르신 후 console창을 통해 인증번호를 확인 하실 수 있습니다.)
 --- 
 
 ### 개발 환경
@@ -774,6 +775,8 @@ end;
 
 <details><summary>open API를 사용한 로그인, 결제, 매장 위치확인, 상품 정보 입력, 핸드폰 인증 기능 <br>&nbsp;&nbsp;&nbsp;
   (kakao login, kakao map, daum 주소, naver login, ckeditor, coolsms, iamport 사용)</summary><div markdown="1">
+	
+> 
 </div>
 </details>
   
