@@ -132,7 +132,7 @@
 
 <details><summary>장바구니를 통한 여러 상품 구매 기능</summary><div markdown="1">
 	
-```jsp
+```javascript
 
 	/* 선택된 상품 번호와 상품 수량을 배열로 만든다. */
 	var param=[];
@@ -217,6 +217,32 @@
 </details>
 
 <details><summary>구매자들의 배송지 관리 기능</summary><div markdown="1">
+
+```html
+<div class="modal" id="address-modal">
+	<div class="modal-section">
+		<div class="modal-head">
+			<a href="javascript:closeAddressModal();" class="modal-close">X</a>
+			<p class="modal-title">배송지를 선택 해주세요.</p>
+		</div>
+		<div class="modal-body">
+			<table id="address-tbl">
+				
+			</table>
+			<input type="button" value="배송지 생성하기" onclick="openAddressEnrollModal();"/>
+		</div>
+		<div class="modal-footer">
+			<input class="modal-cancel modal-btn" type="button" value="취소" onclick="closeAddressModal();"/>
+			<input class="modal-submit modal-btn" type="submit" value="선택" onclick="selectAddress();"/>
+		</div>
+
+	</div>
+</div>
+```
+
+```javascript
+```
+
 </div>
 </details>
 
