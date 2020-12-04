@@ -2,8 +2,9 @@
 ### 프로젝트명 : MATE
 ##### 작성자 : 박준혁
 ----------------------
-### [Site](park.jh92.kro.kr/mate)
-##### 사용가능 ID 및 Password
+
+### [Site 바로가기](park.jh92.kro.kr/mate)
+##### 사용가능 Sample ID 및 Password
 + 일반 회원 : suzy / 1234 (쇼핑몰만 이용가능)
 + 관리자 : amin / 1234 (쇼핑몰 및 ERP 이용가능)
 + 지점 : toy1 / 1234 (ERP만 이용가능)
@@ -17,4 +18,5 @@
 
 매출 현황
 
+---
 
