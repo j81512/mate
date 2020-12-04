@@ -23,106 +23,106 @@
 ### 핵심 기능 (작성자가 구현한 기능만 코드 설명)
 <details><summary>Index 페이지의 Best 5 상품 추천 기능</summary><div markdown="1">
 	
-		```jsp
+```jsp
 
-		<div class="content-div">
-				<div class="blur-div first-div best-div"></div>
-				<div class="main-div best-div"></div>
-				<div class="blur-div second-div best-div"></div>
-				<div class="blur-div third-div best-div"></div>
-			</div>
+<div class="content-div">
+		<div class="blur-div first-div best-div"></div>
+		<div class="main-div best-div"></div>
+		<div class="blur-div second-div best-div"></div>
+		<div class="blur-div third-div best-div"></div>
+	</div>
 
-			/* ajax를 통해 구매량이 가장 많은 상위 5개의 상품 이미지를 가져온다. */
-			$(function(){
-				$.ajax({
-					url: "${pageContext.request.contextPath}/product/getBest.do",
-					method: "get",
-					dataType: "json",
-					success:function(data){
-						$(data).each(function(i, map){
-							console.log(map);
-							var html = "<div class='img-div img-none' id='bestImg-" + i + "'>";
-							html += '<img class="bestImgs" data-id="'+map.productNo+'" src="${pageContext.request.contextPath}/resources/upload/mainimages/' + map.renamedFilename + '" alt="" />';
-							html += "</div>";
-							console.log(html);
-							$(".content-div").after(html);
-						});
-						startPlayM(data.length);
-						startPlay1(data.length);
-						startPlay2(data.length);
-						startPlay3(data.length);
-					},
-					error: function(xhr, status, err){
-						console.log(xhr, status, err);
-					}
+	/* ajax를 통해 구매량이 가장 많은 상위 5개의 상품 이미지를 가져온다. */
+	$(function(){
+		$.ajax({
+			url: "${pageContext.request.contextPath}/product/getBest.do",
+			method: "get",
+			dataType: "json",
+			success:function(data){
+				$(data).each(function(i, map){
+					console.log(map);
+					var html = "<div class='img-div img-none' id='bestImg-" + i + "'>";
+					html += '<img class="bestImgs" data-id="'+map.productNo+'" src="${pageContext.request.contextPath}/resources/upload/mainimages/' + map.renamedFilename + '" alt="" />';
+					html += "</div>";
+					console.log(html);
+					$(".content-div").after(html);
 				});
-			});
-
-			/* 각 div 마다 다른 상품을 보여주고, 5초마다 사진이 변경된다. */
-			var startPlayM = function(i){
-				var cnt = 1;
-				$(".main-div").html($("#bestImg-"+ (cnt-1)).html());
-				playM = setInterval(function() {
-					$(".main-div").html($("#bestImg-"+cnt).html());
-					if(cnt < i-1)cnt++;
-					else cnt = 0;
-				}, 5000);
+				startPlayM(data.length);
+				startPlay1(data.length);
+				startPlay2(data.length);
+				startPlay3(data.length);
+			},
+			error: function(xhr, status, err){
+				console.log(xhr, status, err);
 			}
-			var startPlay1 = function(i){
-				var cnt = 0;
-				$(".first-div").html($("#bestImg-"+ (i-1)).html());
-				play1 = setInterval(function() {
-					$(".first-div").html($("#bestImg-"+cnt).html());
-					if(cnt < i-1)cnt++;
-					else cnt = 0;
-				}, 5000);
-			}
-			var startPlay2 = function(i){
-				var cnt = 2;
-				$(".second-div").html($("#bestImg-"+ (cnt-1)).html());
-				play2 = setInterval(function() {
-					$(".second-div").html($("#bestImg-"+cnt).html());
-					if(cnt < i-1)cnt++;
-					else cnt = 0;
-				}, 5000);
-			}
-			var startPlay3 = function(i){
-				var cnt = 3;
-				$(".third-div").html($("#bestImg-"+ (cnt-1)).html());
-				play3 = setInterval(function() {
-					$(".third-div").html($("#bestImg-"+cnt).html());
-					if(cnt < i-1)cnt++;
-					else cnt = 0;
-				}, 5000);
-			}
-			var stopPlay = function() {
-				clearInterval(playM);
-				clearInterval(play1);
-				clearInterval(play2);
-				clearInterval(play3);
-			};
+		});
+	});
 
-			/* div에 표시된 사진에 마우스를 hover시 사진이 변경이 멈추고, hover 종료시 다시 사진이 변경되게 된다. */
-			$(function(){
-				$(".best-div").hover(function(){
-					console.log("stop");
-					stopPlay();
-				},function(){
-					console.log("start");
-					startPlayM(15);
-					startPlay1(15);
-					startPlay2(15);
-					startPlay3(15);
-				});
+	/* 각 div 마다 다른 상품을 보여주고, 5초마다 사진이 변경된다. */
+	var startPlayM = function(i){
+		var cnt = 1;
+		$(".main-div").html($("#bestImg-"+ (cnt-1)).html());
+		playM = setInterval(function() {
+			$(".main-div").html($("#bestImg-"+cnt).html());
+			if(cnt < i-1)cnt++;
+			else cnt = 0;
+		}, 5000);
+	}
+	var startPlay1 = function(i){
+		var cnt = 0;
+		$(".first-div").html($("#bestImg-"+ (i-1)).html());
+		play1 = setInterval(function() {
+			$(".first-div").html($("#bestImg-"+cnt).html());
+			if(cnt < i-1)cnt++;
+			else cnt = 0;
+		}, 5000);
+	}
+	var startPlay2 = function(i){
+		var cnt = 2;
+		$(".second-div").html($("#bestImg-"+ (cnt-1)).html());
+		play2 = setInterval(function() {
+			$(".second-div").html($("#bestImg-"+cnt).html());
+			if(cnt < i-1)cnt++;
+			else cnt = 0;
+		}, 5000);
+	}
+	var startPlay3 = function(i){
+		var cnt = 3;
+		$(".third-div").html($("#bestImg-"+ (cnt-1)).html());
+		play3 = setInterval(function() {
+			$(".third-div").html($("#bestImg-"+cnt).html());
+			if(cnt < i-1)cnt++;
+			else cnt = 0;
+		}, 5000);
+	}
+	var stopPlay = function() {
+		clearInterval(playM);
+		clearInterval(play1);
+		clearInterval(play2);
+		clearInterval(play3);
+	};
 
-				$(".best-div").click(function(){
-					var productNo = $(this).find("img").data("id");
-					//console.log(productNo);
-					location.href = '${pageContext.request.contextPath}/product/productDetail.do?productNo='+productNo;
-				});
-			});
+	/* div에 표시된 사진에 마우스를 hover시 사진이 변경이 멈추고, hover 종료시 다시 사진이 변경되게 된다. */
+	$(function(){
+		$(".best-div").hover(function(){
+			console.log("stop");
+			stopPlay();
+		},function(){
+			console.log("start");
+			startPlayM(15);
+			startPlay1(15);
+			startPlay2(15);
+			startPlay3(15);
+		});
 
-		```
+		$(".best-div").click(function(){
+			var productNo = $(this).find("img").data("id");
+			//console.log(productNo);
+			location.href = '${pageContext.request.contextPath}/product/productDetail.do?productNo='+productNo;
+		});
+	});
+
+```
 
 </div>
 </details>
