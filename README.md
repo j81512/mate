@@ -25,7 +25,7 @@
 	
 ```jsp
 
-<div class="content-div">
+	<div class="content-div">
 		<div class="blur-div first-div best-div"></div>
 		<div class="main-div best-div"></div>
 		<div class="blur-div second-div best-div"></div>
@@ -131,10 +131,85 @@
 	
 ```jsp
 
-asdasdasd
+	/* 선택된 상품 번호와 상품 수량을 배열로 만든다. */
+	var param=[];
+	$productNos.each(function(i, productNo){
+		var dataId = $(productNo).data("id");
+		var amount = null;
+		$productAmounts.each(function(i, ProductAmount){
+			if(dataId == $(ProductAmount).data("id")) amount = $(ProductAmount).val();
+		});
+		var data = {
+			addressName : $("#hidden-addr").val(),
+			productNo : $(productNo).val(),
+			amount : amount,
+			memberId : '${loginMember.memberId}'
+		};
+		param.push(data);
+	});
+	
+	/* 생성된 상품 배열을 JSON문자열로 변환하여 ajax를 통해 서버로 전송 */
+	var jsonParam = JSON.stringify(param);
+	
+	$.ajax({
+		url : "${pageContext.request.contextPath}/product/purchaseProducts.do",
+		type : "POST",
+		data : {jsonParam : jsonParam},
+		dataType : "json",
+		success : function(data){
+			if(data.result > 0){
+				//카카오페이
+				openKakao(data.purchaseNo);
+				location.href = '${pageContext.request.contextPath}/member/myPage.do';
+			}
+			else{
+				alert("상품구매에 오류가 발생하였습니다. 다시 진행해주세요.");
+				history.go(0);
+			}
+		},
+		error : function(xhr, status, err){
+			console.log(xhr, status, err);
+		}
+	});
 
 ```
 	
+```java
+
+	@ResponseBody
+	@PostMapping("/purchaseProducts.do")
+	public Map<String, Object> purchaseProducts(@RequestParam("jsonParam") String jsonParam) {
+		
+		//받아온 JSON문자열을 JSON배열로 변환
+		JSONArray array = JSONArray.fromObject(jsonParam);
+		
+		List<Map<String, Object>> params = new ArrayList<>();
+		
+		//JSON배열을 map객체로 
+		for(int i = 0; i < array.size(); i++) {
+			JSONObject jObj = (JSONObject)array.get(i);
+			Map<String, Object> map = new HashMap<>();
+			map.put("addressName", jObj.get("addressName"));
+			map.put("productNo", jObj.get("productNo"));
+			map.put("amount", jObj.get("amount"));
+			map.put("memberId", jObj.get("memberId"));
+			
+			params.add(map);
+		}
+		
+		log.debug("params@controller = {}", params);
+		
+		int result = productService.purchaseProducts(params);
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("result", result);
+		map.put("purchaseNo", params.get(0).get("purchaseNo"));
+		
+		return map;
+	}
+
+```
+
 </div>
 </details>
 
