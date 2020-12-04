@@ -512,10 +512,13 @@ function deleteAddress(addressName){
 </details>
 
 <details><summary>구매내역 확인 및 상품 환불 및 교환 기능</summary><div markdown="1">
+> 모달창을 통하여 상품의 환불/교환 신청을 할 수 있다.
 </div>
 </details>
 
 <details><summary>지점별 매출/입출고/재고/발주 관리 기능</summary><div markdown="1">
+> 매출 : chart.js 사용하여 월별/일별 매출 현황을 그래프를 통해 확인할 수 있다.<br>
+> 입출고, 재고, 발주 : 입출고, 재고, 발주 로그를 테이블을 통해 확인할 수 있다.
 </div>
 </details>
 
