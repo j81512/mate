@@ -22,7 +22,11 @@
 
 ### 핵심 기능 (작성자가 구현한 기능만 코드 설명)
 <details><summary>Index 페이지의 Best 5 상품 추천 기능</summary><div markdown="1">
-	
+
+> 온라인 쇼핑몰의 index 페이지에<br>
+> 구매가 많은 상위 5개의 상품의 사진을<br>
+> 5초에 한번씩 변경되며 나타난다.
+
 ```html
 	<div class="content-div">
 		<div class="blur-div first-div best-div"></div>
@@ -220,6 +224,11 @@
 </details>
 
 <details><summary>구매자들의 배송지 관리 기능</summary><div markdown="1">
+
+> 장바구니에서 상품 구매시 배송지를 선택할 때<br>
+> 배송지 선택하기 버튼을 클릭하여 모달창을 통해 배송지를 선택할 수 있다.<br>
+> 기존에 배송지가 없을 시, 나타난 배송지 선택창에서 배송지 생성하기 버튼을 클릭하여<br>
+> 새로 나타난 배송지 생성하기 모달창을 통해 배송지 생성 후 다시 배송지 선택을 할 수 있다.
 
 ```html
 <!-- 배송지 선택하기 버튼 클릭시 나타나는 모달창 -->
