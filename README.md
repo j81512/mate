@@ -1,6 +1,7 @@
 ----------------------
 ### 프로젝트명 : MATE
 ### [Site 바로가기](park.jh92.kro.kr/mate)
+### [Project 상세정보](https://www.notion.so/MATE-Market-Adult-Toy-Erp-5bd15f0a8c5b44e6902a9fd7c69e27f1)
 ----------------------
 
 ### Sample ID 및 Password
