@@ -146,6 +146,7 @@
 </details>
 <details><summary>open API를 사용한 로그인, 결제, 매장 위치확인, 상품 정보 입력, 핸드폰 인증 기능 <br>
   (kakao login, kakao map, daum 주소, naver login, ckeditor, coolsms, iamport 사용)</summary><div markdown="1">
+	asdasd
 </div>
 </details>
   
