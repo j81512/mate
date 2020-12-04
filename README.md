@@ -30,7 +30,7 @@
 	<div class="blur-div third-div best-div"></div>
 </div>
 
-<!-- ajax를 통해 구매량이 가장 많은 상위 5개의 상품 이미지를 가져온다. -->
+/* ajax를 통해 구매량이 가장 많은 상위 5개의 상품 이미지를 가져온다. */
 $(function(){
 	$.ajax({
 		url: "${pageContext.request.contextPath}/product/getBest.do",
@@ -56,7 +56,7 @@ $(function(){
 	});
 });
 
-//2. 각 div 마다 다른 상품을 보여주고, 5초마다 사진이 변경된다.
+/* 각 div 마다 다른 상품을 보여주고, 5초마다 사진이 변경된다. */
 var startPlayM = function(i){
 	var cnt = 1;
 	$(".main-div").html($("#bestImg-"+ (cnt-1)).html());
@@ -99,7 +99,8 @@ var stopPlay = function() {
 	clearInterval(play2);
 	clearInterval(play3);
 };
-//3. div에 표시된 사진에 마우스를 hover시 사진이 변경이 멈추고, hover 종료시 다시 사진이 변경되게 된다.
+
+/* div에 표시된 사진에 마우스를 hover시 사진이 변경이 멈추고, hover 종료시 다시 사진이 변경되게 된다. */
 $(function(){
 	$(".best-div").hover(function(){
 		console.log("stop");
