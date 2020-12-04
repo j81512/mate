@@ -24,7 +24,6 @@
 <details><summary>Index 페이지의 Best 5 상품 추천 기능</summary><div markdown="1">
 	
 ```html
-
 	<div class="content-div">
 		<div class="blur-div first-div best-div"></div>
 		<div class="main-div best-div"></div>
@@ -219,6 +218,7 @@
 <details><summary>구매자들의 배송지 관리 기능</summary><div markdown="1">
 
 ```html
+<!-- 배송지 선택하기 버튼 클릭시 나타나는 모달창 -->
 <div class="modal" id="address-modal">
 	<div class="modal-section">
 		<div class="modal-head">
@@ -238,9 +238,261 @@
 
 	</div>
 </div>
+
+<!-- 새로운 배송지 생성시 나타나는 모달창 -->
+<div class="modal" id="addressEnroll-modal">
+	<div class="modal-section">
+		<div class="modal-head">
+			<a href="javascript:closeAddressEnrollModal();" class="modal-close">X</a>
+			<p class="modal-title">새로운 배송지 정보를 입력해주세요.</p>
+		</div>
+		<div class="modal-body">
+		
+		<div id="container-addr">
+			<div class="form-row">
+			    <div class="form-group col-md-6">
+			      <label for="inputEmail4">배송지 명</label>
+			      <input type="text" class="form-control addressEnrollInput" id="addressName" name="addressName" required>
+			      <span class="guide ok">이 배송지명은 사용가능합니다.</span>
+				  <span class="guide error">이 배송지명은 사용할 수 없습니다.</span>
+				  <input type="hidden" id="nameValid" value="0" />
+			    </div>
+			    <div class="form-group col-md-6">
+			      <label for="inputPassword4">회원 ID</label>
+			      <input type="text" class="form-control addressEnrollInput" id="memberId" value="${ loginMember.memberId }" readonly>
+			    </div>
+		    </div>
+			<div class="form-row">
+			    <div class="form-group col-md-6">
+			      <label for="inputEmail4">수취인 성명</label>
+			      <input type="text" class="form-control addressEnrollInput" id="receiverName" required >
+			    </div>
+			    <div class="form-group col-md-6">
+			      <label for="inputPassword4">수취인 연락처</label>
+			      <input type="text" class="form-control addressEnrollInput" id="receiverPhone" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required >
+			    </div>
+		    </div>
+		    
+		    <div class="form-group">
+				<button type="button" class="btn btn-default" onclick="execPostCode();"><i class="fa fa-search"></i> 우편번호 찾기</button> 	
+		    	<input class="form-control addressEnrollInput" style="width: 40%; display: inline;" 
+		    	 	   name="addr1" 
+		    	 	   id="addr1" type="text" readonly required>
+			</div>
+			<div class="form-group">
+			    <label for="addr2">도로명 주소</label>
+				<input class="form-control addressEnrollInput" style="top: 5px;" 
+					   name="addr2" id="addr2" type="text" readonly required/>
+		    </div>
+			<div class="form-group">
+			    <label for="addr3">상세 주소</label>
+				<input class="form-control addressEnrollInput" 
+					   placeholder="상세주소를 입력해주세요." 
+					   name="addr3" id="addr3" type="text" required/>
+		    </div>
+		</div>
+	
+		</div>
+		<div class="modal-footer">
+			<input class="modal-cancel modal-btn" type="button" value="취소" onclick="closeAddressEnrollModal();"/>
+			<input class="modal-submit modal-btn" type="submit" value="등록" onclick="addressEnroll();"/>
+		</div>
+
+	</div>
+</div>
 ```
 
 ```javascript
+//주소 선택 모달 
+function openAddressModal(){	
+	var memberId = "${loginMember.memberId}";
+	var html = "<tr><th>#</th><th>배송지명</th><th>수취인명</th><th>수취인 전화번호</th><th>우편번호</th><th>배송지 주소</th><th>배송지 상세주소</th><th>배송지 생성일</th><th>삭제</th></tr>";
+	$.ajax({
+		url : "${ pageContext.request.contextPath}/member/selectMemberAddress.do",
+		data : {
+			memberId : memberId
+		},
+		method : "GET",
+		dataType : "json",
+		success : function(data){
+			console.log(data);
+			
+			if(data.length != 0){
+				$(data).each(function(i, addr){
+					var stillUtc = moment.utc(addr.regDate).toDate();
+					html += "<tr>"
+						  + "<td><input type='radio' name='address-radio'/>"
+						  + "<td class='addrName'>" + addr.addressName + "</td>"
+						  + "<td class='receiverName'>" + addr.receiverName + "</td>"
+						  + "<td class='receiverPhone'>" + addr.receiverPhone + "</td>"
+						  + "<td>" + addr.addr1 + "</td>"
+						  + "<td class='addr2'>" + addr.addr2 + "</td>"
+						  + "<td class='addr3'>" + addr.addr3 + "</td>"
+						  + "<td>" + moment(stillUtc).local().format('YYYY-MM-DD') + "</td>"
+						  + "<td><input class='delete-btn' type='button' value='X' onclick='deleteAddress(\"" + addr.addressName + "\");' /></td>"
+						  + "</tr>";
+				});
+			}
+			else{
+				html += "<tr>"
+
+
+					  + "<td colspan='9'>등록된 배송지가 없습니다. 새로운 배송지를 등록해주세요.</td>"
+
+
+					  + "</tr>";
+				
+			}
+			
+			$("#address-tbl").append(html);
+		},
+		error : function(xhr, status, err){
+			console.log(xhr,status,err);
+		}
+	});
+	
+	$("#address-modal").fadeIn(250);
+}
+
+//주소 선택 모달 종료시
+function closeAddressModal(){
+	$("#address-modal").fadeOut(250);
+	$("#address-tbl").html("");
+}
+
+//주소 생성 모달 실행시
+function openAddressEnrollModal(){
+	closeAddressModal();
+	$("#addressEnroll-modal").fadeIn(250);
+}
+
+//주소 생성 모달 종료시
+function closeAddressEnrollModal(){
+	$("#addressEnroll-modal").fadeOut(250);
+	openAddressModal();
+	$("#addressName").val("");
+	$("#receiverName").val("");
+	$("#receiverPhone").val("");
+	$("#addr1").val("");
+	$("#addr2").val("");
+	$("#addr3").val("");
+	$("#nameValid").val(0);
+	$(".guide").hide();
+}
+
+//주소 생성시 주소명 
+$("#addressName").keyup(function(){
+	var $this = $(this);
+
+	if($this.val().length < 1){
+		$(".guide").hide();
+		$("#nameValid").val(0);
+		return;
+	}
+	
+	$.ajax({
+		url : "${ pageContext.request.contextPath }/member/checkAddressName.do",
+		data : {
+			memberId : "${loginMember.memberId}",
+			addressName : $this.val()
+		},
+		method : "GET",
+		dataType : "json",
+		success : function(data){
+			console.log(data);
+			var $ok = $(".guide.ok");
+			var $error = $(".guide.error");
+			var $nameValid = $("#nameValid");
+	
+			if(data.isAvailable){
+				$ok.show();
+				$error.hide();
+				$nameValid.val(1);
+			}
+			else{
+				$ok.hide();
+				$error.show();
+				$nameValid.val(0);
+			}
+			
+		},
+		error : function(xhr, status, err){
+			console.log("처리실패!");
+			console.log(xhr);
+			console.log(status);
+			console.log(err);
+		}
+	});
+
+});
+
+//ajax를 통한 주소 
+function addressEnroll(){
+	var flag = 0;
+	$(".addressEnrollInput").each(function(i, input){
+		if($(input).val() == null || $(input).val() == "") {
+			alert("모든 항목을 입력해주세요.");
+			flag++;
+		}
+	});
+	if(flag > 0) return false;
+	if(/^[0-9]{11,11}$/.test($("#receiverPhone").val()) == false){
+		alert("전화번호는 숫자 11자를 입력해야합니다.");
+		return false;
+	}
+	if($("#nameValid").val() == 0) flag++;
+	
+	if(flag > 0) return;
+
+	var data = {
+		memberId : $("#memberId").val(),
+		addressName : $("#addressName").val(),
+		receiverName : $("#receiverName").val(),
+		receiverPhone : $("#receiverPhone").val(),
+		addr1 : $("#addr1").val(),
+		addr2 : $("#addr2").val(),
+		addr3 : $("#addr3").val(),
+	};
+	$.ajax({
+		url : "${ pageContext.request.contextPath}/member/addressEnroll.do",
+		data : data,
+		method : "POST",
+		dataType : "json",
+		success : function(data){
+			if(data){
+				alert("배송지 등록이 완료되었습니다.");
+				closeAddressEnrollModal();
+			}
+			else{
+				alert("배송지 등록이 실패하였습니다. 다시 등록해주세요.");
+			}
+		},
+		error : function(xhr, status, err){
+			console.log(xhr, status, err);
+		}
+	});
+}
+
+//ajax를 통한 주소 
+function deleteAddress(addressName){
+	$.ajax({
+		url: '${pageContext.request.contextPath}/member/deleteAddress.do',
+		method: 'POST',
+		data: {
+			memberId: '${loginMember.memberId}',
+			addressName: addressName
+		},
+		dataType: 'json',
+		success: function(data){
+			alert(data.msg);
+			closeAddressModal();
+			openAddressModal();
+		},
+		error: function(xhr, status, err){
+			console.log(xhr, status, err);
+		}
+	});
+}
 ```
 
 </div>
