@@ -4,19 +4,19 @@
 ----------------------
 
 ##### 사용가능 Sample ID 및 Password
-> 일반 회원 : suzy / 1234 (쇼핑몰만 이용가능)
-> 관리자 : amin / 1234 (쇼핑몰 및 ERP 이용가능)
-> 지점 : toy1 / 1234 (ERP만 이용가능)
-> 제조사 : alter / 1234 (ERP만 이용가능)
+> 일반 회원 : suzy / 1234 (쇼핑몰만 이용가능) <br>
+> 관리자 : amin / 1234 (쇼핑몰 및 ERP 이용가능) <br>
+> 지점 : toy1 / 1234 (ERP만 이용가능) <br>
+> 제조사 : alter / 1234 (ERP만 이용가능) <br>
 
 --- 
 
 ### 개발 환경
-**O/S :** Windows 10
-**Server :** Apache Tomcat 8.5
-**DB :** Oracle
-**Language :** Java, SQL, HTML5, CSS3, JavaScript
-**IDE :** Spring Tool Suite 4, SQL Developer
+**O/S :** Windows 10 <br>
+**Server :** Apache Tomcat 8.5 <br>
+**DB :** Oracle <br>
+**Language :** Java, SQL, HTML5, CSS3, JavaScript <br>
+**IDE :** Spring Tool Suite 4, SQL Developer <br>
 
 ---
 
