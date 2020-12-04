@@ -23,7 +23,9 @@
 ### 핵심 기능 (작성자가 구현한 기능만 코드 설명)
 - Index 페이지의 Best 5 상품 추천 기능
 &nbsp;&nbsp;&nbsp;&nbsp;<details><summary>코드 보기</summary>
+	
 ```jsp
+
 <div class="content-div">
 		<div class="blur-div first-div best-div"></div>
 		<div class="main-div best-div"></div>
@@ -120,7 +122,9 @@
 			location.href = '${pageContext.request.contextPath}/product/productDetail.do?productNo='+productNo;
 		});
 	});
+	
 ```
+
 </details>
 
 - 장바구니를 통한 여러 상품 구매 기능
