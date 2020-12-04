@@ -129,7 +129,11 @@
 </div>
 </details>
 
-<details><summary>장바구니를 통한 여러 상품 구매 기능</summary><div markdown="1">
+<details><summary>장바구니를 통한 여러 상품 구매 기능</summary>
+> 상품 상세 페이지를 통해 상품을 장바구니에 담은 후
+> 장바구니에서 구매 할 상품의 체크박스를 선택하고 구매하기 버튼 클릭 시
+> 선택된 상품을 JSON과 ajax를 통해 한번에 구매가능하다.
+<div markdown="1">
 	
 ```javascript
 
