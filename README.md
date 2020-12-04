@@ -23,7 +23,7 @@
 ### 핵심 기능 (작성자가 구현한 기능만 코드 설명)
 <details><summary>Index 페이지의 Best 5 상품 추천 기능</summary><div markdown="1">
 	
-```jsp
+```html
 
 	<div class="content-div">
 		<div class="blur-div first-div best-div"></div>
@@ -31,6 +31,9 @@
 		<div class="blur-div second-div best-div"></div>
 		<div class="blur-div third-div best-div"></div>
 	</div>
+
+```
+```javascript
 
 	/* ajax를 통해 구매량이 가장 많은 상위 5개의 상품 이미지를 가져온다. */
 	$(function(){
