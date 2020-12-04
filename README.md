@@ -22,6 +22,8 @@
 
 ### 핵심 기능 (작성자가 구현한 기능만 코드 설명)
 - Index 페이지의 Best 5 상품 추천 기능
+<details>
+<summary>코드 보기</summary>
 ```jsp
 <div class="content-div">
 	<div class="blur-div first-div best-div"></div>
@@ -121,6 +123,8 @@ $(function(){
 });
 
 ```
+</details>
+
 - 장바구니를 통한 여러 상품 구매 기능
 - 구매자들의 배송지 관리 기능
 - 구매내역 확인 및 상품 환불 및 교환 기능
