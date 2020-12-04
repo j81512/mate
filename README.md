@@ -23,7 +23,7 @@
 ### 핵심 기능 (작성자가 구현한 기능만 코드 설명)
 - Index 페이지의 Best 5 상품 추천 기능
 &nbsp;&nbsp;&nbsp;&nbsp;<details><summary>코드 보기</summary>
-	
+<div>
 ```jsp
 
 <div class="content-div">
@@ -124,7 +124,7 @@
 	});
 	
 ```
-
+</div>
 </details>
 
 - 장바구니를 통한 여러 상품 구매 기능
