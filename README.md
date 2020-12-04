@@ -20,8 +20,102 @@
 
 ---
 
-### 핵심 기능
+### 핵심 기능 (작성자가 구현한 기능만 코드 설명)
 - Index 페이지의 Best 5 상품 추천 기능
+```jsp
+<div class="content-div">
+	<div class="blur-div first-div best-div"></div>
+	<div class="main-div best-div"></div>
+	<div class="blur-div second-div best-div"></div>
+	<div class="blur-div third-div best-div"></div>
+</div>
+
+$(function(){
+	$.ajax({
+		url: "${pageContext.request.contextPath}/product/getBest.do",
+		method: "get",
+		dataType: "json",
+		success:function(data){
+			$(data).each(function(i, map){
+				console.log(map);
+				var html = "<div class='img-div img-none' id='bestImg-" + i + "'>";
+				html += '<img class="bestImgs" data-id="'+map.productNo+'" src="${pageContext.request.contextPath}/resources/upload/mainimages/' + map.renamedFilename + '" alt="" />';
+				html += "</div>";
+				console.log(html);
+				$(".content-div").after(html);
+			});
+			startPlayM(data.length);
+			startPlay1(data.length);
+			startPlay2(data.length);
+			startPlay3(data.length);
+		},
+		error: function(xhr, status, err){
+			console.log(xhr, status, err);
+		}
+	});
+});
+var startPlayM = function(i){
+	var cnt = 1;
+	$(".main-div").html($("#bestImg-"+ (cnt-1)).html());
+	playM = setInterval(function() {
+		$(".main-div").html($("#bestImg-"+cnt).html());
+		if(cnt < i-1)cnt++;
+		else cnt = 0;
+	}, 5000);
+}
+var startPlay1 = function(i){
+	var cnt = 0;
+	$(".first-div").html($("#bestImg-"+ (i-1)).html());
+	play1 = setInterval(function() {
+		$(".first-div").html($("#bestImg-"+cnt).html());
+		if(cnt < i-1)cnt++;
+		else cnt = 0;
+	}, 5000);
+}
+var startPlay2 = function(i){
+	var cnt = 2;
+	$(".second-div").html($("#bestImg-"+ (cnt-1)).html());
+	play2 = setInterval(function() {
+		$(".second-div").html($("#bestImg-"+cnt).html());
+		if(cnt < i-1)cnt++;
+		else cnt = 0;
+	}, 5000);
+}
+var startPlay3 = function(i){
+	var cnt = 3;
+	$(".third-div").html($("#bestImg-"+ (cnt-1)).html());
+	play3 = setInterval(function() {
+		$(".third-div").html($("#bestImg-"+cnt).html());
+		if(cnt < i-1)cnt++;
+		else cnt = 0;
+	}, 5000);
+}
+var stopPlay = function() {
+	clearInterval(playM);
+	clearInterval(play1);
+	clearInterval(play2);
+	clearInterval(play3);
+};
+$(function(){
+	$(".best-div").hover(function(){
+		console.log("stop");
+		stopPlay();
+	},function(){
+		console.log("start");
+		startPlayM(15);
+		startPlay1(15);
+		startPlay2(15);
+		startPlay3(15);
+	});
+
+	$(".best-div").click(function(){
+		var productNo = $(this).find("img").data("id");
+		//console.log(productNo);
+		location.href = '${pageContext.request.contextPath}/product/productDetail.do?productNo='+productNo;
+	});
+});
+
+```
 - 장바구니를 통한 여러 상품 구매 기능
 - 구매자들의 배송지 관리 기능
 - 구매내역 확인 및 상품 환불 및 교환 기능
@@ -64,15 +158,6 @@
   + RECEIVE_NO COLUMN을 Primary key로 사용
   + 지점 회원이 입고 요청 목록을 확인 후, 승인 시 CONFIRM COLUMN 값이 '1'로 update되며 입출고 로그 테이블에 기록되는 Trigger가 실행된다.   
    입출고 로그 테이블에 입력이 감지되면 그 상태값이 'I'일 경우, 해당 상품과 지점 정보를 통해 상품 재고 테이블의 재고를 update는 Trigger가 실행되며 재고 관리가 가능하다.
-
-### 이 외 테이블
-  
-+ BOARD ( ERP 내 게시판 )
-+ CS ( 쇼핑몰 내 고객센터 ) 
-+ CART ( 쇼핑몰 장바구니 )
-+ ADDRESS ( 배송지 )
-+ PURCHASE ( 쇼핑몰 구매상품 )
-+ PURCHASE_LOG ( 쇼핑몰 구매 로그 )
-+ RETURN ( 환불 신청 상품 ) 등
   
 --- 
+
